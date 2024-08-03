@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../components/design/Block";
 import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
@@ -26,6 +26,7 @@ const Blog = () => {
     handleLike,
     handleDeleteBlog,
     setLikedBlogs,
+    getBlogLikes,
   } = useBlog();
   const { userInfo } = useUserInfo();
   const handleProfileClick = (userId) => {
@@ -62,7 +63,7 @@ const Blog = () => {
     setShowLikesPopup((prev) => (prev === blogId ? null : blogId));
     if (showLikesPopup !== blogId) {
       try {
-        const likes = await setLikedBlogs(blogId);
+        const likes = await getBlogLikes(blogId);
         setLikesData(likes);
       } catch (error) {
         console.error("Error fetching likes", error);
@@ -256,32 +257,25 @@ const Blog = () => {
                 {blog.likes_count} lượt thích • {blog.comments_count} bình luận
               </p>
               {showLikesPopup === blog.id && (
-                <div className="absolute left-0 top-full mt-2 w-64 bg-white border border-gray-300 shadow-lg rounded-lg z-10">
-                  <ul className="p-2">
-                    {likesData.length === 0 ? (
-                      <li className="text-center text-gray-500">
-                        Không có người thích
+                <div className="absolute top-0 right-0 mt-12 p-4 w-80 bg-white border border-gray-300 shadow-lg rounded-lg">
+                  <h3 className="text-14 font-semibold">Likes</h3>
+                  <ul>
+                    {likesData.map((user) => (
+                      <li
+                        key={user.id}
+                        className="flex items-center mt-2"
+                        onClick={() => handleProfileClick(user.id)}
+                      >
+                        <img
+                          src={user.profile_image}
+                          alt="user-avatar"
+                          className="w-6 h-6 rounded-full mr-2"
+                        />
+                        <span className="text-12 text-black">
+                          {user.first_name} {user.last_name}
+                        </span>
                       </li>
-                    ) : (
-                      likesData.map((like, index) => (
-                        <li key={index} className="flex items-center mb-2">
-                          <img
-                            src={
-                              like.profile.profile_picture ||
-                              "default-avatar-url"
-                            }
-                            alt="profile"
-                            className="w-12 h-12 rounded-full mr-2"
-                          />
-                          <div>
-                            <p className="font-semibold">
-                              {like.first_name} {like.last_name}
-                            </p>
-                            <p className="text-gray-500">{like.username}</p>
-                          </div>
-                        </li>
-                      ))
-                    )}
+                    ))}
                   </ul>
                 </div>
               )}

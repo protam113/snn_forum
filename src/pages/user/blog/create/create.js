@@ -6,7 +6,6 @@ import {
   FaFilePdf,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import Logo from "../../../../assets/img/Logo.svg";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useTheme } from "../../../../context/themeContext";

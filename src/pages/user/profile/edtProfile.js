@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Example from "../../error/load";
 import Block from "../../../components/design/Block";
 import useUserInfo from "../../../hooks/useUserInfo";
+import { toast } from "react-toastify";
 
 const EditProfile = () => {
   const { userInfo, loading, error, updateUserInfo } = useUserInfo();
@@ -37,8 +38,6 @@ const EditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Chuẩn bị FormData
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
       if (formData[key] !== null) {
@@ -48,7 +47,7 @@ const EditProfile = () => {
 
     try {
       await updateUserInfo(data);
-      alert("Profile updated successfully");
+      toast.success("Profile updated successfully");
       if (userInfo && userInfo.username) {
         navigate(`/profile/${userInfo.username}`); // Chuyển hướng sau khi cập nhật thành công
       }
@@ -65,8 +64,8 @@ const EditProfile = () => {
         phone_number: userInfo.phone_number || "",
         location: userInfo.location || "",
         about: userInfo.about || "",
-        profile_image: null, // profile_image không điền mặc định vì phải upload lại
-        profile_bg: null, // profile_bg không điền mặc định vì phải upload lại
+        profile_image: null,
+        profile_bg: null,
         link: userInfo.link || "",
       });
     }

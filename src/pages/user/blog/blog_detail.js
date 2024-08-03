@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { FaTrashAlt, FaEdit, FaFlag } from "react-icons/fa";
-import { BsThreeDots, BsBookmark } from "react-icons/bs";
-import useBlog from "../../../hooks/useBlog";
 import { useNavigate, useParams } from "react-router-dom";
+// icons
+import { FaTrashAlt, FaEdit, FaFlag } from "react-icons/fa";
+import { BiCommentEdit, BiRepost } from "react-icons/bi";
+import { BsThreeDots, BsBookmark } from "react-icons/bs";
+// data api
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
 import useUserInfo from "../../../hooks/useUserInfo";
 import formatDate from "../../../utils/formatDate";
 import Comment from "../../../components/comment/comment";
-import { BiRepost } from "react-icons/bi";
 import { useTheme } from "../../../context/themeContext";
+import useBlog from "../../../hooks/useBlog";
+
+import Logo from "../../../assets/img/Logo.svg";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -27,9 +31,22 @@ const Blog_detail = () => {
   } = useBlog(blogId);
 
   const [activeMenu, setActiveMenu] = useState(null);
+  const [activeCommentMenu, setActiveCommentMenu] = useState(null);
 
   const handleMenuClick = (id) => {
     setActiveMenu((prev) => (prev === id ? null : id));
+  };
+
+  const handleCommentMenuClick = (commentId) => {
+    setActiveCommentMenu((prev) => (prev === commentId ? null : commentId));
+  };
+
+  const handleProfileClick = (userId) => {
+    if (userInfo && userInfo.id === userId) {
+      navigate(`/profile/${userInfo.username}`);
+    } else {
+      navigate(`/profile_user/${userId}`);
+    }
   };
 
   const handleEditClick = (blogId) => {
@@ -49,7 +66,7 @@ const Blog_detail = () => {
           key={media.file}
           src={media.file}
           alt="blog-media"
-          className={`object-cover w-100% h-full cursor-pointer ${
+          className={`object-cover w-full h-full cursor-pointer ${
             theme === "dark" ? "border-gray-700" : "border-gray-200"
           }`}
         />
@@ -85,12 +102,14 @@ const Blog_detail = () => {
             src={blog.user.profile_image}
             alt="profile"
             className="w-12 h-12 rounded-full mr-4"
+            onClick={() => handleProfileClick(blog.user.id)}
           />
           <div>
             <h1
-              className={` font-bold text-base ${
+              className={`font-bold text-base ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
+              onClick={() => handleProfileClick(blog.user.id)}
             >
               {blog.user.first_name} {blog.user.last_name}
             </h1>
@@ -108,22 +127,25 @@ const Blog_detail = () => {
                 <ul className="text-gray-300">
                   {userInfo?.username === blog.user.username && (
                     <>
-                      <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
+                      <li
+                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                        onClick={() => handleEditClick(blog.id)}
+                      >
                         <FaEdit className="mr-2 text-gray-400" />
-                        Chỉnh sửa
+                        Edit
                       </li>
                       <li
                         className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
                         onClick={() => handleDeleteBlog(blog.id, userInfo)}
                       >
                         <FaTrashAlt className="mr-2 text-gray-400" />
-                        Xóa
+                        Delete
                       </li>
                     </>
                   )}
                   <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
                     <FaFlag className="mr-2 text-gray-400" />
-                    Báo cáo
+                    Report
                   </li>
                 </ul>
               </div>
@@ -141,7 +163,7 @@ const Blog_detail = () => {
           </p>
           <hr className="my-2 border-zinc-300" />
           <p
-            className={`mb-4 text-14  ${
+            className={`mb-4 text-14 ${
               theme === "dark" ? "text-white" : "text-black"
             }`}
             dangerouslySetInnerHTML={{ __html: blog.description || "" }}
@@ -176,11 +198,8 @@ const Blog_detail = () => {
             className={`text-gray-500 text-sm cursor-pointer ${
               theme === "dark" ? "text-gray-400" : "text-gray-500"
             }`}
-            // onClick={() => handleLikesClick(blog.id)}
-            // onMouseEnter={() => handleLikesClick(blog.id)}
-            // onMouseLeave={() => setShowLikesPopup(null)}
           >
-            {blog.likes_count} lượt thích • {blog.comments_count} bình luận
+            {blog.likes_count} likes • {blog.comments_count} comments
           </p>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
@@ -229,6 +248,7 @@ const Blog_detail = () => {
                         src={comment.user.profile_image}
                         alt="profile"
                         className="w-8 h-8 rounded-full mr-2"
+                        onClick={() => handleProfileClick(comment.user.id)}
                       />
                       <div className="flex-grow text-14">
                         <p>
@@ -236,6 +256,7 @@ const Blog_detail = () => {
                             className={`text-${
                               theme === "dark" ? "white" : "black"
                             } text-14`}
+                            onClick={() => handleProfileClick(comment.user.id)}
                           >
                             {comment.user.first_name} {comment.user.last_name}
                           </strong>
@@ -254,10 +275,31 @@ const Blog_detail = () => {
                         </p>
                       </div>
                       {userInfo?.username === comment.user.username && (
-                        <FaTrashAlt
-                          className="ml-2 text-gray-500 cursor-pointer"
-                          onClick={() => handleDeleteComment(comment.id)}
-                        />
+                        <div className="relative">
+                          <BsThreeDots
+                            className="ml-2 text-gray-500 cursor-pointer"
+                            onClick={() => handleCommentMenuClick(comment.id)}
+                          />
+                          {activeCommentMenu === comment.id && (
+                            <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-gray-300 shadow-lg rounded-lg z-10">
+                              <ul className="text-gray-300">
+                                <li
+                                  className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                                  onClick={() =>
+                                    handleDeleteComment(comment.id)
+                                  }
+                                >
+                                  <FaTrashAlt className="mr-2 text-gray-400" />
+                                  Delete
+                                </li>
+                                <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
+                                  <BiCommentEdit className="mr-2 text-gray-400" />
+                                  Edit
+                                </li>
+                              </ul>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                     <p
@@ -272,7 +314,7 @@ const Blog_detail = () => {
                         theme === "dark" ? "hover:text-blue-300" : ""
                       }`}
                     >
-                      Trả lời
+                      Reply
                     </button>
                     <hr
                       className={`mt-2 ${
@@ -290,6 +332,25 @@ const Blog_detail = () => {
                   No comments yet.
                 </p>
               )}
+            </div>
+            {/* Reply to Main Comment */}
+            <div className="ml-10 pl-4 border-l-2 border-gray-300 mt-4">
+              <div className="flex items-center mb-2">
+                <img
+                  src={Logo}
+                  alt="profile"
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+                <div className="flex-grow">
+                  <p>
+                    <strong className="text-black">username</strong>
+                    <span className="text-gray-500 text-xs"> createAT </span>
+                  </p>
+                </div>
+                <FaTrashAlt className="ml-2 text-gray-500 cursor-pointer" />
+              </div>
+              <p className="ml-10 text-black">content </p>
+              <p className="ml-10 text-black">reply </p>
             </div>
             <hr
               className={`my-2 ${

@@ -59,7 +59,7 @@ const useBlog = (blogId) => {
     try {
       const url = endpoints.BlogDetail.replace(":id", blogId);
       const response = await authApi().get(url); // Removed token
-      setBlog(response.data.blog);
+      setBlog(response.data.blog); // Đảm bảo response.data.blog có dữ liệu
       setComments(response.data.comments.results || []);
     } catch (error) {
       console.error("Error fetching blog details", error);
@@ -190,6 +190,32 @@ const useBlog = (blogId) => {
     [getToken]
   );
 
+  const handleEditComment = useCallback(
+    async (commentId, updatedContent) => {
+      const token = await getToken();
+      if (!token) return;
+
+      try {
+        const response = await authApi(token).patch(
+          endpoints.DelCmt.replace(":id", commentId),
+          { content: updatedContent }
+        );
+
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id === commentId ? response.data : comment
+          )
+        );
+        toast.success("Comment edited successfully!");
+      } catch (error) {
+        console.error("Error editing comment", error);
+        toast.error("Failed to edit comment.");
+        setError("Error editing comment");
+      }
+    },
+    [getToken]
+  );
+
   // Handle add comment
   const handleAddComment = useCallback(async (blogId, contentData, file) => {
     try {
@@ -268,42 +294,56 @@ const useBlog = (blogId) => {
         setSubmitting(false);
       }
     },
-    [getToken, refreshAuthToken]
+    [getToken]
   );
 
-  // Handle edit blog
-  const editBlog = useCallback(
-    async (blogId, content, description, visibility, file) => {
+  const editBlog = async (edtBlog) => {
+    try {
       const token = await getToken();
-      if (!token) return;
-
-      try {
-        const formData = new FormData();
-        formData.append("content", content);
-        formData.append("description", description);
-        formData.append("visibility", visibility);
-
-        if (file) {
-          formData.append("media", file);
-        }
-
-        await authApi(token).patch(
-          endpoints.EdtBlog.replace(":id", blogId),
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-
-        toast.success("Blog updated successfully!");
-        fetchBlog(blogId); // Refresh blog details after update
-      } catch (error) {
-        console.error("Error updating blog", error);
-        toast.error("Failed to update blog.");
+      if (!token) {
+        setError("No token available");
+        return;
       }
-    },
-    [getToken, fetchBlog]
-  );
+
+      const response = await authApi(token).patch(
+        endpoints.BlogDetail.replace(":id", blogId),
+        edtBlog,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setBlog(response.data);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        const newToken = await refreshAuthToken();
+        if (newToken) {
+          try {
+            const response = await authApi(newToken).patch(
+              endpoints.BlogDetail.replace(":id", blogId),
+              edtBlog,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            setBlog(response.data);
+          } catch (innerErr) {
+            console.error("Error updating user info with new token", innerErr);
+            setError("Error updating user information");
+          }
+        } else {
+          setError("Failed to refresh token");
+        }
+      } else {
+        console.error("Error updating user information", err);
+        setError("Error updating user information");
+      }
+    }
+  };
 
   return {
     blogs,
@@ -323,7 +363,9 @@ const useBlog = (blogId) => {
     handleSubmitBlog,
     editBlog,
     setLikeListVisible,
+    getBlogLikes,
     setSubmitting,
+    handleEditComment,
   };
 };
 

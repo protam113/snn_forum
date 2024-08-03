@@ -25,7 +25,7 @@ const Userblogs = () => {
   };
 
   const handleEditClick = (blogId) => {
-    navigate(`/edit-blog/${blogId}`);
+    navigate(`/blog/edit/${blogId}`);
   };
 
   const handleBlogClick = (blogId) => {

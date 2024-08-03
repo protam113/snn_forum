@@ -4,6 +4,7 @@ import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
+import EdtBlog from "../pages/user/blog/edtBlog";
 // import AdHome from "../pages/admin/AdHome";
 // import Error_404 from "../pages/error/404";
 // import Error_500 from "../pages/error/500";
@@ -36,7 +37,7 @@ const publicRoutes = [
     component: Blog_detail,
     layout: DefaultLayout,
   },
-
+  { path: "/blog/edit/:blogId", component: EdtBlog, layout: DefaultLayout },
   { path: "/profile/:username", component: Profile, layout: DefaultLayout },
   {
     path: "/profile_user/:id",
