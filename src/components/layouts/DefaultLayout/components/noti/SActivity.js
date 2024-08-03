@@ -5,6 +5,7 @@ import { FaHotjar } from "react-icons/fa";
 import useBlog from "../../../../../hooks/useBlog";
 import formatDate from "../../../../../utils/formatDate";
 import { useTheme } from "../../../../../context/themeContext";
+import Loading from "../../../../../pages/error/load";
 
 const SActivity = () => {
   const { blogs, loading, error } = useBlog();
@@ -24,7 +25,12 @@ const SActivity = () => {
     navigate(`/blog/${blogId}`);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <p>
+        <Loading />
+      </p>
+    );
   if (error) return <p>Error loading activities</p>;
 
   const recentActivities = blogs.slice(0, 5);

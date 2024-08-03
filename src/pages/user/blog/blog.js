@@ -25,7 +25,6 @@ const Blog = () => {
     likedBlogs,
     handleLike,
     handleDeleteBlog,
-    setLikedBlogs,
     getBlogLikes,
   } = useBlog();
   const { userInfo } = useUserInfo();

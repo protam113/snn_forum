@@ -58,9 +58,8 @@ const useBlog = (blogId) => {
 
     try {
       const url = endpoints.BlogDetail.replace(":id", blogId);
-      const response = await authApi().get(url); // Removed token
-      setBlog(response.data.blog); // Đảm bảo response.data.blog có dữ liệu
-      setComments(response.data.comments.results || []);
+      const response = await authApi().get(url);
+      setBlog(response.data.blog);
     } catch (error) {
       console.error("Error fetching blog details", error);
       setError("Error fetching blog details");
@@ -100,6 +99,45 @@ const useBlog = (blogId) => {
     [getToken]
   );
 
+  // Fetch comments
+  const fetchComments = useCallback(async () => {
+    if (!blogId) return;
+
+    const token = await getToken();
+    if (!token) return;
+
+    try {
+      const url = endpoints.CmtBlog.replace(":id", blogId);
+      const response = await authApi(token).get(url);
+
+      const commentsData = response.data.results || [];
+
+      const commentsByParent = {};
+      const parentComments = [];
+
+      commentsData.forEach((comment) => {
+        if (comment.parent === null) {
+          parentComments.push(comment);
+        } else {
+          if (!commentsByParent[comment.parent]) {
+            commentsByParent[comment.parent] = [];
+          }
+          commentsByParent[comment.parent].push(comment);
+        }
+      });
+
+      const organizedComments = parentComments.map((parentComment) => ({
+        ...parentComment,
+        children: commentsByParent[parentComment.id] || [],
+      }));
+
+      setComments(organizedComments);
+    } catch (error) {
+      console.error("Error fetching comments", error);
+      setError("Error fetching comments");
+    }
+  }, [blogId, getToken]);
+
   // Fetch blog details
   useEffect(() => {
     fetchBlogs();
@@ -110,8 +148,9 @@ const useBlog = (blogId) => {
   useEffect(() => {
     if (blogId) {
       getBlogLikes(blogId).then(setLikeList).catch(console.error);
+      fetchComments();
     }
-  }, [blogId, getBlogLikes]);
+  }, [blogId, getBlogLikes, fetchComments]);
 
   // Handle like/unlike
   const handleLike = useCallback(
