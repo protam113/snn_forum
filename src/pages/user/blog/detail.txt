@@ -1,0 +1,152 @@
+import React, { useState } from "react";
+import { FaTrashAlt, FaEdit, FaFlag } from "react-icons/fa";
+import { BsThreeDots, BsBookmark } from "react-icons/bs";
+import useBlog from "../../../hooks/useBlog";
+import { useNavigate, useParams } from "react-router-dom";
+import Loading from "../../error/load";
+import Likeblog from "../../../components/buttons/likeBlog";
+import useUserInfo from "../../../hooks/useUserInfo";
+import formatDate from "../../../utils/formatDate";
+import Comment from "../../../components/comment/comment";
+import { BiRepost } from "react-icons/bi";
+
+const Blog_detail = () => {
+  const { userInfo } = useUserInfo();
+  const { id: blogId } = useParams();
+  const navigate = useNavigate();
+  const { blog, comments, loading, error } = useBlog(blogId);
+
+  const [activeMenu, setActiveMenu] = useState(null);
+
+  const handleMenuClick = (id) => {
+    setActiveMenu((prev) => (prev === id ? null : id));
+  };
+
+  const handleEditClick = (blogId) => {
+    navigate(`/blog/edit/${blogId}`);
+  };
+
+  const handleLike = (blogId, liked) => {
+    // Implementation for liking a blog
+  };
+
+  if (loading) return <Loading />;
+  if (error) return <p className="text-red-500">{error}</p>;
+
+  if (!blog) {
+    return <p className="text-gray-500">No blog found.</p>;
+  }
+  return (
+    <div className="post-detail flex justify-center mt-8">
+      <div className="max-w-6xl w-full grid grid-cols-5 gap-4">
+        {/* Post Information and 3-dots menu */}
+        <div className="col-span-5 flex items-center mb-4">
+          <img
+            src={blog.user.profile_image}
+            alt="profile"
+            className="w-12 h-12 rounded-full mr-4"
+          />
+          <div>
+            <h1 className="text-black font-bold text-base">
+              {blog.user.first_name} {blog.user.last_name} Huy{" "}
+            </h1>
+            <p className="text-gray-500 text-sm">
+              {formatDate(blog.created_date)}{" "}
+            </p>
+          </div>
+          <div className="ml-auto relative">
+            <BsThreeDots className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700" />
+            <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-gray-300 shadow-lg rounded-lg z-10">
+              <ul className="text-gray-300">
+                <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
+                  <FaEdit className="mr-2 text-gray-400" />
+                  Chỉnh sửa
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
+                  <FaTrashAlt className="mr-2 text-gray-400" />
+                  Xóa
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
+                  <FaFlag className="mr-2 text-gray-400" />
+                  Báo cáo
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="col-span-5">
+          <p className="text-16 font-semibold text-black">{blog.content}</p>
+          <hr className="my-2 border-zinc-300" />
+          <p
+            className="mb-4 text-14 text-black "
+            dangerouslySetInnerHTML={{ __html: blog.description || "" }}
+          />
+        </div>
+
+        {/* Images */}
+        {blog.media && blog.media.length > 0 && (
+          <div
+            className={`grid gap-4 ${
+              blog.media.length === 1 ? "grid-cols-1" : ""
+            } ${blog.media.length === 2 ? "grid-cols-2" : ""}
+              ${blog.media.length === 3 ? "grid-cols-3" : ""}
+              ${blog.media.length >= 4 ? "grid-cols-2" : ""}`}
+          >
+            {blog.media.map((image) => (
+              <div
+                key={image.id}
+                className="max-h-160 max-w-full w-full overflow-hidden"
+              >
+                <img
+                  src={image.file}
+                  alt="blog-image"
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Like, Comment, Repost Buttons */}
+        <div className="col-span-5 mt-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <Likeblog
+                blogId={blog.id}
+                liked={blog.liked}
+                onLike={handleLike}
+              />
+              <BsBookmark className="text-gray-500 text-2xl cursor-pointer" />
+            </div>
+          </div>
+          <hr className="my-2 border-zinc-900" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <BiRepost className="text-gray-500 text-2xl cursor-pointer" />
+            </div>
+            <div className="flex items-center gap-4">
+              <BsBookmark className="text-gray-500 text-2xl cursor-pointer" />
+            </div>
+          </div>
+        </div>
+
+        {/* Comments Section */}
+        <div className="col-span-5">
+          <h2 className="text-20 font-semibold text-black">Comments</h2>
+          <hr className="my-4 border-gray-300" />
+          <div className="comments-section">
+            {/* Main Comment */}
+            {/* Add code for rendering comments here */}
+          </div>
+          <div className="comment-section-container w-full bg-black">
+            {/* <Comment postId={blog.id} /> */}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Blog_detail;
