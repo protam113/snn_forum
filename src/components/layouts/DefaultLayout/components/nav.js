@@ -10,6 +10,7 @@ import {
   IoIosNotifications,
 } from "react-icons/io";
 import { FaRegBell } from "react-icons/fa";
+import { FaRegAddressCard } from "react-icons/fa6";
 import Logo from "../../../../assets/img/Logo.svg";
 import { useTheme } from "../../../../context/themeContext";
 import useClickOutside from "../../../../hooks/useClickOutside";
@@ -106,6 +107,14 @@ const Navbar = () => {
 
         {/* Menu section */}
         <section className="hidden md:flex items-center space-x-4">
+          <Link
+            to="/manage"
+            className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-red-600 rounded-md bg-custom-red"
+          >
+            <FaRegAddressCard className="text-xl" />
+            <span>Manage</span>
+          </Link>
+
           <span className="text-2xl text-black">
             <FaRegBell />
           </span>

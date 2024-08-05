@@ -15,6 +15,7 @@ import useBlog from "../../../hooks/useBlog";
 
 import Logo from "../../../assets/img/Logo.svg";
 import ReplyComment from "../../../components/comment/ReplyComment";
+import SActivity from "../../../components/layouts/DefaultLayout/components/noti/SActivity";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -352,6 +353,7 @@ const Blog_detail = () => {
         </div>
         <Comment blogId={blogId} />
       </div>
+      {/* <SActivity /> */}
     </div>
   );
 };

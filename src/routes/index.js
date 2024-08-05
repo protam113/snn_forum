@@ -5,6 +5,7 @@ import Register from "../pages/auth/register";
 import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
 import EdtBlog from "../pages/user/blog/edtBlog";
+import RegisterCo from "../pages/user/company/RegisterCo";
 // import AdHome from "../pages/admin/AdHome";
 // import Error_404 from "../pages/error/404";
 // import Error_500 from "../pages/error/500";
@@ -14,14 +15,10 @@ import Home from "../pages/user/home";
 import Profile from "../pages/user/profile";
 import EditProfile from "../pages/user/profile/edtProfile";
 import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
+import Manage from "../pages/user/recruitment/manage/manage";
+import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
-// import Mess from "../pages/user/message/mess";
-// import MessDetail from "../pages/user/message/messDetail";
-// import Code from "../pages/user/post/CodePost/Code";
-// import EditPost from "../pages/user/post/editPost";
-// import PostDetail from "../pages/user/post/postDetail";
-// import EditProfile from "../pages/user/profile/editProfile";
-// import Profile from "../pages/user/profile/profile";
+import RecruitmentMain from "../pages/user/recruitment/recruitmentMain";
 // import Search from "../pages/user/search/search";
 // import Setting from "../pages/user/setting/setting";
 
@@ -29,6 +26,7 @@ const publicRoutes = [
   // auth
   { path: "/login", component: Login, layout: DefaultLayout },
   { path: "/register", component: Register, layout: DefaultLayout },
+  { path: "/register_company", component: RegisterCo, layout: DefaultLayout },
   // pages
   { path: "/", component: Home, layout: DefaultLayout },
   { path: "/create_blog", component: Create, layout: DefaultLayout },
@@ -52,8 +50,12 @@ const publicRoutes = [
 
   //   { path: "/search", component: Search, layout: DefaultLayout },
 
-  { path: "/tuyen_dung", component: Recruitment, layout: DefaultLayout },
-  //   { path: "/post/:id", component: PostDetail, layout: DefaultLayout },
+  { path: "/tuyen_dung", component: RecruitmentMain, layout: DefaultLayout },
+  { path: "/tuyen_dung/job", component: Recruitment, layout: DefaultLayout },
+
+  { path: "/manage", component: Manage, layout: DefaultLayout },
+  { path: "/work_manage", component: WorkManage, layout: DefaultLayout },
+
   //   { path: "/post/edit/:id/", component: EditPost, layout: DefaultLayout },
 
   //   { path: "/setting", component: Setting, layout: DefaultLayout },

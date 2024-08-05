@@ -32,6 +32,9 @@ const endpoints = {
   LikeBlog: "/blog/:id/like/",
   CmtBlog: "/blog/:id/comment/",
   DelCmt: "/comment/:id/",
+
+  Company: "/company/",
+  currentCompany: "/company/:id/",
 };
 
 const refreshToken = async (refreshToken) => {

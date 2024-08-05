@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("access_token", access_token);
       return access_token;
     } catch (error) {
-      console.error("Error refreshing token", error);
+      console.error("Error refreshing", error);
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       setAuth(null);
