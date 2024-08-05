@@ -101,9 +101,9 @@ const Blog = () => {
 
   if (loading)
     return (
-      <p>
+      <div className="flex items-center justify-center min-h-screen">
         <Loading />
-      </p>
+      </div>
     );
   if (error) return <p>Đã xảy ra lỗi khi lấy blog</p>;
 

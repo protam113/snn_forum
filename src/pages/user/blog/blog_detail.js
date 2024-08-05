@@ -130,19 +130,19 @@ const Blog_detail = () => {
               onClick={() => handleMenuClick(blog.id)}
             />
             {activeMenu === blog.id && (
-              <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-gray-300 shadow-lg rounded-lg z-10">
-                <ul className="text-gray-300">
+              <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-zinc-400 shadow-lg rounded-lg z-10">
+                <ul>
                   {userInfo?.username === blog.user.username && (
                     <>
                       <li
-                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                        className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
                         onClick={() => handleEditClick(blog.id)}
                       >
                         <FaEdit className="mr-2 text-gray-400" />
                         Edit
                       </li>
                       <li
-                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                        className="px-4 py-2 text-14  hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
                         onClick={() => handleDeleteBlog(blog.id, userInfo)}
                       >
                         <FaTrashAlt className="mr-2 text-gray-400" />
@@ -150,7 +150,7 @@ const Blog_detail = () => {
                       </li>
                     </>
                   )}
-                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
+                  <li className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center">
                     <FaFlag className="mr-2 text-gray-400" />
                     Report
                   </li>

@@ -2,12 +2,30 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const companies = [
-  { name: "Công ty A", image: "link-to-image-a.jpg" },
-  { name: "Công ty B", image: "link-to-image-b.jpg" },
-  { name: "Công ty C", image: "link-to-image-c.jpg" },
-  { name: "Công ty D", image: "link-to-image-d.jpg" },
-  { name: "Công ty E", image: "link-to-image-e.jpg" },
-  { name: "Công ty F", image: "link-to-image-f.jpg" },
+  {
+    name: "Công ty A",
+    image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
+  },
+  {
+    name: "Công ty B",
+    image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
+  },
+  {
+    name: "Công ty C",
+    image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
+  },
+  {
+    name: "Công ty D",
+    image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
+  },
+  {
+    name: "Công ty E",
+    image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
+  },
+  {
+    name: "Công ty F",
+    image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
+  },
 ];
 
 const RecentCompany = () => {
