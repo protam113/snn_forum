@@ -107,7 +107,7 @@ const Login = () => {
             </div>
           </div>
           <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
-            <button
+            {/* <button
               type="button"
               className={`flex items-center justify-center px-4 py-2 rounded-lg border ${
                 theme === "dark"
@@ -126,7 +126,7 @@ const Login = () => {
               <hr className="flex-grow border-t border-gray-300" />
               <span className="px-4 text-gray-500">OR</span>
               <hr className="flex-grow border-t border-gray-300" />
-            </div>
+            </div> */}
 
             <label
               htmlFor="username"

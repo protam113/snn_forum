@@ -19,7 +19,7 @@ import Manage from "../pages/user/recruitment/manage/manage";
 import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
 import RecruitmentMain from "../pages/user/recruitment/recruitmentMain";
-// import Search from "../pages/user/search/search";
+import Search from "../pages/user/search";
 // import Setting from "../pages/user/setting/setting";
 
 const publicRoutes = [
@@ -48,10 +48,10 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
 
-  //   { path: "/search", component: Search, layout: DefaultLayout },
+  { path: "/search", component: Search, layout: DefaultLayout },
 
-  { path: "/tuyen_dung", component: RecruitmentMain, layout: DefaultLayout },
-  { path: "/tuyen_dung/job", component: Recruitment, layout: DefaultLayout },
+  // { path: "/tuyen_dung", component: RecruitmentMain, layout: DefaultLayout },
+  { path: "/tuyen_dung", component: Recruitment, layout: DefaultLayout },
 
   { path: "/manage", component: Manage, layout: DefaultLayout },
   { path: "/work_manage", component: WorkManage, layout: DefaultLayout },

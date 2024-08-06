@@ -7,9 +7,6 @@ const Recruitment_feed = () => {
       <div className="mx-auto max-w-4xl py-5">
         <Recruitment_post />
       </div>
-      <div className="mx-auto max-w-4xl py-5">
-        <Recruitment_post />
-      </div>
     </div>
   );
 };

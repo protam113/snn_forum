@@ -47,11 +47,9 @@ const RecruitmentMain = () => {
               Xem thêm
             </Link>
           </div>
-
           {/* <hr className={`my-2 border-${theme === "dark" ? "gray-700" : "white"}`} /> */}
           <Recruitment_feed />
-
-          <div className="flex items-center justify-between mb-4">
+          {/*<div className="flex items-center justify-between mb-4">
             <h1
               className={`text-2xl font-bold ${
                 theme === "dark" ? "text-white" : "text-black"
@@ -64,9 +62,10 @@ const RecruitmentMain = () => {
             </button>
           </div>
 
-          {/* <hr className={`my-2 border-${theme === "dark" ? "gray-700" : "white"}`} /> */}
-          {/* <Recruitment_feed /> */}
+          {/* <hr className={`my-2 border-${theme === "dark" ? "gray-700" : "white"}`} /> 
+          <Recruitment_feed />
           <RecentCompany />
+          */}
         </div>
         <RecruitmentSidebar />
       </div>

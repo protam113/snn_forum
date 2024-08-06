@@ -89,7 +89,7 @@ const Navbar = () => {
             ></span>
           </Link>
           <Link
-            to="/messages"
+            to="/search"
             className={`relative group px-8 py-2 transition-all ${
               theme === "light"
                 ? "text-black hover:text-gray-400"

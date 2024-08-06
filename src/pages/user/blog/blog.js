@@ -10,6 +10,7 @@ import formatDate from "../../../utils/formatDate";
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
 import useUserInfo from "../../../hooks/useUserInfo";
+import { Error404 } from "../../error/error";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -105,7 +106,12 @@ const Blog = () => {
         <Loading />
       </div>
     );
-  if (error) return <p>Đã xảy ra lỗi khi lấy blog</p>;
+  if (error)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Error404 />
+      </div>
+    );
 
   return (
     <div className="post-list">

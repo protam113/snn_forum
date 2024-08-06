@@ -42,12 +42,12 @@ const Card = () => {
           className="my-2 block origin-top-left font-mono text-24 font-black leading-[1.2]"
         >
           Đăng ký tài khoản <br />
-          công ty{" "}
+          ngay!!!{" "}
         </motion.span>
-        <p>Bước đầu tạo tin tuyển dụng thành công!</p>
+        <p>Để có thể trải nghiệm toàn bộ các chức năng</p>
       </div>
       <Link
-        to="/register_company"
+        to="/register"
         className="absolute bottom-4 left-4 right-4 z-20 rounded border-2 border-white bg-white py-2 text-center font-mono font-black uppercase text-neutral-800 backdrop-blur transition-colors hover:bg-white/30 hover:text-white"
       >
         Đăng Ký{" "}

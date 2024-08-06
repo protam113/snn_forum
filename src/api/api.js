@@ -33,8 +33,8 @@ const endpoints = {
   CmtBlog: "/blog/:id/comment/",
   DelCmt: "/comment/:id/",
 
-  Company: "/company/",
-  currentCompany: "/company/:id/",
+  Recruitment: "/recruitment/",
+  // currentCompany: "/company/:id/",
 };
 
 const refreshToken = async (refreshToken) => {

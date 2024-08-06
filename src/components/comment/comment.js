@@ -1,6 +1,7 @@
 // Comment.js
 import React, { useState } from "react";
-import { FaUpload, FaPaperPlane } from "react-icons/fa";
+import { FaUpload, FaPaperPlane, FaExclamationTriangle } from "react-icons/fa";
+import { Link } from "react-router-dom"; // Import Link for navigation
 import useUserInfo from "../../hooks/useUserInfo";
 import useBlog from "../../hooks/useBlog";
 import { useTheme } from "../../context/themeContext";
@@ -43,8 +44,22 @@ const Comment = ({ blogId }) => {
     }
   };
 
+  if (!userInfo) {
+    return (
+      <div className="flex flex-col p-4 rounded-lg space-y-4">
+        <Link
+          to="/login"
+          className="flex items-center px-6 py-2 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all"
+        >
+          <FaExclamationTriangle className="mr-2" />
+          <span>Login/Register to comment on the blog</span>
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col  0 p-4 rounded-lg space-y-4">
+    <div className="flex flex-col p-4 rounded-lg space-y-4">
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex items-center space-x-4">
         <div className="w-10 h-10 rounded-full bg-gray-500 overflow-hidden">
