@@ -1,7 +1,18 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import useUserInfo from "../../hooks/useUserInfo";
 
 const Ads_Input = () => {
+  const { userInfo, loading, error } = useUserInfo();
+
+  if (loading || error) {
+    return null;
+  }
+
+  if (userInfo) {
+    return null;
+  }
+
   return (
     <section>
       <Card />

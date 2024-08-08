@@ -8,6 +8,7 @@ import useClickOutside from "../../../../hooks/useClickOutside";
 import LogoutButton from "../../../../pages/auth/logout";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import ThemeToggle from "../../../theme/ThemeToggle ";
+import { BiMenuAltRight } from "react-icons/bi";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
@@ -87,14 +88,19 @@ const Navbar = () => {
 
         {/* User info and menu */}
         <section className="flex items-center space-x-4">
+          <FaRegBell
+            className={`text-2xl ${
+              theme === "light" ? "text-zinc-900" : "text-white"
+            }`}
+          />
           <div className="relative group">
             <button
               className="flex cursor-pointer items-center px-4 py-2 transition-all text-back"
               onClick={toggleNavbar}
             >
               {!userInfo ? (
-                <FaRegBell
-                  className={`text-2xl ${
+                <BiMenuAltRight
+                  className={`font-semibold text-2xl ${
                     theme === "light" ? "text-zinc-900" : "text-white"
                   }`}
                 />
@@ -111,6 +117,7 @@ const Navbar = () => {
                 } ${theme === "light" ? "text-zinc-900" : "text-white"}`}
               />
             </button>
+
             <div
               ref={ref}
               className={`absolute right-0 top-12 flex flex-col gap-3 rounded-lg bg-zinc-500 py-6 px-6 shadow-md transition-all ${

@@ -10,7 +10,7 @@ import Loading from "../../../../../pages/error/load";
 const SActivity = () => {
   const { blogs, loading, error } = useBlog();
   const { theme } = useTheme();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const MAX_LENGTH = 20;
 
@@ -54,8 +54,8 @@ const SActivity = () => {
         {recentActivities.map((activity) => (
           <div
             key={activity.id}
-            className="flex items-center justify-between border-b border-zinc-300 pb-2 mb-2 cursor-pointer" // Add cursor-pointer class
-            onClick={() => handleBlogClick(activity.id)} // Handle blog click
+            className="flex items-center justify-between border-b border-zinc-300 pb-2 mb-2 cursor-pointer"
+            onClick={() => handleBlogClick(activity.id)}
           >
             <div className="flex items-center">
               <img
