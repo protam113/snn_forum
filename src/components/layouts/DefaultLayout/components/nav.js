@@ -1,22 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { HiHome } from "react-icons/hi";
-import { ImSearch } from "react-icons/im";
-import { BiSolidMessage, BiMenuAltRight } from "react-icons/bi";
-import {
-  IoIosHeart,
-  IoIosArrowDown,
-  IoMdSettings,
-  IoIosNotifications,
-} from "react-icons/io";
+import { IoIosArrowDown, IoMdSettings } from "react-icons/io";
 import { FaRegBell } from "react-icons/fa";
-import { FaRegAddressCard } from "react-icons/fa6";
 import Logo from "../../../../assets/img/Logo.svg";
 import { useTheme } from "../../../../context/themeContext";
 import useClickOutside from "../../../../hooks/useClickOutside";
-import ThemeToggle from "../../../theme/ThemeToggle ";
 import LogoutButton from "../../../../pages/auth/logout";
 import useUserInfo from "../../../../hooks/useUserInfo";
+import ThemeToggle from "../../../theme/ThemeToggle ";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
@@ -27,8 +18,12 @@ const Navbar = () => {
     setIsMobileNavVisible(!isMobileNavVisible);
   };
 
-  const ref = useClickOutside(() => {
+  const closeNavbar = () => {
     setIsMobileNavVisible(false);
+  };
+
+  const ref = useClickOutside(() => {
+    closeNavbar();
   });
 
   return (
@@ -37,7 +32,7 @@ const Navbar = () => {
         theme === "light" ? "bg-white" : "bg-zinc-900"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-7xl justify-between px-8 py-4 text-sm">
+      <div className="mx-auto flex w-full max-w-7xl justify-between px-8 py-2 text-sm">
         {/* Logo section */}
         <section className="flex items-center">
           <Link to="/" className="flex items-center">
@@ -55,7 +50,7 @@ const Navbar = () => {
           </Link>
         </section>
 
-        {/* Links section */}
+        {/* Navigation links for desktop */}
         <section className="flex-1 hidden md:flex justify-center items-center space-x-8">
           <Link
             to="/"
@@ -65,10 +60,10 @@ const Navbar = () => {
                 : "text-white hover:text-gray-300"
             } flex items-center`}
           >
-            <span className="text-base font-bold">Blog</span>
+            <span className="text-16 font-bold">Blog</span>
             <span
               className={`absolute bottom-0 left-0 w-0 h-0.5 ${
-                theme === "light" ? "bg-white" : "bg-gray-300"
+                theme === "light" ? "bg-black" : "bg-white"
               } transition-all duration-300 group-hover:w-full`}
             ></span>
           </Link>
@@ -81,57 +76,25 @@ const Navbar = () => {
                 : "text-white hover:text-gray-300"
             } flex items-center`}
           >
-            <span className="text-base font-bold">Tuyển dụng</span>
+            <span className="text-16 font-bold">Tuyển dụng</span>
             <span
               className={`absolute bottom-0 left-0 w-0 h-0.5 ${
-                theme === "light" ? "bg-white" : "bg-gray-300"
-              } transition-all duration-300 group-hover:w-full`}
-            ></span>
-          </Link>
-          <Link
-            to="/search"
-            className={`relative group px-8 py-2 transition-all ${
-              theme === "light"
-                ? "text-black hover:text-gray-400"
-                : "text-white hover:text-gray-300"
-            } flex items-center`}
-          >
-            <span className="text-base font-bold">Tìm Kiếm</span>
-            <span
-              className={`absolute bottom-0 left-0 w-0 h-0.5 ${
-                theme === "light" ? "bg-white" : "bg-gray-600"
+                theme === "light" ? "bg-black" : "bg-white"
               } transition-all duration-300 group-hover:w-full`}
             ></span>
           </Link>
         </section>
 
-        {/* Menu section */}
-        <section className="hidden md:flex items-center space-x-4">
-          <Link
-            to="/manage"
-            className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-red-600 rounded-md bg-custom-red"
-          >
-            <FaRegAddressCard className="text-xl" />
-            <span>Manage</span>
-          </Link>
-
-          <span className="text-2xl text-black">
-            <FaRegBell />
-          </span>
-          <span
-            className={`absolute bottom-0 left-0 w-0 h-0.5 ${
-              theme === "light" ? "bg-white" : "bg-gray-300"
-            } transition-all duration-300 group-hover:w-full`}
-          ></span>
-
+        {/* User info and menu */}
+        <section className="flex items-center space-x-4">
           <div className="relative group">
             <button
               className="flex cursor-pointer items-center px-4 py-2 transition-all text-back"
               onClick={toggleNavbar}
             >
               {!userInfo ? (
-                <BiMenuAltRight
-                  className={`font-semibold text-2xl ${
+                <FaRegBell
+                  className={`text-2xl ${
                     theme === "light" ? "text-zinc-900" : "text-white"
                   }`}
                 />
@@ -154,6 +117,9 @@ const Navbar = () => {
                 isMobileNavVisible ? "flex" : "hidden"
               }`}
               style={{ minWidth: "200px" }}
+              onClick={() => {
+                if (isMobileNavVisible) closeNavbar();
+              }}
             >
               {userInfo ? (
                 <Link
@@ -169,11 +135,32 @@ const Navbar = () => {
                 </Link>
               ) : null}
               <Link
+                to="/"
+                className={`relative group px-4 py-2 transition-all md:hidden ${
+                  theme === "light"
+                    ? "text-white hover:text-gray-400"
+                    : "text-white hover:text-gray-400"
+                }`}
+              >
+                <span className="text-14">Blog</span>
+              </Link>
+
+              <Link
+                to="/tuyen_dung"
+                className={`relative group px-4 py-2 transition-all md:hidden ${
+                  theme === "light"
+                    ? "text-white hover:text-gray-400"
+                    : "text-white hover:text-gray-400"
+                }`}
+              >
+                <span className="text-14">Tuyển dụng</span>
+              </Link>
+              <Link
                 to="/setting"
                 className="flex items-center space-x-3 px-4 py-2 text-neutral-200 hover:text-black hover:bg-zinc-600 rounded-md"
               >
                 <IoMdSettings className="text-xl" />
-                <span>Setting</span>
+                <span>Settings</span>
               </Link>
               <div className="flex items-center space-x-3 px-4 py-2 text-neutral-200">
                 <ThemeToggle />
@@ -183,98 +170,34 @@ const Navbar = () => {
                   <LogoutButton />
                 </div>
               ) : null}
+              {loading ? (
+                <span>Loading...</span>
+              ) : error ? (
+                <span>Error: {error}</span>
+              ) : !userInfo ? (
+                <Link
+                  to="/login"
+                  className="px-6 py-2 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all"
+                >
+                  Login
+                </Link>
+              ) : null}
             </div>
           </div>
-          {loading ? (
-            <span>Loading...</span>
-          ) : error ? (
-            <span>Error: {error}</span>
-          ) : !userInfo ? (
-            <Link
-              to="/login"
-              className="px-6 py-2 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all"
-            >
-              Login
-            </Link>
-          ) : null}
         </section>
-
-        {/* Hamburger menu for mobile */}
-        <div>
-          {userInfo && userInfo.profile_image ? (
-            <img
-              src={userInfo.profile_image}
-              alt="Profile"
-              className="cursor-pointer text-5xl md:hidden w-12 h-12 rounded-full"
-              style={{ color: theme === "light" ? "black" : "white" }}
-              onClick={toggleNavbar}
-            />
-          ) : (
-            <BiMenuAltRight
-              className="cursor-pointer text-5xl md:hidden"
-              style={{ color: theme === "light" ? "black" : "white" }}
-              onClick={toggleNavbar}
-            />
-          )}
-        </div>
+        {loading ? (
+          <span>Loading...</span>
+        ) : error ? (
+          <span>Error: {error}</span>
+        ) : !userInfo ? (
+          <Link
+            to="/login"
+            className="px-6 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all hidden md:flex justify-center items-center space-x-4"
+          >
+            Login
+          </Link>
+        ) : null}
       </div>
-
-      {/* Mobile navigation menu */}
-      {isMobileNavVisible && (
-        <div
-          className={`md:hidden flex flex-col items-end bg-zinc-800 ${
-            theme === "light" ? "text-white" : "text-white"
-          } py-5 px-5`}
-        >
-          <Link to="/" className="block py-4 text-lg" onClick={toggleNavbar}>
-            <HiHome className="text-3xl" />
-          </Link>
-          <Link
-            to="/search"
-            className="block py-4 text-lg"
-            onClick={toggleNavbar}
-          >
-            <ImSearch className="text-3xl" />
-          </Link>
-          <Link
-            to="/messages"
-            className="block py-4 text-lg"
-            onClick={toggleNavbar}
-          >
-            <BiSolidMessage className="text-3xl" />
-          </Link>
-          <Link
-            to="/single-series"
-            className="block py-4 text-lg"
-            onClick={toggleNavbar}
-          >
-            <IoIosHeart className="text-3xl" />
-          </Link>
-          <ThemeToggle />
-
-          <Link
-            to="/product"
-            className="block py-4 text-lg"
-            onClick={toggleNavbar}
-          >
-            <IoIosNotifications className="text-3xl" />
-          </Link>
-
-          {userInfo ? (
-            <div className="block py-4 text-lg">
-              <LogoutButton />
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="px-6 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all block py-4 text-lg"
-              onClick={toggleNavbar}
-            >
-              Login
-            </Link>
-          )}
-        </div>
-      )}
     </div>
   );
 };

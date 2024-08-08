@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // icons
 import { FaTrashAlt, FaEdit, FaFlag } from "react-icons/fa";
@@ -14,6 +14,8 @@ import { useTheme } from "../../../context/themeContext";
 import useBlog from "../../../hooks/useBlog";
 
 import CommentsSection from "../../../components/comment/CommentsSection";
+import { Error404 } from "../../error/error";
+import RecentFeed from "./feed/RecenFeed";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -40,9 +42,11 @@ const Blog_detail = () => {
     navigate(`/blog/edit/${blogId}`);
   };
 
-  const handleLike = (blogId, liked) => {
-    // Implementation for liking a blog
-  };
+  const handleLike = (blogId, liked) => {};
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [blog]);
 
   const renderMedia = (media) => {
     const extension = media.file.split(".").pop().toLowerCase();
@@ -53,7 +57,7 @@ const Blog_detail = () => {
           key={media.file}
           src={media.file}
           alt="blog-media"
-          className={`object-cover w-full h-full cursor-pointer ${
+          className={`object-cover w-[500px] h-full cursor-pointer ${
             theme === "dark" ? "border-gray-700" : "border-gray-200"
           }`}
         />
@@ -73,8 +77,18 @@ const Blog_detail = () => {
     return null;
   };
 
-  if (loading) return <Loading />;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />{" "}
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Error404 />
+      </div>
+    );
 
   if (!blog) {
     return <p className="text-gray-500">No blog found.</p>;
@@ -214,7 +228,9 @@ const Blog_detail = () => {
         <CommentsSection />
         <Comment blogId={blogId} />
       </div>
-      {/* <SActivity /> */}
+      <hr className="my-4 border-zinc-900" />
+      <h1 className="font-bold text-custom-red text-20">Recent Feed</h1>
+      <RecentFeed />{" "}
     </div>
   );
 };

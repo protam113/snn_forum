@@ -1,6 +1,6 @@
 import React from "react";
-import { RiArrowRightDoubleFill } from "react-icons/ri";
-import { MdOutlineTopic } from "react-icons/md";
+// import { RiArrowRightDoubleFill } from "react-icons/ri";
+// import { MdOutlineTopic } from "react-icons/md";
 import { FaHome, FaQuestionCircle, FaUser, FaBuilding } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
@@ -8,32 +8,32 @@ import { useTheme } from "../../../../context/themeContext";
 const Sidebar = () => {
   const { theme } = useTheme();
 
-  const teams = [
-    {
-      id: 1,
-      image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
-      name: "Nhóm 1",
-    },
-    {
-      id: 2,
-      image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team2",
-      name: "Nhóm 2",
-    },
-    {
-      id: 3,
-      image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team3",
-      name: "Nhóm 3",
-    },
-  ];
+  // const teams = [
+  //   {
+  //     id: 1,
+  //     image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team1",
+  //     name: "Nhóm 1",
+  //   },
+  //   {
+  //     id: 2,
+  //     image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team2",
+  //     name: "Nhóm 2",
+  //   },
+  //   {
+  //     id: 3,
+  //     image: "https://api.dicebear.com/8.x/lorelei-neutral/svg?seed=Team3",
+  //     name: "Nhóm 3",
+  //   },
+  // ];
 
   const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded hover:bg-gray-400 ${
     theme === "dark"
       ? "bg-zinc-800 text-white hover:bg-zinc-700"
       : "bg-white text-black"
   }`;
-  const teamItemClasses = `flex items-center mb-4 hover:${
-    theme === "dark" ? "bg-gray-600" : "bg-gray-700"
-  } transition-colors p-2 rounded-md`;
+  // const teamItemClasses = `flex items-center mb-4 hover:${
+  //   theme === "dark" ? "bg-gray-600" : "bg-gray-700"
+  // } transition-colors p-2 rounded-md`;
 
   return (
     <div>
@@ -56,7 +56,7 @@ const Sidebar = () => {
             />
             <span className="ml-8 text-14">Questions</span>
           </Link>
-          <Link to="/user" className={linkClasses}>
+          <Link to="/nguoi_dung" className={linkClasses}>
             <FaUser
               className={`absolute left-2 text-lg ${
                 theme === "dark" ? "text-white" : "text-black"
@@ -74,7 +74,7 @@ const Sidebar = () => {
           </Link>
         </div>
         <hr className="border-zinc-900 my-4" />
-        <div>
+        {/* <div>
           <h2 className="text-sm font-semibold mb-4 flex items-center space-x-2">
             <MdOutlineTopic className="h-6 w-6" />
             <span>Topic</span>
@@ -91,8 +91,8 @@ const Sidebar = () => {
                 <RiArrowRightDoubleFill className="h-5 w-5" />
               </button>
             </div>
-          ))}
-        </div>
+          ))} 
+        </div>*/}
       </div>
 
       {/* Sidebar for iPad (md)

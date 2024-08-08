@@ -256,30 +256,33 @@ const useBlog = (blogId) => {
   );
 
   // Handle add comment
-  const handleAddComment = useCallback(async (blogId, contentData, file) => {
-    try {
-      const token = await getToken();
-      if (!token || !blogId) return;
+  const handleAddComment = useCallback(
+    async (blogId, contentData, file) => {
+      try {
+        const token = await getToken();
+        if (!token || !blogId) return;
 
-      const api = authApi(token);
-      const formData = new FormData();
-      formData.append("content", contentData.content);
-      if (contentData.file) {
-        formData.append("file", contentData.file);
+        const api = authApi(token);
+        const formData = new FormData();
+        formData.append("content", contentData.content);
+        if (contentData.file) {
+          formData.append("file", contentData.file);
+        }
+
+        await api.post(endpoints.CmtBlog.replace(":id", blogId), formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        toast.success("Comment added successfully!");
+      } catch (error) {
+        console.error("Error adding comment", error);
+        toast.error("Failed to add comment.");
       }
-
-      await api.post(endpoints.CmtBlog.replace(":id", blogId), formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      toast.success("Comment added successfully!");
-    } catch (error) {
-      console.error("Error adding comment", error);
-      toast.error("Failed to add comment.");
-    }
-  }, []);
+    },
+    [getToken]
+  );
 
   // Handle submit blog
   const handleSubmitBlog = useCallback(

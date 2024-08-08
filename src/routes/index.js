@@ -5,6 +5,7 @@ import Register from "../pages/auth/register";
 import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
 import EdtBlog from "../pages/user/blog/edtBlog";
+import Company from "../pages/user/company/company";
 import RegisterCo from "../pages/user/company/RegisterCo";
 // import AdHome from "../pages/admin/AdHome";
 // import Error_404 from "../pages/error/404";
@@ -20,6 +21,7 @@ import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
 import RecruitmentMain from "../pages/user/recruitment/recruitmentMain";
 import Search from "../pages/user/search";
+import User from "../pages/user/Suser/user";
 // import Setting from "../pages/user/setting/setting";
 
 const publicRoutes = [
@@ -57,6 +59,9 @@ const publicRoutes = [
   { path: "/work_manage", component: WorkManage, layout: DefaultLayout },
 
   //   { path: "/post/edit/:id/", component: EditPost, layout: DefaultLayout },
+
+  { path: "/company", component: Company, layout: DefaultLayout },
+  { path: "/nguoi_dung", component: User, layout: DefaultLayout },
 
   //   { path: "/setting", component: Setting, layout: DefaultLayout },
 

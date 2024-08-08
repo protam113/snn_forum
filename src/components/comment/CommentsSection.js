@@ -20,8 +20,8 @@ const CommentsSection = () => {
     loading,
     error,
     handleDeleteComment,
-    loadMoreComments, // Sử dụng hàm loadMoreComments từ useBlog
-    hasMoreComments, // Sử dụng trạng thái hasMoreComments từ useBlog
+    loadMoreComments,
+    hasMoreComments,
   } = useBlog(blogId);
   const [activeCommentMenu, setActiveCommentMenu] = useState(null);
   const [activeReply, setActiveReply] = useState(null);
@@ -142,7 +142,7 @@ const CommentsSection = () => {
                         <div className="ml-auto">
                           <FaTrashAlt
                             onClick={() =>
-                              handleDeleteComment(comment.id, userInfo)
+                              handleDeleteComment(reply.id, userInfo)
                             }
                             className="text-gray-500 cursor-pointer"
                           />
