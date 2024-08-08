@@ -117,7 +117,11 @@ const CommentsSection = () => {
                 </button>
               </p>
               {activeReply === comment.id && (
-                <ReplyComment blogId={blogId} parentId={comment.id} />
+                <ReplyComment
+                  blogId={blogId}
+                  parentId={comment.id}
+                  onReplyAdded={() => setActiveReply(null)}
+                />
               )}
 
               {/* Replies */}

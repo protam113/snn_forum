@@ -257,7 +257,7 @@ const useBlog = (blogId) => {
 
   // Handle add comment
   const handleAddComment = useCallback(
-    async (blogId, contentData, file) => {
+    async (blogId, contentData, parentId) => {
       try {
         const token = await getToken();
         if (!token || !blogId) return;
@@ -267,6 +267,9 @@ const useBlog = (blogId) => {
         formData.append("content", contentData.content);
         if (contentData.file) {
           formData.append("file", contentData.file);
+        }
+        if (parentId) {
+          formData.append("parent", parentId);
         }
 
         await api.post(endpoints.CmtBlog.replace(":id", blogId), formData, {

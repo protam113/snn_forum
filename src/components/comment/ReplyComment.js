@@ -28,10 +28,7 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
       try {
         await handleAddComment(
           blogId,
-          {
-            content: replyText,
-            file: selectedFile,
-          },
+          { content: replyText, file: selectedFile },
           parentId
         );
         setReplyText("");
