@@ -12,3 +12,27 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* register */
+/* Example CSS */
+
+.valid {
+  color: green; /* or any other style */
+}
+
+.invalid {
+  color: red; /* or any other style */
+}
+
+.hidden {
+  display: none;
+}
+
+.instructions {
+  color: blue; /* or any other style */
+}
+
+.offscreen {
+  position: absolute;
+  left: -9999px;
+}

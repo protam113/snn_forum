@@ -157,7 +157,7 @@ const Navbar = () => {
               </Link>
               <Link
                 to="/setting"
-                className="flex items-center space-x-3 px-4 py-2 text-neutral-200 hover:text-black hover:bg-zinc-600 rounded-md"
+                className="flex items-center space-x-3 px-4 py-2 text-white hover:white hover:bg-zinc-600 rounded-md"
               >
                 <IoMdSettings className="text-xl" />
                 <span>Settings</span>
@@ -166,7 +166,7 @@ const Navbar = () => {
                 <ThemeToggle />
               </div>
               {userInfo ? (
-                <div className="flex items-center space-x-3 px-4 py-2 text-neutral-200 hover:text-black hover:bg-zinc-600 rounded-md">
+                <div className="flex items-center space-x-3 px-4 py-2 text-neutral-200 hover:white hover:bg-zinc-600 rounded-md">
                   <LogoutButton />
                 </div>
               ) : null}

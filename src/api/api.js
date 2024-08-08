@@ -25,7 +25,7 @@ const endpoints = {
   currentUserBlog: "/user/:id/blog/",
   // currentUserFollower: "/user/followers/",
   // currentUserFollowing: "/user/following/",
-  createUser: "/user/",
+  createUser: "user/",
   Blog: "/blog/",
   EdtBlog: "/blog/:id/",
   BlogDetail: "/blog/:id/",
