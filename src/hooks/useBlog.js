@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "react-toastify";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
+import CryptoJS from "crypto-js";
 
 const useBlog = (blogId) => {
   const [blogs, setBlogs] = useState([]);

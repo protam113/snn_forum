@@ -82,10 +82,6 @@ const Userblogs = () => {
     return null;
   };
 
-  React.useEffect(() => {
-    console.log("UserBlogs:", userBlogs); // Log userBlogs
-  }, [userBlogs]);
-
   if (loading)
     return (
       <p>

@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  HashRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
 import { publicRoutes, privateRoutes } from "./routes/index";
 import { DefaultLayout } from "./components/layouts/index";
 import { AuthProvider } from "./context/AuthContext";
@@ -74,7 +79,7 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
+    <HashRouter hashType="hashbang">
       <AuthProvider>
         <ThemeProvider>
           <LoadingProvider>
@@ -85,7 +90,7 @@ function App() {
           </LoadingProvider>
         </ThemeProvider>
       </AuthProvider>
-    </Router>
+    </HashRouter>
   );
 }
 
