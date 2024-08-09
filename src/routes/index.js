@@ -21,8 +21,8 @@ import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
 import RecruitmentMain from "../pages/user/recruitment/recruitmentMain";
 import Search from "../pages/user/search";
+import setting from "../pages/user/setting/setting";
 import User from "../pages/user/Suser/user";
-// import Setting from "../pages/user/setting/setting";
 
 const publicRoutes = [
   // auth
@@ -63,7 +63,7 @@ const publicRoutes = [
   { path: "/company", component: Company, layout: DefaultLayout },
   { path: "/nguoi_dung", component: User, layout: DefaultLayout },
 
-  //   { path: "/setting", component: Setting, layout: DefaultLayout },
+  { path: "/setting", component: setting, layout: DefaultLayout },
 
   //   { path: "/load", component: Example, layout: DefaultLayout },
   //   { path: "/code", component: Code, layout: DefaultLayout },

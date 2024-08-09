@@ -202,7 +202,7 @@ const Register = () => {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center ${
+      className={` flex items-center justify-center ${
         theme === "dark" ? "bg-zinc-800 text-white" : "bg-white text-black"
       }`}
     >
