@@ -24,61 +24,61 @@ const About = () => {
 
   return (
     <Block className="leading-snug space-y-4">
-      <p className="flex items-center ">
+      <p className="flex items-center text-sm md:text-base">
         <FaMapMarkerAlt className="text-custom-red mr-2" />
         <span
-          className={`font-bold text-14  ${
+          className={`font-bold ${
             theme === "dark" ? "text-zinc-300" : "text-zinc-900"
           }`}
         >
           Location:
         </span>
         <span
-          className={`ml-2 text-14  ${
+          className={`ml-2 ${
             theme === "dark" ? "text-zinc-400" : "text-zinc-800"
           }`}
         >
           {userInfo?.location || "No location available"}
         </span>
       </p>
-      <p className="flex items-center ">
+      <p className="flex items-center text-sm md:text-base">
         <FaPhoneAlt className="text-custom-red mr-2" />
         <span
-          className={`font-bold text-14  ${
+          className={`font-bold ${
             theme === "dark" ? "text-zinc-300" : "text-zinc-900"
           }`}
         >
           Phone Contact:
         </span>
         <span
-          className={`ml-2 text-14  ${
+          className={`ml-2 ${
             theme === "dark" ? "text-zinc-400" : "text-zinc-800"
           }`}
         >
           {userInfo?.phone_number || "No contact available"}
         </span>
       </p>
-      <p className="flex items-center ">
+      <p className="flex items-center text-sm md:text-base">
         <FaEnvelope className="text-custom-red mr-2" />
         <span
-          className={`font-bold text-14  ${
+          className={`font-bold ${
             theme === "dark" ? "text-zinc-300" : "text-zinc-900"
           }`}
         >
           Mail Contact:
         </span>
         <span
-          className={`ml-2 text-14  ${
+          className={`ml-2 ${
             theme === "dark" ? "text-zinc-400" : "text-zinc-800"
           }`}
         >
           {userInfo?.email || "No email available"}
         </span>
       </p>
-      <p className="flex items-center">
+      <p className="flex items-center text-sm md:text-base">
         <FaLink className="text-custom-red mr-2" />
         <span
-          className={`font-bold text-14 ${
+          className={`font-bold ${
             theme === "dark" ? "text-zinc-300" : "text-zinc-900"
           }`}
         >
@@ -94,7 +94,7 @@ const About = () => {
           }
           target="_blank"
           rel="noopener noreferrer"
-          className={`ml-2 text-14 ${
+          className={`ml-2 ${
             theme === "dark" ? "text-zinc-400" : "text-zinc-800"
           }`}
         >

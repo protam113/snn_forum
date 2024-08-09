@@ -134,7 +134,7 @@ const Create = () => {
             >
               <option value="public">Public</option>
               <option value="private">Private</option>
-              <option value="friends">Friends</option>
+              {/* <option value="friends">Friends</option> */}
             </select>
           </div>
         </div>

@@ -27,14 +27,14 @@ const Profile = () => {
         }`}
       />
       {/* Content below Info */}
-      <div className="flex flex-1 p-4 space-x-4">
+      <div className="flex flex-col md:flex-row p-4 space-y-4 md:space-y-0 md:space-x-4">
         {/* Sidebar: About (1/3) */}
-        <div className="w-1/4 p-4 border-r border-gray-200">
+        <div className="w-full md:w-1/4 p-4 border-b md:border-r border-gray-200">
           <About />
         </div>
 
         {/* Main content: Userblogs (2/3) */}
-        <div className="w-3/4 flex-1">
+        <div className="w-full md:w-3/4 flex-1">
           <div className="mx-auto max-w-4xl py-5">
             <Userblogs />
           </div>

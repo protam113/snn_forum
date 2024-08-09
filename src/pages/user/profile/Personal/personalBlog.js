@@ -196,17 +196,17 @@ const PersonalBlog = () => {
                   }`}
                   onClick={() => handleBlogClick(blog.id)}
                 />
-                <BiRepost
+                {/* <BiRepost
                   className={`text-2xl cursor-pointer ${
                     theme === "dark" ? "text-gray-300" : "text-gray-500"
                   }`}
-                />
+                /> */}
               </div>
-              <BsBookmark
+              {/* <BsBookmark
                 className={`text-2xl cursor-pointer ${
                   theme === "dark" ? "text-gray-300" : "text-gray-500"
                 }`}
-              />
+              /> */}
             </div>
           </Block>
         ))
