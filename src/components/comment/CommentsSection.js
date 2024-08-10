@@ -116,7 +116,7 @@ const CommentsSection = () => {
                   Reply
                 </button>
               </p>
-              {activeReply === comment.id && (
+              {activeReply === comment.id && userInfo && (
                 <ReplyComment
                   blogId={blogId}
                   parentId={comment.id}

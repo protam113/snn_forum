@@ -5,7 +5,7 @@ const FAQ = () => {
   return (
     <div className="p-4 bg-gray-200 rounded-lg">
       <Accordion
-        title={<span className="text-20">The Technology We Use!</span>}
+        title={<span className="text-18">Công Nghệ Chúng Tôi Sử Dụng!</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">
@@ -13,32 +13,33 @@ const FAQ = () => {
             </h3>
             <ul className="text-14">
               <li>
-                <strong>Fast and Efficient:</strong> React.js helps our website
-                load quickly and run smoothly. It uses a special technique
-                called Virtual DOM to update the interface efficiently, so you
-                don’t have to wait long for changes to appear.
+                <strong>Nhanh và Hiệu Quả:</strong> React.js giúp trang web của
+                chúng tôi tải nhanh và hoạt động mượt mà. Nó sử dụng một kỹ
+                thuật đặc biệt gọi là Virtual DOM để cập nhật giao diện một cách
+                hiệu quả, giúp bạn không phải chờ lâu để thấy sự thay đổi.
               </li>
               <li>
-                <strong>Reusable Components:</strong> React allows for the
-                creation of reusable components, reducing code duplication and
-                enhancing maintainability.
+                <strong>Các Thành Phần Có Thể Tái Sử Dụng:</strong> React cho
+                phép tạo các thành phần tái sử dụng, giảm thiểu sự trùng lặp mã
+                và tăng khả năng bảo trì.
               </li>
               <li>
-                <strong>Strong Community Support:</strong> We build parts of our
-                website as separate pieces, which we can use again in different
-                places. This makes it easier to update and maintain the site
-                without rewriting code.
+                <strong>Cộng Đồng Hỗ Trợ Mạnh Mẽ:</strong> Chúng tôi xây dựng
+                các phần của trang web dưới dạng các khối riêng biệt, có thể sử
+                dụng lại ở các nơi khác nhau. Điều này giúp dễ dàng cập nhật và
+                bảo trì trang mà không phải viết lại mã.
               </li>
               <li>
-                <strong>Strong Support Community:</strong> There’s a large group
-                of developers who use React, so we have access to a wealth of
-                resources, support, and tools to enhance our website.
+                <strong>Cộng Đồng Hỗ Trợ Rộng Lớn:</strong> Có một nhóm các nhà
+                phát triển lớn sử dụng React, vì vậy chúng tôi có quyền truy cập
+                vào nhiều tài nguyên, hỗ trợ và công cụ để nâng cao trang web
+                của chúng tôi.
               </li>
               <li>
-                <strong>Works on All Devices:</strong> React ensures that our
-                website performs consistently well on various devices and
-                browsers, so you get a good experience whether you’re using a
-                phone, tablet, or computer.
+                <strong>Hoạt Động Trên Tất Cả Các Thiết Bị:</strong> React đảm
+                bảo rằng trang web của chúng tôi hoạt động nhất quán trên nhiều
+                thiết bị và trình duyệt khác nhau, giúp bạn có trải nghiệm tốt
+                dù bạn đang sử dụng điện thoại, máy tính bảng hay máy tính.
               </li>
             </ul>
             <h3 className="text-16 font-bold text-custom-red">
@@ -46,24 +47,25 @@ const FAQ = () => {
             </h3>
             <ul className="text-14">
               <li>
-                <strong>Handles Growth Well:</strong> Django is great for
-                websites that need to grow or handle a lot of users and data. It
-                supports complex features while keeping everything organized.
+                <strong>Quản Lý Tăng Trưởng Tốt:</strong> Django rất phù hợp cho
+                các trang web cần phát triển hoặc xử lý nhiều người dùng và dữ
+                liệu. Nó hỗ trợ các tính năng phức tạp trong khi giữ cho mọi thứ
+                được tổ chức.
               </li>
               <li>
-                <strong>Built-in Security:</strong> Django includes many
-                built-in security features to keep our website safe from common
-                threats like hacking and data breaches.
+                <strong>Bảo Mật Xây Dựng Sẵn:</strong> Django bao gồm nhiều tính
+                năng bảo mật tích hợp để giữ cho trang web của chúng tôi an toàn
+                trước các mối đe dọa phổ biến như hack và rò rỉ dữ liệu.
               </li>
               <li>
-                <strong>Easy Data Management:</strong> It comes with an
-                easy-to-use admin interface for managing the site’s data, making
-                it simple to update and maintain content.
+                <strong>Quản Lý Dữ Liệu Dễ Dàng:</strong> Nó đi kèm với một giao
+                diện quản trị dễ sử dụng để quản lý dữ liệu của trang web, giúp
+                cập nhật và duy trì nội dung một cách đơn giản.
               </li>
               <li>
-                <strong>Quick Development:</strong>Django allows us to build and
-                launch new features quickly, so we can deliver improvements and
-                updates to you faster.
+                <strong>Phát Triển Nhanh:</strong> Django cho phép chúng tôi xây
+                dựng và triển khai các tính năng mới nhanh chóng, giúp chúng tôi
+                cung cấp các cải tiến và cập nhật đến bạn nhanh hơn.
               </li>
             </ul>
           </div>
@@ -72,45 +74,51 @@ const FAQ = () => {
 
       <Accordion
         title={
-          <span className="text-20">Design: Tailwind CSS and Custom CSS</span>
+          <span className="text-18">
+            Thiết Kế: Tailwind CSS và CSS Tùy Chỉnh
+          </span>
         }
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">Tailwind CSS</h3>
             <p>
-              We use Tailwind CSS to create a modern, clean, and responsive
-              design. Tailwind provides a set of utility classes that make it
-              easy to build beautiful and consistent designs without writing
-              custom CSS for every element.
+              Chúng tôi sử dụng Tailwind CSS để tạo ra thiết kế hiện đại, sạch
+              sẽ và đáp ứng. Tailwind cung cấp một bộ các lớp tiện ích giúp xây
+              dựng thiết kế đẹp và đồng nhất mà không cần viết CSS tùy chỉnh cho
+              từng phần tử.
             </p>
             <ul className="text-14">
               <li>
-                <strong>Responsive Layouts:</strong> Tailwind helps us ensure
-                that our website looks great on all screen sizes, from large
-                desktop monitors to small mobile phones.
+                <strong>Bố Cục Đáp Ứng:</strong> Tailwind giúp chúng tôi đảm bảo
+                rằng trang web của chúng tôi trông tuyệt vời trên tất cả các
+                kích cỡ màn hình, từ màn hình máy tính để bàn lớn đến điện thoại
+                di động nhỏ.
               </li>
               <li>
-                <strong>Customizable Design:</strong> We can quickly adjust
-                design elements like colors, spacing, and typography to match
-                our brand’s style and ensure a unique look.
+                <strong>Thiết Kế Tùy Chỉnh:</strong> Chúng tôi có thể nhanh
+                chóng điều chỉnh các yếu tố thiết kế như màu sắc, khoảng cách và
+                kiểu chữ để phù hợp với phong cách thương hiệu của chúng tôi và
+                đảm bảo một vẻ ngoài độc đáo.
               </li>
             </ul>
-            <h3>Custom CSS</h3>
+            <h3>CSS Tùy Chỉnh</h3>
             <p>
-              In addition to Tailwind CSS, we use a bit of custom CSS to handle
-              specific styling needs that Tailwind may not cover.
+              Ngoài Tailwind CSS, chúng tôi cũng sử dụng một chút CSS tùy chỉnh
+              để xử lý các nhu cầu thiết kế cụ thể mà Tailwind có thể không bao
+              phủ.
             </p>
             <ul>
               <li>
-                <strong>Fine-Tuned Styles:</strong> Custom CSS allows us to
-                apply detailed styling for unique elements or create animations
-                and transitions that enhance user experience.
+                <strong>Phong Cách Tinh Chỉnh:</strong> CSS tùy chỉnh cho phép
+                chúng tôi áp dụng các phong cách chi tiết cho các phần tử đặc
+                biệt hoặc tạo ra các hiệu ứng và chuyển tiếp giúp nâng cao trải
+                nghiệm người dùng.
               </li>
               <li>
-                <strong>Consistency and Flexibility:</strong> While Tailwind
-                handles most of our styling, custom CSS ensures that we can
-                achieve precise visual effects and maintain consistency across
-                the site.
+                <strong>Đồng Nhất và Linh Hoạt:</strong> Trong khi Tailwind xử
+                lý phần lớn phong cách của chúng tôi, CSS tùy chỉnh đảm bảo rằng
+                chúng tôi có thể đạt được các hiệu ứng hình ảnh chính xác và duy
+                trì tính đồng nhất trên toàn trang.
               </li>
             </ul>
           </div>
@@ -118,77 +126,47 @@ const FAQ = () => {
       />
 
       <Accordion
-        title={<span className="text-20">Data Fetching: SWR with MySQL</span>}
+        title={<span className="text-18">Lấy Dữ Liệu: SWR với MySQL</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">
-              Efficient Data Fetching
+              Lấy Dữ Liệu Hiệu Quả
             </h3>
             <p>
-              We use SWR (Stale-While-Revalidate) for efficient data fetching
-              and caching in our React application. SWR helps us fetch, cache,
-              and revalidate data seamlessly, ensuring that the data displayed
-              is always up-to-date.
+              Chúng tôi sử dụng SWR (Stale-While-Revalidate) để lấy dữ liệu và
+              lưu cache một cách hiệu quả trong ứng dụng React của chúng tôi.
+              SWR giúp chúng tôi lấy, lưu cache và xác thực lại dữ liệu một cách
+              liền mạch, đảm bảo rằng dữ liệu hiển thị luôn được cập nhật.
             </p>
             <ul className="text-14">
               <li>
-                <strong>Automatic Revalidation:</strong> SWR automatically
-                revalidates data in the background, keeping the information
-                fresh and ensuring that users see the latest data without
-                needing to refresh manually.
+                <strong>Xác Thực Lại Tự Động:</strong> SWR tự động xác thực lại
+                dữ liệu trong nền, giữ cho thông tin luôn mới và đảm bảo rằng
+                người dùng thấy dữ liệu mới nhất mà không cần phải làm mới thủ
+                công.
               </li>
               <li>
-                <strong>Optimistic UI Updates:</strong> SWR supports optimistic
-                UI updates, providing a faster and more responsive user
-                experience by updating the interface immediately while fetching
-                new data in the background.
+                <strong>Cập Nhật Giao Diện Lạc Quan:</strong> SWR hỗ trợ cập
+                nhật giao diện lạc quan, cung cấp trải nghiệm người dùng nhanh
+                hơn và phản hồi hơn bằng cách cập nhật giao diện ngay lập tức
+                trong khi lấy dữ liệu mới ở nền.
               </li>
             </ul>
-            <h3>Integration with MySQL</h3>
+            <h3>Hợp Tác Với MySQL</h3>
             <p>
-              On the backend, we use MySQL as our database to store and manage
-              data efficiently.
+              Ở phía backend, chúng tôi sử dụng MySQL làm cơ sở dữ liệu để lưu
+              trữ và quản lý dữ liệu một cách hiệu quả.
             </p>
             <ul className="text-14">
               <li>
-                <strong>Reliable Data Storage:</strong> MySQL is a robust and
-                reliable database management system that ensures data integrity
-                and supports complex queries.
+                <strong>Lưu Trữ Dữ Liệu Đáng Tin Cậy:</strong> MySQL là một hệ
+                thống quản lý cơ sở dữ liệu mạnh mẽ và đáng tin cậy, đảm bảo
+                tính toàn vẹn dữ liệu và hỗ trợ các truy vấn phức tạp.
               </li>
               <li>
-                <strong>Scalability:</strong> MySQL can handle large volumes of
-                data and is suitable for applications that need to scale with
-                growing user demands.
-              </li>
-            </ul>
-          </div>
-        }
-      />
-      <Accordion
-        title={<span className="text-20">Authentication (Auth)</span>}
-        answer={
-          <div>
-            <h3 className="text-16 font-bold text-custom-red">
-              Using Access Token and Refresh Token
-            </h3>
-            <p>
-              We use access tokens and refresh tokens to ensure secure and
-              protected user authentication. This approach helps in managing
-              user sessions effectively and securely.
-            </p>
-            <h3 className="text-16 font-bold text-custom-red">
-              Session Management
-            </h3>
-            <ul className="text-14">
-              <li>
-                <strong>Persistent Login:</strong> Users can log in and maintain
-                their session through tokens, which ensures a smooth and
-                continuous user experience.
-              </li>
-              <li>
-                <strong>Account Creation and Management:</strong> Provides
-                functionality for users to register and manage their personal
-                accounts securely.
+                <strong>Mở Rộng:</strong> MySQL có thể xử lý khối lượng dữ liệu
+                lớn và phù hợp với các ứng dụng cần mở rộng để đáp ứng nhu cầu
+                của người dùng đang phát triển.
               </li>
             </ul>
           </div>
@@ -196,120 +174,50 @@ const FAQ = () => {
       />
 
       <Accordion
-        title={<span className="text-20">Website Functionality</span>}
+        title={<span className="text-18">Xác Thực (Auth)</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">
-              Viewing and Interacting with Content
+              Sử Dụng Access Token và Refresh Token
+            </h3>
+            <p>
+              Chúng tôi sử dụng access token và refresh token để đảm bảo xác
+              thực người dùng an toàn và bảo vệ. Cách tiếp cận này giúp quản lý
+              phiên người dùng hiệu quả và an toàn.
+            </p>
+            <h3 className="text-16 font-bold text-custom-red">Quản Lý Phiên</h3>
+            <ul className="text-14">
+              <li>
+                <strong>Đăng Nhập Duy Trì:</strong> Người dùng có thể đăng nhập
+                và duy trì phiên của mình thông qua các token, giúp trải nghiệm
+                người dùng mượt mà và liên tục.
+              </li>
+              <li>
+                <strong>Tạo và Quản Lý Tài Khoản:</strong> Cung cấp chức năng
+                cho người dùng để đăng ký và quản lý tài khoản cá nhân của mình
+                một cách an toàn.
+              </li>
+            </ul>
+          </div>
+        }
+      />
+
+      <Accordion
+        title={<span className="text-18">Chức Năng Trang Web</span>}
+        answer={
+          <div>
+            <h3 className="text-16 font-bold text-custom-red">
+              Xem và Tương Tác Với Dữ Liệu
             </h3>
             <ul className="text-14">
               <li>
-                <strong>View Posts, Post Details, and Comments:</strong> Users
-                can view posts, read detailed information about each post, and
-                comment without needing to log in.
+                <strong>Xem Thông Tin:</strong> Người dùng có thể xem các thông
+                tin quan trọng hoặc nội dung trên trang web dễ dàng.
               </li>
               <li>
-                <strong>Like Posts and Comment:</strong> To like posts or leave
-                comments, users need to create an account and log in.
-              </li>
-            </ul>
-            <h3 className="text-16 font-bold text-custom-red">Job Listings</h3>
-            <ul className="text-14">
-              <li>
-                <strong>View Job Listings and Details:</strong> Everyone can
-                view the list of job postings and detailed information about
-                each job.
-              </li>
-              <li>
-                <strong>Apply for Jobs:</strong> To apply for job listings,
-                users need to create an account.
-              </li>
-            </ul>
-            <h3 className="text-16 font-bold text-custom-red">Job Posting</h3>
-            <ul className="text-14">
-              <li>
-                <strong>Verified Accounts for Posting:</strong> Only verified
-                accounts are allowed to post job listings, ensuring accuracy and
-                security of job postings.
-              </li>
-            </ul>
-          </div>
-        }
-      />
-      <Accordion
-        title={<span className="text-20">SEO Optimization</span>}
-        answer={
-          <div>
-            <p>
-              To ensure that our website is optimized for search engines and
-              easily discoverable by users, we implement the following
-              practices:
-            </p>
-            <ul>
-              <li>
-                <strong>Meta Tags:</strong> Adding helpful information to your
-                website’s pages so search engines know what they are about and
-                show them in search results.
-              </li>
-              <li>
-                <strong>Quality Content:</strong> Creating useful and relevant
-                content that matches what people are looking for.
-              </li>
-              <li>
-                <strong>Image Optimization:</strong> Making sure images load
-                quickly and are described properly so they help your site’s
-                ranking.
-              </li>
-              <li>
-                <strong>Internal Linking:</strong> Linking to other pages within
-                your website to help users and search engines find more
-                information.
-              </li>
-              <li>
-                <strong>Mobile-Friendly Design:</strong> Ensuring your website
-                looks and works well on smartphones and tablets.
-              </li>
-              <li>
-                <strong>Faster Page Load:</strong> Speeding up your website so
-                it loads quickly, making it better for users and search engines.
-              </li>
-            </ul>
-          </div>
-        }
-      />
-      <Accordion
-        title={<span className="text-20">Analytics and Reporting</span>}
-        answer={
-          <div>
-            <p>
-              We provide tools and methods to monitor website performance and
-              deliver detailed reports to our clients, including:
-            </p>
-            <ul>
-              <li>
-                <strong>Website Traffic:</strong> Information on how many people
-                visit your site, where they come from, and what they do while
-                they’re there.
-              </li>
-              <li>
-                <strong>Performance Reports:</strong> Details on how fast your
-                site loads and how users interact with it.
-              </li>
-              <li>
-                <strong>Custom Reports:</strong> Tailored reports that show the
-                most important information for your business.
-              </li>
-              <li>
-                <strong>Keyword Tracking:</strong> Insights into which search
-                terms bring people to your site.
-              </li>
-              <li>
-                <strong>SEO Health:</strong> Information on how well your site
-                is doing in search engine rankings and what can be improved.
-              </li>
-              <li>
-                <strong>Improvement Tips:</strong> Suggestions based on the data
-                to help make your site better and attract more visitors.
+                <strong>Gửi Thông Tin:</strong> Các tính năng như gửi phản hồi
+                hoặc yêu cầu liên hệ được hỗ trợ để người dùng có thể tương tác
+                với chúng tôi nhanh chóng.
               </li>
             </ul>
           </div>

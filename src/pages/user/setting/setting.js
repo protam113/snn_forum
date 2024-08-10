@@ -1,17 +1,29 @@
 import React from "react";
 import FAQ from "./components/FAQ";
 import CreateBy from "./components/CreateBy";
+import Service from "./components/Service";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 const Setting = () => {
   return (
     <div className="w-full h-screen flex flex-col">
       {/* Khu vực phần trên */}
-      <div className="flex-1 bg-gray-100 p-6 overflow-y-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Setting Page</h1>
-        <p className="text-gray-600">
-          Here you can customize your settings and preferences.
-        </p>
-        {/* Bạn có thể thêm các thành phần khác vào đây sau này */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">Setting Page</h1>
+      <p className="text-gray-600">
+        Here you can customize your settings and preferences.
+      </p>
+
+      <div className="bg-white shadow-md p-4 border-t border-gray-200">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          Điều khoản dịch vụ
+        </h2>
+        <Service />
+      </div>
+      <div className="bg-white shadow-md p-4 border-t border-gray-200">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          Chính sách riêng tư
+        </h2>
+        <PrivacyPolicy />
       </div>
 
       {/* Phần FAQ ở dưới cùng */}

@@ -9,6 +9,9 @@ import LogoutButton from "../../../../pages/auth/logout";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import ThemeToggle from "../../../theme/ThemeToggle ";
 import { BiMenuAltRight } from "react-icons/bi";
+import { MdSupportAgent } from "react-icons/md";
+
+import Loading from "../../../../pages/error/load";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
@@ -166,8 +169,15 @@ const Navbar = () => {
                 to="/setting"
                 className="flex items-center space-x-3 px-4 py-2 text-white hover:white hover:bg-zinc-600 rounded-md"
               >
-                <IoMdSettings className="text-xl" />
+                <IoMdSettings className="text-14" />
                 <span>Settings</span>
+              </Link>
+              <Link
+                to="/support"
+                className="flex items-center space-x-3 px-4 py-2 text-white hover:white hover:bg-zinc-600 rounded-md"
+              >
+                <MdSupportAgent className="text-14" />
+                <span>Đóng góp</span>
               </Link>
               <div className="flex items-center space-x-3 px-4 py-2 text-neutral-200">
                 <ThemeToggle />
@@ -193,7 +203,9 @@ const Navbar = () => {
           </div>
         </section>
         {loading ? (
-          <span>Loading...</span>
+          <span>
+            <Loading />
+          </span>
         ) : error ? (
           <span>Error: {error}</span>
         ) : !userInfo ? (

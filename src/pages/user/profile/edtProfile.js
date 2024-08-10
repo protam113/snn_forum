@@ -5,6 +5,7 @@ import Example from "../../error/load";
 import Block from "../../../components/design/Block";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
+import LocationSelector from "../../../components/Location/LocationSelector";
 
 const EditProfile = () => {
   const { userInfo, loading, error, updateUserInfo } = useUserInfo();
@@ -12,11 +13,14 @@ const EditProfile = () => {
     first_name: "",
     last_name: "",
     phone_number: "",
-    location: "",
     about: "",
     profile_image: null,
     profile_bg: null,
     link: "",
+  });
+  const [location, setLocation] = useState({
+    province: "",
+    district: "",
   });
 
   const navigate = useNavigate(); // Hook để điều hướng
@@ -34,6 +38,18 @@ const EditProfile = () => {
         [name]: value,
       }));
     }
+  };
+
+  const handleLocationChange = (formattedLocation) => {
+    const [province, district] = formattedLocation.split(", ");
+    setLocation({
+      province,
+      district,
+    });
+    setFormData((prevState) => ({
+      ...prevState,
+      location: formattedLocation,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -129,12 +145,10 @@ const EditProfile = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Location
           </label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg p-3 w-full focus:ring-blue-500 focus:border-blue-500"
+          <LocationSelector
+            selectedProvince={location.province}
+            selectedDistrict={location.district}
+            onLocationChange={handleLocationChange}
           />
         </div>
 

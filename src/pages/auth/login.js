@@ -8,7 +8,7 @@ import { useTheme } from "../../context/themeContext";
 import { toast } from "react-toastify";
 import { endpoints, baseURL } from "../../api/api";
 import axios from "axios";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const { theme } = useTheme();
@@ -19,6 +19,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
 
   useEffect(() => {
     if (userRef.current) {
@@ -155,19 +156,30 @@ const Login = () => {
             >
               Password:
             </label>
-            <input
-              type="password"
-              placeholder="Password"
-              id="password"
-              className={`px-4 py-2 border rounded-lg ${
-                theme === "dark"
-                  ? "border-zinc-600 bg-zinc-700 text-white"
-                  : "border-zinc-400 bg-white text-black"
-              }`}
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                id="password"
+                className={`px-4 py-2 border rounded-lg w-full ${
+                  theme === "dark"
+                    ? "border-zinc-600 bg-zinc-700 text-white"
+                    : "border-zinc-400 bg-white text-black"
+                }`}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center px-2"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              </button>
+            </div>
+
             <button
               type="submit"
               className="px-4 py-2 bg-custom-red text-white rounded-lg hover:bg-red-600 transition-colors"

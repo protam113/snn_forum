@@ -1,17 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+// Hàm gửi dữ liệu đến dataLayer của GTM
+const sendToDataLayer = (eventData) => {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(eventData);
+};
+
+// Hàm logPerformance cập nhật để gửi dữ liệu đến GTM mà không ghi vào console
+const logPerformance = (metric) => {
+  sendToDataLayer({
+    event: "performanceMetric",
+    metricName: metric.name,
+    metricValue: metric.value,
+    metricLabel: metric.label || "N/A",
+  });
+};
+
+// Render ứng dụng React
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Gọi reportWebVitals với hàm logPerformance
+reportWebVitals(logPerformance);

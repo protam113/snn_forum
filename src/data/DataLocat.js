@@ -2,6 +2,10 @@
 
 export const provinces = [
   {
+    name: "Khác",
+    districts: ["Khác"],
+  },
+  {
     name: "Hà Nội",
     districts: [
       "Ba Đình",
@@ -61,6 +65,35 @@ export const provinces = [
     ],
   },
   {
+    name: "Đồng Nai",
+    districts: [
+      "Biên Hòa",
+      "Long Khánh",
+      "Nhơn Trạch",
+      "Trảng Bom",
+      "Vĩnh Cửu",
+      "Định Quán",
+      "Xuân Lộc",
+      "Cẩm Mỹ",
+      "Tân Phú",
+      "Thống Nhất",
+      "Long Thành",
+    ],
+  },
+  {
+    name: "Bình Dương",
+    districts: [
+      "Thành phố Thủ Dầu Một",
+      "Thị xã Bến Cát",
+      "Thị xã Tân Uyên",
+      "Thị xã Dĩ An",
+      "Huyện Bắc Tân Uyên",
+      "Huyện Phú Giáo",
+      "Huyện Dầu Tiếng",
+      "Huyện Thuận An",
+    ],
+  },
+  {
     name: "Đà Nẵng",
     districts: [
       "Quận Hải Châu",
@@ -85,19 +118,7 @@ export const provinces = [
       "Huyện Hiệp Hòa",
     ],
   },
-  {
-    name: "Bình Dương",
-    districts: [
-      "Thành phố Thủ Dầu Một",
-      "Thị xã Bến Cát",
-      "Thị xã Tân Uyên",
-      "Thị xã Dĩ An",
-      "Huyện Bắc Tân Uyên",
-      "Huyện Phú Giáo",
-      "Huyện Dầu Tiếng",
-      "Huyện Thuận An",
-    ],
-  },
+
   {
     name: "Bà Rịa-Vũng Tàu",
     districts: [

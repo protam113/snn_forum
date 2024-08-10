@@ -7,6 +7,7 @@ import Create from "../pages/user/blog/create/create";
 import EdtBlog from "../pages/user/blog/edtBlog";
 import Company from "../pages/user/company/company";
 import RegisterCo from "../pages/user/company/RegisterCo";
+import ContributeIdeas from "../pages/user/contributeIdeas";
 // import AdHome from "../pages/admin/AdHome";
 // import Error_404 from "../pages/error/404";
 // import Error_500 from "../pages/error/500";
@@ -64,6 +65,7 @@ const publicRoutes = [
   { path: "/nguoi_dung", component: User, layout: DefaultLayout },
 
   { path: "/setting", component: setting, layout: DefaultLayout },
+  { path: "/support", component: ContributeIdeas, layout: DefaultLayout },
 
   //   { path: "/load", component: Example, layout: DefaultLayout },
   //   { path: "/code", component: Code, layout: DefaultLayout },

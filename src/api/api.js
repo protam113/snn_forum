@@ -1,7 +1,7 @@
 // api/api.js
 import axios from "axios";
 
-const baseURL = "https://protam113.pythonanywhere.com/";
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 const authApi = (token = null) => {
   const config = {
@@ -17,23 +17,23 @@ const authApi = (token = null) => {
 
 // Các endpoint API
 const endpoints = {
-  login: "/o/token/",
-  refreshLogin: "/o/token/refresh/",
-  currentUser: "/user/details/",
-  UserInfo: "/user/:id/",
-  UpdateProfile: "/user/update-profile/",
-  currentUserBlog: "/user/:id/blog/",
+  login: process.env.REACT_APP_LOGIN_ENDPOINT,
+  refreshLogin: process.env.REACT_APP_refreshLogin_ENDPOINT,
+  currentUser: process.env.REACT_APP_currentUser_ENDPOINT,
+  UserInfo: process.env.REACT_APP_UserInfo_ENDPOINT,
+  UpdateProfile: process.env.REACT_APP_UpdateProfile_ENDPOINT,
+  currentUserBlog: process.env.REACT_APP_currentUserBlog_ENDPOINT,
   // currentUserFollower: "/user/followers/",
   // currentUserFollowing: "/user/following/",
-  createUser: "user/",
-  Blog: "/blog/",
-  EdtBlog: "/blog/:id/",
-  BlogDetail: "/blog/:id/",
-  LikeBlog: "/blog/:id/like/",
-  CmtBlog: "/blog/:id/comment/",
-  DelCmt: "/comment/:id/",
+  createUser: process.env.REACT_APP_createUser_ENDPOINT,
+  Blog: process.env.REACT_APP_Blog_ENDPOINT,
+  EdtBlog: process.env.REACT_APP_EdtBlog_ENDPOINT,
+  BlogDetail: process.env.REACT_APP_BlogDetail_ENDPOINT,
+  LikeBlog: process.env.REACT_APP_LikeBlog_ENDPOINT,
+  CmtBlog: process.env.REACT_APP_CmtBlog_ENDPOINT,
+  DelCmt: process.env.REACT_APP_DelCmt_ENDPOINT,
 
-  Recruitment: "/recruitment/",
+  Recruitment: process.env.REACT_APP_Recruitment_ENDPOINT,
   // currentCompany: "/company/:id/",
 };
 

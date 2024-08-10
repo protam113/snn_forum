@@ -95,8 +95,10 @@ const About = () => {
           target="_blank"
           rel="noopener noreferrer"
           className={`ml-2 ${
-            theme === "dark" ? "text-zinc-400" : "text-zinc-800"
-          }`}
+            theme === "dark"
+              ? "text-blue-500 hover:bg-blue-100 hover:border-blue-500"
+              : "text-blue-600 hover:bg-blue-200 hover:border-blue-600"
+          } border border-transparent rounded px-2 py-1 hover:underline transition-all duration-300`}
         >
           {userInfo?.link || "No link available"}
         </a>
