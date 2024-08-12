@@ -16,9 +16,9 @@ const Product_feed = () => {
 
         <div className="container">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">Thể loại</h2>
+            <h2 className="text-20 font-bold tracking-tight">Thể loại</h2>
             <Link to="/all-products">
-              <button className="text-sm font-medium text-blue-600 hover:underline">
+              <button className="text-14 font-medium text-blue-600 hover:underline">
                 Xem tất cả
               </button>
             </Link>
@@ -29,9 +29,9 @@ const Product_feed = () => {
 
         <div className="container">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">Sản Phẩm</h2>
+            <h2 className="text-20 font-bold tracking-tight">Sản Phẩm</h2>
             <Link to="/san_pham/tat_ca_san_pham">
-              <button className="text-sm font-medium text-blue-600 hover:underline">
+              <button className="text-14 font-medium text-blue-600 hover:underline">
                 Xem tất cả
               </button>
             </Link>

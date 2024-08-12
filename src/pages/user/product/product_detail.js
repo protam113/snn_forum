@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ProductDetail = () => {
+  const [showFullNumber, setShowFullNumber] = useState(false);
+
   const product = {
     id: 1,
     name: "Vintage Leather Briefcase",
@@ -13,7 +15,7 @@ const ProductDetail = () => {
     location: "New York, NY",
     seller: {
       name: "John Doe",
-      phone: "555-1234",
+      phone: "0906723985",
     },
   };
 
@@ -31,29 +33,29 @@ const ProductDetail = () => {
           />
         </div>
         <div className="space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold">{product.name}</h1>
-          <p className="text-muted-foreground">{product.description}</p>
-          <h2 className="text-2xl font-bold">${product.price.toFixed(2)}</h2>
+          <h1 className="text-24 font-bold">{product.name}</h1>
+          <p className="text-muted-foreground text-18">{product.description}</p>
+          <h2 className="text-20 font-bold">${product.price.toFixed(2)}</h2>
         </div>
       </div>
       <div className="mt-12 md:mt-16 grid md:grid-cols-2 gap-8">
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Product Details</h2>
+          <h2 className="text-20 font-bold">Product Details</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-muted-foreground">Condition</p>
+              <p className="text-muted-foreground text-20">Condition</p>
               <p className="font-medium">{product.condition}</p>
             </div>
             <div>
-              <p className="text-muted-foreground">Status</p>
+              <p className="text-muted-foreground text-20">Status</p>
               <p className="font-medium">{product.status}</p>
             </div>
             <div>
-              <p className="text-muted-foreground">Location</p>
+              <p className="text-muted-foreground text-20">Location</p>
               <p className="font-medium">{product.location}</p>
             </div>
             <div>
-              <p className="text-muted-foreground">Quantity</p>
+              <p className="text-muted-foreground text-20">Quantity</p>
               <select
                 defaultValue="1"
                 className="w-full p-2 border border-gray-300 rounded-md"
@@ -68,7 +70,7 @@ const ProductDetail = () => {
           </div>
         </div>
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Seller Information</h2>
+          <h2 className="text-2xl font-bold text-20">Seller Information</h2>
           <div className="space-y-2">
             <div>
               <p className="text-muted-foreground">Seller Name</p>
@@ -82,8 +84,13 @@ const ProductDetail = () => {
         </div>
       </div>
       <div className="mt-12 md:mt-16 flex justify-end">
-        <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors">
-          Add to Cart
+        <button
+          onClick={() => setShowFullNumber(!showFullNumber)}
+          className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+        >
+          {showFullNumber
+            ? product.seller.phone
+            : product.seller.phone.slice(0, 4) + "****"}
         </button>
       </div>
     </div>

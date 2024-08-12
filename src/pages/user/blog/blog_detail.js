@@ -16,6 +16,7 @@ import useBlog from "../../../hooks/useBlog";
 import CommentsSection from "../../../components/comment/CommentsSection";
 import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
+import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -95,143 +96,151 @@ const Blog_detail = () => {
   }
 
   return (
-    <div className="post-detail flex flex-col items-center mt-8">
-      <div className="max-w-6xl w-full">
-        {/* Post Information and 3-dots menu */}
-        <div className="flex items-center mb-4">
-          <img
-            src={blog.user.profile_image}
-            alt="profile"
-            className="w-12 h-12 rounded-full mr-4"
-            onClick={() => handleProfileClick(blog.user.id)}
-          />
+    <>
+      <SEO
+        title={blog.title || "Blog Detail"}
+        description={blog.description || "Details of the blog"}
+        name="XLR Team"
+        type="article"
+      />
+      <div className="post-detail flex flex-col items-center mt-8">
+        <div className="max-w-6xl w-full">
+          {/* Post Information and 3-dots menu */}
+          <div className="flex items-center mb-4">
+            <img
+              src={blog.user.profile_image}
+              alt="profile"
+              className="w-12 h-12 rounded-full mr-4"
+              onClick={() => handleProfileClick(blog.user.id)}
+            />
+            <div>
+              <h1
+                className={`font-bold text-base ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+                onClick={() => handleProfileClick(blog.user.id)}
+              >
+                {blog.user.first_name} {blog.user.last_name}
+              </h1>
+              <p className="text-gray-500 text-sm">
+                {formatDate(blog.created_date)}
+              </p>
+            </div>
+            <div className="ml-auto relative">
+              <BsThreeDots
+                className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
+                onClick={() => handleMenuClick(blog.id)}
+              />
+              {activeMenu === blog.id && (
+                <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-zinc-400 shadow-lg rounded-lg z-10">
+                  <ul>
+                    {userInfo?.username === blog.user.username && (
+                      <>
+                        <li
+                          className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
+                          onClick={() => handleEditClick(blog.id)}
+                        >
+                          <FaEdit className="mr-2 text-gray-400" />
+                          Edit
+                        </li>
+                        <li
+                          className="px-4 py-2 text-14  hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
+                          onClick={() => handleDeleteBlog(blog.id, userInfo)}
+                        >
+                          <FaTrashAlt className="mr-2 text-gray-400" />
+                          Delete
+                        </li>
+                      </>
+                    )}
+                    <li className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center">
+                      <FaFlag className="mr-2 text-gray-400" />
+                      Report
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Content */}
           <div>
-            <h1
-              className={`font-bold text-base ${
+            <p
+              className={`text-16 font-semibold text-black ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
-              onClick={() => handleProfileClick(blog.user.id)}
             >
-              {blog.user.first_name} {blog.user.last_name}
-            </h1>
-            <p className="text-gray-500 text-sm">
-              {formatDate(blog.created_date)}
+              {blog.content}
             </p>
-          </div>
-          <div className="ml-auto relative">
-            <BsThreeDots
-              className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
-              onClick={() => handleMenuClick(blog.id)}
+            <hr className="my-2 border-zinc-300" />
+            <p
+              className={`mb-4 text-14 ${
+                theme === "dark" ? "text-white" : "text-black"
+              }`}
+              dangerouslySetInnerHTML={{ __html: blog.description || "" }}
             />
-            {activeMenu === blog.id && (
-              <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-zinc-400 shadow-lg rounded-lg z-10">
-                <ul>
-                  {userInfo?.username === blog.user.username && (
-                    <>
-                      <li
-                        className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
-                        onClick={() => handleEditClick(blog.id)}
-                      >
-                        <FaEdit className="mr-2 text-gray-400" />
-                        Edit
-                      </li>
-                      <li
-                        className="px-4 py-2 text-14  hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
-                        onClick={() => handleDeleteBlog(blog.id, userInfo)}
-                      >
-                        <FaTrashAlt className="mr-2 text-gray-400" />
-                        Delete
-                      </li>
-                    </>
-                  )}
-                  <li className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center">
-                    <FaFlag className="mr-2 text-gray-400" />
-                    Report
-                  </li>
-                </ul>
-              </div>
-            )}
           </div>
-        </div>
-        {/* Content */}
-        <div>
-          <p
-            className={`text-16 font-semibold text-black ${
-              theme === "dark" ? "text-white" : "text-black"
+          <hr className="mt-2 border-gray-300" />
+          {/* Media */}
+          {blog.media.length > 0 && (
+            <div
+              className={`grid gap-4 ${
+                blog.media.length === 1
+                  ? "grid-cols-1"
+                  : blog.media.length === 2
+                  ? "grid-cols-2"
+                  : blog.media.length === 3
+                  ? "grid-cols-3"
+                  : "grid-cols-2"
+              }`}
+            >
+              {blog.media.map((media) => renderMedia(media))}
+            </div>
+          )}
+          <hr
+            className={`my-4 ${
+              theme === "dark" ? "border-gray-600" : "border-gray-300"
             }`}
-          >
-            {blog.content}
-          </p>
-          <hr className="my-2 border-zinc-300" />
-          <p
-            className={`mb-4 text-14 ${
-              theme === "dark" ? "text-white" : "text-black"
-            }`}
-            dangerouslySetInnerHTML={{ __html: blog.description || "" }}
           />
-        </div>
-        <hr className="mt-2 border-gray-300" />
-        {/* Media */}
-        {blog.media.length > 0 && (
-          <div
-            className={`grid gap-4 ${
-              blog.media.length === 1
-                ? "grid-cols-1"
-                : blog.media.length === 2
-                ? "grid-cols-2"
-                : blog.media.length === 3
-                ? "grid-cols-3"
-                : "grid-cols-2"
-            }`}
-          >
-            {blog.media.map((media) => renderMedia(media))}
+          {/* Like, Comment, Repost Buttons */}
+          <div className="mt-4">
+            <hr className="my-2 border-zinc-900" />
+            <p
+              className={`text-gray-500 text-sm cursor-pointer ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              {blog.likes_count} likes • {blog.comments_count} comments
+            </p>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <Likeblog
+                  blogId={blog.id}
+                  liked={likedBlogs[blog.id] || false}
+                  onLike={handleLike}
+                />
+                {/* <BiRepost
+                className={`text-2xl cursor-pointer ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-500"
+                }`}
+              /> */}
+              </div>
+              <div className="flex items-center gap-4">
+                {/* <BsBookmark
+                className={`text-2xl cursor-pointer ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-500"
+                }`}
+              /> */}
+              </div>
+            </div>
           </div>
-        )}
-        <hr
-          className={`my-4 ${
-            theme === "dark" ? "border-gray-600" : "border-gray-300"
-          }`}
-        />
-        {/* Like, Comment, Repost Buttons */}
-        <div className="mt-4">
           <hr className="my-2 border-zinc-900" />
-          <p
-            className={`text-gray-500 text-sm cursor-pointer ${
-              theme === "dark" ? "text-gray-400" : "text-gray-500"
-            }`}
-          >
-            {blog.likes_count} likes • {blog.comments_count} comments
-          </p>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <Likeblog
-                blogId={blog.id}
-                liked={likedBlogs[blog.id] || false}
-                onLike={handleLike}
-              />
-              {/* <BiRepost
-                className={`text-2xl cursor-pointer ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-500"
-                }`}
-              /> */}
-            </div>
-            <div className="flex items-center gap-4">
-              {/* <BsBookmark
-                className={`text-2xl cursor-pointer ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-500"
-                }`}
-              /> */}
-            </div>
-          </div>
+          <CommentsSection />
+          <Comment blogId={blogId} />
         </div>
-        <hr className="my-2 border-zinc-900" />
-        <CommentsSection />
-        <Comment blogId={blogId} />
+        <hr className="my-4 border-zinc-900" />
+        <h1 className="font-bold text-custom-red text-20">Recent Feed</h1>
+        <RecentFeed />{" "}
       </div>
-      <hr className="my-4 border-zinc-900" />
-      <h1 className="font-bold text-custom-red text-20">Recent Feed</h1>
-      <RecentFeed />{" "}
-    </div>
+    </>
   );
 };
 

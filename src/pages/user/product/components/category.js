@@ -85,7 +85,7 @@ const Category = () => {
                       className="w-full h-48 md:h-56 lg:h-64 object-cover"
                     />
                     <div className="p-4">
-                      <h3 className="text-lg md:text-xl lg:text-2xl font-semibold">
+                      <h3 className="text-14 md:text-16 lg:text-18 font-semibold">
                         {category.name}
                       </h3>
                     </div>

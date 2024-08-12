@@ -15,6 +15,7 @@ import "./App.css";
 import RequireAuth from "./hooks/requireAuth.js";
 import { LoadingProvider } from "./context/LoadingContext";
 import { BlogProvider } from "./context/BlogContext.js";
+import { HelmetProvider } from "react-helmet-async";
 
 function AppContent() {
   const { theme } = useTheme();
@@ -84,8 +85,10 @@ function App() {
         <ThemeProvider>
           <LoadingProvider>
             <BlogProvider>
-              <AppContent />
-              <ToastContainer position="top-center" />
+              <HelmetProvider>
+                <AppContent />
+                <ToastContainer position="top-center" />
+              </HelmetProvider>
             </BlogProvider>
           </LoadingProvider>
         </ThemeProvider>
