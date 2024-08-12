@@ -14,6 +14,10 @@ import ContributeIdeas from "../pages/user/contributeIdeas";
 // import Example from "../pages/error/load";
 
 import Home from "../pages/user/home";
+import CreateProduct from "../pages/user/product/CreateProduct";
+import ProductDetail from "../pages/user/product/product_detail";
+import Product from "../pages/user/product/product_feed";
+import Product_slide from "../pages/user/product/product_slide";
 import Profile from "../pages/user/profile";
 import EditProfile from "../pages/user/profile/edtProfile";
 import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
@@ -59,7 +63,18 @@ const publicRoutes = [
   { path: "/manage", component: Manage, layout: DefaultLayout },
   { path: "/work_manage", component: WorkManage, layout: DefaultLayout },
 
-  //   { path: "/post/edit/:id/", component: EditPost, layout: DefaultLayout },
+  { path: "/san_pham", component: Product, layout: DefaultLayout },
+  {
+    path: "/san_pham/chi_tiet_san_pham",
+    component: ProductDetail,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/san_pham/tat_ca_san_pham",
+    component: Product_slide,
+    layout: DefaultLayout,
+  },
+  { path: "/create_product", component: CreateProduct, layout: DefaultLayout },
 
   { path: "/company", component: Company, layout: DefaultLayout },
   { path: "/nguoi_dung", component: User, layout: DefaultLayout },

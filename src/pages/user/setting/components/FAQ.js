@@ -5,7 +5,7 @@ const FAQ = () => {
   return (
     <div className="p-4 bg-gray-200 rounded-lg">
       <Accordion
-        title={<span className="text-18">Công Nghệ Chúng Tôi Sử Dụng!</span>}
+        title={<span className="text-16">Công Nghệ Chúng Tôi Sử Dụng!</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">
@@ -74,7 +74,7 @@ const FAQ = () => {
 
       <Accordion
         title={
-          <span className="text-18">
+          <span className="text-16">
             Thiết Kế: Tailwind CSS và CSS Tùy Chỉnh
           </span>
         }
@@ -126,7 +126,7 @@ const FAQ = () => {
       />
 
       <Accordion
-        title={<span className="text-18">Lấy Dữ Liệu: SWR với MySQL</span>}
+        title={<span className="text-16">Lấy Dữ Liệu: SWR với MySQL</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">
@@ -174,7 +174,7 @@ const FAQ = () => {
       />
 
       <Accordion
-        title={<span className="text-18">Xác Thực (Auth)</span>}
+        title={<span className="text-16">Xác Thực (Auth)</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">
@@ -203,7 +203,7 @@ const FAQ = () => {
       />
 
       <Accordion
-        title={<span className="text-18">Chức Năng Trang Web</span>}
+        title={<span className="text-16">Chức Năng Trang Web</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">

@@ -73,6 +73,22 @@ const Navbar = () => {
           </Link>
 
           <Link
+            to="/san_pham"
+            className={`relative group px-8 py-2 transition-all ${
+              theme === "light"
+                ? "text-black hover:text-gray-400"
+                : "text-white hover:text-gray-300"
+            } flex items-center`}
+          >
+            <span className="text-16 font-bold">Sản Phẩm</span>
+            <span
+              className={`absolute bottom-0 left-0 w-0 h-0.5 ${
+                theme === "light" ? "bg-black" : "bg-white"
+              } transition-all duration-300 group-hover:w-full`}
+            ></span>
+          </Link>
+
+          <Link
             to="/tuyen_dung"
             className={`relative group px-8 py-2 transition-all ${
               theme === "light"
@@ -153,6 +169,16 @@ const Navbar = () => {
                 }`}
               >
                 <span className="text-14">Blog</span>
+              </Link>
+              <Link
+                to="/san_pham"
+                className={`relative group px-4 py-2 transition-all md:hidden ${
+                  theme === "light"
+                    ? "text-white hover:text-gray-400"
+                    : "text-white hover:text-gray-400"
+                }`}
+              >
+                <span className="text-14">Sản Phẩm</span>
               </Link>
 
               <Link

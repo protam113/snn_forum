@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
     <div className="p-4 bg-gray-200 rounded-lg">
       <Accordion
         title={
-          <span className="text-xl font-semibold">Chính sách riêng tư</span>
+          <span className="text-16 font-semibold">Chính sách riêng tư</span>
         }
         answer={
           <div className="space-y-4 p-4">

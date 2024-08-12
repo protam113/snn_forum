@@ -12,7 +12,7 @@ const CreateBy = () => {
   return (
     <div className="p-4 bg-gray-200 rounded-lg">
       <Accordion
-        title={<span className="text-20">About XLR Team</span>}
+        title={<span className="text-16">About XLR Team</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">All About Us</h3>
@@ -69,7 +69,7 @@ const CreateBy = () => {
       />
 
       <Accordion
-        title={<span className="text-20">Front-end</span>}
+        title={<span className="text-16">Front-end</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">Lenf</h3>
@@ -95,7 +95,7 @@ const CreateBy = () => {
       />
 
       <Accordion
-        title={<span className="text-20">Back-End</span>}
+        title={<span className="text-16">Back-End</span>}
         answer={
           <div>
             <h3 className="text-16 font-bold text-custom-red">ChuBA</h3>

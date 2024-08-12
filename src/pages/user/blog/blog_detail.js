@@ -22,7 +22,7 @@ const Blog_detail = () => {
   const { userInfo } = useUserInfo();
   const { id: blogId } = useParams();
   const navigate = useNavigate();
-  const { blog, loading, error, handleDeleteBlog, likedBlogs } =
+  const { blog, loading, error, message, handleDeleteBlog, likedBlogs } =
     useBlog(blogId);
   const [activeMenu, setActiveMenu] = useState(null);
 
@@ -83,7 +83,7 @@ const Blog_detail = () => {
         <Loading />{" "}
       </div>
     );
-  if (error)
+  if (message)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Error404 />

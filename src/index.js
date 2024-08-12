@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { ManagerProvider } from "hero-slider";
 
 // Hàm gửi dữ liệu đến dataLayer của GTM
 const sendToDataLayer = (eventData) => {

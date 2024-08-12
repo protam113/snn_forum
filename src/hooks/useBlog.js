@@ -15,8 +15,8 @@ const useBlog = (blogId) => {
   const [submitting, setSubmitting] = useState(false);
   const [likeList, setLikeList] = useState([]);
   const [likeListVisible, setLikeListVisible] = useState(false);
+  const [message, setMessage] = useState("");
   const fileInputRef = useRef(null);
-
   const { getToken, refreshAuthToken } = useAuth();
 
   // Fetch all blogs
@@ -62,8 +62,10 @@ const useBlog = (blogId) => {
       const response = await authApi().get(url);
       setBlog(response.data.blog);
     } catch (error) {
-      console.error("Error fetching blog details", error);
-      setError("Error fetching blog details");
+      const errorMessage =
+        "Error fetching blog details. Please try again later.";
+      console.error(errorMessage, error);
+      setMessage(errorMessage); // Hiển thị thông báo lỗi
     } finally {
       setLoading(false);
     }
@@ -392,6 +394,7 @@ const useBlog = (blogId) => {
   };
 
   return {
+    message,
     blogs,
     blog,
     likedBlogs,
