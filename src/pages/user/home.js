@@ -4,6 +4,7 @@ import CreateBlog from "./blog/createBlog";
 import Newfeed from "./blog/feed/Newfeed";
 import { useTheme } from "../../context/themeContext";
 import useAuth from "../../hooks/useAuth";
+import { WebMaintenance } from "../error/error";
 
 const Home = () => {
   const { theme } = useTheme();
@@ -22,7 +23,7 @@ const Home = () => {
           }`}
         />
         <h1 className="font-bold text-24">
-          New <span className="text-custom-red">Feed</span>
+          Bài <span className="text-custom-red">Viết</span>
         </h1>
         <Newfeed />
       </div>

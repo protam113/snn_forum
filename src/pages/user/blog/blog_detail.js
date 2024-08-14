@@ -23,9 +23,18 @@ const Blog_detail = () => {
   const { userInfo } = useUserInfo();
   const { id: blogId } = useParams();
   const navigate = useNavigate();
-  const { blog, loading, error, message, handleDeleteBlog, likedBlogs } =
-    useBlog(blogId);
+  const {
+    blog,
+    loading,
+    error,
+    message,
+    handleDeleteBlog,
+    likedBlogs,
+    getBlogLikes,
+  } = useBlog(blogId);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [showLikesPopup, setShowLikesPopup] = useState(null);
+  const [likesData, setLikesData] = useState([]);
 
   const handleMenuClick = (id) => {
     setActiveMenu((prev) => (prev === id ? null : id));
@@ -44,6 +53,18 @@ const Blog_detail = () => {
   };
 
   const handleLike = (blogId, liked) => {};
+
+  const handleLikesClick = async (blogId) => {
+    setShowLikesPopup((prev) => (prev === blogId ? null : blogId));
+    if (showLikesPopup !== blogId) {
+      try {
+        const likes = await getBlogLikes(blogId);
+        setLikesData(likes);
+      } catch (error) {
+        console.error("Error fetching likes", error);
+      }
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -207,9 +228,35 @@ const Blog_detail = () => {
               className={`text-gray-500 text-sm cursor-pointer ${
                 theme === "dark" ? "text-gray-400" : "text-gray-500"
               }`}
+              onClick={() => handleLikesClick(blog.id)}
+              onMouseEnter={() => handleLikesClick(blog.id)}
+              onMouseLeave={() => setShowLikesPopup(null)}
             >
-              {blog.likes_count} likes • {blog.comments_count} comments
+              {blog.likes_count} lượt thích • {blog.comments_count} bình luận
             </p>
+            {showLikesPopup === blog.id && (
+              <div className="absolute top-0 right-0 mt-12 p-4 w-80 bg-white border border-gray-300 shadow-lg rounded-lg">
+                <h3 className="text-14 font-semibold">Likes</h3>
+                <ul>
+                  {likesData.map((user) => (
+                    <li
+                      key={user.id}
+                      className="flex items-center mt-2"
+                      onClick={() => handleProfileClick(user.id)}
+                    >
+                      <img
+                        src={user.profile_image}
+                        alt="user-avatar"
+                        className="w-6 h-6 rounded-full mr-2"
+                      />
+                      <span className="text-12 text-black">
+                        {user.first_name} {user.last_name}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <Likeblog

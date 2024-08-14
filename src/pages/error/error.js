@@ -1,6 +1,8 @@
 import React from "react";
 import Img500 from "../../assets/img/error/500error.png";
 import { useTheme } from "../../context/themeContext";
+import { Link } from "react-router-dom";
+import { CiSettings } from "react-icons/ci";
 
 // 404 Error Component
 const Error404 = () => {
@@ -68,4 +70,31 @@ const Error500 = () => {
   );
 };
 
-export { Error404, Error500 };
+const WebMaintenance = () => {
+  return (
+    <div className="flex items-center justify-center bg-background py-8 px-4 sm:py-12 sm:px-6 lg:py-16 lg:px-8">
+      <div className="mx-auto max-w-xl text-center">
+        <CiSettings className="mx-auto h-12 w-12 text-primary spin" />
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          Website Maintenance
+        </h1>
+        <p className="mt-4 text-muted-foreground">
+          We're currently performing scheduled maintenance on our website. We
+          apologize for any inconvenience and expect to have the site back up
+          and running shortly.
+        </p>
+        <div className="mt-6">
+          <Link
+            href="#"
+            className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            prefetch={false}
+          >
+            Check Status
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export { Error404, Error500, WebMaintenance };

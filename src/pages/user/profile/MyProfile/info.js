@@ -1,6 +1,6 @@
 import React from "react";
 import Block from "../../../../components/design/Block";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 import { useTheme } from "../../../../context/themeContext";
@@ -8,6 +8,11 @@ import { useTheme } from "../../../../context/themeContext";
 const Info = () => {
   const { userInfo, loading, error } = useUserInfo();
   const { theme } = useTheme();
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/manage");
+  };
 
   if (loading) {
     return (
@@ -31,37 +36,40 @@ const Info = () => {
           }}
         ></div>
 
-        <div className="absolute left-4 flex items-center p-4 ">
-          <img
-            src={userInfo?.profile_image || "default-avatar.jpg"}
-            alt="avatar"
-            className="w-24 h-24 rounded-full border-4 border-gray-800"
-          />
-          <div className="ml-4">
-            <h1
-              className={`text-2xl font-semibold ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            >
-              {userInfo?.first_name} {userInfo?.last_name}
-              <br />
-              <span className="text-gray-500 text-lg">
-                @{userInfo?.username}
-              </span>
-            </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+          {/* Profile Section */}
+          <div className="flex items-center p-2 bg-gray-200 rounded-lg">
+            <img
+              src={userInfo?.profile_image || "default-avatar.jpg"}
+              alt="avatar"
+              className="w-24 h-24 rounded-full border-4 border-gray-800"
+            />
+            <div className="ml-4">
+              <h1
+                className={`text-2xl font-semibold ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+              >
+                {userInfo?.first_name} {userInfo?.last_name}
+                <br />
+                <span className="text-gray-500 text-lg">
+                  @{userInfo?.username}
+                </span>
+              </h1>
+            </div>
           </div>
         </div>
 
-        <div className="mt-32 grid grid-cols-2 gap-4">
+        <div className="mt-8 grid grid-cols-2 gap-4">
           <Link
             to={`/profile/${userInfo.username}/edit`}
-            className="flex items-center text-sm justify-center py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors"
+            className="flex items-center justify-center text-sm py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors"
           >
             Edit Profile
           </Link>
           <a
             href="/"
-            className="flex items-center text-sm justify-center py-2 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-800 transition-colors"
+            className="flex items-center justify-center text-sm py-2 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-800 transition-colors"
           >
             Archive
           </a>
@@ -72,12 +80,12 @@ const Info = () => {
           theme === "dark" ? "border-zinc-800" : "border-white"
         }`}
       />
-      <Block className="">
+      <Block className="p-4">
         <p>
-          <span className="text-custom-red text-16 font-bold">Bio: </span>
+          <span className="text-custom-red text-lg font-bold">Bio: </span>
           <br />
           <span
-            className={`text-16 font-medium ${
+            className={`text-lg font-medium ${
               theme === "dark" ? "text-white" : "text-black"
             }`}
           >

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import { useCookie } from "../../hooks/useCookie";
 import Logo from "../../assets/img/Logo.svg";
-import Logo_google from "../../assets/img/logo_google.svg";
+// import Logo_google from "../../assets/img/logo_google.svg";
 import Footer from "../../components/layouts/DefaultLayout/components/footer";
 import { useTheme } from "../../context/themeContext";
 import { toast } from "react-toastify";
@@ -13,13 +14,15 @@ import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 const Login = () => {
   const { theme } = useTheme();
   const { setAuth } = useAuth();
+  const [, setAccessToken] = useCookie("access_token"); // useCookie for access token
+  const [, setRefreshToken] = useCookie("refresh_token"); // useCookie for refresh token
   const userRef = useRef(null);
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (userRef.current) {
@@ -46,9 +49,12 @@ const Login = () => {
         })
       );
       const { access_token, refresh_token } = response?.data;
+
+      // Update cookies with useCookie
+      setAccessToken(access_token, { expires: 1 });
+      setRefreshToken(refresh_token, { expires: 30 });
+
       setAuth({ username, password, access_token });
-      localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
       setUsername("");
       setPassword("");
       toast.success("Login successful! Redirecting to home...");

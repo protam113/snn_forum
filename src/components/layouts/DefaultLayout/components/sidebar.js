@@ -2,6 +2,7 @@ import React from "react";
 // import { RiArrowRightDoubleFill } from "react-icons/ri";
 // import { MdOutlineTopic } from "react-icons/md";
 import { FaHome, FaQuestionCircle, FaUser, FaBuilding } from "react-icons/fa";
+import { FaCog } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
 
@@ -74,25 +75,15 @@ const Sidebar = () => {
           </Link>
         </div>
         <hr className="border-zinc-900 my-4" />
-        {/* <div>
-          <h2 className="text-sm font-semibold mb-4 flex items-center space-x-2">
-            <MdOutlineTopic className="h-6 w-6" />
-            <span>Topic</span>
-          </h2>
-          {teams.map((team) => (
-            <div key={team.id} className={teamItemClasses}>
-              <img
-                className="h-8 w-8 rounded-full object-cover flex-shrink-0 transition-transform transform hover:scale-110"
-                src={team.image}
-                alt="Team"
-              />
-              <span className="ml-3 text-sm font-medium">{team.name}</span>
-              <button className="ml-auto text-blue-400 hover:text-blue-300 transition-colors flex-shrink-0">
-                <RiArrowRightDoubleFill className="h-5 w-5" />
-              </button>
-            </div>
-          ))} 
-        </div>*/}
+        <div className="relative flex flex-col space-y-4">
+          <Link
+            to="/manage"
+            className="bg-custom-red text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-600"
+          >
+            <FaCog className="text-lg ml-2" /> {/* Thay thế icon */}
+            <span className="ml-4 text-14">Quản Lý</span>
+          </Link>
+        </div>
       </div>
 
       {/* Sidebar for iPad (md)

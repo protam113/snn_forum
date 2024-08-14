@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai"; // Trash icon
+import ReactQuill from "react-quill";
 
 const CreateProduct = () => {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ const CreateProduct = () => {
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-6">Create a New Product</h1>
+      <h1 className="text-3xl font-bold mb-6">Tạo Sản Phẩm</h1>
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -90,7 +91,7 @@ const CreateProduct = () => {
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-1">
-                Title
+                Tên Sản Phảm
               </label>
               <input
                 id="title"
@@ -127,18 +128,17 @@ const CreateProduct = () => {
               htmlFor="description"
               className="block text-sm font-medium mb-1"
             >
-              Description
+              Chi Tiết Sản Phẩm
             </label>
-            <textarea
-              id="description"
-              name="description"
-              placeholder="Enter product description"
+            <ReactQuill
               value={formData.description}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md min-h-[120px]"
-              required
+              className="mb-6"
+              placeholder="What's on your mind?"
+              style={{ height: "10rem" }}
             />
           </div>
+          <hr className="border-white my-6" />{" "}
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <label
@@ -155,10 +155,10 @@ const CreateProduct = () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               >
-                <option value="">Select condition</option>
-                <option value="new">New</option>
-                <option value="used">Used</option>
-                <option value="refurbished">Refurbished</option>
+                <option value="">Chọn tình trạng</option>
+                <option value="new">Mới</option>
+                <option value="used">Đã Sử Dụng</option>
+                <option value="refurbished">Tân Trang</option>
               </select>
             </div>
             <div>
@@ -166,7 +166,7 @@ const CreateProduct = () => {
                 htmlFor="fettle"
                 className="block text-sm font-medium mb-1"
               >
-                Fettle
+                Chất Lượng
               </label>
               <select
                 id="fettle"
@@ -176,10 +176,10 @@ const CreateProduct = () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               >
-                <option value="">Select fettle</option>
-                <option value="good">Good</option>
-                <option value="fair">Fair</option>
-                <option value="poor">Poor</option>
+                <option value="">Chọn Chất Lượng</option>
+                <option value="good">Tốt</option>
+                <option value="fair">Bình Thường</option>
+                <option value="poor">Trung Bình</option>
               </select>
             </div>
           </div>

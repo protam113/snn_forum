@@ -12,6 +12,7 @@ import { BiMenuAltRight } from "react-icons/bi";
 import { MdSupportAgent } from "react-icons/md";
 
 import Loading from "../../../../pages/error/load";
+import Notifications from "../../../notification/noti";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
@@ -107,11 +108,7 @@ const Navbar = () => {
 
         {/* User info and menu */}
         <section className="flex items-center space-x-4">
-          <FaRegBell
-            className={`text-2xl ${
-              theme === "light" ? "text-zinc-900" : "text-white"
-            }`}
-          />
+          <Notifications />
           <div className="relative group">
             <button
               className="flex cursor-pointer items-center px-4 py-2 transition-all text-back"

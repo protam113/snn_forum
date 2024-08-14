@@ -29,7 +29,7 @@ const PersonalIf = () => {
 
   return (
     <Block className="leading-snug space-y-4">
-      <p className="flex items-center text-sm md:text-base">
+      <p className="flex items-center text-14 ">
         <FaMapMarkerAlt className="text-custom-red mr-2" />
         <span
           className={`font-bold ${
@@ -46,7 +46,7 @@ const PersonalIf = () => {
           {personalInfo?.location || "No location available"}
         </span>
       </p>
-      <p className="flex items-center text-sm md:text-base">
+      <p className="flex items-center text-14 ">
         <FaPhoneAlt className="text-custom-red mr-2" />
         <span
           className={`font-bold ${
@@ -63,7 +63,7 @@ const PersonalIf = () => {
           {personalInfo?.phone_number || "No contact available"}
         </span>
       </p>
-      <p className="flex items-center text-sm md:text-base">
+      <p className="flex items-center text-14 ">
         <FaEnvelope className="text-custom-red mr-2" />
         <span
           className={`font-bold ${
@@ -80,7 +80,7 @@ const PersonalIf = () => {
           {personalInfo?.email || "No email available"}
         </span>
       </p>
-      <p className="flex items-center text-sm md:text-base">
+      <p className="flex items-center text-14 ">
         <FaLink className="text-custom-red mr-2" />
         <span
           className={`font-bold ${
@@ -90,7 +90,7 @@ const PersonalIf = () => {
           Web:
         </span>
         <span
-          className={`ml-2 ${
+          className={`ml-3 ${
             theme === "dark" ? "text-zinc-400" : "text-zinc-800"
           }`}
         >

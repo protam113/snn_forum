@@ -6,7 +6,6 @@ const useUserInfo = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [userBlogs, setUserBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const { getToken, refreshAuthToken } = useAuth();
 
@@ -46,15 +45,9 @@ const useUserInfo = () => {
             );
             setUserBlogs(postsResponse.data);
           } catch (innerErr) {
-            console.error("Error fetching user info with new token", innerErr);
-            setError("Error fetching user information");
+            // Do nothing or handle the error silently
           }
-        } else {
-          setError("Failed to refresh token");
         }
-      } else {
-        console.error("Error fetching user information", err);
-        setError("Error fetching user information");
       }
     } finally {
       setLoading(false);
@@ -65,7 +58,7 @@ const useUserInfo = () => {
     const token = await getToken();
 
     if (!token) {
-      setError("No token available");
+      // Do nothing or handle the error silently
       return;
     }
 
@@ -86,7 +79,7 @@ const useUserInfo = () => {
         if (newToken) {
           try {
             const response = await authApi(newToken).patch(
-              endpoints.updateProfile,
+              endpoints.UpdateProfile,
               updatedInfo,
               {
                 headers: {
@@ -95,16 +88,8 @@ const useUserInfo = () => {
               }
             );
             setUserInfo(response.data);
-          } catch (innerErr) {
-            console.error("Error updating user info with new token", innerErr);
-            setError("Error updating user information");
-          }
-        } else {
-          setError("Failed to refresh token");
+          } catch (innerErr) {}
         }
-      } else {
-        console.error("Error updating user information", err);
-        setError("Error updating user information");
       }
     }
   };
@@ -113,7 +98,7 @@ const useUserInfo = () => {
     fetchUserInfo();
   }, [fetchUserInfo]);
 
-  return { userInfo, userBlogs, loading, error, updateUserInfo };
+  return { userInfo, userBlogs, loading, updateUserInfo };
 };
 
 export default useUserInfo;

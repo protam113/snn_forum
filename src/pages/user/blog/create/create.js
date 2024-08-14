@@ -95,7 +95,7 @@ const Create = () => {
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             >
-              {userInfo?.fullName || "Your Name"}
+              {userInfo?.first_name || "Your "} {userInfo?.last_name || " Name"}
             </h1>
             <span
               className={`text-sm ${
