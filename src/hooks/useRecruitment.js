@@ -8,7 +8,7 @@ const useRecruitment = (postId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recruitment, setRecruitment] = useState(null);
-  const { getToken, refreshAuthToken } = useAuth();
+  const { getToken } = useAuth();
 
   const fetchRecruitments = useCallback(async () => {
     try {
@@ -27,7 +27,7 @@ const useRecruitment = (postId) => {
       );
       setRecruitments(sortedRecruitments);
     } catch (error) {
-      console.error("Error fetching recruitments:", error);
+      alert.error("Error fetching recruitments:", error);
       setError("Error fetching recruitments");
     } finally {
       setLoading(false);

@@ -11,21 +11,21 @@ const useAuth = () => {
   const {
     auth,
     setAuth,
-    login,
+    handleLogin,
     logout,
     fetchCurrentUser,
     getToken,
-    refreshAuthToken,
+    refreshAccessToken,
   } = context;
 
   return {
     auth,
     setAuth,
-    login,
+    handleLogin,
     logout,
     fetchCurrentUser,
     getToken,
-    refreshAuthToken,
+    refreshAccessToken,
   };
 };
 

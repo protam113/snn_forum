@@ -1,10 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
-import {
-  authApi,
-  endpoints,
-  refreshToken as refreshTokenApi,
-} from "../api/api";
+import { authApi, endpoints, baseURL } from "../api/api";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
@@ -14,29 +13,29 @@ export const AuthProvider = ({ children }) => {
   const location = useLocation();
 
   const getToken = () => localStorage.getItem("access_token");
-  const getRefreshToken = () => localStorage.getItem("refresh_token");
 
-  const refreshAuthToken = async () => {
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) return null;
-
-    try {
-      const response = await refreshTokenApi(refreshToken);
-      const { access_token } = response.data;
-      localStorage.setItem("access_token", access_token);
-      return access_token;
-    } catch (error) {
-      console.error("Error refreshing", error);
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      setAuth(null);
-      if (location.pathname !== "/register") navigate("/login");
-      return null;
+  const refreshAccessToken = async () => {
+    const refresh_token = Cookies.get("refresh_token");
+    if (refresh_token) {
+      try {
+        const api = authApi();
+        const response = await api.post(endpoints.refreshLogin, {
+          refreshToken: refresh_token,
+        });
+        const { access_token } = response.data;
+        localStorage.setItem("access_token", access_token);
+        setAuth((prevAuth) => ({ ...prevAuth, access_token }));
+      } catch (err) {
+        console.error("Error refreshing access token", err);
+        logout();
+      }
+    } else {
+      logout();
     }
   };
 
   const fetchCurrentUser = async () => {
-    let token = getToken();
+    const token = getToken();
     if (token) {
       try {
         const api = authApi(token);
@@ -45,25 +44,14 @@ export const AuthProvider = ({ children }) => {
           setAuth({ ...response.data, isAuthenticated: true });
         } else {
           localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
           setAuth(null);
           if (location.pathname !== "/register") navigate("/login");
         }
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          const newToken = await refreshAuthToken();
-          if (newToken) {
-            const api = authApi(newToken);
-            const response = await api.get(endpoints.currentUser);
-            setAuth({ ...response.data, isAuthenticated: true });
-          }
-        } else {
-          console.error("Error fetching current user", error);
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
-          setAuth(null);
-          if (location.pathname !== "/register") navigate("/login");
-        }
+        console.error("Error fetching current user", error);
+        localStorage.removeItem("access_token");
+        setAuth(null);
+        if (location.pathname !== "/register") navigate("/login");
       }
     } else {
       setAuth(null);
@@ -71,28 +59,48 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (username, password) => {
+  const handleLogin = async (username, password) => {
     try {
-      const response = await authApi().post(endpoints.login, {
-        username,
-        password,
-      });
-      const { access_token, refresh_token } = response.data;
-      localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
-
-      const userResponse = await authApi(access_token).get(
-        endpoints.currentUser
+      const response = await axios.post(
+        `${baseURL}${endpoints.login}`,
+        new URLSearchParams({
+          grant_type: "password",
+          client_id: process.env.REACT_APP_client_id_ENDPOINT,
+          client_secret: process.env.REACT_APP_client_secret_ENDPOINT,
+          username,
+          password,
+        })
       );
-      setAuth({ ...userResponse.data, isAuthenticated: true });
-    } catch (error) {
-      console.error("Error logging in", error);
+      const { access_token, refresh_token } = response.data;
+      setAuth({ username, access_token });
+      localStorage.setItem("access_token", access_token);
+      Cookies.get("refresh_token", refresh_token);
+
+      toast.success("Login successful! Redirecting to home...");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (err) {
+      console.error("Login error: ", err);
+      if (!err.response) {
+        toast.error("No Server Response");
+      } else if (err.response.status === 400) {
+        toast.error("Missing Username or Password");
+      } else if (err.response.status === 401) {
+        toast.error("Unauthorized");
+      } else {
+        toast.error(
+          "Login Failed: " +
+            (err.response.data.message || "An unexpected error occurred")
+        );
+      }
     }
   };
 
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+
     setAuth(null);
     navigate("/login");
   };
@@ -102,11 +110,11 @@ export const AuthProvider = ({ children }) => {
       value={{
         auth,
         setAuth,
-        login,
+        handleLogin,
         logout,
         fetchCurrentUser,
         getToken,
-        refreshAuthToken,
+        refreshAccessToken,
       }}
     >
       {children}

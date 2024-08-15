@@ -16,7 +16,7 @@ const useBlog = (blogId) => {
   const [likeListVisible, setLikeListVisible] = useState(false);
   const [message, setMessage] = useState("");
   const fileInputRef = useRef(null);
-  const { getToken, refreshAuthToken } = useAuth();
+  const { getToken } = useAuth();
 
   // Fetch all blogs
   const fetchBlogs = useCallback(async () => {
@@ -318,7 +318,7 @@ const useBlog = (blogId) => {
           onClose();
         } catch (err) {
           if (err.response?.status === 401) {
-            const newToken = await refreshAuthToken();
+            const newToken = await getToken();
             if (newToken) {
               await authApi(newToken).post(endpoints.Blog, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -365,7 +365,7 @@ const useBlog = (blogId) => {
       setBlog(response.data);
     } catch (err) {
       if (err.response?.status === 401) {
-        const newToken = await refreshAuthToken();
+        const newToken = await getToken();
         if (newToken) {
           try {
             const response = await authApi(newToken).patch(

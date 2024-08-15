@@ -1,25 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import { useTheme } from "../../context/themeContext";
+import { toast } from "react-toastify";
+import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
+import AuthContext from "../../context/AuthContext";
 import Logo from "../../assets/img/Logo.svg";
 import Logo_google from "../../assets/img/logo_google.svg";
 import Footer from "../../components/layouts/DefaultLayout/components/footer";
-import { useTheme } from "../../context/themeContext";
-import { toast } from "react-toastify";
-import { endpoints, baseURL } from "../../api/api";
-import axios from "axios";
-import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const { theme } = useTheme();
-  const { setAuth } = useAuth();
+  const { handleLogin } = React.useContext(AuthContext); // Use React.useContext to get the context
   const userRef = useRef(null);
   const navigate = useNavigate();
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (userRef.current) {
@@ -31,45 +28,9 @@ const Login = () => {
     setErrMsg("");
   }, [username, password]);
 
-  const handleLogin = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${baseURL}${endpoints.login}`,
-        new URLSearchParams({
-          grant_type: "password",
-          client_id: "FX4glR4JIGLryn5EaXp4cjh21n8sZvuaqMqTrU1S",
-          client_secret:
-            "L2DWvzpcf6OW7MFiFanE0y3sEQN6dBxGF93QcAQO8LEZqpUevFwGDbqVxUECr70Iy0BbODuysHAKICax3CkgOSWT6wpVbHd6TSInh4rotyQmMBpdZO9iDUy2l2wODimD",
-          username,
-          password,
-        })
-      );
-      const { access_token, refresh_token } = response?.data;
-      setAuth({ username, password, access_token });
-      localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
-      setUsername("");
-      setPassword("");
-      toast.success("Login successful! Redirecting to home...");
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    } catch (err) {
-      console.error("Login error: ", err);
-      if (!err.response) {
-        toast.error("No Server Response");
-      } else if (err.response?.status === 400) {
-        toast.error("Missing Username or Password");
-      } else if (err.response?.status === 401) {
-        toast.error("Unauthorized");
-      } else {
-        toast.error(
-          "Login Failed: " + err.response?.data?.message ||
-            "An unexpected error occurred"
-        );
-      }
-    }
+    await handleLogin(username, password); // Call handleLogin from context
   };
 
   return (
@@ -107,7 +68,7 @@ const Login = () => {
               </span>
             </div>
           </div>
-          <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
+          <form className="flex flex-col space-y-4" onSubmit={onSubmit}>
             {/* <button
               type="button"
               className={`flex items-center justify-center px-4 py-2 rounded-lg border ${
@@ -120,7 +81,7 @@ const Login = () => {
               <img
                 src={Logo_google}
                 alt="Google Logo"
-                className="w-6 h-auto" // Adjust size as needed
+                className="w-6 h-auto"
               />
             </button>
             <div className="flex items-center my-4">
@@ -197,7 +158,7 @@ const Login = () => {
           <div className="text-center mt-2 text-black">
             Forgot your password?{" "}
             <a href="/password/reset/" className="text-blue-500">
-              Reset it here
+              Reset it
             </a>
           </div>
         </div>

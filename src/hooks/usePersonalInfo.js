@@ -9,7 +9,7 @@ const usePersonalInfo = () => {
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
 
-  const { getToken, refreshAuthToken } = useAuth();
+  const { getToken } = useAuth();
 
   const fetchPersonalInfo = useCallback(async () => {
     if (!userId) {
@@ -41,7 +41,7 @@ const usePersonalInfo = () => {
       setPersonalBlogs(blogsResponse.data.results || blogsResponse.data);
     } catch (err) {
       if (err.response?.status === 401) {
-        const newToken = await refreshAuthToken();
+        const newToken = await getToken();
         if (newToken) {
           try {
             // Fetch user personal info with new token
@@ -75,7 +75,7 @@ const usePersonalInfo = () => {
     } finally {
       setLoading(false);
     }
-  }, [getToken, refreshAuthToken, userId]);
+  }, [getToken, userId]);
 
   useEffect(() => {
     if (userId) {
