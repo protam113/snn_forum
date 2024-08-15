@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Block from "../../../../components/design/Block";
 import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
-import Logo from "../../../../assets/img/Logo.svg";
 import { useTheme } from "../../../../context/themeContext";
 import useRecruitment from "../../../../hooks/useRecruitment";
 import useUserInfo from "../../../../hooks/useUserInfo";
@@ -18,7 +17,7 @@ const RecruitmentPost = () => {
   const { recruitments, loading, error } = useRecruitment();
 
   const handlePostClick = (postId) => {
-    navigate(`/recruitment/${postId}`);
+    navigate(`/tuyen_dung/${postId}`);
   };
 
   const handleProfileClick = (userId) => {
@@ -48,11 +47,11 @@ const RecruitmentPost = () => {
   return (
     <div className="post-list">
       {recruitments.map((recruitment) => {
-        const isOwner = userInfo && userInfo.id === recruitment.owner; // Sử dụng `owner` từ dữ liệu API
+        const isOwner = userInfo && userInfo.id === recruitment.owner;
 
         return (
           <Block
-            key={recruitment.id} // Đảm bảo mỗi phần tử có key duy nhất
+            key={recruitment.id}
             className={`col-span-12 row-span-4 md:col-span-6 mb-4 p-4 ${
               theme === "dark"
                 ? "bg-zinc-800 text-white"
@@ -64,14 +63,18 @@ const RecruitmentPost = () => {
             } transition-colors duration-200`}
           >
             <div className="flex items-center mb-4">
-              <img src={Logo} alt="avatar" className="w-12 h-12 rounded-full" />
+              <img
+                src="https://static.chotot.com/storage/chotot-icons/png/jobtype_v2/2.png"
+                alt="avatar"
+                className="w-12 h-12 rounded-full"
+              />
               <div className="ml-2 flex-1">
                 <h1
                   className={`text-14 font-bold ${
                     theme === "dark" ? "text-white" : "text-black"
                   }`}
                 >
-                  {recruitment.job_title}
+                  {recruitment.user.first_name} {recruitment.user.last_name}
                 </h1>
                 <p
                   className={`text-gray-500 text-14 ${
@@ -84,7 +87,7 @@ const RecruitmentPost = () => {
               <div className="relative">
                 <BsThreeDots
                   className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
-                  onClick={() => handleMenuClick(recruitment.id)} // Sử dụng postId thực tế
+                  onClick={() => handleMenuClick(recruitment.id)}
                 />
                 {activeMenu === recruitment.id && (
                   <div
@@ -97,7 +100,7 @@ const RecruitmentPost = () => {
                     <ul className="text-gray-700">
                       <li
                         className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                        onClick={() => handleEditClick(recruitment.id)} // Sử dụng postId thực tế
+                        onClick={() => handleEditClick(recruitment.id)}
                       >
                         <FaEdit className="mr-2 text-gray-400" />
                         Chỉnh sửa
@@ -122,9 +125,9 @@ const RecruitmentPost = () => {
               className={`mb-4 font-semibold text-16 cursor-pointer ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
-              onClick={() => handlePostClick(recruitment.id)} // Sử dụng postId thực tế
+              onClick={() => handlePostClick(recruitment.id)}
             >
-              {recruitment.job_description}
+              {recruitment.content}
             </p>
             <div className="flex justify-between mb-4">
               <p
@@ -132,7 +135,7 @@ const RecruitmentPost = () => {
                   theme === "dark" ? "text-gray-200" : "text-black"
                 }`}
               >
-                Mức lương: {recruitment.salary_range}
+                Mức lương: {recruitment.salary}
               </p>
               <p
                 className={`text-14 cursor-pointer ${
@@ -148,11 +151,10 @@ const RecruitmentPost = () => {
                   theme === "dark" ? "text-gray-200" : "text-black"
                 }`}
               >
-                Ngày hết hạn:
+                Số Lượng: {recruitment.quantity}
               </p>
               <p className="text-white bg-red-400 px-2 py-1 rounded">
-                {new Date(recruitment.created_date).toLocaleDateString()}{" "}
-                {/* Bạn có thể cần tính toán ngày hết hạn thực tế */}
+                {new Date(recruitment.date).toLocaleDateString()}
               </p>
             </div>
           </Block>

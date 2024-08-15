@@ -1,12 +1,13 @@
 // layout
 import { DefaultLayout, AdminLayout } from "../components/layouts/index";
+import ResetPassword from "../pages/auth/authResetPass";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
 import EdtBlog from "../pages/user/blog/edtBlog";
 import Company from "../pages/user/company/company";
-import RegisterCo from "../pages/user/company/RegisterCo";
+// import RegisterCo from "../pages/user/company/RegisterCo";
 import ContributeIdeas from "../pages/user/contributeIdeas";
 // import AdHome from "../pages/admin/AdHome";
 // import Error_404 from "../pages/error/404";
@@ -24,7 +25,8 @@ import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
 import Manage from "../pages/user/recruitment/manage/manage";
 import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
-import RecruitmentMain from "../pages/user/recruitment/recruitmentMain";
+import RecruitmentDetail from "../pages/user/recruitment/recruitmentDetail";
+// import RecruitmentMain from "../pages/user/recruitment/recruitmentMain";
 import Search from "../pages/user/search";
 import setting from "../pages/user/setting/setting";
 import User from "../pages/user/Suser/user";
@@ -32,8 +34,9 @@ import User from "../pages/user/Suser/user";
 const publicRoutes = [
   // auth
   { path: "/login", component: Login, layout: DefaultLayout },
+  { path: "/password/reset/", component: ResetPassword, layout: DefaultLayout },
   { path: "/register", component: Register, layout: DefaultLayout },
-  { path: "/register_company", component: RegisterCo, layout: DefaultLayout },
+  // { path: "/register_company", component: RegisterCo, layout: DefaultLayout },
   // pages
   { path: "/", component: Home, layout: DefaultLayout },
   { path: "/create_blog", component: Create, layout: DefaultLayout },
@@ -57,8 +60,12 @@ const publicRoutes = [
 
   { path: "/search", component: Search, layout: DefaultLayout },
 
-  // { path: "/tuyen_dung", component: RecruitmentMain, layout: DefaultLayout },
   { path: "/tuyen_dung", component: Recruitment, layout: DefaultLayout },
+  {
+    path: "/tuyen_dung/:id",
+    component: RecruitmentDetail,
+    layout: DefaultLayout,
+  },
 
   { path: "/manage", component: Manage, layout: DefaultLayout },
   { path: "/work_manage", component: WorkManage, layout: DefaultLayout },

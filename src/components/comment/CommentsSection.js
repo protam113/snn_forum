@@ -144,12 +144,14 @@ const CommentsSection = () => {
                           </p>
                         </div>
                         <div className="ml-auto">
-                          <FaTrashAlt
-                            onClick={() =>
-                              handleDeleteComment(reply.id, userInfo)
-                            }
-                            className="text-gray-500 cursor-pointer"
-                          />
+                          {userInfo?.username === comment.user.username && (
+                            <FaTrashAlt
+                              onClick={() =>
+                                handleDeleteComment(reply.id, userInfo)
+                              }
+                              className="text-gray-500 cursor-pointer"
+                            />
+                          )}
                         </div>
                       </div>
                       <p className="ml-10 text-black">{reply.content}</p>

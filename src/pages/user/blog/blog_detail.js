@@ -17,6 +17,7 @@ import CommentsSection from "../../../components/comment/CommentsSection";
 import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
+import { toast } from "react-toastify";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -64,6 +65,19 @@ const Blog_detail = () => {
         console.error("Error fetching likes", error);
       }
     }
+  };
+
+  const handleCopyLink = (blogId) => {
+    const blogUrl = `${window.location.origin}/blog/${blogId}`;
+    navigator.clipboard
+      .writeText(blogUrl)
+      .then(() => {
+        toast.success("Link copied to clipboard!");
+      })
+      .catch((error) => {
+        toast.error("Failed to copy link");
+        console.error("Failed to copy link", error);
+      });
   };
 
   useEffect(() => {
@@ -119,8 +133,8 @@ const Blog_detail = () => {
   return (
     <>
       <SEO
-        title={blog.title || "Blog Detail"}
-        description={blog.description || "Details of the blog"}
+        title={blog.content || "Blog Detail"}
+        description={blog.content || "Details of the blog"}
         name="XLR Team"
         type="article"
       />
@@ -264,11 +278,12 @@ const Blog_detail = () => {
                   liked={likedBlogs[blog.id] || false}
                   onLike={handleLike}
                 />
-                {/* <BiRepost
-                className={`text-2xl cursor-pointer ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-500"
-                }`}
-              /> */}
+                <BiRepost
+                  className={`text-2xl cursor-pointer ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-500"
+                  }`}
+                  onClick={() => handleCopyLink(blog.id)}
+                />
               </div>
               <div className="flex items-center gap-4">
                 {/* <BsBookmark

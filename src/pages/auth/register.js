@@ -139,7 +139,6 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    // Create FormData object
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
@@ -147,22 +146,16 @@ const Register = () => {
     formData.append("first_name", firstName);
     formData.append("last_name", lastName);
     formData.append("phone_number", phoneNumber);
-    formData.append("location", location);
+    formData.append("location", JSON.stringify(location)); // Serialize location object
     formData.append("about", about);
     formData.append("link", link);
 
-    // Append files if they exist
     if (profileImage) {
       formData.append("profile_image", profileImage);
     }
     if (profileBg) {
       formData.append("profile_bg", profileBg);
     }
-
-    // Log FormData entries
-    // for (const [key, value] of formData.entries()) {
-    //   console.log(`${key}:`, value);
-    // }
 
     try {
       const response = await axios.post(
@@ -185,13 +178,20 @@ const Register = () => {
       if (!err?.response) {
         toast.error("No Server Response");
       } else if (err.response?.status === 400) {
-        toast.error("Missing or Invalid Input");
-      } else if (err.response?.status === 409) {
-        // Assuming 409 for conflicts like duplicate phone numbers
-        toast.error(
-          "Phone number already in use. Please use a different number."
-        );
-        setStep(1);
+        const errors = err.response.data;
+        if (errors.email) {
+          toast.error("Email already in use. Please use a different email.");
+        }
+        if (errors.phone_number) {
+          toast.error(
+            "Phone number already in use. Please use a different number."
+          );
+        }
+        if (errors.username) {
+          toast.error(
+            "Username already taken. Please choose a different username."
+          );
+        }
       } else {
         toast.error("Registration Failed");
       }

@@ -202,9 +202,6 @@ const Navbar = () => {
                 <MdSupportAgent className="text-14" />
                 <span>Đóng góp</span>
               </Link>
-              <div className="flex items-center space-x-3 px-4 py-2 text-neutral-200">
-                <ThemeToggle />
-              </div>
               {userInfo ? (
                 <div className="flex items-center space-x-3 px-4 py-2 text-neutral-200 hover:white hover:bg-zinc-600 rounded-md">
                   <LogoutButton />

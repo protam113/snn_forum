@@ -19,9 +19,12 @@ const authApi = (token = null) => {
 const endpoints = {
   login: process.env.REACT_APP_LOGIN_ENDPOINT,
   refreshLogin: process.env.REACT_APP_refreshLogin_ENDPOINT,
+  Verify: process.env.REACT_APP_Verify_ENDPOINT,
+
   currentUser: process.env.REACT_APP_currentUser_ENDPOINT,
   UserInfo: process.env.REACT_APP_UserInfo_ENDPOINT,
   UpdateProfile: process.env.REACT_APP_UpdateProfile_ENDPOINT,
+  ChangePassword: process.env.REACT_APP_ChangePassword_ENDPOINT,
   currentUserBlog: process.env.REACT_APP_currentUserBlog_ENDPOINT,
   // currentUserFollower: "/user/followers/",
   // currentUserFollowing: "/user/following/",
@@ -32,8 +35,8 @@ const endpoints = {
   LikeBlog: process.env.REACT_APP_LikeBlog_ENDPOINT,
   CmtBlog: process.env.REACT_APP_CmtBlog_ENDPOINT,
   DelCmt: process.env.REACT_APP_DelCmt_ENDPOINT,
-
   Recruitment: process.env.REACT_APP_Recruitment_ENDPOINT,
+  RecruitmentDetail: process.env.REACT_APP_RecruitmentDetail_ENDPOINT,
   // currentCompany: "/company/:id/",
 };
 

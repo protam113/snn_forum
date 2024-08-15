@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { AiOutlineDelete } from "react-icons/ai"; // Trash icon
+import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlinePlus } from "react-icons/ai";
+//  icon
 import ReactQuill from "react-quill";
 
 const CreateProduct = () => {
@@ -56,15 +58,19 @@ const CreateProduct = () => {
           <label htmlFor="images" className="block text-sm font-medium mb-1">
             Upload Images (max 4)
           </label>
-          <input
-            id="images"
-            name="images"
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-            className="mb-4"
-          />
+          <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+            <input
+              id="images"
+              name="images"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
+            <AiOutlinePlus className="text-gray-500" size={24} />
+            <span className="text-gray-500">Chọn hình ảnh</span>
+          </div>
           <div className="grid grid-cols-2 gap-2">
             {formData.images.length > 0 &&
               formData.images.slice(0, 4).map((image, index) => (

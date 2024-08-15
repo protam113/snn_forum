@@ -1,24 +1,21 @@
 import { useState, useEffect, useCallback } from "react";
-import useAuth from "./useAuth";
 import { authApi, endpoints } from "../api/api";
 
-const useRecruitment = () => {
+const useRecruitment = (postId) => {
   const [recruitments, setRecruitments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const { getToken } = useAuth();
+  const [recruitment, setRecruitment] = useState(null);
 
   const fetchRecruitments = useCallback(async () => {
-    const token = await getToken();
     try {
-      const response = await authApi(token ? token : undefined).get(
-        endpoints.Recruitment
-      );
+      const response = await authApi().get(endpoints.Recruitment);
       const results = response.data.results;
+
       if (!Array.isArray(results)) {
         throw new Error("Results is not an array");
       }
+
       const uniqueResults = Array.from(new Set(results.map((r) => r.id))).map(
         (id) => results.find((r) => r.id === id)
       );
@@ -27,18 +24,36 @@ const useRecruitment = () => {
       );
       setRecruitments(sortedRecruitments);
     } catch (error) {
-      console.error("Error fetching recruitments", error);
+      console.error("Error fetching recruitments:", error);
       setError("Error fetching recruitments");
     } finally {
       setLoading(false);
     }
-  }, [getToken]);
+  }, []);
+
+  const fetchRecruitment = useCallback(async () => {
+    if (!postId) return;
+
+    try {
+      const url = endpoints.RecruitmentDetail.replace(":id", postId);
+      const response = await authApi().get(url);
+
+      // Directly use the response.data as the recruitment object
+      setRecruitment(response.data);
+    } catch (error) {
+      console.error("Error fetching recruitment detail:", error);
+      setError("Error fetching recruitment detail");
+    } finally {
+      setLoading(false);
+    }
+  }, [postId]);
 
   useEffect(() => {
     fetchRecruitments();
-  }, [fetchRecruitments]);
+    fetchRecruitment();
+  }, [fetchRecruitments, fetchRecruitment]);
 
-  return { recruitments, loading, error };
+  return { recruitments, loading, error, recruitment };
 };
 
 export default useRecruitment;

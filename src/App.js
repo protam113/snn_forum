@@ -16,9 +16,12 @@ import RequireAuth from "./hooks/requireAuth.js";
 import { LoadingProvider } from "./context/LoadingContext";
 import { BlogProvider } from "./context/BlogContext.js";
 import { HelmetProvider } from "react-helmet-async";
+import useScrollToTop from "./hooks/useScrollToTop.js";
 
 function AppContent() {
   const { theme } = useTheme();
+
+  useScrollToTop();
 
   return (
     <div
@@ -80,7 +83,7 @@ function AppContent() {
 
 function App() {
   return (
-    <HashRouter hashType="hashbang">
+    <Router>
       <AuthProvider>
         <ThemeProvider>
           <LoadingProvider>
@@ -93,7 +96,7 @@ function App() {
           </LoadingProvider>
         </ThemeProvider>
       </AuthProvider>
-    </HashRouter>
+    </Router>
   );
 }
 

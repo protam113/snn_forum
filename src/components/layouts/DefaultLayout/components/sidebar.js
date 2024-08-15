@@ -5,9 +5,11 @@ import { FaHome, FaQuestionCircle, FaUser, FaBuilding } from "react-icons/fa";
 import { FaCog } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
+import useUserInfo from "../../../../hooks/useUserInfo";
 
 const Sidebar = () => {
   const { theme } = useTheme();
+  const { userInfo } = useUserInfo();
 
   // const teams = [
   //   {
@@ -75,15 +77,17 @@ const Sidebar = () => {
           </Link>
         </div>
         <hr className="border-zinc-900 my-4" />
-        <div className="relative flex flex-col space-y-4">
-          <Link
-            to="/manage"
-            className="bg-custom-red text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-600"
-          >
-            <FaCog className="text-lg ml-2" /> {/* Thay thế icon */}
-            <span className="ml-4 text-14">Quản Lý</span>
-          </Link>
-        </div>
+        {userInfo && (
+          <div className="relative flex flex-col space-y-4">
+            <Link
+              to="/manage"
+              className="bg-custom-red text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-600"
+            >
+              <FaCog className="text-lg ml-2" />
+              <span className="ml-4 text-14">Quản Lý</span>
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Sidebar for iPad (md)

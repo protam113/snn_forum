@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CiCirclePlus } from "react-icons/ci";
+import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import Example from "../../error/load";
 import Block from "../../../components/design/Block";
@@ -22,16 +22,33 @@ const EditProfile = () => {
     province: "",
     district: "",
   });
+  const [previewImages, setPreviewImages] = useState({
+    profile_image: "",
+    profile_bg: "",
+  });
 
   const navigate = useNavigate(); // Hook để điều hướng
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "profile_image" || name === "profile_bg") {
+      const file = files[0];
       setFormData((prevState) => ({
         ...prevState,
-        [name]: files[0],
+        [name]: file,
       }));
+
+      // Tạo URL cho hình ảnh xem trước
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImages((prevState) => ({
+          ...prevState,
+          [name]: reader.result,
+        }));
+      };
+      if (file) {
+        reader.readAsDataURL(file);
+      }
     } else {
       setFormData((prevState) => ({
         ...prevState,
@@ -49,6 +66,17 @@ const EditProfile = () => {
     setFormData((prevState) => ({
       ...prevState,
       location: formattedLocation,
+    }));
+  };
+
+  const handleDeleteImage = (imageType) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [imageType]: null,
+    }));
+    setPreviewImages((prevState) => ({
+      ...prevState,
+      [imageType]: "",
     }));
   };
 
@@ -152,6 +180,88 @@ const EditProfile = () => {
           />
         </div>
 
+        <div className="mb-6 flex flex-col md:flex-row gap-4">
+          <div className="flex-1 relative">
+            <label
+              htmlFor="profile_image"
+              className="block text-sm font-medium mb-1"
+            >
+              Profile Image
+            </label>
+            <div className="relative flex items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+              <input
+                id="profile_image"
+                name="profile_image"
+                type="file"
+                accept="image/*"
+                onChange={handleChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+              {previewImages.profile_image ? (
+                <div className="relative w-full h-full">
+                  <img
+                    src={previewImages.profile_image}
+                    alt="Profile Preview"
+                    className="object-cover w-full h-full rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage("profile_image")}
+                    className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200 transition-colors duration-200"
+                  >
+                    <AiOutlineDelete size={20} className="text-red-500" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <AiOutlinePlus className="text-gray-500" size={24} />
+                  <span className="text-gray-500">Chọn hình ảnh</span>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-1 relative">
+            <label
+              htmlFor="profile_bg"
+              className="block text-sm font-medium mb-1"
+            >
+              Profile Background
+            </label>
+            <div className="relative flex items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+              <input
+                id="profile_bg"
+                name="profile_bg"
+                type="file"
+                accept="image/*"
+                onChange={handleChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+              {previewImages.profile_bg ? (
+                <div className="relative w-full h-full">
+                  <img
+                    src={previewImages.profile_bg}
+                    alt="Background Preview"
+                    className="object-cover w-full h-full rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage("profile_bg")}
+                    className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200 transition-colors duration-200"
+                  >
+                    <AiOutlineDelete size={20} className="text-red-500" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <AiOutlinePlus className="text-gray-500" size={24} />
+                  <span className="text-gray-500">Chọn hình ảnh</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             About
@@ -160,32 +270,7 @@ const EditProfile = () => {
             name="about"
             value={formData.about}
             onChange={handleChange}
-            className="border border-gray-300 rounded-lg p-3 w-full focus:ring-blue-500 focus:border-blue-500"
-            rows="4"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Profile Image
-          </label>
-          <input
-            type="file"
-            name="profile_image"
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg p-3 w-full focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Profile Background
-          </label>
-          <input
-            type="file"
-            name="profile_bg"
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg p-3 w-full focus:ring-blue-500 focus:border-blue-500"
+            className="border border-gray-300 rounded-lg p-3 w-full h-32 resize-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
@@ -194,7 +279,7 @@ const EditProfile = () => {
             Link
           </label>
           <input
-            type="text"
+            type="url"
             name="link"
             value={formData.link}
             onChange={handleChange}

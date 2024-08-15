@@ -38,7 +38,9 @@ const RecentFeed = () => {
             style={{ aspectRatio: "500/400", objectFit: "cover" }}
           />
           <div className="p-4 bg-background">
-            <h3 className="text-16 font-bold">{activity.content}</h3>
+            <h3 className="text-16 font-bold line-clamp-3">
+              {activity.content}
+            </h3>
             <p className="text-14 text-muted-foreground">
               {formatDate(activity.created_date)}
             </p>

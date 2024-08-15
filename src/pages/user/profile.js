@@ -64,7 +64,7 @@ const Profile = () => {
                 theme === "dark" ? "hover:bg-red-600" : ""
               }`}
             >
-              User Blogs
+              Bài Viết
             </button>
             <button
               onClick={() => setActiveTab("products")}
@@ -76,7 +76,7 @@ const Profile = () => {
                 theme === "dark" ? "hover:bg-red-600" : ""
               }`}
             >
-              Products
+              Sản Phẩm
             </button>
             <button
               onClick={() => setActiveTab("jobs")}
@@ -88,7 +88,7 @@ const Profile = () => {
                 theme === "dark" ? "hover:bg-red-600" : ""
               }`}
             >
-              Jobs
+              Việc Làm
             </button>
           </div>
 
