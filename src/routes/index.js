@@ -22,6 +22,7 @@ import Product_slide from "../pages/user/product/product_slide";
 import Profile from "../pages/user/profile";
 import EditProfile from "../pages/user/profile/edtProfile";
 import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
+import CreateRecruitment from "../pages/user/recruitment/createRecruitment";
 import Manage from "../pages/user/recruitment/manage/manage";
 import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
@@ -61,6 +62,12 @@ const publicRoutes = [
   { path: "/search", component: Search, layout: DefaultLayout },
 
   { path: "/tuyen_dung", component: Recruitment, layout: DefaultLayout },
+  {
+    path: "/tuyen_dung/tao_tin_tuyen_dung",
+    component: CreateRecruitment,
+    layout: DefaultLayout,
+  },
+
   {
     path: "/tuyen_dung/:id",
     component: RecruitmentDetail,

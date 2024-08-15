@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../../components/design/Block";
-import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaFlag, FaLink } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../../context/themeContext";
 import useRecruitment from "../../../../hooks/useRecruitment";
@@ -13,8 +13,8 @@ const RecruitmentPost = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { userInfo } = useUserInfo();
-
-  const { recruitments, loading, error } = useRecruitment();
+  const { recruitments, loading, error, handleDeleteRecruitment } =
+    useRecruitment();
 
   const handlePostClick = (postId) => {
     navigate(`/tuyen_dung/${postId}`);
@@ -34,6 +34,23 @@ const RecruitmentPost = () => {
 
   const handleMenuClick = (postId) => {
     setActiveMenu((prev) => (prev === postId ? null : postId));
+  };
+
+  const handleDeleteClick = async (postId) => {
+    await handleDeleteRecruitment(postId);
+    setActiveMenu(null); // Close the menu after deleting
+  };
+
+  const handleCopyUrl = (postId) => {
+    const url = `${window.location.origin}/tuyen_dung/${postId}`;
+    navigator.clipboard.writeText(url).then(
+      () => {
+        alert("URL đã được sao chép vào clipboard!");
+      },
+      (err) => {
+        console.error("Lỗi khi sao chép URL:", err);
+      }
+    );
   };
 
   if (loading)
@@ -73,6 +90,7 @@ const RecruitmentPost = () => {
                   className={`text-14 font-bold ${
                     theme === "dark" ? "text-white" : "text-black"
                   }`}
+                  onClick={() => handleProfileClick(recruitment.user.id)}
                 >
                   {recruitment.user.first_name} {recruitment.user.last_name}
                 </h1>
@@ -84,9 +102,13 @@ const RecruitmentPost = () => {
                   {new Date(recruitment.created_date).toLocaleDateString()}
                 </p>
               </div>
-              <div className="relative">
+              <div className="relative ml-auto">
                 <BsThreeDots
-                  className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
+                  className={`text-2xl cursor-pointer ${
+                    theme === "dark"
+                      ? "text-gray-300 hover:text-gray-200"
+                      : "text-black hover:text-gray-700"
+                  }`}
                   onClick={() => handleMenuClick(recruitment.id)}
                 />
                 {activeMenu === recruitment.id && (
@@ -98,24 +120,35 @@ const RecruitmentPost = () => {
                     } shadow-lg rounded-lg z-10`}
                   >
                     <ul className="text-gray-700">
+                      {isOwner && (
+                        <>
+                          <li
+                            className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                            onClick={() => handleEditClick(recruitment.id)}
+                          >
+                            <FaEdit className="mr-2 text-gray-400" />
+                            Chỉnh sửa
+                          </li>
+                        </>
+                      )}
                       <li
                         className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                        onClick={() => handleEditClick(recruitment.id)}
-                      >
-                        <FaEdit className="mr-2 text-gray-400" />
-                        Chỉnh sửa
-                      </li>
-                      <li
-                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                        // onClick={() => handleDeletePost(recruitment.id, userInfo)}
+                        onClick={() => handleDeleteClick(recruitment.id)}
                       >
                         <FaTrashAlt className="mr-2 text-gray-400" />
                         Xóa
                       </li>
-                      <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
+                      <li
+                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                        onClick={() => handleCopyUrl(recruitment.id)}
+                      >
+                        <FaLink className="mr-2 text-gray-400" />
+                        Sao chép URL
+                      </li>
+                      {/* <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
                         <FaFlag className="mr-2 text-gray-400" />
                         Báo cáo
-                      </li>
+                      </li> */}
                     </ul>
                   </div>
                 )}

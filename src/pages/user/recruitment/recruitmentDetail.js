@@ -9,7 +9,8 @@ import {
   FaUsers,
   FaDollarSign,
   FaClipboard,
-} from "react-icons/fa"; // Sử dụng các icon từ react-icons
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 import Loading from "../../error/load";
 import useRecruitment from "../../../hooks/useRecruitment";
 
@@ -35,30 +36,86 @@ const RecruitmentDetail = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10">
-      <div className="grid gap-6">
-        {/* Title and Meta Information */}
-        <div className="grid gap-2">
-          <h1 className="text-3xl font-bold">{recruitment.content}</h1>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <span>{recruitment.work}</span>
-            <span>•</span>
-            <span>{recruitment.location}</span>
+      <div className="flex gap-6">
+        {/* Job Details */}
+        <div className="w-3/4">
+          <div className="mb-6">
+            {/* Title and Image */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                {/* Placeholder for image */}
+                <span className="text-gray-400 text-xl">Logo</span>
+              </div>
+              <div className="text-16 font-bold">{recruitment.content}</div>
+            </div>
+          </div>
+
+          {/* Job Details */}
+          <div className="grid grid-cols-3 gap-6 mb-6">
+            <div className="flex text-14 flex-col items-center">
+              <div className="bg-custom-red text-white p-1 rounded-full">
+                <FaDollarSign className="text-3xl" />
+              </div>
+              <span className="mt-2 text-gray-600">Mức lương</span>
+              <span className="mt-1 font-bold">{recruitment.salary}</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="bg-custom-red text-white p-2 rounded-full">
+                <FaBriefcase className="text-3xl" />
+              </div>
+              <span className="mt-2 text-gray-600">Địa điểm</span>
+              <span className="mt-1 font-bold">{recruitment.location}</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="bg-custom-red text-white p-2 rounded-full">
+                <FaDollarSign className="text-3xl" />
+              </div>
+              <span className="mt-2 text-gray-600">Kinh Nghiệm</span>
+              <span className="mt-1 font-bold">{recruitment.experience}</span>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <a
+              href="#apply"
+              className="inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full max-w-xs text-center"
+            >
+              Apply Now
+            </a>
           </div>
         </div>
 
-        {/* Contact Information */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2">
-              <FaEnvelope className="w-5 h-5 text-gray-500" />
-              <span>{recruitment.mail}</span>
+        {/* User Profile Information */}
+        <div className="w-1/4 bg-gray-100 p-4 rounded-lg">
+          <div className="flex items-center mb-4">
+            <img
+              src={recruitment.user.profile_image}
+              alt={`${recruitment.user.first_name} ${recruitment.user.last_name}`}
+              className="w-16 h-16 bg-gray-200 rounded-full"
+            />
+            <div className="ml-4">
+              <h3 className="text-16 font-bold">{`${recruitment.user.first_name} ${recruitment.user.last_name}`}</h3>
+              <span className="text-gray-600">{recruitment.user.username}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <FaPhone className="w-5 h-5 text-gray-500" />
-              <span>{recruitment.phone_number}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Information */}
+      <div className="bg-gray-100 p-4 rounded-lg">
+        <h3 className="text-18 font-semibold mb-4">Contact Information</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="flex items-center gap-4">
+            <FaMapMarkerAlt className="text-gray-500 h-6 w-6" />
+            <div className="flex-1">
+              <h4 className="text-16 font-medium">Location</h4>
+              <p>{recruitment.location}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <FaLink className="w-5 h-5 text-gray-500" />
+          </div>
+          <div className="flex items-center gap-4">
+            <FaLink className="text-gray-500 h-6 w-6" />
+            <div className="flex-1">
+              <h4 className="text-16 font-medium">Website</h4>
               <a
                 href={recruitment.link}
                 target="_blank"
@@ -69,34 +126,31 @@ const RecruitmentDetail = () => {
               </a>
             </div>
           </div>
-
-          {/* Additional Details */}
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2">
-              <FaCalendarAlt className="w-5 h-5 text-gray-500" />
-              <span>{new Date(recruitment.date).toLocaleDateString()}</span>
+          <div className="flex items-center gap-4">
+            <FaEnvelope className="text-gray-500 h-6 w-6" />
+            <div className="flex-1">
+              <h4 className="text-16 font-medium">Email</h4>
+              <p>{recruitment.mail}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <FaBriefcase className="w-5 h-5 text-gray-500" />
-              <span>{recruitment.experience}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <FaPhone className="text-gray-500 h-6 w-6" />
+            <div className="flex-1">
+              <h4 className="text-16 font-medium">Phone</h4>
+              <p>{recruitment.phone_number}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <FaUsers className="w-5 h-5 text-gray-500" />
-              <span>{recruitment.quantity} positions</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <FaUsers className="text-gray-500 h-6 w-6" />
+            <div className="flex-1">
+              <h4 className="text-16 font-medium">Positions</h4>
+              <p>{recruitment.quantity} positions</p>
             </div>
           </div>
         </div>
-
-        {/* Salary and Job Details */}
-        <div className="grid gap-2">
-          <div className="flex items-center gap-2">
-            <FaDollarSign className="w-5 h-5 text-gray-500" />
-            <span>{recruitment.salary}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <FaClipboard className="w-5 h-5 text-gray-500" />
-            <span>{recruitment.job_detail}</span>
-          </div>
+        <div className="prose mb-4">
+          <h4 className="text-18 font-semibold">Job Details</h4>
+          <p>{recruitment.job_detail}</p>
         </div>
       </div>
     </div>
