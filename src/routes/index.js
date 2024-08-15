@@ -22,7 +22,9 @@ import Product_slide from "../pages/user/product/product_slide";
 import Profile from "../pages/user/profile";
 import EditProfile from "../pages/user/profile/edtProfile";
 import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
+import ApplyRecruitment from "../pages/user/recruitment/applyRecruitment";
 import CreateRecruitment from "../pages/user/recruitment/createRecruitment";
+import EdtRecruitment from "../pages/user/recruitment/edtRecruitment";
 import Manage from "../pages/user/recruitment/manage/manage";
 import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
@@ -71,6 +73,17 @@ const publicRoutes = [
   {
     path: "/tuyen_dung/:id",
     component: RecruitmentDetail,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/tuyen_dung/chinh_sua/:id",
+    component: EdtRecruitment,
+    layout: DefaultLayout,
+  },
+
+  {
+    path: "/tuyen_dung/:id/ung_tuyen",
+    component: ApplyRecruitment,
     layout: DefaultLayout,
   },
 

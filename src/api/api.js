@@ -37,6 +37,7 @@ const endpoints = {
   DelCmt: process.env.REACT_APP_DelCmt_ENDPOINT,
   Recruitment: process.env.REACT_APP_Recruitment_ENDPOINT,
   RecruitmentDetail: process.env.REACT_APP_RecruitmentDetail_ENDPOINT,
+  ApplyJob: process.env.REACT_APP_Apply_Job_ENDPOINT,
   // currentCompany: "/company/:id/",
 };
 

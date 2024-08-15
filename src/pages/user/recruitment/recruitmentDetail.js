@@ -57,7 +57,7 @@ const RecruitmentDetail = () => {
                 <FaDollarSign className="text-3xl" />
               </div>
               <span className="mt-2 text-gray-600">Mức lương</span>
-              <span className="mt-1 font-bold">{recruitment.salary}</span>
+              <span className="mt-1 font-bold">{recruitment.salary} Triệu</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-custom-red text-white p-2 rounded-full">
@@ -77,7 +77,7 @@ const RecruitmentDetail = () => {
 
           <div className="mb-6">
             <a
-              href="#apply"
+              href={`/tuyen_dung/${postId}/ung_tuyen`}
               className="inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full max-w-xs text-center"
             >
               Apply Now
@@ -103,7 +103,7 @@ const RecruitmentDetail = () => {
 
       {/* Contact Information */}
       <div className="bg-gray-100 p-4 rounded-lg">
-        <h3 className="text-18 font-semibold mb-4">Contact Information</h3>
+        <h3 className="text-18 font-semibold mb-4">Thông tin liên lạc</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-4">
             <FaMapMarkerAlt className="text-gray-500 h-6 w-6" />
@@ -149,8 +149,8 @@ const RecruitmentDetail = () => {
           </div>
         </div>
         <div className="prose mb-4">
-          <h4 className="text-18 font-semibold">Job Details</h4>
-          <p>{recruitment.job_detail}</p>
+          <h4 className="text-18 font-semibold">Chi tiết công việc</h4>
+          <p className="text-14">{recruitment.job_detail}</p>
         </div>
       </div>
     </div>

@@ -29,7 +29,7 @@ const RecruitmentPost = () => {
   };
 
   const handleEditClick = (postId) => {
-    navigate(`/recruitment/edit/${postId}/`);
+    navigate(`/tuyen_dung/chinh_sua/${postId}/`);
   };
 
   const handleMenuClick = (postId) => {
@@ -64,7 +64,7 @@ const RecruitmentPost = () => {
   return (
     <div className="post-list">
       {recruitments.map((recruitment) => {
-        const isOwner = userInfo && userInfo.id === recruitment.owner;
+        const isOwner = userInfo && userInfo.id === recruitment.user.id;
 
         return (
           <Block
@@ -129,15 +129,16 @@ const RecruitmentPost = () => {
                             <FaEdit className="mr-2 text-gray-400" />
                             Chỉnh sửa
                           </li>
+                          <li
+                            className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                            onClick={() => handleDeleteClick(recruitment.id)}
+                          >
+                            <FaTrashAlt className="mr-2 text-gray-400" />
+                            Xóa
+                          </li>
                         </>
                       )}
-                      <li
-                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                        onClick={() => handleDeleteClick(recruitment.id)}
-                      >
-                        <FaTrashAlt className="mr-2 text-gray-400" />
-                        Xóa
-                      </li>
+
                       <li
                         className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
                         onClick={() => handleCopyUrl(recruitment.id)}
