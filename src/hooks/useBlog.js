@@ -9,7 +9,8 @@ const useBlog = (blogId) => {
   const [likedBlogs, setLikedBlogs] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState([]); // Bình luận cha
+  const [commentChild, setCommentChild] = useState([]); // Bình luận con
   const [currentUser, setCurrentUser] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [likeList, setLikeList] = useState([]);
@@ -103,13 +104,9 @@ const useBlog = (blogId) => {
   const fetchComments = useCallback(async () => {
     if (!blogId) return;
 
-    const token = await getToken();
-    if (!token) return;
-
     try {
       const url = endpoints.CmtBlog.replace(":id", blogId);
-      const response = await authApi(token).get(url);
-
+      const response = await authApi().get(url);
       const commentsData = response.data.results || [];
 
       const commentsByParent = {};
@@ -132,11 +129,37 @@ const useBlog = (blogId) => {
       }));
 
       setComments(organizedComments);
+      setCommentChild(
+        commentsData.filter((comment) => comment.parent !== null)
+      ); // Lưu bình luận con
     } catch (error) {
       console.error("Error fetching comments", error);
       setError("Error fetching comments");
     }
-  }, [blogId, getToken]);
+  }, [blogId]);
+
+  const fetchCommentChildren = useCallback(async (commentId) => {
+    if (!commentId) return;
+
+    try {
+      const url = endpoints.CmtBlogReply.replace(":id", commentId);
+      const response = await authApi().get(url);
+      const childComments = response.data.results || [];
+
+      setCommentChild((prevChildren) => {
+        const existingCommentIds = new Set(
+          prevChildren.map((child) => child.id)
+        );
+        const newChildComments = childComments.filter(
+          (child) => !existingCommentIds.has(child.id)
+        );
+        return [...prevChildren, ...newChildComments];
+      });
+    } catch (error) {
+      console.error("Error fetching child comments:", error);
+      setError("Error fetching child comments");
+    }
+  }, []);
 
   // Fetch blog details
   useEffect(() => {
@@ -147,10 +170,21 @@ const useBlog = (blogId) => {
 
   useEffect(() => {
     if (blogId) {
-      getBlogLikes(blogId).then(setLikeList).catch(console.error);
       fetchComments();
+      getBlogLikes(blogId).then(setLikeList).catch(console.error);
     }
-  }, [blogId, getBlogLikes, fetchComments]);
+  }, [blogId, fetchComments, getBlogLikes]);
+
+  // Fetch child comments only when comments change
+  useEffect(() => {
+    if (comments.length > 0) {
+      comments.forEach((comment) => {
+        if (comment.id) {
+          fetchCommentChildren(comment.id);
+        }
+      });
+    }
+  }, [comments, fetchCommentChildren]);
 
   // Handle like/unlike
   const handleLike = useCallback(
@@ -398,6 +432,7 @@ const useBlog = (blogId) => {
     loading,
     error,
     comments,
+    commentChild,
     submitting,
     likeList,
     likeListVisible,

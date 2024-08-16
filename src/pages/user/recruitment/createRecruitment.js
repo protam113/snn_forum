@@ -12,6 +12,7 @@ import { provinces } from "../../../data/DataLocat";
 import useRecruitment from "../../../hooks/useRecruitment";
 import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
+import { useNavigate } from "react-router-dom";
 
 const CreateRecruitment = () => {
   const { addRecruitment, loading } = useRecruitment();
@@ -29,8 +30,7 @@ const CreateRecruitment = () => {
     salary: "",
     location: "",
   });
-
-  const [location, setLocation] = useState("");
+  const navigate = useNavigate();
 
   const handleLocationChange = (formattedLocation) => {
     const [province, district] = formattedLocation.split(", ");
@@ -48,9 +48,6 @@ const CreateRecruitment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Log giá trị của formData để kiểm tra dữ liệu
-    console.log("Form Data:", formData);
-
     // Kiểm tra tất cả các trường thông tin
     if (
       !formData.content ||
@@ -65,19 +62,6 @@ const CreateRecruitment = () => {
       !formData.salary ||
       !formData.location // Bao gồm location trong kiểm tra
     ) {
-      console.log("Validation Failed: ", {
-        content: formData.content,
-        link: formData.link,
-        date: formData.date,
-        experience: formData.experience,
-        quantity: formData.quantity,
-        work: formData.work,
-        job_detail: formData.job_detail,
-        mail: formData.mail,
-        phone_number: formData.phone_number,
-        salary: formData.salary,
-        location: formData.location,
-      });
       toast.error("Vui lòng điền đầy đủ thông tin.");
       return;
     }
@@ -85,6 +69,8 @@ const CreateRecruitment = () => {
     try {
       await addRecruitment(formData); // Truyền formData trực tiếp
       toast.success("Tin tuyển dụng đã được đăng thành công!");
+
+      // Reset formData
       setFormData({
         content: "",
         link: "",
@@ -98,6 +84,9 @@ const CreateRecruitment = () => {
         salary: "",
         location: "", // Reset location as well
       });
+
+      // Navigate to the previous page
+      navigate(-1); // Điều hướng về trang trước đó
     } catch (error) {
       console.error(
         "Error adding recruitment:",

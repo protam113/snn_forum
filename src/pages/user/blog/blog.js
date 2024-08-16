@@ -19,6 +19,7 @@ const Blog = () => {
   const [expandedBlogId, setExpandedBlogId] = useState(null);
   const navigate = useNavigate();
   const [showLikesPopup, setShowLikesPopup] = useState(null);
+  const [likesCount, setLikesCount] = useState(0);
   const [likesData, setLikesData] = useState([]);
   const { theme } = useTheme();
   const {
@@ -274,8 +275,7 @@ const Blog = () => {
                   onMouseEnter={() => handleLikesClick(blog.id)}
                   onMouseLeave={() => setShowLikesPopup(null)}
                 >
-                  {blog.likes_count} lượt thích • {blog.comments_count} bình
-                  luận
+                  {likesData.length} lượt thích • {blog.comment_count} bình luận
                 </p>
                 {showLikesPopup === blog.id && (
                   <div className="absolute top-0 right-0 mt-12 p-4 w-80 bg-white border border-gray-300 shadow-lg rounded-lg">
@@ -301,6 +301,7 @@ const Blog = () => {
                   </div>
                 )}
               </div>
+
               <hr
                 className={`my-2 ${
                   theme === "dark" ? "border-gray-600" : "border-zinc-900"

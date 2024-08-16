@@ -16,6 +16,11 @@ const RecruitmentPost = () => {
   const { recruitments, loading, error, handleDeleteRecruitment } =
     useRecruitment();
 
+  // Sắp xếp các bài viết theo thứ tự mới nhất
+  const sortedRecruitments = recruitments
+    .slice()
+    .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+
   const handlePostClick = (postId) => {
     navigate(`/tuyen_dung/${postId}`);
   };
@@ -63,7 +68,7 @@ const RecruitmentPost = () => {
 
   return (
     <div className="post-list">
-      {recruitments.map((recruitment) => {
+      {sortedRecruitments.map((recruitment) => {
         const isOwner = userInfo && userInfo.id === recruitment.user.id;
 
         return (

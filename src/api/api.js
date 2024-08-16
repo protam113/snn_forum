@@ -31,6 +31,7 @@ const endpoints = {
   BlogDetail: process.env.REACT_APP_BlogDetail_ENDPOINT,
   LikeBlog: process.env.REACT_APP_LikeBlog_ENDPOINT,
   CmtBlog: process.env.REACT_APP_CmtBlog_ENDPOINT,
+  CmtBlogReply: process.env.REACT_APP_CmtBlog_Replies_ENDPOINT,
   DelCmt: process.env.REACT_APP_DelCmt_ENDPOINT,
   Recruitment: process.env.REACT_APP_Recruitment_ENDPOINT,
   RecruitmentDetail: process.env.REACT_APP_RecruitmentDetail_ENDPOINT,

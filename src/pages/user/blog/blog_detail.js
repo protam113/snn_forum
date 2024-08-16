@@ -177,20 +177,20 @@ const Blog_detail = () => {
                           onClick={() => handleEditClick(blog.id)}
                         >
                           <FaEdit className="mr-2 text-gray-400" />
-                          Edit
+                          Chỉnh sửa
                         </li>
                         <li
                           className="px-4 py-2 text-14  hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
                           onClick={() => handleDeleteBlog(blog.id, userInfo)}
                         >
                           <FaTrashAlt className="mr-2 text-gray-400" />
-                          Delete
+                          Xóa
                         </li>
                       </>
                     )}
                     <li className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center">
                       <FaFlag className="mr-2 text-gray-400" />
-                      Report
+                      Báo Cáo
                     </li>
                   </ul>
                 </div>
@@ -247,7 +247,7 @@ const Blog_detail = () => {
               onMouseEnter={() => handleLikesClick(blog.id)}
               onMouseLeave={() => setShowLikesPopup(null)}
             >
-              {blog.likes_count} lượt thích • {blog.comments_count} bình luận
+              {blog.likes_count} lượt thích • {blog.comment_count} bình luận
             </p>
             {showLikesPopup === blog.id && (
               <div className="absolute top-0 right-0 mt-12 p-4 w-80 bg-white border border-gray-300 shadow-lg rounded-lg">
