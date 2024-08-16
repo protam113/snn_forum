@@ -8,22 +8,14 @@ const useAuth = () => {
     throw new Error("useAuth must be used within an AuthProvider");
   }
 
-  const {
-    auth,
-    setAuth,
-    handleLogin,
-    logout,
-    fetchCurrentUser,
-    getToken,
-    refreshAccessToken,
-  } = context;
+  const { auth, setAuth, handleLogin, logout, getToken, refreshAccessToken } =
+    context;
 
   return {
     auth,
     setAuth,
     handleLogin,
     logout,
-    fetchCurrentUser,
     getToken,
     refreshAccessToken,
   };

@@ -52,19 +52,17 @@ const useBlog = (blogId) => {
     }
   }, [getToken]);
 
-  // Fetch blog details and comments
+  // Fetch blog details
   const fetchBlog = useCallback(async () => {
     if (!blogId) return;
 
     try {
       const url = endpoints.BlogDetail.replace(":id", blogId);
       const response = await authApi().get(url);
-      setBlog(response.data.blog);
+      setBlog(response.data); // Directly setting the blog data
     } catch (error) {
-      const errorMessage =
-        "Error fetching blog details. Please try again later.";
-      console.error(errorMessage, error);
-      setMessage(errorMessage); // Hiển thị thông báo lỗi
+      setError("Error fetching blog details. Please try again later.");
+      console.error(error);
     } finally {
       setLoading(false);
     }

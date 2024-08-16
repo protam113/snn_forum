@@ -6,8 +6,6 @@ import Register from "../pages/auth/register";
 import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
 import EdtBlog from "../pages/user/blog/edtBlog";
-import Company from "../pages/user/company/company";
-// import RegisterCo from "../pages/user/company/RegisterCo";
 import ContributeIdeas from "../pages/user/contributeIdeas";
 // import AdHome from "../pages/admin/AdHome";
 // import Error_404 from "../pages/error/404";
@@ -39,8 +37,7 @@ const publicRoutes = [
   { path: "/login", component: Login, layout: DefaultLayout },
   { path: "/password/reset/", component: ResetPassword, layout: DefaultLayout },
   { path: "/register", component: Register, layout: DefaultLayout },
-  // { path: "/register_company", component: RegisterCo, layout: DefaultLayout },
-  // pages
+
   { path: "/", component: Home, layout: DefaultLayout },
   { path: "/create_blog", component: Create, layout: DefaultLayout },
   {
@@ -103,7 +100,6 @@ const publicRoutes = [
   },
   { path: "/create_product", component: CreateProduct, layout: DefaultLayout },
 
-  { path: "/company", component: Company, layout: DefaultLayout },
   { path: "/nguoi_dung", component: User, layout: DefaultLayout },
 
   { path: "/setting", component: setting, layout: DefaultLayout },

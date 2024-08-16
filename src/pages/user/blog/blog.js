@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../components/design/Block";
 import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
-import { BsBookmark, BsThreeDots } from "react-icons/bs";
-import { BiRepost } from "react-icons/bi";
+import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../context/themeContext";
 import useBlog from "../../../hooks/useBlog";
 import formatDate from "../../../utils/formatDate";
@@ -13,6 +12,7 @@ import useUserInfo from "../../../hooks/useUserInfo";
 import { Error404 } from "../../error/error";
 import RandomAd from "../ads/RandomAd";
 import { toast } from "react-toastify";
+import { IoShareSocialOutline } from "react-icons/io5";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -319,7 +319,7 @@ const Blog = () => {
                     }`}
                     onClick={() => handleBlogClick(blog.id)}
                   />
-                  <BiRepost
+                  <IoShareSocialOutline
                     className={`text-2xl cursor-pointer ${
                       theme === "dark" ? "text-gray-300" : "text-gray-500"
                     }`}

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 import { authApi, endpoints, baseURL } from "../api/api";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -34,31 +34,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const fetchCurrentUser = async () => {
-    const token = getToken();
-    if (token) {
-      try {
-        const api = authApi(token);
-        const response = await api.get(endpoints.currentUser);
-        if (response.data && response.data.profile) {
-          setAuth({ ...response.data, isAuthenticated: true });
-        } else {
-          localStorage.removeItem("access_token");
-          setAuth(null);
-          if (location.pathname !== "/register") navigate("/login");
-        }
-      } catch (error) {
-        console.error("Error fetching current user", error);
-        localStorage.removeItem("access_token");
-        setAuth(null);
-        if (location.pathname !== "/register") navigate("/login");
-      }
-    } else {
-      setAuth(null);
-      if (location.pathname !== "/register") navigate("/login");
-    }
-  };
-
   const handleLogin = async (username, password) => {
     try {
       const response = await axios.post(
@@ -74,8 +49,7 @@ export const AuthProvider = ({ children }) => {
       const { access_token, refresh_token } = response.data;
       setAuth({ username, access_token });
       localStorage.setItem("access_token", access_token);
-      Cookies.get("refresh_token", refresh_token);
-
+      Cookies.set("refresh_token", refresh_token, { secure: true });
       toast.success("Login successful! Redirecting to home...");
       setTimeout(() => {
         navigate("/");
@@ -85,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       if (!err.response) {
         toast.error("No Server Response");
       } else if (err.response.status === 400) {
-        toast.error("Missing Username or Password");
+        toast.error("Incorrect username or password");
       } else if (err.response.status === 401) {
         toast.error("Unauthorized");
       } else {
@@ -99,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    Cookies.remove("refresh_token");
 
     setAuth(null);
     navigate("/login");
@@ -112,7 +86,6 @@ export const AuthProvider = ({ children }) => {
         setAuth,
         handleLogin,
         logout,
-        fetchCurrentUser,
         getToken,
         refreshAccessToken,
       }}

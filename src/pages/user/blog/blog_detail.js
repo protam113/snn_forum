@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // icons
 import { FaTrashAlt, FaEdit, FaFlag } from "react-icons/fa";
-import { BiRepost } from "react-icons/bi";
-import { BsThreeDots, BsBookmark } from "react-icons/bs";
+import { BsThreeDots } from "react-icons/bs";
+import { IoShareSocialOutline } from "react-icons/io5";
+
 // data api
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
@@ -278,7 +279,7 @@ const Blog_detail = () => {
                   liked={likedBlogs[blog.id] || false}
                   onLike={handleLike}
                 />
-                <BiRepost
+                <IoShareSocialOutline
                   className={`text-2xl cursor-pointer ${
                     theme === "dark" ? "text-gray-300" : "text-gray-500"
                   }`}
