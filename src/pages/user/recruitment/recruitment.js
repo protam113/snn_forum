@@ -3,6 +3,7 @@ import RecruitmentSidebar from "./components/RecruitmentSidebar";
 import Recruitment_feed from "./components/Recruitment_feed";
 import { useTheme } from "../../../context/themeContext";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
+import JobSearchForm from "./components/searchRec";
 
 const Recruitment = () => {
   const { theme } = useTheme();
@@ -37,6 +38,7 @@ const Recruitment = () => {
           <hr
             className={`my-4 border-${theme === "dark" ? "gray-700" : "white"}`}
           />
+          <JobSearchForm />
           <h1
             className={`text-20 font-bold ${
               theme === "dark" ? "text-white" : "text-black"

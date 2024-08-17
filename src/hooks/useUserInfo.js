@@ -4,16 +4,18 @@ import { authApi, endpoints } from "../api/api";
 
 const useUserInfo = () => {
   const [userInfo, setUserInfo] = useState(null);
+  const [userRoles, setUserRoles] = useState([]);
   const [userBlogs, setUserBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { getToken, refreshAuthToken } = useAuth();
+  const { getToken } = useAuth();
 
   const fetchUserInfo = useCallback(async () => {
     const token = await getToken();
 
     if (!token) {
       setUserInfo(null);
+      setUserRoles([]);
       setUserBlogs([]);
       setLoading(false);
       return;
@@ -21,46 +23,41 @@ const useUserInfo = () => {
 
     try {
       // Fetch user info
-      let response = await authApi(token).get(endpoints.currentUser);
-      setUserInfo(response.data);
+      const response = await authApi(token).get(endpoints.currentUser);
+      const userData = response.data;
+      setUserInfo(userData);
+
+      // Extract roles from the groups array
+      const roles = userData.groups.map((group) => group.name);
+      setUserRoles(roles);
+      // console.log("Fetched Roles:", roles);
 
       // Fetch user blogs after getting user info
-      const userId = response.data.id;
+      const userId = userData.id;
       const userBlogsUrl = endpoints.currentUserBlog.replace(":id", userId);
-      response = await authApi(token).get(userBlogsUrl);
-      setUserBlogs(response.data);
+      const blogsResponse = await authApi(token).get(userBlogsUrl);
+      setUserBlogs(blogsResponse.data);
     } catch (err) {
-      if (err.response?.status === 401) {
-        const newToken = await refreshAuthToken();
-        if (newToken) {
-          try {
-            // Fetch user info with new token
-            const response = await authApi(newToken).get(endpoints.currentUser);
-            setUserInfo(response.data);
-
-            // Fetch user blogs with new token
-            const userId = response.data.id;
-            const postsResponse = await authApi(newToken).get(
-              endpoints.currentUserBlog.replace(":id", userId)
-            );
-            setUserBlogs(postsResponse.data);
-          } catch (innerErr) {
-            // Do nothing or handle the error silently
-          }
-        }
-      }
+      console.error(
+        "Error fetching user info:",
+        err.response?.data || err.message
+      );
     } finally {
       setLoading(false);
     }
-  }, [getToken, refreshAuthToken]);
+  }, [getToken]);
+
+  useEffect(() => {
+    fetchUserInfo(); // Ensure fetchUserInfo is only called once on mount
+  }, [fetchUserInfo]);
+
+  // console.log("User Roles in useUserInfo:", userRoles);
+  // console.log("Loading in useUserInfo:", loading);
 
   const updateUserInfo = async (updatedInfo) => {
     const token = await getToken();
 
-    if (!token) {
-      // Do nothing or handle the error silently
-      return;
-    }
+    if (!token) return;
 
     try {
       const response = await authApi(token).patch(
@@ -74,23 +71,10 @@ const useUserInfo = () => {
       );
       setUserInfo(response.data);
     } catch (err) {
-      if (err.response?.status === 401) {
-        const newToken = await refreshAuthToken();
-        if (newToken) {
-          try {
-            const response = await authApi(newToken).patch(
-              endpoints.UpdateProfile,
-              updatedInfo,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-            setUserInfo(response.data);
-          } catch (innerErr) {}
-        }
-      }
+      console.error(
+        "Error updating user info:",
+        err.response?.data || err.message
+      );
     }
   };
 
@@ -102,32 +86,15 @@ const useUserInfo = () => {
     }
 
     try {
-      const response = await authApi(token).patch(
-        endpoints.ChangePassword,
-        data,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      await authApi(token).patch(endpoints.ChangePassword, data, {
+        headers: { "Content-Type": "application/json" },
+      });
       return { success: true };
     } catch (err) {
-      if (err.response?.status === 401) {
-        const newToken = await refreshAuthToken();
-        if (newToken) {
-          try {
-            const response = await authApi(newToken).patch(
-              endpoints.ChangePassword,
-              data,
-              { headers: { "Content-Type": "application/json" } }
-            );
-            return { success: true };
-          } catch (innerErr) {
-            console.error("Retry error:", innerErr.response?.data);
-            return {
-              success: false,
-              error: innerErr.message || "Failed to change password",
-            };
-          }
-        }
-      }
+      console.error(
+        "Error changing password:",
+        err.response?.data || err.message
+      );
       return {
         success: false,
         error: err.response?.data || "Failed to change password",
@@ -148,6 +115,10 @@ const useUserInfo = () => {
 
       return { success: true, data: response.data };
     } catch (err) {
+      console.error(
+        "Error resetting password:",
+        err.response?.data || err.message
+      );
       return {
         success: false,
         error: err.response?.data || "Failed to reset password",
@@ -157,13 +128,15 @@ const useUserInfo = () => {
 
   const requestVerificationCode = async (email) => {
     try {
-      // Make API call to request verification code
-      const response = await authApi().post(
-        process.env.REACT_APP_Request_Code_ENDPOINT, // Add the endpoint for requesting code
-        { email }
-      );
+      await authApi().post(process.env.REACT_APP_Request_Code_ENDPOINT, {
+        email,
+      });
       return { success: true };
     } catch (err) {
+      console.error(
+        "Error requesting verification code:",
+        err.response?.data || err.message
+      );
       return {
         success: false,
         error: err.response?.data || "Failed to send verification code",
@@ -171,12 +144,9 @@ const useUserInfo = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUserInfo();
-  }, [fetchUserInfo]);
-
   return {
     userInfo,
+    userRoles,
     userBlogs,
     loading,
     updateUserInfo,

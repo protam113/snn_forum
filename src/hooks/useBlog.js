@@ -376,7 +376,7 @@ const useBlog = (blogId) => {
     [getToken]
   );
 
-  const editBlog = async (edtBlog) => {
+  const editBlog = async (data) => {
     try {
       const token = await getToken();
       if (!token) {
@@ -384,9 +384,10 @@ const useBlog = (blogId) => {
         return;
       }
 
+      // Thực hiện cập nhật blog với token hiện tại
       const response = await authApi(token).patch(
         endpoints.BlogDetail.replace(":id", blogId),
-        edtBlog,
+        data,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -396,31 +397,8 @@ const useBlog = (blogId) => {
 
       setBlog(response.data);
     } catch (err) {
-      if (err.response?.status === 401) {
-        const newToken = await getToken();
-        if (newToken) {
-          try {
-            const response = await authApi(newToken).patch(
-              endpoints.BlogDetail.replace(":id", blogId),
-              edtBlog,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-            setBlog(response.data);
-          } catch (innerErr) {
-            console.error("Error updating user info with new token", innerErr);
-            setError("Error updating user information");
-          }
-        } else {
-          setError("Failed to refresh token");
-        }
-      } else {
-        console.error("Error updating user information", err);
-        setError("Error updating user information");
-      }
+      console.error("Error updating blog", err.response?.data || err.message);
+      setError("Error updating blog");
     }
   };
 

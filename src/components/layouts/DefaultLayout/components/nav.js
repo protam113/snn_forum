@@ -17,7 +17,7 @@ import Notifications from "../../../notification/noti";
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
   const { theme } = useTheme();
-  const { userInfo, loading, error } = useUserInfo();
+  const { userInfo, loading, error, userRoles } = useUserInfo();
 
   const toggleNavbar = () => {
     setIsMobileNavVisible(!isMobileNavVisible);
@@ -30,6 +30,8 @@ const Navbar = () => {
   const ref = useClickOutside(() => {
     closeNavbar();
   });
+
+  const isAdmin = userRoles.includes("admin");
 
   return (
     <div
@@ -104,6 +106,24 @@ const Navbar = () => {
               } transition-all duration-300 group-hover:w-full`}
             ></span>
           </Link>
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className={`relative group px-8 py-2 transition-all ${
+                theme === "light"
+                  ? "text-black hover:text-gray-400"
+                  : "text-white hover:text-gray-300"
+              } flex items-center`}
+            >
+              <span className="text-16 font-bold">Admin</span>
+              <span
+                className={`absolute bottom-0 left-0 w-0 h-0.5 ${
+                  theme === "light" ? "bg-black" : "bg-white"
+                } transition-all duration-300 group-hover:w-full`}
+              ></span>
+            </Link>
+          )}
         </section>
 
         {/* User info and menu */}
@@ -188,54 +208,34 @@ const Navbar = () => {
               >
                 <span className="text-14">Tuyển dụng</span>
               </Link>
+
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
+                >
+                  <span className="text-14">Admin</span>
+                </Link>
+              )}
+
               <Link
                 to="/setting"
-                className="flex items-center space-x-3 px-4 py-2 text-white hover:white hover:bg-zinc-600 rounded-md"
+                className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
               >
                 <IoMdSettings className="text-14" />
                 <span>Settings</span>
               </Link>
               <Link
                 to="/support"
-                className="flex items-center space-x-3 px-4 py-2 text-white hover:white hover:bg-zinc-600 rounded-md"
+                className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
               >
                 <MdSupportAgent className="text-14" />
                 <span>Đóng góp</span>
               </Link>
-              {userInfo ? (
-                <div className="flex items-center space-x-3 px-4 py-2 text-neutral-200 hover:white hover:bg-zinc-600 rounded-md">
-                  <LogoutButton />
-                </div>
-              ) : null}
-              {loading ? (
-                <span>Loading...</span>
-              ) : error ? (
-                <span>Error: {error}</span>
-              ) : !userInfo ? (
-                <Link
-                  to="/login"
-                  className="px-6 py-2 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all"
-                >
-                  Login
-                </Link>
-              ) : null}
+              <LogoutButton />
             </div>
           </div>
         </section>
-        {loading ? (
-          <span>
-            <Loading />
-          </span>
-        ) : error ? (
-          <span>Error: {error}</span>
-        ) : !userInfo ? (
-          <Link
-            to="/login"
-            className="px-6 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all hidden md:flex justify-center items-center space-x-4"
-          >
-            Login
-          </Link>
-        ) : null}
       </div>
     </div>
   );

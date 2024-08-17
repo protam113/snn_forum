@@ -1,12 +1,17 @@
 import React from "react";
-// import Sidebar from "../../sidebar";
-const DefaultLayout = ({ children }) => {
+import Navbar from "../DefaultLayout/components/nav";
+import AdSidebar from "./components/AdSidebar";
+
+const AdminLayout = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-900">
-      {/* <Sidebar /> */}
-      <div className="flex-grow">{children}</div>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <div className="flex flex-1">
+        <AdSidebar />
+        <div className="flex-1 overflow-y-auto">{children}</div>
+      </div>
     </div>
   );
 };
 
-export default DefaultLayout;
+export default AdminLayout;

@@ -272,10 +272,10 @@ const Blog = () => {
                     theme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}
                   onClick={() => handleLikesClick(blog.id)}
-                  onMouseEnter={() => handleLikesClick(blog.id)}
+                  onMouseClick={() => handleLikesClick(blog.id)}
                   onMouseLeave={() => setShowLikesPopup(null)}
                 >
-                  {likesData.length} lượt thích • {blog.comment_count} bình luận
+                  {blog.likes_count} lượt thích • {blog.comment_count} bình luận
                 </p>
                 {showLikesPopup === blog.id && (
                   <div className="absolute top-0 right-0 mt-12 p-4 w-80 bg-white border border-gray-300 shadow-lg rounded-lg">
@@ -301,7 +301,6 @@ const Blog = () => {
                   </div>
                 )}
               </div>
-
               <hr
                 className={`my-2 ${
                   theme === "dark" ? "border-gray-600" : "border-zinc-900"

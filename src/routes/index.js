@@ -1,5 +1,12 @@
 // layout
+import AdHome from "../components/layouts/AdminLayout/AdHome";
 import { DefaultLayout, AdminLayout } from "../components/layouts/index";
+import AdUser from "../pages/admin/adUser/adUser";
+import Banner from "../pages/admin/banner/banner";
+import CreateBanner from "../pages/admin/banner/createBanner";
+import AdCategory from "../pages/admin/category/Category";
+import CreateCategory from "../pages/admin/category/createCategory";
+import EdtCategory from "../pages/admin/category/edtCategory";
 import ResetPassword from "../pages/auth/authResetPass";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
@@ -104,19 +111,44 @@ const publicRoutes = [
 
   { path: "/setting", component: setting, layout: DefaultLayout },
   { path: "/support", component: ContributeIdeas, layout: DefaultLayout },
-
-  //   { path: "/load", component: Example, layout: DefaultLayout },
-  //   { path: "/code", component: Code, layout: DefaultLayout },
-
-  //   // Error
-  //   { path: "/404_error", component: Error_404, layout: DefaultLayout },
-  //   { path: "/500_error", component: Error_500, layout: DefaultLayout },
-
-  //   // admin
 ];
 
 const privateRoutes = [
-  // { path: "/ad", component: AdHome, layout: AdminLayout }
+  {
+    path: "/admin",
+    component: AdHome,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/the_loai",
+    component: AdCategory,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/the_loai/tao_the_loai",
+    component: CreateCategory,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/the_loai/sua_the_loai/:id",
+    component: EdtCategory,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/quan_ly_nguoi_dung",
+    component: AdUser,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/banners",
+    component: Banner,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/banners/tao_banner",
+    component: CreateBanner,
+    layout: AdminLayout,
+  },
 ];
 
 export { publicRoutes, privateRoutes };

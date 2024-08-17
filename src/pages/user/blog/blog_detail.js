@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // icons
 import { FaTrashAlt, FaEdit, FaFlag } from "react-icons/fa";
@@ -25,15 +25,8 @@ const Blog_detail = () => {
   const { userInfo } = useUserInfo();
   const { id: blogId } = useParams();
   const navigate = useNavigate();
-  const {
-    blog,
-    loading,
-    error,
-    message,
-    handleDeleteBlog,
-    likedBlogs,
-    getBlogLikes,
-  } = useBlog(blogId);
+  const { blog, loading, message, handleDeleteBlog, likedBlogs, getBlogLikes } =
+    useBlog(blogId);
   const [activeMenu, setActiveMenu] = useState(null);
   const [showLikesPopup, setShowLikesPopup] = useState(null);
   const [likesData, setLikesData] = useState([]);
@@ -307,4 +300,4 @@ const Blog_detail = () => {
   );
 };
 
-export default Blog_detail;
+export default memo(Blog_detail);

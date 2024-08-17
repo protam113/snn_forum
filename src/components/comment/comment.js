@@ -1,14 +1,13 @@
-// Comment.js
 import React, { useState } from "react";
 import { FaUpload, FaPaperPlane, FaExclamationTriangle } from "react-icons/fa";
-import { Link } from "react-router-dom"; // Import Link for navigation
-import useUserInfo from "../../hooks/useUserInfo";
+import { Link } from "react-router-dom";
 import useBlog from "../../hooks/useBlog";
 import { useTheme } from "../../context/themeContext";
+import useTokenCheck from "../../hooks/useTokenCheck";
 
 const Comment = ({ blogId }) => {
+  const hasToken = useTokenCheck();
   const { theme } = useTheme();
-  const { userInfo } = useUserInfo();
   const { handleAddComment } = useBlog(blogId);
   const [selectedFile, setSelectedFile] = useState(null);
   const [commentText, setCommentText] = useState("");
@@ -44,7 +43,7 @@ const Comment = ({ blogId }) => {
     }
   };
 
-  if (!userInfo) {
+  if (!hasToken) {
     return (
       <div className="flex flex-col p-4 rounded-lg space-y-4">
         <Link
@@ -62,13 +61,6 @@ const Comment = ({ blogId }) => {
     <div className="flex flex-col p-4 rounded-lg space-y-4">
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex items-center space-x-4">
-        <div className="w-10 h-10 rounded-full bg-gray-500 overflow-hidden">
-          <img
-            src={userInfo?.profile_image || "default_avatar_url"}
-            alt="Avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
         <label className="flex items-center space-x-2 cursor-pointer">
           <FaUpload className="text-custom-red" />
           <input type="file" onChange={handleFileChange} className="hidden" />
@@ -98,11 +90,7 @@ const Comment = ({ blogId }) => {
             <img
               src={URL.createObjectURL(selectedFile)}
               alt="Selected"
-              className={`rounded-md ${
-                selectedFile.type.includes("image/vertical")
-                  ? "w-10 h-20"
-                  : "w-20 h-10"
-              }`}
+              className="rounded-md w-20 h-10"
             />
             <button
               onClick={handleRemoveImage}

@@ -234,6 +234,7 @@ const CreateRecruitment = () => {
                 <option value="full-time">Toàn thời gian</option>
                 <option value="part-time">Bán thời gian</option>
                 <option value="contract">Hợp đồng</option>
+                <option value="contract">Thực Tập</option>
               </select>
             </div>
           </div>

@@ -28,8 +28,9 @@ const EdtBlog = () => {
         content: blog.content || "",
         description: blog.description || "",
         visibility: blog.visibility || "public",
-        media: null,
+        media: blog.media || [], // Giả sử blog.media chứa hình ảnh hiện tại
       });
+      setSelectedFiles(blog.media || []);
     }
   }, [blog]);
 
@@ -167,13 +168,13 @@ const EdtBlog = () => {
               className="relative overflow-hidden"
               style={{ width: "100px", height: "100px" }}
             >
-              {file.type.startsWith("image/") ? (
+              {file?.type?.startsWith("image/") ? (
                 <img
                   src={URL.createObjectURL(file)}
                   alt={`Selected ${index}`}
                   className="object-cover w-full h-full"
                 />
-              ) : file.type === "application/pdf" ? (
+              ) : file?.type === "application/pdf" ? (
                 <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
                   <FaFilePdf size={40} />
                   <p className="text-xs">PDF</p>

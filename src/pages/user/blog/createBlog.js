@@ -1,12 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { IoIosCreate } from "react-icons/io";
 import { FaExclamationTriangle } from "react-icons/fa";
-import useUserInfo from "../../../hooks/useUserInfo";
-import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
+
+const useTokenCheck = () => {
+  const accessToken = localStorage.getItem("access_token");
+  const refreshToken = Cookies.get("refresh_token");
+
+  return Boolean(accessToken || refreshToken);
+};
 
 const CreateBlog = () => {
-  const { userInfo } = useUserInfo();
   const navigate = useNavigate();
+  const hasToken = useTokenCheck();
 
   const handleClick = () => {
     navigate("/create_blog");
@@ -14,7 +20,7 @@ const CreateBlog = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      {!userInfo ? (
+      {!hasToken ? (
         <Link
           to="/login"
           className="flex items-center px-6 py-2 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all"

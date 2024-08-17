@@ -3,15 +3,12 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ManagerProvider } from "hero-slider";
 
-// Hàm gửi dữ liệu đến dataLayer của GTM
 const sendToDataLayer = (eventData) => {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(eventData);
 };
 
-// Hàm logPerformance cập nhật để gửi dữ liệu đến GTM mà không ghi vào console
 const logPerformance = (metric) => {
   sendToDataLayer({
     event: "performanceMetric",

@@ -6,9 +6,11 @@ import Accordion from "./Accordion";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
 import ThemeToggle from "../../../../components/theme/ThemeToggle ";
+import useTokenCheck from "../../../../hooks/useTokenCheck";
 
 const ChangePassword = () => {
-  const { userInfo, changePassword } = useUserInfo();
+  const { changePassword } = useUserInfo();
+  const hasToken = useTokenCheck();
 
   const [formData, setFormData] = useState({
     oldPassword: "",
@@ -68,7 +70,7 @@ const ChangePassword = () => {
 
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md">
-      {userInfo ? (
+      {hasToken ? (
         <Accordion
           title={
             <div className="flex items-center text-lg font-semibold text-gray-800">
@@ -163,9 +165,7 @@ const ChangePassword = () => {
             </form>
           }
         />
-      ) : (
-        <p className="text-gray-600"></p>
-      )}
+      ) : null}
 
       <Accordion
         title={

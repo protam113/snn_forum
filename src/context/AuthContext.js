@@ -10,7 +10,6 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const getToken = () => localStorage.getItem("access_token");
 

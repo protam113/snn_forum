@@ -1,26 +1,19 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  HashRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { publicRoutes, privateRoutes } from "./routes/index";
-import { DefaultLayout } from "./components/layouts/index";
+import { DefaultLayout, AdminLayout } from "./components/layouts/index";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider, useTheme } from "./context/themeContext";
 import "./App.css";
-import RequireAuth from "./hooks/requireAuth.js";
 import { LoadingProvider } from "./context/LoadingContext";
-import { BlogProvider } from "./context/BlogContext.js";
 import { HelmetProvider } from "react-helmet-async";
 import useScrollToTop from "./hooks/useScrollToTop.js";
+import ProtectedRoutes from "./utils/ProtectedRoutes.js";
 
 function AppContent() {
   const { theme } = useTheme();
-
   useScrollToTop();
 
   return (
@@ -32,13 +25,7 @@ function AppContent() {
       <Routes>
         {publicRoutes.map((route, id) => {
           const Page = route.component;
-          let Layout = DefaultLayout;
-
-          if (route.layout) {
-            Layout = route.layout;
-          } else if (route.layout === null) {
-            Layout = React.Fragment;
-          }
+          const Layout = route.layout || DefaultLayout;
 
           return (
             <Route
@@ -52,26 +39,21 @@ function AppContent() {
             />
           );
         })}
+
         {privateRoutes.map((route, id) => {
           const Page = route.component;
-          let Layout = DefaultLayout;
-
-          if (route.layout) {
-            Layout = route.layout;
-          } else if (route.layout === null) {
-            Layout = React.Fragment;
-          }
+          const Layout = route.layout || AdminLayout;
 
           return (
             <Route
               key={id}
               path={route.path}
               element={
-                <RequireAuth>
+                <ProtectedRoutes allowedRoles={["admin"]}>
                   <Layout>
                     <Page />
                   </Layout>
-                </RequireAuth>
+                </ProtectedRoutes>
               }
             />
           );
@@ -87,12 +69,10 @@ function App() {
       <AuthProvider>
         <ThemeProvider>
           <LoadingProvider>
-            <BlogProvider>
-              <HelmetProvider>
-                <AppContent />
-                <ToastContainer position="top-center" />
-              </HelmetProvider>
-            </BlogProvider>
+            <HelmetProvider>
+              <AppContent />
+              <ToastContainer position="top-center" />
+            </HelmetProvider>
           </LoadingProvider>
         </ThemeProvider>
       </AuthProvider>

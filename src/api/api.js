@@ -27,7 +27,6 @@ const endpoints = {
   currentUserBlog: process.env.REACT_APP_currentUserBlog_ENDPOINT,
   createUser: process.env.REACT_APP_createUser_ENDPOINT,
   Blog: process.env.REACT_APP_Blog_ENDPOINT,
-  EdtBlog: process.env.REACT_APP_EdtBlog_ENDPOINT,
   BlogDetail: process.env.REACT_APP_BlogDetail_ENDPOINT,
   LikeBlog: process.env.REACT_APP_LikeBlog_ENDPOINT,
   CmtBlog: process.env.REACT_APP_CmtBlog_ENDPOINT,
@@ -36,6 +35,11 @@ const endpoints = {
   Recruitment: process.env.REACT_APP_Recruitment_ENDPOINT,
   RecruitmentDetail: process.env.REACT_APP_RecruitmentDetail_ENDPOINT,
   ApplyJob: process.env.REACT_APP_Apply_Job_ENDPOINT,
+  Categories: process.env.REACT_APP_Categories_ENDPOINT,
+  Category: process.env.REACT_APP_Category_ENDPOINT,
+  Banner: process.env.REACT_APP_BannerId_ENDPOINT,
+  UserBanner: process.env.REACT_APP_UserBanner_ENDPOINT,
+  AdminBanner: process.env.REACT_APP_AdminBanner_ENDPOINT,
 };
 
 const authApiPrivate = authApi();

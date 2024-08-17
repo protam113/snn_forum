@@ -4,8 +4,11 @@ import { useTheme } from "../../../../context/themeContext";
 import useRecruitment from "../../../../hooks/useRecruitment";
 import Loading from "../../../error/load";
 import { useNavigate } from "react-router-dom";
+import useTokenCheck from "../../../../hooks/useTokenCheck";
 
 const RecruitmentSidebar = () => {
+  const hasToken = useTokenCheck();
+
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { recruitments, loading, error } = useRecruitment();
@@ -32,16 +35,26 @@ const RecruitmentSidebar = () => {
   return (
     <div className="w-96 p-4 top-0 right-0 overflow-y-auto overflow-x-hidden hidden md:block">
       {/* Link to Create Post */}
-      <button
-        className={`w-full py-3 mb-6 rounded-lg text-white ${
-          theme === "dark"
-            ? "bg-custom-red hover:bg-red-700"
-            : "bg-custom-red hover:bg-red-600"
-        } transition-colors duration-200`}
-        onClick={handleCreatePostClick}
-      >
-        Đăng Tin
-      </button>
+      {hasToken ? (
+        <button
+          className={`w-full py-3 mb-6 rounded-lg text-white ${
+            theme === "dark"
+              ? "bg-custom-red hover:bg-red-700"
+              : "bg-custom-red hover:bg-red-600"
+          } transition-colors duration-200`}
+          onClick={handleCreatePostClick}
+        >
+          Đăng Tin
+        </button>
+      ) : (
+        <p className="text-gray-600 text-center">
+          Bạn cần{" "}
+          <a href="/login" className="text-blue-500 hover:underline">
+            đăng nhập
+          </a>{" "}
+          để có thể đăng tin
+        </p>
+      )}
 
       <div
         className={`p-4 rounded-lg mb-6 ${
