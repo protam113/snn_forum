@@ -1,10 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  FaRegFileImage,
-  FaTrashAlt,
-  FaArrowLeft,
-  FaFilePdf,
-} from "react-icons/fa";
+import { FaTrashAlt, FaArrowLeft, FaFilePdf } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -24,7 +19,7 @@ const Create = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (files.length + selectedFiles.length <= 4) {
+    if (selectedFiles.length + files.length <= 4) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
     } else {
       alert("You can only upload up to 4 files.");
@@ -39,9 +34,6 @@ const Create = () => {
 
   const handleRemoveFile = (index) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null;
-    }
   };
 
   const handleSubmit = (event) => {
@@ -51,7 +43,7 @@ const Create = () => {
       description,
       visibility,
       () => {
-        navigate("/");
+        navigate(-1);
       },
       () => {
         console.log("Success Callback");
@@ -134,7 +126,6 @@ const Create = () => {
             >
               <option value="public">Public</option>
               <option value="private">Private</option>
-              {/* <option value="friends">Friends</option> */}
             </select>
           </div>
         </div>

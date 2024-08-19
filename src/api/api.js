@@ -26,6 +26,7 @@ const endpoints = {
   ChangePassword: process.env.REACT_APP_ChangePassword_ENDPOINT,
   currentUserBlog: process.env.REACT_APP_currentUserBlog_ENDPOINT,
   createUser: process.env.REACT_APP_createUser_ENDPOINT,
+  UserApplyList: process.env.REACT_APP_UserApplyList_ENDPOINT,
   Blog: process.env.REACT_APP_Blog_ENDPOINT,
   BlogDetail: process.env.REACT_APP_BlogDetail_ENDPOINT,
   LikeBlog: process.env.REACT_APP_LikeBlog_ENDPOINT,
@@ -40,6 +41,8 @@ const endpoints = {
   Banner: process.env.REACT_APP_BannerId_ENDPOINT,
   UserBanner: process.env.REACT_APP_UserBanner_ENDPOINT,
   AdminBanner: process.env.REACT_APP_AdminBanner_ENDPOINT,
+  Products: process.env.REACT_APP_Products_ENDPOINT,
+  ProductDetail: process.env.REACT_APP_Product_ENDPOINT,
 };
 
 const authApiPrivate = authApi();

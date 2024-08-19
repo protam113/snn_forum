@@ -96,7 +96,7 @@ const publicRoutes = [
 
   { path: "/san_pham", component: Product, layout: DefaultLayout },
   {
-    path: "/san_pham/chi_tiet_san_pham",
+    path: "/san_pham/chi_tiet_san_pham/:id",
     component: ProductDetail,
     layout: DefaultLayout,
   },

@@ -1,6 +1,6 @@
 import React, { createContext, useState } from "react";
 import { authApi, endpoints, baseURL } from "../api/api";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";

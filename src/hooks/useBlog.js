@@ -233,7 +233,7 @@ const useBlog = (blogId) => {
           return;
         }
 
-        const url = endpoints.EdtBlog.replace(":id", blogId);
+        const url = endpoints.BlogDetail.replace(":id", blogId);
         await authApi(token).delete(url);
         setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== blogId));
       } catch (error) {
@@ -341,23 +341,27 @@ const useBlog = (blogId) => {
         }
 
         try {
-          await authApi(token).post(endpoints.Blog, formData, {
+          const response = await authApi(token).post(endpoints.Blog, formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
 
           toast.success("Blog created successfully!");
-          onSuccess();
+          onSuccess(response.data); // Truyền dữ liệu phản hồi nếu cần
           onClose();
         } catch (err) {
           if (err.response?.status === 401) {
             const newToken = await getToken();
             if (newToken) {
-              await authApi(newToken).post(endpoints.Blog, formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-              });
+              const response = await authApi(newToken).post(
+                endpoints.Blog,
+                formData,
+                {
+                  headers: { "Content-Type": "multipart/form-data" },
+                }
+              );
 
               toast.success("Blog created successfully!");
-              onSuccess();
+              onSuccess(response.data); // Truyền dữ liệu phản hồi nếu cần
               onClose();
             } else {
               toast.error("Failed to refresh token");

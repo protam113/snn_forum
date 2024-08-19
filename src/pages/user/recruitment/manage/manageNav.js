@@ -1,13 +1,10 @@
 import React from "react";
 import Manage from "./manage";
 import { Link } from "react-router-dom";
-import ManageInfo from "./ManageInfo";
 
 const ManageNav = () => {
   return (
     <div>
-      <ManageInfo />
-
       <br />
       <div className="mt-2 grid grid-cols-2 gap-4">
         <Link

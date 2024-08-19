@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useUserInfo from "../../../../hooks/useUserInfo";
+import useTokenCheck from "../../../../hooks/useTokenCheck";
 
 const PopupCreate = () => {
-  const { userInfo } = useUserInfo();
+  const hasToken = useTokenCheck();
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -14,7 +14,7 @@ const PopupCreate = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      {!userInfo ? (
+      {!hasToken ? (
         <Link
           to="/login"
           className="flex items-center px-6 py-2 bg-custom-red text-white rounded-md hover:bg-red-600 transition-all"

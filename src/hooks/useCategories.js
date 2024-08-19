@@ -26,7 +26,7 @@ const useCategories = () => {
   const addCategory = async (newCategory) => {
     setLoading(true);
     try {
-      const token = getToken(); // Lấy token từ useAuth
+      const token = getToken();
       if (!token) {
         throw new Error("No token available");
       }

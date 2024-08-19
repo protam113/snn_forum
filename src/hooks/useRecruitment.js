@@ -126,22 +126,49 @@ const useRecruitment = (postId) => {
   };
 
   const addApplyJob = useCallback(
-    async (applyJob) => {
+    async (applyJob, postId) => {
+      // Thêm postId như một tham số
       const token = await getToken();
       if (!token) return;
 
+      if (!postId) {
+        console.error("postId is required");
+        toast.error("postId is required");
+        return;
+      }
+
       try {
-        const url = endpoints.ApplyJob.replace(":id", postId);
-        await authApi(token).post(url, applyJob);
+        const url = endpoints.ApplyJob.replace(":id", postId); // Đảm bảo postId được thay thế đúng cách
+
+        const formData = new FormData();
+        formData.append("job_title", applyJob.job_title);
+        formData.append("fullname", applyJob.fullname);
+        formData.append("phone_number", applyJob.phone_number);
+        formData.append("email", applyJob.email);
+        formData.append("sex", applyJob.sex);
+        formData.append("age", applyJob.age);
+        if (applyJob.cv) {
+          formData.append("cv", applyJob.cv);
+        }
+
+        await authApi(token).post(url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         toast.success("Applied successfully!");
       } catch (error) {
-        console.error("Error applying for job:", error);
-        toast.error("Error applying for job");
-        setError("Error applying for job");
+        // Xử lý lỗi và hiển thị thông báo
+        const errorData = error.response?.data || {};
+        console.error("Error applying for job:", errorData);
+        toast.error(
+          `Error applying for job: ${errorData.detail || error.message}`
+        );
+        setError(errorData.detail || "Error applying for job");
       }
     },
-    [getToken, postId]
+    [getToken]
   );
 
   useEffect(() => {

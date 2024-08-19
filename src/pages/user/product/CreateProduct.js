@@ -1,49 +1,94 @@
 import React, { useState } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
-import { AiOutlinePlus } from "react-icons/ai";
-//  icon
+import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
 import ReactQuill from "react-quill";
+import useCategories from "../../../hooks/useCategories";
+import useProduct from "../../../hooks/useProduct";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    quantity: "",
-    description: "",
-    condition: "",
-    fettle: "",
-    status: "",
-    location: "",
-    category: "",
-    images: [],
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const { categories } = useCategories();
+  const { handleAddProduct, error, loading, fileInputRef } = useProduct();
+  const navigate = useNavigate();
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [title, setTitle] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [description, setDescription] = useState("");
+  const [condition, setCondition] = useState("");
+  const [fettle, setFettle] = useState("");
+  const [location, setLocation] = useState("");
+  const [category, setCategory] = useState([]);
+  const [price, setPrice] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData({
-      ...formData,
-      images: [...formData.images, ...files].slice(0, 4), // Limit to 4 images
-    });
+    const files = Array.from(e.target.files).map((file) => ({
+      ...file,
+      preview: URL.createObjectURL(file),
+    }));
+    if (files.length + selectedFiles.length <= 4) {
+      setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+    } else {
+      toast.error("You can only upload up to 4 files.");
+    }
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (!isNaN(value) && value.trim() !== "") {
+      setPrice(value);
+    } else {
+      setPrice(""); // Or set an error message
+    }
   };
 
   const handleRemoveImage = (index) => {
-    setFormData({
-      ...formData,
-      images: formData.images.filter((_, i) => i !== index),
-    });
+    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission logic here (e.g., API call)
-    console.log("Product data submitted:", formData);
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    setCategory((prevCategories) =>
+      checked
+        ? [...prevCategories, value]
+        : prevCategories.filter((cat) => cat !== value)
+    );
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const numericPrice = parseFloat(price); // Convert to a float number
+    if (isNaN(numericPrice)) {
+      toast.error("Price is not a valid number");
+      return;
+    }
+
+    try {
+      await handleAddProduct(
+        event,
+        title,
+        quantity,
+        description,
+        condition,
+        fettle,
+        location,
+        category,
+        phone_number,
+        numericPrice,
+        () => {
+          toast.success("Product created successfully!");
+          navigate("/san_pham");
+        },
+        () => {}
+      );
+    } catch (err) {
+      console.log(err);
+      toast.error("An error occurred while creating the product");
+    }
   };
 
   return (
@@ -55,28 +100,29 @@ const CreateProduct = () => {
       >
         {/* Image Upload Section */}
         <div className="flex flex-col gap-4">
-          <label htmlFor="images" className="block text-sm font-medium mb-1">
+          <label htmlFor="file" className="block text-sm font-medium mb-1">
             Upload Images (max 4)
           </label>
           <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
             <input
-              id="images"
-              name="images"
+              id="file"
+              name="file"
               type="file"
               multiple
               accept="image/*"
               onChange={handleImageChange}
               className="absolute inset-0 opacity-0 cursor-pointer"
+              ref={fileInputRef}
             />
             <AiOutlinePlus className="text-gray-500" size={24} />
             <span className="text-gray-500">Chọn hình ảnh</span>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            {formData.images.length > 0 &&
-              formData.images.slice(0, 4).map((image, index) => (
+            {selectedFiles.length > 0 &&
+              selectedFiles.map((image, index) => (
                 <div key={index} className="relative">
                   <img
-                    src={URL.createObjectURL(image)}
+                    src={image.preview}
                     alt={`Preview ${index}`}
                     className="w-full h-32 object-cover rounded-md"
                   />
@@ -97,15 +143,15 @@ const CreateProduct = () => {
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-1">
-                Tên Sản Phảm
+                Tên Sản Phẩm
               </label>
               <input
                 id="title"
                 name="title"
                 type="text"
                 placeholder="Enter product title"
-                value={formData.title}
-                onChange={handleChange}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               />
@@ -122,8 +168,8 @@ const CreateProduct = () => {
                 name="quantity"
                 type="number"
                 placeholder="Enter quantity"
-                value={formData.quantity}
-                onChange={handleChange}
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               />
@@ -137,14 +183,14 @@ const CreateProduct = () => {
               Chi Tiết Sản Phẩm
             </label>
             <ReactQuill
-              value={formData.description}
-              onChange={handleChange}
+              value={description}
+              onChange={setDescription}
               className="mb-6"
               placeholder="What's on your mind?"
               style={{ height: "10rem" }}
             />
           </div>
-          <hr className="border-white my-6" />{" "}
+          <hr className="border-white my-6" />
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <label
@@ -156,15 +202,14 @@ const CreateProduct = () => {
               <select
                 id="condition"
                 name="condition"
-                value={formData.condition}
-                onChange={handleChange}
+                value={condition}
+                onChange={(e) => setCondition(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               >
                 <option value="">Chọn tình trạng</option>
                 <option value="new">Mới</option>
                 <option value="used">Đã Sử Dụng</option>
-                <option value="refurbished">Tân Trang</option>
               </select>
             </div>
             <div>
@@ -177,39 +222,18 @@ const CreateProduct = () => {
               <select
                 id="fettle"
                 name="fettle"
-                value={formData.fettle}
-                onChange={handleChange}
+                value={fettle}
+                onChange={(e) => setFettle(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               >
                 <option value="">Chọn Chất Lượng</option>
-                <option value="good">Tốt</option>
-                <option value="fair">Bình Thường</option>
-                <option value="poor">Trung Bình</option>
+                <option value="in_stock">Tốt</option>
+                <option value="out_of_stock">Bình Thường</option>
               </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-6 mb-6">
-            <div>
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium mb-1"
-              >
-                Trạng Thái
-              </label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="">Select status</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
-              </select>
-            </div>
             <div>
               <label
                 htmlFor="location"
@@ -222,46 +246,77 @@ const CreateProduct = () => {
                 name="location"
                 type="text"
                 placeholder="Enter location"
-                value={formData.location}
-                onChange={handleChange}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="phone_number"
+                className="block text-sm font-medium mb-1"
+              >
+                Phone Number
+              </label>
+              <input
+                id="phone_number"
+                name="phone_number"
+                type="number"
+                placeholder="Enter phone number"
+                value={phone_number}
+                onChange={(e) => setPhoneNumber(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               />
             </div>
           </div>
           <div className="mb-6">
-            <label
-              htmlFor="category"
-              className="block text-sm font-medium mb-1"
-            >
-              Category
+            <label className="block text-sm font-medium mb-1">Category</label>
+            {categories.map((cat) => (
+              <div key={cat.id} className="flex items-center mb-2">
+                <input
+                  id={`category-${cat.id}`}
+                  name="category"
+                  type="checkbox"
+                  value={cat.id} // Use category id
+                  checked={category.includes(cat.id)}
+                  onChange={handleCategoryChange}
+                  className="mr-2"
+                />
+                <label htmlFor={`category-${cat.id}`} className="text-sm">
+                  {cat.name}
+                </label>
+              </div>
+            ))}
+          </div>
+          <div className="mb-6">
+            <label htmlFor="price" className="block text-sm font-medium mb-1">
+              Giá
             </label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
+            <input
+              id="price"
+              name="price"
+              type="number"
+              placeholder="Enter price"
+              value={price}
+              onChange={handlePriceChange}
               className="w-full p-2 border border-gray-300 rounded-md"
               required
-            >
-              <option value="">Select category</option>
-              <option value="electronics">Electronics</option>
-              <option value="clothing">Clothing</option>
-              <option value="home-decor">Home Decor</option>
-              <option value="toys">Toys</option>
-              <option value="books">Books</option>
-            </select>
+            />
           </div>
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
+              className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors duration-200"
+              disabled={loading}
             >
-              Create Product
+              {loading ? "Đang Tạo..." : "Tạo Sản Phẩm"}
             </button>
           </div>
         </div>
       </form>
+      {error && <div className="mt-4 text-red-600">{error}</div>}
     </div>
   );
 };

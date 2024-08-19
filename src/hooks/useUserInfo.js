@@ -7,6 +7,8 @@ const useUserInfo = () => {
   const [userRoles, setUserRoles] = useState([]);
   const [userBlogs, setUserBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userApplyList, setUserApplyList] = useState([]);
+  const [error, setError] = useState(null);
 
   const { getToken } = useAuth();
 
@@ -47,9 +49,26 @@ const useUserInfo = () => {
     }
   }, [getToken]);
 
+  const fetchUserApplyList = useCallback(async () => {
+    const token = await getToken();
+    if (!token) return;
+
+    try {
+      const response = await authApi(token).get(endpoints.UserApplyList);
+      setUserApplyList(response.data.results);
+    } catch (err) {
+      console.error(
+        "Error fetching user apply list:",
+        err.response?.data || err.message
+      );
+      setError(err.response?.data || err.message);
+    }
+  }, [getToken]);
+
   useEffect(() => {
-    fetchUserInfo(); // Ensure fetchUserInfo is only called once on mount
-  }, [fetchUserInfo]);
+    fetchUserInfo();
+    fetchUserApplyList(); // Ensure fetchUserInfo is only called once on mount
+  }, [fetchUserInfo, fetchUserApplyList]);
 
   // console.log("User Roles in useUserInfo:", userRoles);
   // console.log("Loading in useUserInfo:", loading);
@@ -147,8 +166,10 @@ const useUserInfo = () => {
   return {
     userInfo,
     userRoles,
+    userApplyList,
     userBlogs,
     loading,
+    error,
     updateUserInfo,
     changePassword,
     resetPassword,
