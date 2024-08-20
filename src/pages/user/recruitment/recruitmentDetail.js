@@ -4,11 +4,9 @@ import {
   FaEnvelope,
   FaPhone,
   FaLink,
-  FaCalendarAlt,
   FaBriefcase,
   FaUsers,
   FaDollarSign,
-  FaClipboard,
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import Loading from "../../error/load";

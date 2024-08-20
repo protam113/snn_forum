@@ -3,13 +3,10 @@ import RightSidebar from "../../components/layouts/DefaultLayout/components/Righ
 import CreateBlog from "./blog/createBlog";
 import Newfeed from "./blog/feed/Newfeed";
 import { useTheme } from "../../context/themeContext";
-import useAuth from "../../hooks/useAuth";
-import { WebMaintenance } from "../error/error";
 import SEO from "../../components/layouts/DefaultLayout/components/SEO";
 
 const Home = () => {
   const { theme } = useTheme();
-  const { setAuth } = useAuth();
 
   return (
     <>

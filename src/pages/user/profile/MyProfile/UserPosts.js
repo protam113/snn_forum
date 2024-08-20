@@ -1,8 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
-import { BsBookmark, BsThreeDots } from "react-icons/bs";
-import { BiRepost } from "react-icons/bi";
+import { BsThreeDots } from "react-icons/bs";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import formatDate from "../../../../utils/formatDate";
 import Loading from "../../../error/load";
@@ -11,6 +10,8 @@ import useClickOutside from "../../../../hooks/useClickOutside";
 import { useTheme } from "../../../../context/themeContext";
 import useBlog from "../../../../hooks/useBlog";
 import Block from "../../../../components/design/Block";
+import { IoShareSocialOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const Userblogs = () => {
   const { userBlogs, loading, error } = useUserInfo();
@@ -50,6 +51,19 @@ const Userblogs = () => {
       setActiveMenu(null);
     }
   });
+
+  const handleCopyLink = (blogId) => {
+    const blogUrl = `${window.location.origin}/blog/${blogId}`;
+    navigator.clipboard
+      .writeText(blogUrl)
+      .then(() => {
+        toast.success("Link copied to clipboard!");
+      })
+      .catch((error) => {
+        toast.error("Failed to copy link");
+        console.error("Failed to copy link", error);
+      });
+  };
 
   const renderMedia = (media) => {
     const extension = media.file.split(".").pop().toLowerCase();
@@ -278,11 +292,12 @@ const Userblogs = () => {
                   }`}
                 /> */}
               </div>
-              {/* <BsBookmark
+              <IoShareSocialOutline
                 className={`text-2xl cursor-pointer ${
                   theme === "dark" ? "text-gray-300" : "text-gray-500"
                 }`}
-              /> */}
+                onClick={() => handleCopyLink(blog.id)}
+              />
             </div>
           </Block>
         ))

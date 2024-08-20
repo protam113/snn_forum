@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import useProduct from "../../../../hooks/useProduct";
+import Loading from "../../../error/load";
 
 // Hàm định dạng giá tiền
 const formatPrice = (price) => {
@@ -12,7 +13,12 @@ const formatPrice = (price) => {
 const Product = () => {
   const { products, loading, error } = useProduct();
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />
+      </div>
+    );
   if (error) return <p>{error}</p>;
 
   return (

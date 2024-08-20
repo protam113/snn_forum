@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import Example from "../../error/load";
-import Block from "../../../components/design/Block";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
 import LocationSelector from "../../../components/Location/LocationSelector";
+import Loading from "../../error/load";
 
 const EditProfile = () => {
   const { userInfo, loading, error, updateUserInfo } = useUserInfo();
@@ -118,7 +117,7 @@ const EditProfile = () => {
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Example />
+        <Loading />
       </div>
     );
   if (error) return <p>{error.message}</p>;

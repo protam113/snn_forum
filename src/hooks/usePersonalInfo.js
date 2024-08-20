@@ -36,42 +36,10 @@ const usePersonalInfo = () => {
       // Fetch user blogs
       const personalBlogsUrl = endpoints.currentUserBlog.replace(":id", userId);
       const blogsResponse = await authApi(token).get(personalBlogsUrl);
-
-      // Ensure personalBlogs.data is correctly accessed
-      setPersonalBlogs(blogsResponse.data.results || blogsResponse.data);
+      setPersonalBlogs(blogsResponse.data.results || []);
     } catch (err) {
-      if (err.response?.status === 401) {
-        const newToken = await getToken();
-        if (newToken) {
-          try {
-            // Fetch user personal info with new token
-            const userInfoUrl = endpoints.UserInfo.replace(":id", userId);
-            const response = await authApi(newToken).get(userInfoUrl);
-            setPersonalInfo(response.data);
-
-            // Fetch user blogs with new token
-            const userBlogsUrl = endpoints.currentUserBlog.replace(
-              ":id",
-              userId
-            );
-            const blogsResponse = await authApi(newToken).get(userBlogsUrl);
-
-            // Ensure personalBlogs.data is correctly accessed
-            setPersonalBlogs(blogsResponse.data.results || blogsResponse.data);
-          } catch (innerErr) {
-            console.error(
-              "Error fetching user info or blogs with new token",
-              innerErr
-            );
-            setError("Error fetching user information or blogs");
-          }
-        } else {
-          setError("Failed to refresh token");
-        }
-      } else {
-        console.error("Error fetching user information or blogs", err);
-        setError("Error fetching user information or blogs");
-      }
+      console.error("Error fetching user information or blogs", err);
+      setError("Error fetching user information or blogs");
     } finally {
       setLoading(false);
     }

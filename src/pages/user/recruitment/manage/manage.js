@@ -1,7 +1,4 @@
 import React from "react";
-import { GoCheckCircleFill } from "react-icons/go";
-import { AiFillCloseCircle } from "react-icons/ai";
-import { MdDelete } from "react-icons/md";
 import ManageNav from "./manageNav";
 import useUserInfo from "../../../../hooks/useUserInfo";
 
@@ -49,10 +46,12 @@ const Manage = () => {
                   <span
                     className={`p-1 rounded ${
                       application.status === "pending"
-                        ? "bg-yellow-200 text-yellow-800"
-                        : application.status === "accepted"
-                        ? "bg-green-200 text-green-800"
-                        : "bg-red-200 text-red-800"
+                        ? "bg-yellow-400 text-yellow-800"
+                        : application.status === "rejected"
+                        ? "bg-red-400 text-red-800"
+                        : application.status === "approved"
+                        ? "bg-green-400 text-green-800"
+                        : "bg-gray-400 text-gray-800" // Default color if status doesn't match
                     }`}
                   >
                     {application.status.charAt(0).toUpperCase() +

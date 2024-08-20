@@ -14,9 +14,9 @@ const ProductDetail = () => {
 
   if (loading)
     return (
-      <p>
+      <div className="flex items-center justify-center min-h-screen">
         <Loading />
-      </p>
+      </div>
     );
   if (error) return <p>{error}</p>;
   if (!product) return <p>Không tìm thấy sản phẩm.</p>;

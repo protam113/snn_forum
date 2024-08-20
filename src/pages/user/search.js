@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Search = () => {
-  const [isSearchAvailable, setIsSearchAvailable] = useState(true);
+  const [isSearchAvailable] = useState(true);
   const [query, setQuery] = useState("");
 
   const handleSearchChange = (e) => {

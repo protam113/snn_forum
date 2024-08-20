@@ -13,9 +13,9 @@ const RightSidebar = () => {
         <Ads_Input />
       </div>
       {/* <hr className="border-zinc-900" /> */}
-      {/* <div className="flex flex-col space-y-4 mb-4">
+      <div className="flex flex-col space-y-4 mb-4">
         <FSuggestion />
-      </div> */}
+      </div>
     </div>
   );
 };

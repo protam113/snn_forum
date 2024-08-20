@@ -166,7 +166,7 @@ const Navbar = () => {
             >
               {userInfo ? (
                 <Link
-                  to={`/profile/${userInfo.username}`}
+                  to={`/profile/${userInfo.id}`}
                   className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
                 >
                   <img

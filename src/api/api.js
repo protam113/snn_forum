@@ -36,6 +36,7 @@ const endpoints = {
   Recruitment: process.env.REACT_APP_Recruitment_ENDPOINT,
   RecruitmentDetail: process.env.REACT_APP_RecruitmentDetail_ENDPOINT,
   ApplyJob: process.env.REACT_APP_Apply_Job_ENDPOINT,
+  EditApplyJob: process.env.REACT_APP_Edit_Apply_Job_ENDPOINT,
   Categories: process.env.REACT_APP_Categories_ENDPOINT,
   Category: process.env.REACT_APP_Category_ENDPOINT,
   CategoryProduct: process.env.REACT_APP_CategoryProduct_ENDPOINT,

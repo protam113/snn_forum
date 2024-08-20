@@ -86,7 +86,6 @@ const CreateProduct = () => {
         () => {}
       );
     } catch (err) {
-      console.log(err);
       toast.error("An error occurred while creating the product");
     }
   };

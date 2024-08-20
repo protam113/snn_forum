@@ -4,26 +4,10 @@ import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
 
 const useBanner = () => {
-  const [userBanner, setUserBanner] = useState([]);
   const [adminBanner, setAdminBanner] = useState([]);
   const { getToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const fetchUserBanner = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await authApi().get(endpoints.UserBanner);
-      const results = response.data.results;
-      setUserBanner(results);
-    } catch (err) {
-      setError("An error occurred while fetching user banners");
-      toast.error("An error occurred while fetching user banners");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   const fetchAdminBanner = useCallback(async () => {
     setLoading(true);
@@ -62,7 +46,7 @@ const useBanner = () => {
       );
 
       const createdBanner = response.data;
-      setUserBanner((prevBanners) => [...prevBanners, createdBanner]);
+      adminBanner((prevBanners) => [...prevBanners, createdBanner]);
 
       toast.success("Banner added successfully");
     } catch (err) {
@@ -74,12 +58,10 @@ const useBanner = () => {
   };
 
   useEffect(() => {
-    fetchUserBanner();
     fetchAdminBanner();
-  }, [fetchUserBanner, fetchAdminBanner]);
+  }, [fetchAdminBanner]);
 
   return {
-    userBanner,
     adminBanner,
     loading,
     error,

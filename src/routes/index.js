@@ -14,10 +14,6 @@ import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
 import EdtBlog from "../pages/user/blog/edtBlog";
 import ContributeIdeas from "../pages/user/contributeIdeas";
-// import AdHome from "../pages/admin/AdHome";
-// import Error_404 from "../pages/error/404";
-// import Error_500 from "../pages/error/500";
-// import Example from "../pages/error/load";
 
 import Home from "../pages/user/home";
 import CategoryProduct from "../pages/user/product/components/CategoryProduct";
@@ -54,7 +50,7 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   { path: "/blog/edit/:blogId", component: EdtBlog, layout: DefaultLayout },
-  { path: "/profile/:username", component: Profile, layout: DefaultLayout },
+  { path: "/profile/:id", component: Profile, layout: DefaultLayout },
   {
     path: "/profile_user/:id",
     component: ProfileIf,

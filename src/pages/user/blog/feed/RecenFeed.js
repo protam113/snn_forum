@@ -14,9 +14,9 @@ const RecentFeed = () => {
 
   if (loading)
     return (
-      <p>
+      <div className="flex items-center justify-center min-h-screen">
         <Loading />
-      </p>
+      </div>
     );
   if (error) return <p>Error loading activities</p>;
 

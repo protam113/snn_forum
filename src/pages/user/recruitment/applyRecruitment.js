@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const ApplyRecruitment = () => {
   const { id: postId } = useParams();
-  const { addApplyJob, submitting, loading, error } = useRecruitment();
+  const { addApplyJob } = useRecruitment();
   const fileInputRef = useRef(null);
   const [cv, setCv] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -99,7 +99,7 @@ const ApplyRecruitment = () => {
   };
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-24 font-bold mb-6">Apply for Job</h1>
+      <h1 className="text-24 font-bold mb-6">Nhập Thông Tin</h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column for CV Upload and Preview */}
         <div>
@@ -150,79 +150,99 @@ const ApplyRecruitment = () => {
         </div>
 
         {/* Right Column for Form Fields */}
-        <form onSubmit={handleSubmit} className="space-y-4 ">
-          <div className="mb-4 text-16">
-            <label className="block text-gray-700">Job Title</label>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6 p-4 bg-white shadow-md rounded-md border border-gray-300"
+        >
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Tên vị trí ứng tuyển:
+            </label>
             <input
               type="text"
               name="job_title"
               value={job_title}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              placeholder="Nhập tên vị trí ứng tuyển"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700">Full Name</label>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Họ tên:
+            </label>
             <input
               type="text"
               name="fullname"
               value={fullname}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              placeholder="Nhập họ tên của bạn"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700">Phone Number</label>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Số điện thoại (Phone number):
+            </label>
             <input
               type="text"
               name="phone_number"
               value={phone_number}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              placeholder="Nhập số điện thoại của bạn"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Email:
+            </label>
             <input
               type="email"
               name="email"
               value={email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              placeholder="Nhập địa chỉ email của bạn"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700">Sex</label>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Giới tính:
+            </label>
             <select
               name="sex"
               value={sex ? "true" : "false"}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             >
-              <option value="">Select...</option>
-              <option value="true">Male</option>
-              <option value="false">Female</option>
+              <option value="">Chọn giới tính...</option>
+              <option value="true">Nam</option>
+              <option value="false">Nữ</option>
             </select>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700">Age</label>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Năm sinh:
+            </label>
             <input
               type="text"
               name="age"
               value={age}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              placeholder="Nhập năm sinh của bạn"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500"
+            className="w-full bg-indigo-600 text-white px-4 py-3 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
             Apply
           </button>

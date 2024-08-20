@@ -10,7 +10,6 @@ import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { Error404 } from "../../error/error";
-import RandomAd from "../ads/RandomAd";
 import { toast } from "react-toastify";
 import { IoShareSocialOutline } from "react-icons/io5";
 
@@ -19,7 +18,6 @@ const Blog = () => {
   const [expandedBlogId, setExpandedBlogId] = useState(null);
   const navigate = useNavigate();
   const [showLikesPopup, setShowLikesPopup] = useState(null);
-  const [likesCount, setLikesCount] = useState(0);
   const [likesData, setLikesData] = useState([]);
   const { theme } = useTheme();
   const {

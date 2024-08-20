@@ -87,9 +87,9 @@ const EdtBlog = () => {
 
   if (loading)
     return (
-      <p className="text-center text-gray-500">
+      <div className="flex items-center justify-center min-h-screen">
         <Loading />
-      </p>
+      </div>
     );
   if (error) return <p className="text-center text-red-500">{error}</p>;
 

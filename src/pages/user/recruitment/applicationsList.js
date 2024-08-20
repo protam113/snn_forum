@@ -1,11 +1,22 @@
 import React from "react";
-import useApplicationsList from "../../../hooks/useApplicationsList";
 import { useNavigate, useParams } from "react-router-dom";
 import useUserInfo from "../../../hooks/useUserInfo";
+import useEditApplyJob from "../../../hooks/useEditApplyJob";
+import useApplicationsList from "../../../hooks/useApplicationsList";
+import Loading from "../../error/load";
 
 const ApplicationsList = () => {
   const { id: postId } = useParams();
-  const { applications, loading, error } = useApplicationsList(postId);
+  const {
+    applications,
+    loading: loadingApplications,
+    error: errorApplications,
+  } = useApplicationsList(postId);
+  const {
+    loading: loadingEdit,
+    error: errorEdit,
+    editApplyJob,
+  } = useEditApplyJob(postId);
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
 
@@ -17,17 +28,33 @@ const ApplicationsList = () => {
     }
   };
 
-  if (loading) return <p className="text-center py-4">Loading...</p>;
-  if (error)
-    return <p className="text-center py-4 text-red-500">Error: {error}</p>;
+  const handleStatusChange = async (applicationId, newStatus) => {
+    try {
+      const result = await editApplyJob(applicationId, { status: newStatus });
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+  if (loadingApplications || loadingEdit)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />
+      </div>
+    );
+  if (errorApplications || errorEdit)
+    return (
+      <p className="text-center py-4 text-red-500">
+        Error: {errorApplications || errorEdit}
+      </p>
+    );
 
   return (
     <div className="overflow-x-auto p-4">
       <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
         <thead>
-          <tr className="border-b bg-gray-100 text-gray-600 text-14">
-            <th className="py-3 px-6 text-left">#</th>{" "}
-            {/* Updated column header */}
+          <tr className="border-b bg-gray-100 text-gray-600 text-sm">
+            <th className="py-3 px-6 text-left">#</th>
             <th className="py-3 px-6 text-left">Username</th>
             <th className="py-3 px-6 text-left">Họ tên</th>
             <th className="py-3 px-6 text-left">Vị trí ứng tuyển</th>
@@ -45,9 +72,8 @@ const ApplicationsList = () => {
             </tr>
           ) : (
             applications.map((application, index) => (
-              <tr key={application.id} className="border-b text-14">
-                <td className="py-4 px-6 text-gray-800">{index + 1}</td>{" "}
-                {/* Display index + 1 */}
+              <tr key={application.id} className="border-b text-sm">
+                <td className="py-4 px-6 text-gray-800">{index + 1}</td>
                 <td
                   className="py-4 px-6 text-gray-800 cursor-pointer hover:underline"
                   onClick={() =>
@@ -66,17 +92,23 @@ const ApplicationsList = () => {
                   {application.job_title}
                 </td>
                 <td className="py-4 px-6 text-gray-800">
-                  <span
+                  <select
+                    value={application.status} // Use the local status from the application object
+                    onChange={(e) =>
+                      handleStatusChange(application.id, e.target.value)
+                    }
                     className={`p-1 rounded ${
                       application.status === "pending"
-                        ? "bg-yellow-200 text-yellow-800"
-                        : application.status === "accepted"
-                        ? "bg-green-200 text-green-800"
-                        : "bg-red-200 text-red-800"
+                        ? "bg-yellow-400 text-yellow-800"
+                        : application.status === "approved"
+                        ? "bg-green-400 text-green-800"
+                        : "bg-red-400 text-red-800"
                     }`}
                   >
-                    {application.status}
-                  </span>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
                 </td>
                 <td className="py-4 px-6 text-gray-800">
                   {new Date(application.created_date).toLocaleDateString()}

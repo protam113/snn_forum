@@ -41,7 +41,6 @@ const useApplicationsList = (postId) => {
     applications,
     loading,
     error,
-    fetchApplicationList,
   };
 };
 
