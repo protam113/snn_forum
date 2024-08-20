@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import useCategories from "../../../../hooks/useCategories";
 
 const formatPrice = (price) => {
@@ -13,6 +13,7 @@ const CategoryProduct = () => {
   const { id: categoryId } = useParams();
   const { productsByCategory, loading, error, fetchProductByCategory } =
     useCategories();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (categoryId) {
@@ -26,8 +27,14 @@ const CategoryProduct = () => {
   return (
     <div className="py-6">
       <div className="container mx-auto px-4">
-        <h1 className="text-24 font-bold mb-4">
-          Sản phẩm theo thể loại(Category)
+        <button
+          onClick={() => navigate(-1)}
+          className=" text-blue-500 px-4 py-2 rounded-md mb-4"
+        >
+          Quay lại
+        </button>
+        <h1 className="text-2xl font-bold mb-4">
+          Sản phẩm theo thể loại (Category)
         </h1>
         {productsByCategory.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -46,10 +53,10 @@ const CategoryProduct = () => {
                 </div>
                 <div className="p-4 flex flex-col justify-between flex-grow">
                   <div>
-                    <h3 className="text-16 font-semibold truncate">
+                    <h3 className="text-lg font-semibold truncate">
                       {product.title}
                     </h3>
-                    <p className="text-gray-500 text-14">
+                    <p className="text-gray-500 text-sm">
                       By {product.user.username}
                     </p>
                   </div>
