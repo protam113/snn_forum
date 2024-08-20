@@ -91,6 +91,13 @@ const CreateProduct = () => {
     }
   };
 
+  // Hàm định dạng giá tiền
+  const formatPrice = (price) => {
+    if (!price) return "0 đ";
+    const formattedPrice = new Intl.NumberFormat("vi-VN").format(price);
+    return `${formattedPrice} đ`;
+  };
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold mb-6">Tạo Sản Phẩm</h1>
@@ -239,7 +246,7 @@ const CreateProduct = () => {
                 htmlFor="location"
                 className="block text-sm font-medium mb-1"
               >
-                Location
+                Vị Trí
               </label>
               <input
                 id="location"
@@ -252,43 +259,30 @@ const CreateProduct = () => {
                 required
               />
             </div>
-            <div>
+            <div className="mb-6">
               <label
-                htmlFor="phone_number"
+                htmlFor="category"
                 className="block text-sm font-medium mb-1"
               >
-                Phone Number
+                Danh Mục
               </label>
-              <input
-                id="phone_number"
-                name="phone_number"
-                type="number"
-                placeholder="Enter phone number"
-                value={phone_number}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-                required
-              />
+              {categories.map((cat) => (
+                <div key={cat.id} className="flex items-center mb-2">
+                  <input
+                    id={`category-${cat.id}`}
+                    name="category"
+                    type="checkbox"
+                    value={cat.id}
+                    checked={category.includes(cat.id)}
+                    onChange={handleCategoryChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor={`category-${cat.id}`} className="text-sm">
+                    {cat.name}
+                  </label>
+                </div>
+              ))}
             </div>
-          </div>
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-1">Category</label>
-            {categories.map((cat) => (
-              <div key={cat.id} className="flex items-center mb-2">
-                <input
-                  id={`category-${cat.id}`}
-                  name="category"
-                  type="checkbox"
-                  value={cat.id} // Use category id
-                  checked={category.includes(cat.id)}
-                  onChange={handleCategoryChange}
-                  className="mr-2"
-                />
-                <label htmlFor={`category-${cat.id}`} className="text-sm">
-                  {cat.name}
-                </label>
-              </div>
-            ))}
           </div>
           <div className="mb-6">
             <label htmlFor="price" className="block text-sm font-medium mb-1">
@@ -304,19 +298,37 @@ const CreateProduct = () => {
               className="w-full p-2 border border-gray-300 rounded-md"
               required
             />
+            <p className="mt-2 text-lg font-semibold">{formatPrice(price)}</p>
+          </div>
+          <div className="mb-6">
+            <label
+              htmlFor="phone_number"
+              className="block text-sm font-medium mb-1"
+            >
+              Số Điện Thoại
+            </label>
+            <input
+              id="phone_number"
+              name="phone_number"
+              type="text"
+              placeholder="Enter phone number"
+              value={phone_number}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
           </div>
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors duration-200"
+              className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
               disabled={loading}
             >
-              {loading ? "Đang Tạo..." : "Tạo Sản Phẩm"}
+              {loading ? "Submitting..." : "Create Product"}
             </button>
           </div>
         </div>
       </form>
-      {error && <div className="mt-4 text-red-600">{error}</div>}
     </div>
   );
 };

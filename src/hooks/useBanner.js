@@ -30,9 +30,7 @@ const useBanner = () => {
     setError(null);
     try {
       const token = await getToken(); // Get the token
-      const response = await authApi().get(endpoints.AdminBanner, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await authApi(token).get(endpoints.AdminBanner);
       const results = response.data.results;
       setAdminBanner(results);
     } catch (err) {

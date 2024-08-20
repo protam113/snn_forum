@@ -13,10 +13,12 @@ import {
 } from "react-icons/fa";
 import Loading from "../../error/load";
 import useRecruitment from "../../../hooks/useRecruitment";
+import useUserInfo from "../../../hooks/useUserInfo"; // Import hook để lấy thông tin người dùng
 
 const RecruitmentDetail = () => {
   const { id: postId } = useParams();
   const { recruitment, loading, error } = useRecruitment(postId);
+  const { userInfo } = useUserInfo(); // Lấy thông tin người dùng hiện tại
 
   if (loading) {
     return (
@@ -33,6 +35,10 @@ const RecruitmentDetail = () => {
   if (!recruitment) {
     return <p>No details available</p>;
   }
+
+  // Kiểm tra xem người dùng hiện tại có phải là người đăng bài không
+  const isOwner =
+    userInfo && recruitment.user && userInfo.id === recruitment.user.id;
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10">
@@ -75,13 +81,23 @@ const RecruitmentDetail = () => {
             </div>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 flex space-x-4">
             <a
               href={`/tuyen_dung/${postId}/ung_tuyen`}
               className="inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full max-w-xs text-center"
             >
               Apply Now
             </a>
+
+            {/* Hiển thị liên kết danh sách đơn ứng tuyển nếu người dùng hiện tại là người đăng bài */}
+            {isOwner && (
+              <a
+                href={`/tuyen_dung/${postId}/danh_sach_ung_tuyen`}
+                className="inline-block py-2 px-8 bg-blue-500 text-white rounded-lg text-16 font-semibold hover:bg-blue-400 transition duration-300 w-full max-w-xs text-center"
+              >
+                Danh sách đơn ứng tuyển
+              </a>
+            )}
           </div>
         </div>
 

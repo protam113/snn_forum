@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
 import { toast } from "react-toastify";
@@ -8,7 +8,9 @@ const useRecruitment = (postId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recruitment, setRecruitment] = useState(null);
+  const [applications, setApplications] = useState([]);
   const { getToken } = useAuth();
+  const fileInputRef = useRef(null);
 
   const fetchRecruitments = useCallback(async () => {
     try {
@@ -27,7 +29,7 @@ const useRecruitment = (postId) => {
       );
       setRecruitments(sortedRecruitments);
     } catch (error) {
-      alert.error("Error fetching recruitments:", error);
+      console.error("Error fetching recruitments:", error);
       setError("Error fetching recruitments");
     } finally {
       setLoading(false);
@@ -127,7 +129,6 @@ const useRecruitment = (postId) => {
 
   const addApplyJob = useCallback(
     async (applyJob, postId) => {
-      // Thêm postId như một tham số
       const token = await getToken();
       if (!token) return;
 
@@ -138,8 +139,7 @@ const useRecruitment = (postId) => {
       }
 
       try {
-        const url = endpoints.ApplyJob.replace(":id", postId); // Đảm bảo postId được thay thế đúng cách
-
+        const url = endpoints.ApplyJob.replace(":id", postId);
         const formData = new FormData();
         formData.append("job_title", applyJob.job_title);
         formData.append("fullname", applyJob.fullname);
@@ -147,11 +147,12 @@ const useRecruitment = (postId) => {
         formData.append("email", applyJob.email);
         formData.append("sex", applyJob.sex);
         formData.append("age", applyJob.age);
+
         if (applyJob.cv) {
           formData.append("cv", applyJob.cv);
         }
 
-        await authApi(token).post(url, formData, {
+        const response = await authApi(token).post(url, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -159,7 +160,6 @@ const useRecruitment = (postId) => {
 
         toast.success("Applied successfully!");
       } catch (error) {
-        // Xử lý lỗi và hiển thị thông báo
         const errorData = error.response?.data || {};
         console.error("Error applying for job:", errorData);
         toast.error(
@@ -181,6 +181,7 @@ const useRecruitment = (postId) => {
     loading,
     error,
     recruitment,
+    applications, // New return value
     handleDeleteRecruitment,
     addRecruitment,
     editRecruitment,

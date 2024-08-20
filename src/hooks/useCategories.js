@@ -5,6 +5,7 @@ import useAuth from "./useAuth";
 
 const useCategories = () => {
   const [categories, setCategories] = useState([]);
+  const [productsByCategory, setProductsByCategory] = useState([]);
   const { getToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,6 +19,31 @@ const useCategories = () => {
     } catch (err) {
       setError(err.message || "An error occurred");
       toast.error(err.message || "An error occurred while fetching categories");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchProductByCategory = useCallback(async (categoryId) => {
+    if (!categoryId) {
+      toast.error("Category ID is required");
+      console.error("fetchProductByCategory: Category ID is missing");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const url = endpoints.CategoryProduct.replace(":id", categoryId);
+
+      const response = await authApi().get(url);
+      const products = response.data.results;
+      setProductsByCategory(products);
+    } catch (err) {
+      console.error("Error fetching products by category:", err); // Log the full error
+      setError(err.message || "An error occurred");
+      toast.error(
+        err.message || "An error occurred while fetching products by category"
+      );
     } finally {
       setLoading(false);
     }
@@ -48,7 +74,7 @@ const useCategories = () => {
   const handleDeleteCategory = async (categoryId) => {
     setLoading(true);
     try {
-      const token = getToken(); // Lấy token từ useAuth
+      const token = getToken();
       if (!token) {
         throw new Error("No token available");
       }
@@ -71,7 +97,7 @@ const useCategories = () => {
   const editCategory = async (categoryId, updatedCategory) => {
     setLoading(true);
     try {
-      const token = getToken(); // Lấy token từ useAuth
+      const token = getToken();
       if (!token) {
         throw new Error("No token available");
       }
@@ -100,8 +126,10 @@ const useCategories = () => {
 
   return {
     categories,
+    productsByCategory,
     loading,
     error,
+    fetchProductByCategory, // Expose fetchProductByCategory for use in components
     addCategory,
     handleDeleteCategory,
     editCategory,

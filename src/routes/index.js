@@ -20,13 +20,14 @@ import ContributeIdeas from "../pages/user/contributeIdeas";
 // import Example from "../pages/error/load";
 
 import Home from "../pages/user/home";
+import CategoryProduct from "../pages/user/product/components/CategoryProduct";
 import CreateProduct from "../pages/user/product/CreateProduct";
 import ProductDetail from "../pages/user/product/product_detail";
 import Product from "../pages/user/product/product_feed";
-import Product_slide from "../pages/user/product/product_slide";
 import Profile from "../pages/user/profile";
 import EditProfile from "../pages/user/profile/edtProfile";
 import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
+import ApplicationsList from "../pages/user/recruitment/applicationsList";
 import ApplyRecruitment from "../pages/user/recruitment/applyRecruitment";
 import CreateRecruitment from "../pages/user/recruitment/createRecruitment";
 import EdtRecruitment from "../pages/user/recruitment/edtRecruitment";
@@ -90,19 +91,25 @@ const publicRoutes = [
     component: ApplyRecruitment,
     layout: DefaultLayout,
   },
+  {
+    path: "/tuyen_dung/:id/danh_sach_ung_tuyen",
+    component: ApplicationsList,
+    layout: DefaultLayout,
+  },
 
   { path: "/manage", component: Manage, layout: DefaultLayout },
   { path: "/work_manage", component: WorkManage, layout: DefaultLayout },
 
   { path: "/san_pham", component: Product, layout: DefaultLayout },
   {
-    path: "/san_pham/chi_tiet_san_pham/:id",
-    component: ProductDetail,
+    path: "/san_pham/:id/san_pham_theo_the_loai",
+    component: CategoryProduct,
     layout: DefaultLayout,
   },
+
   {
-    path: "/san_pham/tat_ca_san_pham",
-    component: Product_slide,
+    path: "/san_pham/chi_tiet_san_pham/:id",
+    component: ProductDetail,
     layout: DefaultLayout,
   },
   { path: "/create_product", component: CreateProduct, layout: DefaultLayout },

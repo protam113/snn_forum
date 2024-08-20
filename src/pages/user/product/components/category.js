@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom"; // Import Link
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css"; // Import the default styles
 import useCategories from "../../../../hooks/useCategories";
@@ -29,26 +30,30 @@ const Category = () => {
         >
           {slides.length > 0 ? (
             slides.map((slide, index) => (
-              <div key={index} className="flex flex-nowrap space-x-4">
+              <div key={index} className="flex space-x-4 overflow-x-auto">
                 {slide.map((category) => (
                   <div
                     key={category.id}
                     className="flex-shrink-0 w-full sm:w-1/4 lg:w-1/5 p-2"
-                    style={{ flexBasis: `calc(100% / ${slidesToShow})` }} // Ensures equal width for each item
+                    style={{ flexBasis: `calc(100% / ${slidesToShow})` }}
                   >
-                    <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
+                    <Link
+                      to={`/san_pham/${category.id}/san_pham_theo_the_loai`}
+                      className="block bg-white rounded-lg shadow-md overflow-hidden h-full"
+                    >
                       <div className="p-4 text-center">
                         <h3
                           className="text-14 md:text-16 lg:text-18 text-black font-semibold"
                           style={{
-                            whiteSpace: "nowrap", // Prevents text from wrapping
-                            overflow: "visible", // Ensures text isn't clipped
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
                           }}
                         >
                           {category.name}
                         </h3>
                       </div>
-                    </div>
+                    </Link>
                   </div>
                 ))}
               </div>

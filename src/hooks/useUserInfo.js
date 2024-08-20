@@ -32,9 +32,7 @@ const useUserInfo = () => {
       // Extract roles from the groups array
       const roles = userData.groups.map((group) => group.name);
       setUserRoles(roles);
-      // console.log("Fetched Roles:", roles);
 
-      // Fetch user blogs after getting user info
       const userId = userData.id;
       const userBlogsUrl = endpoints.currentUserBlog.replace(":id", userId);
       const blogsResponse = await authApi(token).get(userBlogsUrl);
@@ -69,9 +67,6 @@ const useUserInfo = () => {
     fetchUserInfo();
     fetchUserApplyList(); // Ensure fetchUserInfo is only called once on mount
   }, [fetchUserInfo, fetchUserApplyList]);
-
-  // console.log("User Roles in useUserInfo:", userRoles);
-  // console.log("Loading in useUserInfo:", loading);
 
   const updateUserInfo = async (updatedInfo) => {
     const token = await getToken();

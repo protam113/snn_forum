@@ -21,10 +21,9 @@ const Manage = () => {
           <tr className="bg-gray-100">
             <th className="border p-2">Name</th>
             <th className="border p-2">Date</th>
-            <th className="border p-2">Job Title</th>
+            <th className="border p-2">Tên Công Việc</th>
             <th className="border p-2">CV</th>
             <th className="border p-2">Status</th>
-            <th className="border p-2">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -47,26 +46,18 @@ const Manage = () => {
                   </a>
                 </td>
                 <td className="border p-2">
-                  <select
-                    className="p-1 rounded"
-                    value={application.status}
-                    // onChange={(e) => handleUpdateStatus(application.id, e.target.value)}
+                  <span
+                    className={`p-1 rounded ${
+                      application.status === "pending"
+                        ? "bg-yellow-200 text-yellow-800"
+                        : application.status === "accepted"
+                        ? "bg-green-200 text-green-800"
+                        : "bg-red-200 text-red-800"
+                    }`}
                   >
-                    <option value="pending">Pending</option>
-                    <option value="accepted">Accepted</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
-                </td>
-                <td className="border p-2 flex justify-center items-center">
-                  {application.status === "accepted" ? (
-                    <GoCheckCircleFill className="text-green-500 mx-1" />
-                  ) : (
-                    <AiFillCloseCircle className="text-red-500 mx-1" />
-                  )}
-                  <MdDelete
-                    className="text-red-500 cursor-pointer mx-1"
-                    // onClick={() => handleDeleteApplication(application.id)}
-                  />
+                    {application.status.charAt(0).toUpperCase() +
+                      application.status.slice(1)}
+                  </span>
                 </td>
               </tr>
             ))

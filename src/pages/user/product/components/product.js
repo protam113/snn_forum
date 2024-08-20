@@ -2,6 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import useProduct from "../../../../hooks/useProduct";
 
+// Hàm định dạng giá tiền
+const formatPrice = (price) => {
+  if (!price) return "0 đ";
+  const formattedPrice = new Intl.NumberFormat("vi-VN").format(price);
+  return `${formattedPrice} đ`;
+};
+
 const Product = () => {
   const { products, loading, error } = useProduct();
 
@@ -33,8 +40,10 @@ const Product = () => {
               </p>
             </div>
             <div className="flex items-center justify-between mt-4">
-              <span className="text-14 font-semibold">${product.price}</span>
-              <button className="bg-custom-red text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition-colors text-14">
+              <span className="text-14 font-semibold">
+                {formatPrice(product.price)}
+              </span>
+              <button className="bg-custom-red text-white px-2 py-1 rounded-md font-semibold hover:bg-red-700 transition-colors text-14">
                 Xem chi tiết
               </button>
             </div>
