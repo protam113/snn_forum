@@ -1,6 +1,7 @@
 // layout
 import AdHome from "../components/layouts/AdminLayout/AdHome";
 import { DefaultLayout, AdminLayout } from "../components/layouts/index";
+import AddUser from "../pages/admin/adUser/addUser";
 import AdUser from "../pages/admin/adUser/adUser";
 import Banner from "../pages/admin/banner/banner";
 import CreateBanner from "../pages/admin/banner/createBanner";
@@ -18,6 +19,7 @@ import ContributeIdeas from "../pages/user/contributeIdeas";
 import Home from "../pages/user/home";
 import CategoryProduct from "../pages/user/product/components/CategoryProduct";
 import CreateProduct from "../pages/user/product/CreateProduct";
+import EdtProduct from "../pages/user/product/edtProduct";
 import ProductDetail from "../pages/user/product/product_detail";
 import Product from "../pages/user/product/product_feed";
 import Profile from "../pages/user/profile";
@@ -104,6 +106,12 @@ const publicRoutes = [
   },
 
   {
+    path: "/san_pham/:id/chinh_sua_san_pham",
+    component: EdtProduct,
+    layout: DefaultLayout,
+  },
+
+  {
     path: "/san_pham/chi_tiet_san_pham/:id",
     component: ProductDetail,
     layout: DefaultLayout,
@@ -140,6 +148,11 @@ const privateRoutes = [
   {
     path: "/admin/quan_ly_nguoi_dung",
     component: AdUser,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/quan_ly_nguoi_dung/them_nguoi_dung",
+    component: AddUser,
     layout: AdminLayout,
   },
   {

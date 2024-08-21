@@ -49,7 +49,7 @@ function AppContent() {
               key={id}
               path={route.path}
               element={
-                <ProtectedRoutes allowedRoles={["admin"]}>
+                <ProtectedRoutes allowedRoles={["admin", "manager"]}>
                   <Layout>
                     <Page />
                   </Layout>

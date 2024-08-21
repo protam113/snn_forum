@@ -16,13 +16,13 @@ const User = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      fetchUsers(); // Trigger search on Enter key press
+      fetchUsers();
     }
   };
 
   const handleClear = () => {
     setSearchTerm("");
-    fetchUsers(); // Fetch users again when clearing search term
+    fetchUsers();
   };
 
   const handleProfileClick = (userId) => {
@@ -35,70 +35,77 @@ const User = () => {
 
   useEffect(() => {
     if (!searchTerm) {
-      fetchUsers(); // Fetch users when searchTerm is empty
+      fetchUsers();
     }
   }, [searchTerm, fetchUsers]);
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <div className="relative mb-4">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleChange}
-          onKeyDown={handleKeyPress}
-          placeholder="Search users by name or email"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={fetchUsers}
-          className="absolute inset-y-0 right-0 px-3 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
-        >
-          <MdSearch className="text-xl" />
-        </button>
-        {searchTerm && (
-          <button
-            onClick={handleClear}
-            className="absolute inset-y-0 right-12 px-3 py-2 text-gray-500 hover:text-gray-700"
-          >
-            <MdClear className="text-xl" />
-          </button>
-        )}
-      </div>
-
-      {loading && <p className="mt-2 text-gray-500">Loading...</p>}
-      {error && <p className="mt-2 text-red-500">Error: {error.message}</p>}
-      <ul>
-        {results.length > 0 ? (
-          results.map((user) => (
-            <li
-              key={user.id}
-              onClick={() => handleProfileClick(user.id)}
-              className="flex items-center cursor-pointer border-b py-2 hover:bg-gray-100"
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-center mb-8">
+        <div className="w-full max-w-md">
+          <div className="flex text-black items-center border rounded-lg bg-white border-zinc-800  ">
+            <input
+              type="text"
+              placeholder="Search users..."
+              className="w-full py-2 px-4 bg-transparent focus:outline-none"
+              value={searchTerm}
+              onChange={handleChange}
+              onKeyDown={handleKeyPress}
+            />
+            <button
+              type="button"
+              className="bg-primary text-primary-foreground rounded-r-lg px-4 py-2 hover:bg-primary/90"
+              onClick={fetchUsers}
             >
+              <MdSearch className="text-xl" />
+            </button>
+            {searchTerm && (
+              <button
+                onClick={handleClear}
+                className="absolute inset-y-0 right-12 px-3 py-2 text-gray-500 hover:text-gray-700"
+              >
+                <MdClear className="text-xl" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {loading && <p className="text-center text-gray-500">Loading...</p>}
+        {error && (
+          <p className="text-center text-red-500">Error: {error.message}</p>
+        )}
+        {results.map((user) => (
+          <div
+            key={user.id}
+            className="flex items-center space-x-4 cursor-pointer"
+            onClick={() => handleProfileClick(user.id)}
+          >
+            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
               {user.profile_image ? (
                 <img
                   src={user.profile_image}
-                  alt={user.fullname}
-                  className="w-10 h-10 rounded-full mr-3"
+                  alt={`${user.first_name} ${user.last_name}`}
+                  className="w-12 h-12 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full mr-3 bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-500">No Image</span>
-                </div>
-              )}
-              <div>
-                <span className="font-semibold">
-                  {user.first_name} {user.last_name}
+                <span className="text-lg font-semibold text-gray-600">
+                  {user.first_name.charAt(0).toUpperCase() || "U"}
                 </span>
-                <div className="text-gray-600">{user.email}</div>
-              </div>
-            </li>
-          ))
-        ) : (
-          <p className="mt-2 text-gray-500">No results found</p>
+              )}
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold">
+                {user.first_name} {user.last_name || "Unknown"}
+              </h3>
+              <p className="text-sm text-gray-600">@{user.username}</p>
+            </div>
+          </div>
+        ))}
+        {results.length === 0 && !loading && !error && (
+          <p className="text-center text-gray-500">No results found</p>
         )}
-      </ul>
+      </div>
     </div>
   );
 };

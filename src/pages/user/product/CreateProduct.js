@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
   const { categories } = useCategories();
-  const { handleAddProduct, error, loading, fileInputRef } = useProduct();
+  const { handleAddProduct, loading, fileInputRef } = useProduct();
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [title, setTitle] = useState("");

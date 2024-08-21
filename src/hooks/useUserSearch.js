@@ -17,7 +17,7 @@ const useUserSearch = (searchTerm, delay = 500) => {
       const response = await authApi().get(url);
       setResults(response.data.results);
     } catch (err) {
-      console.error("Error fetching users:", err);
+      console.error("Lỗi khi tìm kiếm người dùng:", err);
       setError(err);
     } finally {
       setLoading(false);
@@ -34,7 +34,7 @@ const useUserSearch = (searchTerm, delay = 500) => {
           const response = await authApi().get(url);
           setResults(response.data.results);
         } catch (err) {
-          console.error("Error searching user:", err);
+          console.error("Lỗi khi tìm kiếm người dùng:", err);
           setError(err);
         } finally {
           setLoading(false);

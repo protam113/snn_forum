@@ -21,7 +21,7 @@ const Banner = () => {
           className="bg-custom-red text-white py-2 px-4 rounded hover:bg-red-600 transition-colors"
           onClick={handleCreateBanner}
         >
-          Tạo Categories
+          Tạo Banner
         </button>
       </div>
       {adminBanner.length > 0 ? (
@@ -38,7 +38,7 @@ const Banner = () => {
           </thead>
           <tbody>
             {adminBanner.map((banner) => (
-              <tr key={banner.id} className="border-b">
+              <tr key={banner.id} className="w-full bg-gray-100 border-b">
                 <td className="py-2 px-4 border-r">{banner.id}</td>
                 <td className="py-2 px-4 border-r">{banner.title}</td>
                 <td className="py-2 px-4 border-r">

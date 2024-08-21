@@ -15,8 +15,8 @@ const useUserBanner = () => {
       const results = response.data.results;
       setUserBanner(results);
     } catch (err) {
-      setError("An error occurred while fetching user banners");
-      toast.error("An error occurred while fetching user banners");
+      setError("Đã xảy ra lỗi khi tải Banner người dùng");
+      toast.error("Đã xảy ra lỗi khi tải Banner người dùng");
     } finally {
       setLoading(false);
     }

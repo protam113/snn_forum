@@ -1,108 +1,55 @@
 // components/Main.js
-import {
-  FaSearch,
-  FaUserCircle,
-  FaTh,
-  FaList,
-  FaUsers,
-  FaFlag,
-  FaArrowsAltH,
-} from "react-icons/fa";
-import { RiArrowRightSLine } from "react-icons/ri";
+
+import UserChart from "./components/chart/userChart";
+import LineChart from "./components/chart/lineChart";
+import MixChart from "./components/chart/MixedChart";
+import { useTheme } from "../../../context/themeContext";
+import { Link } from "react-router-dom";
+import CategoryChart from "./components/chart/categoryChart";
+import BannerChart from "./components/chart/bannerChart";
 
 const AdHome = () => {
+  const { theme } = useTheme();
+
   return (
-    <div className="flex-1 pl-14 sm:pl-60">
+    <div
+      className={`relative min-h-screen flex ${
+        theme === "dark" ? " text-white" : " text-black"
+      }`}
+    >
       <main className="p-4 sm:p-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <div className="font-semibold text-lg">Total Categories</div>
-            <div className="text-sm text-gray-600">
-              The total number of categories in the system.
-            </div>
-            <div className="text-4xl font-bold">125</div>
+          <Link to="/admin/the_loai" className=" shadow-md rounded-lg p-4">
+            <CategoryChart />
+          </Link>
+          <div className=" shadow-md rounded-lg p-4">
+            <div className="font-semibold text-lg">Group Admin</div>
+            <Link to="/admin/quan_ly_nguoi_dung">
+              <UserChart />
+            </Link>
           </div>
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <div className="font-semibold text-lg">Active Users</div>
-            <div className="text-sm text-gray-600">
-              The total number of active users in the system.
-            </div>
-            <div className="text-4xl font-bold">2,345</div>
-          </div>
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <div className="font-semibold text-lg">Live Banners</div>
-            <div className="text-sm text-gray-600">
-              The total number of live banners in the system.
-            </div>
-            <div className="text-4xl font-bold">78</div>
+          <div className=" shadow-md rounded-lg p-4">
+            <Link to="/admin/banners" className=" shadow-md rounded-lg p-4">
+              <BannerChart />
+            </Link>
           </div>
         </div>
-        <div className="mt-4">
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <div className="font-semibold text-lg">Recent Categories</div>
+
+        {/* Container for charts */}
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className=" shadow-md rounded-lg p-4">
+            <div className="font-semibold text-lg">Thống Kê</div>
             <div className="text-sm text-gray-600">
-              The latest categories added to the system.
+              Thống kê các số lượng người dùng, danh mục(categories) và banner.
             </div>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Slug
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Products
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">Electronics</td>
-                  <td className="px-6 py-4 whitespace-nowrap">electronics</td>
-                  <td className="px-6 py-4 whitespace-nowrap">125</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-gray-600 hover:text-gray-900">
-                      <FaArrowsAltH className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">Clothing</td>
-                  <td className="px-6 py-4 whitespace-nowrap">clothing</td>
-                  <td className="px-6 py-4 whitespace-nowrap">250</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-gray-600 hover:text-gray-900">
-                      <FaArrowsAltH className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">Furniture</td>
-                  <td className="px-6 py-4 whitespace-nowrap">furniture</td>
-                  <td className="px-6 py-4 whitespace-nowrap">75</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-gray-600 hover:text-gray-900">
-                      <FaArrowsAltH className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">Sports</td>
-                  <td className="px-6 py-4 whitespace-nowrap">sports</td>
-                  <td className="px-6 py-4 whitespace-nowrap">100</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-gray-600 hover:text-gray-900">
-                      <FaArrowsAltH className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <LineChart />
+          </div>
+          <div className="shadow-md rounded-lg p-4">
+            <div className="font-semibold text-lg">Thống Kê</div>
+            <div className="text-sm text-gray-600">
+              Thống kê các số lượng bài viết, sản phẩm và tin tuyển dụng.
+            </div>
+            <MixChart />
           </div>
         </div>
       </main>

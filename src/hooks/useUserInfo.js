@@ -65,7 +65,7 @@ const useUserInfo = () => {
 
   useEffect(() => {
     fetchUserInfo();
-    fetchUserApplyList(); // Ensure fetchUserInfo is only called once on mount
+    fetchUserApplyList();
   }, [fetchUserInfo, fetchUserApplyList]);
 
   const updateUserInfo = async (updatedInfo) => {

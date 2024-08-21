@@ -1,11 +1,17 @@
 import React from "react";
 import ManageNav from "./manageNav";
 import useUserInfo from "../../../../hooks/useUserInfo";
+import Loading from "../../../error/load";
 
 const Manage = () => {
   const { userApplyList, loading, error } = useUserInfo();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -19,6 +25,7 @@ const Manage = () => {
             <th className="border p-2">Name</th>
             <th className="border p-2">Date</th>
             <th className="border p-2">Tên Công Việc</th>
+
             <th className="border p-2">CV</th>
             <th className="border p-2">Status</th>
           </tr>
@@ -32,6 +39,7 @@ const Manage = () => {
                   {new Date(application.created_date).toLocaleDateString()}
                 </td>
                 <td className="border p-2">{application.job_title}</td>
+
                 <td className="border p-2">
                   <a
                     href={application.cv}

@@ -16,19 +16,13 @@ const useEditApplyJob = (postId) => {
       setError(null);
 
       try {
-        console.log(
-          `Editing application ${applicationId} with data:`,
-          updatedData
-        );
         const token = await getToken();
         if (!token) throw new Error("No token available");
 
         const url = endpoints.EditApplyJob.replace(":id", applicationId);
-        console.log("API URL:", url);
 
         // Update the application status
         const response = await authApi(token).patch(url, updatedData);
-        console.log("API Response:", response.data);
 
         return response.data; // Return updated data from the API if needed
       } catch (error) {

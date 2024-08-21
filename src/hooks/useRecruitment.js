@@ -158,12 +158,11 @@ const useRecruitment = (postId) => {
           },
         });
 
-        toast.success("Applied successfully!");
+        toast.success("Đã ứng tuyển thành công!");
       } catch (error) {
         const errorData = error.response?.data || {};
-        console.error("Error applying for job:", errorData);
         toast.error(
-          `Error applying for job: ${errorData.detail || error.message}`
+          `Lỗi khi ứng tuyển việc: ${errorData.detail || error.message}`
         );
         setError(errorData.detail || "Error applying for job");
       }
@@ -181,7 +180,7 @@ const useRecruitment = (postId) => {
     loading,
     error,
     recruitment,
-    applications, // New return value
+    applications,
     handleDeleteRecruitment,
     addRecruitment,
     editRecruitment,

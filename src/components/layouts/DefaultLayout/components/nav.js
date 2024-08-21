@@ -31,7 +31,7 @@ const Navbar = () => {
     closeNavbar();
   });
 
-  const isAdmin = userRoles.includes("admin");
+  const isAdmin = userRoles.includes("admin") || userRoles.includes("manager");
 
   return (
     <div

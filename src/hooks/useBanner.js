@@ -13,13 +13,13 @@ const useBanner = () => {
     setLoading(true);
     setError(null);
     try {
-      const token = await getToken(); // Get the token
+      const token = await getToken();
       const response = await authApi(token).get(endpoints.AdminBanner);
       const results = response.data.results;
       setAdminBanner(results);
     } catch (err) {
-      setError("An error occurred while fetching admin banners");
-      toast.error("An error occurred while fetching admin banners");
+      setError("Đã xảy ra lỗi khi lấy banner quản trị");
+      toast.error("Đã xảy ra lỗi khi lấy banner quản trị");
     } finally {
       setLoading(false);
     }
@@ -30,10 +30,8 @@ const useBanner = () => {
     try {
       const token = await getToken();
       if (!token) {
-        throw new Error("No token available");
+        throw new Error("Không có token");
       }
-
-      // Check if your server expects `FormData` or JSON
       const response = await authApi(token).post(
         endpoints.UserBanner,
         newBanner,
@@ -46,12 +44,12 @@ const useBanner = () => {
       );
 
       const createdBanner = response.data;
-      adminBanner((prevBanners) => [...prevBanners, createdBanner]);
+      setAdminBanner((prevBanners) => [...prevBanners, createdBanner]);
 
-      toast.success("Banner added successfully");
+      toast.success("Đã thêm banner thành công");
     } catch (err) {
-      setError(err.message || "An error occurred");
-      toast.error(err.message || "An error occurred while adding the banner");
+      setError(err.message || "Đã xảy ra lỗi");
+      toast.error(err.message || "Đã xảy ra lỗi khi thêm banner");
     } finally {
       setLoading(false);
     }

@@ -58,6 +58,8 @@ const ApplicationsList = () => {
             <th className="py-3 px-6 text-left">Username</th>
             <th className="py-3 px-6 text-left">Họ tên</th>
             <th className="py-3 px-6 text-left">Vị trí ứng tuyển</th>
+            <th className="border p-2">SDT</th>
+            <th className="border p-2">Mail</th>
             <th className="py-3 px-6 text-left">Status</th>
             <th className="py-3 px-6 text-left">Created Date</th>
             <th className="py-3 px-6 text-left">CV</th>
@@ -91,6 +93,8 @@ const ApplicationsList = () => {
                 <td className="py-4 px-6 text-gray-800">
                   {application.job_title}
                 </td>
+                <td className="border p-2">{application.mail}</td>
+                <td className="border p-2">{application.phone_number}</td>
                 <td className="py-4 px-6 text-gray-800">
                   <select
                     value={application.status} // Use the local status from the application object

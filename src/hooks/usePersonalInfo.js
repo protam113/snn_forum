@@ -38,8 +38,8 @@ const usePersonalInfo = () => {
       const blogsResponse = await authApi(token).get(personalBlogsUrl);
       setPersonalBlogs(blogsResponse.data.results || []);
     } catch (err) {
-      console.error("Error fetching user information or blogs", err);
-      setError("Error fetching user information or blogs");
+      console.error("Lỗi khi lấy thông tin người dùng hoặc blog", err);
+      setError("Lỗi khi lấy thông tin người dùng hoặc blog");
     } finally {
       setLoading(false);
     }

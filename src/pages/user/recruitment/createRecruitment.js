@@ -8,13 +8,16 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import { salary } from "../../../data/SalaryRange";
-import { provinces } from "../../../data/DataLocat";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import useRecruitment from "../../../hooks/useRecruitment";
 import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../../context/themeContext";
 
 const CreateRecruitment = () => {
+  const { theme } = useTheme();
   const { addRecruitment, loading } = useRecruitment();
 
   const [formData, setFormData] = useState({
@@ -82,11 +85,10 @@ const CreateRecruitment = () => {
         mail: "",
         phone_number: "",
         salary: "",
-        location: "", // Reset location as well
+        location: "",
       });
 
-      // Navigate to the previous page
-      navigate(-1); // Điều hướng về trang trước đó
+      navigate(-1);
     } catch (error) {
       console.error(
         "Error adding recruitment:",
@@ -120,7 +122,7 @@ const CreateRecruitment = () => {
                 htmlFor="content"
                 className="text-sm font-medium mb-1 block"
               >
-                Nội Dung Bổ Sung
+                Tiêu Đề Công Việc:
               </label>
               <textarea
                 id="content"
@@ -264,15 +266,18 @@ const CreateRecruitment = () => {
               >
                 Mô Tả Công Việc
               </label>
-              <textarea
-                id="job_detail"
-                name="job_detail"
-                rows={2}
+              <ReactQuill
                 value={formData.job_detail}
                 onChange={handleChange}
-                placeholder="Mô tả công việc..."
-                className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
-              ></textarea>
+                className="mb-6"
+                placeholder="What's on your mind?"
+                style={{ height: "12rem" }}
+              />
+              <hr
+                className={`my-12 ${
+                  theme === "dark" ? "border-gray-600" : "border-gray-300"
+                }`}
+              />
             </div>
 
             {/* Email */}

@@ -19,8 +19,8 @@ const useProduct = (productId) => {
       const response = await authApi().get(endpoints.Products);
       setProducts(response.data.results || []);
     } catch (err) {
-      setError("An error occurred while fetching products");
-      toast.error("An error occurred while fetching products");
+      setError("Đã xảy ra lỗi khi tải sản phẩm!");
+      toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
     } finally {
       setLoading(false);
     }
@@ -36,8 +36,8 @@ const useProduct = (productId) => {
       const response = await authApi().get(url);
       setProduct(response.data || null);
     } catch (err) {
-      setError("An error occurred while fetching the product");
-      toast.error("An error occurred while fetching the product");
+      setError("Đã xảy ra lỗi khi tải sản phẩm!");
+      toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
     } finally {
       setLoading(false);
     }
@@ -98,7 +98,7 @@ const useProduct = (productId) => {
           );
           const createdProduct = response.data;
           setProducts((prevProducts) => [...prevProducts, createdProduct]);
-          toast.success("Product added successfully");
+          toast.success("Sản phẩm đã được thêm thành công");
           if (onSuccess) onSuccess();
           if (onClose) onClose();
         } catch (err) {
@@ -114,7 +114,7 @@ const useProduct = (productId) => {
               );
               const createdProduct = response.data;
               setProducts((prevProducts) => [...prevProducts, createdProduct]);
-              toast.success("Product added successfully");
+              toast.success("Sản phẩm đã được thêm thành công");
               if (onSuccess) onSuccess();
               if (onClose) onClose();
             } else {
@@ -130,8 +130,7 @@ const useProduct = (productId) => {
           err.response?.data || err.message
         );
         toast.error(
-          err.response?.data?.detail ||
-            "An error occurred while adding the product"
+          err.response?.data?.detail || "Đã xảy ra lỗi khi thêm sản phẩm"
         );
       } finally {
         setLoading(false);
@@ -145,6 +144,29 @@ const useProduct = (productId) => {
     fetchProduct();
   }, [fetchProducts, fetchProduct]);
 
+  const editProduct = async (edtProduct) => {
+    try {
+      const token = await getToken();
+      if (!token) {
+        setError("No token available");
+        return;
+      }
+      const response = await authApi(token).patch(
+        endpoints.ProductDetail.replace(":id", productId),
+        edtProduct,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setProduct(response.data);
+    } catch (err) {
+      console.error("Lỗi khi cập nhật sản phẩm!", err);
+      toast.error("Lỗi khi cập nhật sản phẩm!");
+    }
+  };
+
   return {
     products,
     fileInputRef,
@@ -152,6 +174,7 @@ const useProduct = (productId) => {
     loading,
     error,
     handleAddProduct,
+    editProduct,
   };
 };
 

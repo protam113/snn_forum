@@ -1,11 +1,12 @@
 import React from "react";
 // import { RiArrowRightDoubleFill } from "react-icons/ri";
 // import { MdOutlineTopic } from "react-icons/md";
-import { FaHome, FaQuestionCircle, FaUser, FaBuilding } from "react-icons/fa";
+import { FaHome, FaUser, FaBuilding } from "react-icons/fa";
 import { FaCog } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
 import useUserInfo from "../../../../hooks/useUserInfo";
+import { FaBasketShopping } from "react-icons/fa6";
 
 const Sidebar = () => {
   const { theme } = useTheme();
@@ -51,13 +52,13 @@ const Sidebar = () => {
             />
             <span className="ml-8 text-14">Home</span>
           </Link>
-          <Link to="/questions" className={linkClasses}>
-            <FaQuestionCircle
+          <Link to="/san_pham" className={linkClasses}>
+            <FaBasketShopping
               className={`absolute left-2 text-lg ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             />
-            <span className="ml-8 text-14">Questions</span>
+            <span className="ml-8 text-14">Shop</span>
           </Link>
           <Link to="/nguoi_dung" className={linkClasses}>
             <FaUser
@@ -67,14 +68,14 @@ const Sidebar = () => {
             />
             <span className="ml-8 text-14">User</span>
           </Link>
-          <Link to="/company" className={linkClasses}>
+          {/* <Link to="/company" className={linkClasses}>
             <FaBuilding
               className={`absolute left-2 text-lg ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             />
             <span className="ml-8 text-14">Company</span>
-          </Link>
+          </Link> */}
         </div>
         <hr className="border-zinc-900 my-4" />
         {userInfo && (

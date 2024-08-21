@@ -16,7 +16,7 @@ const useApplicationsList = (postId) => {
 
     try {
       const token = await getToken();
-      if (!token) throw new Error("No token available");
+      if (!token) throw new Error("Không có token");
 
       const url = endpoints.ApplyJob.replace(":id", postId);
 
@@ -24,9 +24,9 @@ const useApplicationsList = (postId) => {
 
       setApplications(response.data.results);
     } catch (error) {
-      console.error("Error fetching application list:", error);
       setError(
-        error.response?.data?.detail || "Error fetching application list"
+        error.response?.data?.detail ||
+          "Đã xảy ra lỗi khi lấy danh sách đơn ứng tuyển"
       );
     } finally {
       setLoading(false);

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import useProduct from "../../../hooks/useProduct";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Import ReactQuill's stylesheet
+import "react-quill/dist/quill.snow.css";
 import { useTheme } from "../../../context/themeContext";
 import Loading from "../../error/load";
+import useUserInfo from "../../../hooks/useUserInfo";
 
 const ProductDetail = () => {
   const { theme } = useTheme();
   const [showFullNumber, setShowFullNumber] = useState(false);
   const { id: productId } = useParams();
   const { product, loading, error } = useProduct(productId);
+  const { userInfo } = useUserInfo();
 
   if (loading)
     return (
@@ -21,15 +22,14 @@ const ProductDetail = () => {
   if (error) return <p>{error}</p>;
   if (!product) return <p>Không tìm thấy sản phẩm.</p>;
 
-  // Default values if the product data is incomplete
   const price = product.price || 0;
   const formattedPrice = price.toLocaleString("vi-VN");
 
-  // Get the categories from the product data
   const categories =
     product.categories?.map((category) => category.name).join(", ") ||
     "Chưa có";
 
+  const isOwner = userInfo?.id === product.user?.id;
   return (
     <div
       className={`w-full max-w-6xl mx-auto py-8 md:py-12 px-4 md:px-6 ${
@@ -52,7 +52,6 @@ const ProductDetail = () => {
             {product.title || "Tiêu đề sản phẩm"}
           </h1>
           <div className="text-muted-foreground text-18">
-            {/* Use ReactQuill to render the product description */}
             <div
               className={`mb-4 text-14 ${
                 theme === "dark" ? "text-white" : "text-black"
@@ -73,7 +72,21 @@ const ProductDetail = () => {
             </div>
             <div>
               <p className="text-muted-foreground text-20">Trạng thái</p>
-              <p className="font-medium">{product.fettle || "Chưa rõ"}</p>
+              <p
+                className={`font-medium py-1 px-2 rounded ${
+                  product.fettle === "in_stock"
+                    ? "bg-green-400 text-white"
+                    : product.fettle === "out_off_stock"
+                    ? "bg-red-400 text-white"
+                    : ""
+                }`}
+              >
+                {product.fettle === "in_stock"
+                  ? "Còn hàng"
+                  : product.fettle === "out_of_stock"
+                  ? "Hết hàng"
+                  : "Chưa rõ"}
+              </p>
             </div>
             <div>
               <p className="text-muted-foreground text-20">Vị trí</p>
@@ -98,7 +111,6 @@ const ProductDetail = () => {
                 {product.user?.username || "Chưa rõ"}
               </p>
             </div>
-            {/* Display the seller's phone number */}
             <div>
               <p className="text-muted-foreground">Điện thoại</p>
               <p className="font-medium">
@@ -107,17 +119,25 @@ const ProductDetail = () => {
                   : product.phone_number?.slice(0, 4) + "****" || "Chưa có"}
               </p>
             </div>
-            {/* Display the product categories */}
           </div>
         </div>
       </div>
-      <div className="mt-12 md:mt-16 flex justify-end">
+      <div className="mt-12 md:mt-16 flex justify-end space-x-4">
         <button
           onClick={() => setShowFullNumber(!showFullNumber)}
           className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors"
         >
           {showFullNumber ? "Ẩn số điện thoại" : "Hiện số điện thoại"}
         </button>
+        {/* Add the "Chỉnh sửa sản phẩm" button */}
+        {isOwner && (
+          <Link
+            to={`/san_pham/${productId}/chinh_sua_san_pham`}
+            className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition-colors"
+          >
+            Chỉnh sửa sản phẩm
+          </Link>
+        )}
       </div>
     </div>
   );

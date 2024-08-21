@@ -4,34 +4,48 @@ import {
   FaEnvelope,
   FaPhone,
   FaLink,
-  FaBriefcase,
   FaUsers,
   FaDollarSign,
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import Loading from "../../error/load";
 import useRecruitment from "../../../hooks/useRecruitment";
-import useUserInfo from "../../../hooks/useUserInfo"; // Import hook để lấy thông tin người dùng
+import useUserInfo from "../../../hooks/useUserInfo";
+import { useTheme } from "../../../context/themeContext";
+import { BsClock } from "react-icons/bs";
 
 const RecruitmentDetail = () => {
+  const { theme } = useTheme();
   const { id: postId } = useParams();
   const { recruitment, loading, error } = useRecruitment(postId);
-  const { userInfo } = useUserInfo(); // Lấy thông tin người dùng hiện tại
+  const { userInfo } = useUserInfo();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div
+        className={`flex items-center justify-center min-h-screen ${
+          theme === "dark" ? "bg-zinc-900" : "bg-white"
+        }`}
+      >
         <Loading />
       </div>
     );
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <p className={`${theme === "dark" ? "text-white" : "text-black"}`}>
+        Error: {error}
+      </p>
+    );
   }
 
   if (!recruitment) {
-    return <p>No details available</p>;
+    return (
+      <p className={`${theme === "dark" ? "text-white" : "text-black"}`}>
+        No details available
+      </p>
+    );
   }
 
   // Kiểm tra xem người dùng hiện tại có phải là người đăng bài không
@@ -39,7 +53,11 @@ const RecruitmentDetail = () => {
     userInfo && recruitment.user && userInfo.id === recruitment.user.id;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 sm:p-8 md:p-10">
+    <div
+      className={`max-w-4xl mx-auto p-6 sm:p-8 md:p-10 ${
+        theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-black"
+      }`}
+    >
       <div className="flex gap-6">
         {/* Job Details */}
         <div className="w-3/4">
@@ -55,24 +73,40 @@ const RecruitmentDetail = () => {
           </div>
 
           {/* Job Details */}
-          <div className="grid grid-cols-3 gap-6 mb-6">
+          <div
+            className={`grid grid-cols-3 gap-6 mb-6 ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
             <div className="flex text-14 flex-col items-center">
-              <div className="bg-custom-red text-white p-1 rounded-full">
+              <div
+                className={`bg-custom-red text-white p-2 rounded-full ${
+                  theme === "dark" ? "bg-red-600" : "bg-red-500"
+                }`}
+              >
                 <FaDollarSign className="text-3xl" />
               </div>
               <span className="mt-2 text-gray-600">Mức lương</span>
               <span className="mt-1 font-bold">{recruitment.salary} Triệu</span>
             </div>
             <div className="flex flex-col items-center">
-              <div className="bg-custom-red text-white p-2 rounded-full">
-                <FaBriefcase className="text-3xl" />
+              <div
+                className={`bg-custom-red text-white p-2 rounded-full ${
+                  theme === "dark" ? "bg-red-600" : "bg-red-500"
+                }`}
+              >
+                <FaMapMarkerAlt className="text-3xl" />
               </div>
               <span className="mt-2 text-gray-600">Địa điểm</span>
               <span className="mt-1 font-bold">{recruitment.location}</span>
             </div>
             <div className="flex flex-col items-center">
-              <div className="bg-custom-red text-white p-2 rounded-full">
-                <FaDollarSign className="text-3xl" />
+              <div
+                className={`bg-custom-red text-white p-2 rounded-full ${
+                  theme === "dark" ? "bg-red-600" : "bg-red-500"
+                }`}
+              >
+                <BsClock className="text-3xl" />
               </div>
               <span className="mt-2 text-gray-600">Kinh Nghiệm</span>
               <span className="mt-1 font-bold">{recruitment.experience}</span>
@@ -82,7 +116,11 @@ const RecruitmentDetail = () => {
           <div className="mb-6 flex space-x-4">
             <a
               href={`/tuyen_dung/${postId}/ung_tuyen`}
-              className="inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full max-w-xs text-center"
+              className={`inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full max-w-xs text-center ${
+                theme === "dark"
+                  ? "bg-red-600 hover:bg-red-700"
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
             >
               Apply Now
             </a>
@@ -91,7 +129,11 @@ const RecruitmentDetail = () => {
             {isOwner && (
               <a
                 href={`/tuyen_dung/${postId}/danh_sach_ung_tuyen`}
-                className="inline-block py-2 px-8 bg-blue-500 text-white rounded-lg text-16 font-semibold hover:bg-blue-400 transition duration-300 w-full max-w-xs text-center"
+                className={`inline-block py-2 px-8 bg-blue-500 text-white rounded-lg text-16 font-semibold hover:bg-blue-400 transition duration-300 w-full max-w-xs text-center ${
+                  theme === "dark"
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-blue-500 hover:bg-blue-600"
+                }`}
               >
                 Danh sách đơn ứng tuyển
               </a>
@@ -100,7 +142,11 @@ const RecruitmentDetail = () => {
         </div>
 
         {/* User Profile Information */}
-        <div className="w-1/4 bg-gray-100 p-4 rounded-lg">
+        <div
+          className={`w-1/4 ${
+            theme === "dark" ? "bg-zinc-800" : "bg-gray-100"
+          } p-4 rounded-lg`}
+        >
           <div className="flex items-center mb-4">
             <img
               src={recruitment.user.profile_image}
@@ -116,18 +162,30 @@ const RecruitmentDetail = () => {
       </div>
 
       {/* Contact Information */}
-      <div className="bg-gray-100 p-4 rounded-lg">
+      <div
+        className={`bg-gray-100 p-4 rounded-lg ${
+          theme === "dark" ? "bg-zinc-800 text-white" : "bg-white text-black"
+        }`}
+      >
         <h3 className="text-18 font-semibold mb-4">Thông tin liên lạc</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-4">
-            <FaMapMarkerAlt className="text-gray-500 h-6 w-6" />
+            <FaMapMarkerAlt
+              className={`text-gray-500 h-6 w-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
             <div className="flex-1">
               <h4 className="text-16 font-medium">Location</h4>
               <p>{recruitment.location}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <FaLink className="text-gray-500 h-6 w-6" />
+            <FaLink
+              className={`text-gray-500 h-6 w-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
             <div className="flex-1">
               <h4 className="text-16 font-medium">Website</h4>
               <a
@@ -141,21 +199,33 @@ const RecruitmentDetail = () => {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <FaEnvelope className="text-gray-500 h-6 w-6" />
+            <FaEnvelope
+              className={`text-gray-500 h-6 w-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
             <div className="flex-1">
               <h4 className="text-16 font-medium">Email</h4>
               <p>{recruitment.mail}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <FaPhone className="text-gray-500 h-6 w-6" />
+            <FaPhone
+              className={`text-gray-500 h-6 w-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
             <div className="flex-1">
               <h4 className="text-16 font-medium">Phone</h4>
               <p>{recruitment.phone_number}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <FaUsers className="text-gray-500 h-6 w-6" />
+            <FaUsers
+              className={`text-gray-500 h-6 w-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
             <div className="flex-1">
               <h4 className="text-16 font-medium">Positions</h4>
               <p>{recruitment.quantity} positions</p>
@@ -164,7 +234,12 @@ const RecruitmentDetail = () => {
         </div>
         <div className="prose mb-4">
           <h4 className="text-18 font-semibold">Chi tiết công việc</h4>
-          <p className="text-14">{recruitment.job_detail}</p>
+          <p
+            className={`mb-4 text-14 ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+            dangerouslySetInnerHTML={{ __html: recruitment.job_detail || "" }}
+          />
         </div>
       </div>
     </div>

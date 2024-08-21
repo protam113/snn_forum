@@ -45,6 +45,11 @@ const endpoints = {
   AdminBanner: process.env.REACT_APP_AdminBanner_ENDPOINT,
   Products: process.env.REACT_APP_Products_ENDPOINT,
   ProductDetail: process.env.REACT_APP_Product_ENDPOINT,
+  GroupList: process.env.REACT_APP_GroupList_ENDPOINT,
+  GroupAllUser: process.env.REACT_APP_GroupAllUser_ENDPOINT,
+  GroupUser: process.env.REACT_APP_GroupUser_ENDPOINT,
+  AddUser: process.env.REACT_APP_AddUser_ENDPOINT,
+  RemoveUser: process.env.REACT_APP_RemoveUser_ENDPOINT,
 };
 
 const authApiPrivate = authApi();
