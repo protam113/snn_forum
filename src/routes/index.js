@@ -9,6 +9,7 @@ import AdCategory from "../pages/admin/category/Category";
 import CreateCategory from "../pages/admin/category/createCategory";
 import EdtCategory from "../pages/admin/category/edtCategory";
 import ResetPassword from "../pages/auth/authResetPass";
+import ConfirmPage from "../pages/auth/confirmPage";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import Blog_detail from "../pages/user/blog/blog_detail";
@@ -43,7 +44,11 @@ const publicRoutes = [
   { path: "/login", component: Login, layout: DefaultLayout },
   { path: "/password/reset/", component: ResetPassword, layout: DefaultLayout },
   { path: "/register", component: Register, layout: DefaultLayout },
-
+  {
+    path: "/xac_thuc_thanh_cong",
+    component: ConfirmPage,
+    layout: DefaultLayout,
+  },
   { path: "/", component: Home, layout: DefaultLayout },
   { path: "/create_blog", component: Create, layout: DefaultLayout },
   {

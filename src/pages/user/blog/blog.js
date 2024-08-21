@@ -95,7 +95,7 @@ const Blog = () => {
           src={media.file}
           alt="blog-media"
           className={`object-cover w-100% h-full cursor-pointer ${
-            theme === "dark" ? "border-gray-700" : "border-gray-200"
+            theme === "dark" ? "border-gray-800" : "border-white"
           }`}
         />
       );
@@ -138,8 +138,8 @@ const Blog = () => {
             <Block
               className={`col-span-12 row-span-4 md:col-span-6 mb-4 p-4 ${
                 theme === "dark"
-                  ? "bg-zinc-700 text-white"
-                  : "bg-zinc-200 text-black"
+                  ? "bg-zinc-800 text-white"
+                  : "bg-white text-black"
               }`}
             >
               <div className="flex items-center mb-4">

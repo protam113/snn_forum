@@ -25,6 +25,7 @@ const endpoints = {
   UpdateProfile: process.env.REACT_APP_UpdateProfile_ENDPOINT,
   ChangePassword: process.env.REACT_APP_ChangePassword_ENDPOINT,
   currentUserBlog: process.env.REACT_APP_currentUserBlog_ENDPOINT,
+  RegisterUser: process.env.REACT_APP_RegisterUser_ENDPOINT,
   createUser: process.env.REACT_APP_createUser_ENDPOINT,
   UserApplyList: process.env.REACT_APP_UserApplyList_ENDPOINT,
   Blog: process.env.REACT_APP_Blog_ENDPOINT,

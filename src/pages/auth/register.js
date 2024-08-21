@@ -159,7 +159,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        `${baseURL}${endpoints.createUser}`,
+        `${baseURL}${endpoints.RegisterUser}`,
         formData,
         {
           headers: {
