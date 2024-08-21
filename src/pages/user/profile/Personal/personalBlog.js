@@ -22,7 +22,9 @@ const PersonalBlog = () => {
   const { id: userId } = useParams();
 
   useEffect(() => {
-    setUserId(userId);
+    if (userId) {
+      setUserId(userId);
+    }
   }, [userId, setUserId]);
 
   const handleBlogClick = (blogId) => {
@@ -50,6 +52,8 @@ const PersonalBlog = () => {
   };
 
   const renderMedia = (media) => {
+    if (!media || !media.file) return null;
+
     const extension = media.file.split(".").pop().toLowerCase();
 
     if (["jpg", "jpeg", "png", "gif"].includes(extension)) {
@@ -82,9 +86,11 @@ const PersonalBlog = () => {
   };
 
   if (loading) return <Loading />;
-  if (error) return <p>Đã xảy ra lỗi khi lấy blog</p>;
+  if (error) {
+    console.error("Error fetching personal blogs:", error);
+    return <p>Đã xảy ra lỗi khi lấy blog</p>;
+  }
 
-  // Use personalBlogs directly if it's an array
   const posts = personalBlogs || [];
 
   return (
@@ -93,7 +99,7 @@ const PersonalBlog = () => {
         <p>Không có bài viết nào để hiển thị.</p>
       ) : (
         posts
-          .filter((blog) => blog.user.id !== userInfo.id) // Filter out user's own blogs
+          .filter((blog) => blog.user && blog.user.id !== userInfo?.id) // Ensure blog.user is not null
           .map((blog) => (
             <Block
               key={blog.id}
@@ -105,7 +111,7 @@ const PersonalBlog = () => {
             >
               <div className="flex items-center mb-4">
                 <img
-                  src={blog.user.profile_image}
+                  src={blog.user?.profile_image || ""}
                   alt="avatar"
                   className={`size-12 rounded-full ${
                     theme === "dark" ? "border-white" : "border-black"
@@ -117,7 +123,7 @@ const PersonalBlog = () => {
                       theme === "dark" ? "text-white" : "text-black"
                     }`}
                   >
-                    <span>{blog.user.username}</span>
+                    <span>{blog.user?.username || "Unknown"}</span>
                   </h1>
                   <p
                     className={`text-gray-500 text-14 ${
@@ -191,8 +197,8 @@ const PersonalBlog = () => {
                     theme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  {blog.likes_count} lượt thích • {blog.comments_count} bình
-                  luận
+                  {blog.likes_count || 0} lượt thích •{" "}
+                  {blog.comments_count || 0} bình luận
                 </p>
               </div>
               <hr
@@ -213,11 +219,6 @@ const PersonalBlog = () => {
                     }`}
                     onClick={() => handleBlogClick(blog.id)}
                   />
-                  {/* <BiRepost
-                    className={`text-2xl cursor-pointer ${
-                      theme === "dark" ? "text-gray-300" : "text-gray-500"
-                    }`}
-                  /> */}
                 </div>
                 <IoShareSocialOutline
                   className={`text-2xl cursor-pointer ${

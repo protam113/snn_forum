@@ -4,27 +4,10 @@ import About from "./profile/MyProfile/about";
 import { useTheme } from "../../context/themeContext";
 import Info from "./profile/MyProfile/info";
 import Userblogs from "./profile/MyProfile/UserPosts";
-import { FaProductHunt, FaUserSecret } from "react-icons/fa";
-import { BsJournalBookmark } from "react-icons/bs";
-// import Products from "./profile/MyProfile/Products"; // Thêm import cho trang Sản phẩm
-// import Jobs from "./profile/MyProfile/Jobs"; // Thêm import cho trang Tuyển dụng
 
 const Profile = () => {
   const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState("userblogs");
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case "userblogs":
-        return <Userblogs />;
-      case "products":
-        return <FaProductHunt />;
-      case "jobs":
-        return <BsJournalBookmark />;
-      default:
-        return <FaUserSecret />;
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -53,47 +36,11 @@ const Profile = () => {
         {/* Main content */}
         <div className="w-full md:w-3/4 flex-1">
           {/* Navigation Links */}
-          <div className="flex space-x-4 mb-4">
-            <button
-              onClick={() => setActiveTab("userblogs")}
-              className={`text-lg font-medium px-4 py-2 rounded ${
-                activeTab === "userblogs"
-                  ? "bg-custom-red text-white"
-                  : "bg-white text-black"
-              } hover:bg-red-400 hover:text-white ${
-                theme === "dark" ? "hover:bg-red-600" : ""
-              }`}
-            >
-              Bài Viết
-            </button>
-            <button
-              onClick={() => setActiveTab("products")}
-              className={`text-lg font-medium px-4 py-2 rounded ${
-                activeTab === "products"
-                  ? "bg-custom-red text-white"
-                  : "bg-white text-black"
-              } hover:bg-red-400 hover:text-white ${
-                theme === "dark" ? "hover:bg-red-600" : ""
-              }`}
-            >
-              Sản Phẩm
-            </button>
-            <button
-              onClick={() => setActiveTab("jobs")}
-              className={`text-lg font-medium px-4 py-2 rounded ${
-                activeTab === "jobs"
-                  ? "bg-custom-red text-white"
-                  : "bg-white text-black"
-              } hover:bg-red-400 hover:text-white ${
-                theme === "dark" ? "hover:bg-red-600" : ""
-              }`}
-            >
-              Việc Làm
-            </button>
-          </div>
 
           {/* Render Content based on activeTab */}
-          <div className="mx-auto max-w-4xl py-5">{renderContent()}</div>
+          <div className="mx-auto max-w-4xl py-5">
+            <Userblogs />
+          </div>
         </div>
       </div>
 
