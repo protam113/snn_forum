@@ -11,7 +11,6 @@ const useBlog = (blogId) => {
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]); // Bình luận cha
   const [commentChild, setCommentChild] = useState([]); // Bình luận con
-  const [currentUser, setCurrentUser] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [likeList, setLikeList] = useState([]);
   const [likeListVisible, setLikeListVisible] = useState(false);
@@ -70,17 +69,6 @@ const useBlog = (blogId) => {
   }, [blogId]);
 
   // Fetch current user
-  const fetchCurrentUser = useCallback(async () => {
-    const token = await getToken();
-    if (!token) return;
-
-    try {
-      const response = await authApi(token).get(endpoints.currentUser);
-      setCurrentUser(response.data);
-    } catch (error) {
-      console.error("Error fetching current user", error);
-    }
-  }, [getToken]);
 
   // Fetch blog likes
   const getBlogLikes = useCallback(
@@ -165,8 +153,7 @@ const useBlog = (blogId) => {
   useEffect(() => {
     fetchBlogs();
     fetchBlog();
-    fetchCurrentUser();
-  }, [fetchBlogs, fetchBlog, fetchCurrentUser]);
+  }, [fetchBlogs, fetchBlog]);
 
   useEffect(() => {
     if (blogId) {
@@ -221,27 +208,26 @@ const useBlog = (blogId) => {
   );
 
   // Handle delete blog
+
   const handleDeleteBlog = useCallback(
     async (blogId) => {
       const token = await getToken();
-      if (!token) return;
+      if (!token) {
+        setError("Authentication token is missing.");
+        return;
+      }
 
       try {
-        const blog = blogs.find((blog) => blog.id === blogId);
-        if (!blog || blog.user.username !== currentUser?.username) {
-          setError("You are not authorized to delete this blog.");
-          return;
-        }
-
         const url = endpoints.BlogDetail.replace(":id", blogId);
         await authApi(token).delete(url);
+
         setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== blogId));
       } catch (error) {
         console.error("Error deleting blog", error);
         setError("Error deleting blog");
       }
     },
-    [blogs, currentUser, getToken]
+    [getToken]
   );
 
   // Handle delete comment
