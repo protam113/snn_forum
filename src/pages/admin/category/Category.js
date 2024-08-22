@@ -18,15 +18,12 @@ const AdCategory = () => {
 
   const handleDelete = async (categoryId) => {
     const isConfirmed = window.confirm(
-      "Are you sure you want to delete this category?"
+      "Bạn có chắc chắn muốn xóa category này không?"
     );
     if (isConfirmed) {
       try {
         await handleDeleteCategory(categoryId);
-        toast.success("Category deleted successfully");
-      } catch (err) {
-        toast.error("An error occurred while deleting the category");
-      }
+      } catch (err) {}
     }
   };
 

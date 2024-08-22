@@ -324,36 +324,13 @@ const useBlog = (blogId) => {
           });
         }
 
-        try {
-          const response = await authApi(token).post(endpoints.Blog, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+        const response = await authApi(token).post(endpoints.Blog, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
-          toast.success("Blog created successfully!");
-          onSuccess(response.data); // Truyền dữ liệu phản hồi nếu cần
-          onClose();
-        } catch (err) {
-          if (err.response?.status === 401) {
-            const newToken = await getToken();
-            if (newToken) {
-              const response = await authApi(newToken).post(
-                endpoints.Blog,
-                formData,
-                {
-                  headers: { "Content-Type": "multipart/form-data" },
-                }
-              );
-
-              toast.success("Blog created successfully!");
-              onSuccess(response.data); // Truyền dữ liệu phản hồi nếu cần
-              onClose();
-            } else {
-              toast.error("Failed to refresh token");
-            }
-          } else {
-            throw err;
-          }
-        }
+        toast.success("Blog created successfully!");
+        onSuccess(response.data); // Truyền dữ liệu phản hồi nếu cần
+        onClose();
       } catch (err) {
         console.error("Error creating blog", err);
         toast.error("Failed to create blog.");

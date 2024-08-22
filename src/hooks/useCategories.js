@@ -111,7 +111,7 @@ const useCategories = () => {
           category.id === categoryId ? updatedCategoryData : category
         )
       );
-      toast.success("Danh mục đã được cập nhật thành công");
+      toast.success("Category đã được cập nhật thành công");
     } catch (err) {
       setError(err.message || "Đã xảy ra lỗi");
       toast.error(err.message || "Đã xảy ra lỗi khi cập nhật danh mục");
@@ -132,6 +132,7 @@ const useCategories = () => {
     fetchProductByCategory,
     handleDeleteCategory,
     editCategory,
+    addCategory,
   };
 };
 

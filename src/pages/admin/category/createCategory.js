@@ -13,11 +13,8 @@ const CreateCategory = () => {
     if (name) {
       try {
         await addCategory({ name });
-        toast.success("Category added successfully!");
         navigate(-1);
-      } catch (err) {
-        toast.error("Failed to add category.");
-      }
+      } catch (err) {}
     }
   };
 
