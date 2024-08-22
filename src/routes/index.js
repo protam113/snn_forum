@@ -11,6 +11,7 @@ import EdtCategory from "../pages/admin/category/edtCategory";
 import ResetPassword from "../pages/auth/authResetPass";
 import ConfirmPage from "../pages/auth/confirmPage";
 import Login from "../pages/auth/login";
+import NotiPage from "../pages/auth/notiPage";
 import Register from "../pages/auth/register";
 import RejectPage from "../pages/auth/rejectpage";
 import Blog_detail from "../pages/user/blog/blog_detail";
@@ -53,6 +54,11 @@ const publicRoutes = [
   {
     path: "/xac_thuc_khong_thanh_cong",
     component: RejectPage,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/xac_thuc",
+    component: NotiPage,
     layout: DefaultLayout,
   },
   { path: "/", component: Home, layout: DefaultLayout },

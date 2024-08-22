@@ -10,7 +10,7 @@ const RejectPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 ">
       <div className="text-center bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
         <FaExclamationTriangle className="text-red-600 text-6xl mb-4 mx-auto" />
         <h1 className="text-3xl font-bold text-gray-800 mb-4">

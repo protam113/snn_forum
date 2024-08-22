@@ -68,8 +68,6 @@ const useBlog = (blogId) => {
     }
   }, [blogId]);
 
-  // Fetch current user
-
   // Fetch blog likes
   const getBlogLikes = useCallback(
     async (blogId) => {

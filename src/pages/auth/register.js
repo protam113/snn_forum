@@ -169,7 +169,7 @@ const Register = () => {
       );
 
       toast.success("Registration successful!");
-      navigate("/login");
+      navigate("/xac_thuc");
     } catch (err) {
       console.error(
         "Error details:",
