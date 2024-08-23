@@ -12,6 +12,7 @@ import useBlog from "../../../../hooks/useBlog";
 import Block from "../../../../components/design/Block";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
+import { MdPerson } from "react-icons/md";
 
 const Userblogs = () => {
   const { userBlogs, loading, error } = useUserInfo();
@@ -113,21 +114,28 @@ const Userblogs = () => {
       ) : (
         posts.map((blog) => (
           <Block
-            key={blog.id}
-            className={`col-span-12 row-span-4 md:col-span-6 mb-4 p-4 ${
+            className={`p-4 rounded-lg border mt-4 ${
               theme === "dark"
-                ? "bg-zinc-700 text-white"
-                : "bg-zinc-200 text-black"
-            }`}
+                ? "border-custom-zinc bg-gray-800"
+                : "border-gray-300 bg-white"
+            } shadow-sm`}
           >
             <div className="flex items-center mb-4">
-              <img
-                src={blog.user.profile_image}
-                alt="avatar"
-                className={`size-12 rounded-full ${
-                  theme === "dark" ? "border-white" : "border-black"
-                }`}
-              />
+              {blog.user.profile_image ? (
+                <img
+                  src={blog.user.profile_image}
+                  alt="avatar"
+                  className={`size-12 rounded-full ${
+                    theme === "dark" ? "border-white" : "border-black"
+                  }`}
+                />
+              ) : (
+                <MdPerson
+                  className={`text-4xl ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                />
+              )}
               <div className="ml-2">
                 <h1
                   className={`text-base font-bold leading-tight ${

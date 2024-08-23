@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Block from "../../../../components/design/Block";
 import { FaRegCommentAlt } from "react-icons/fa";
+import { IoShareSocialOutline } from "react-icons/io5";
+import { MdPerson } from "react-icons/md"; // Import MdPerson icon
 import { useTheme } from "../../../../context/themeContext";
 import formatDate from "../../../../utils/formatDate";
 import Loading from "../../../error/load";
@@ -10,7 +12,6 @@ import useBlog from "../../../../hooks/useBlog";
 import usePersonalInfo from "../../../../hooks/usePersonalInfo";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
-import { IoShareSocialOutline } from "react-icons/io5";
 
 const PersonalBlog = () => {
   const { userInfo } = useUserInfo();
@@ -102,21 +103,28 @@ const PersonalBlog = () => {
           .filter((blog) => blog.user && blog.user.id !== userInfo?.id) // Ensure blog.user is not null
           .map((blog) => (
             <Block
-              key={blog.id}
-              className={`col-span-12 row-span-4 md:col-span-6 mb-4 p-4 ${
+              className={`p-4 rounded-lg border mt-4 ${
                 theme === "dark"
-                  ? "bg-zinc-700 text-white"
-                  : "bg-zinc-200 text-black"
-              }`}
+                  ? "border-custom-zinc bg-gray-800"
+                  : "border-gray-300 bg-white"
+              } shadow-sm`}
             >
               <div className="flex items-center mb-4">
-                <img
-                  src={blog.user?.profile_image || ""}
-                  alt="avatar"
-                  className={`size-12 rounded-full ${
-                    theme === "dark" ? "border-white" : "border-black"
-                  }`}
-                />
+                {blog.user?.profile_image ? (
+                  <img
+                    src={blog.user.profile_image}
+                    alt="avatar"
+                    className={`size-12 rounded-full ${
+                      theme === "dark" ? "border-white" : "border-black"
+                    }`}
+                  />
+                ) : (
+                  <MdPerson
+                    className={`w-12 h-12 ${
+                      theme === "dark" ? "text-gray-500" : "text-gray-400"
+                    }`}
+                  />
+                )}
                 <div className="ml-2">
                   <h1
                     className={`text-base font-bold leading-tight ${

@@ -1,18 +1,14 @@
 import React from "react";
 import Block from "../../../../components/design/Block";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 import { useTheme } from "../../../../context/themeContext";
+import { MdPerson } from "react-icons/md";
 
 const Info = () => {
   const { userInfo, loading, error } = useUserInfo();
   const { theme } = useTheme();
-  const navigate = useNavigate();
-
-  const handleNavigate = () => {
-    navigate("/manage");
-  };
 
   if (loading) {
     return (
@@ -39,11 +35,19 @@ const Info = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           {/* Profile Section */}
           <div className="flex items-center p-2 bg-gray-200 rounded-lg">
-            <img
-              src={userInfo?.profile_image || "default-avatar.jpg"}
-              alt="avatar"
-              className="w-24 h-24 rounded-full border-4 border-gray-800"
-            />
+            {userInfo?.profile_image ? (
+              <img
+                src={userInfo.profile_image}
+                alt="avatar"
+                className="w-24 h-24 rounded-full border-4 border-gray-800"
+              />
+            ) : (
+              <MdPerson
+                className={`w-24 h-24 text-gray-400 ${
+                  theme === "dark" ? "bg-gray-800" : "bg-gray-200"
+                } rounded-full p-4 border-4 border-gray-800`}
+              />
+            )}
             <div className="ml-4">
               <h1
                 className={`text-2xl font-semibold ${
@@ -67,12 +71,12 @@ const Info = () => {
           >
             Edit Profile
           </Link>
-          <a
+          {/* <a
             href="/"
             className="flex items-center justify-center text-sm py-2 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-800 transition-colors"
           >
             Archive
-          </a>
+          </a> */}
         </div>
       </Block>
       <hr

@@ -4,6 +4,7 @@ import Block from "../../../../components/design/Block";
 import Loading from "../../../error/load";
 import usePersonalInfo from "../../../../hooks/usePersonalInfo";
 import { useTheme } from "../../../../context/themeContext";
+import { MdPerson } from "react-icons/md"; // Import MdPerson
 
 const PersonalProfile = () => {
   const { theme } = useTheme();
@@ -45,17 +46,25 @@ const PersonalProfile = () => {
 
         <div className="absolute top-52 flex items-center">
           <div className="flex-shrink-0">
-            <img
-              src={personalInfo?.profile_image || "default-avatar.jpg"}
-              alt="avatar"
-              className="w-24 h-24 rounded-2xl border-2 border-gray-800"
-            />
+            {personalInfo?.profile_image ? (
+              <img
+                src={personalInfo.profile_image}
+                alt="avatar"
+                className="w-24 h-24 rounded-2xl border-2 border-gray-800"
+              />
+            ) : (
+              <MdPerson
+                className={`w-24 h-24 text-gray-400 ${
+                  theme === "dark" ? "bg-gray-800" : "bg-gray-200"
+                } rounded-full p-4 border-2 border-gray-800`}
+              />
+            )}
           </div>
           <div className="ml-4">
             <h1
-              className={`text-20  ${
+              className={`text-20 ${
                 theme === "dark" ? "text-white" : "text-black"
-              }  font-medium leading-tight`}
+              } font-medium leading-tight`}
             >
               {personalInfo?.first_name} {personalInfo?.last_name}
               <br />
@@ -72,7 +81,7 @@ const PersonalProfile = () => {
           <span className="text-20 font-bold text-custom-red">Về tôi: </span>
           <br />
           <span
-            className={` ${
+            className={`${
               theme === "dark" ? "text-zinc-400" : "text-zinc-800"
             } text-16`}
           >
