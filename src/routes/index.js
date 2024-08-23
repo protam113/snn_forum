@@ -20,6 +20,7 @@ import EdtBlog from "../pages/user/blog/edtBlog";
 import ContributeIdeas from "../pages/user/contributeIdeas";
 
 import Home from "../pages/user/home";
+import AllProduct from "../pages/user/product/allProduct";
 import CategoryProduct from "../pages/user/product/components/CategoryProduct";
 import CreateProduct from "../pages/user/product/CreateProduct";
 import EdtProduct from "../pages/user/product/edtProduct";
@@ -127,7 +128,11 @@ const publicRoutes = [
     component: EdtProduct,
     layout: DefaultLayout,
   },
-
+  {
+    path: "/san_pham/tat_ca_san_pham",
+    component: AllProduct,
+    layout: DefaultLayout,
+  },
   {
     path: "/san_pham/chi_tiet_san_pham/:id",
     component: ProductDetail,

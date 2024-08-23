@@ -326,7 +326,7 @@ const useBlog = (blogId) => {
         formData.append("content", content);
         formData.append("description", description);
         formData.append("visibility", visibility);
-        formData.append("file_type", fileType); // Thêm file_type vào formData
+        formData.append("file_type", fileType);
 
         selectedFiles.forEach((file) => {
           formData.append("media", file);

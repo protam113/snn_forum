@@ -64,6 +64,42 @@ const useBanner = () => {
     }
   };
 
+  // Edit banner
+  const editBanner = async (bannerId, updatedBanner) => {
+    setLoading(true);
+    try {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Không có token");
+      }
+      const url = endpoints.Banner.replace(":id", bannerId);
+      const response = await authApi(token).patch(url, updatedBanner, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const updatedBannerData = response.data;
+      setAdminBanner((prevBanners) =>
+        prevBanners.map((banner) =>
+          banner.id === bannerId ? updatedBannerData : banner
+        )
+      );
+
+      toast.success("Đã cập nhật banner thành công");
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.detail ||
+        err.message ||
+        "Đã xảy ra lỗi khi cập nhật banner";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Delete banner
   const deleteBanner = async (bannerId) => {
     setLoading(true);
@@ -102,6 +138,7 @@ const useBanner = () => {
     loading,
     error,
     addBanner,
+    editBanner,
     deleteBanner,
   };
 };

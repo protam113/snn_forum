@@ -21,9 +21,12 @@ const Product = () => {
     );
   if (error) return <p>{error}</p>;
 
+  // Giới hạn hiển thị chỉ 12 sản phẩm
+  const displayedProducts = products.slice(0, 12);
+
   return (
     <>
-      {products.map((product) => (
+      {displayedProducts.map((product) => (
         <Link
           key={product.id}
           className="bg-background rounded-lg shadow-lg overflow-hidden flex flex-col"

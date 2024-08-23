@@ -25,11 +25,6 @@ const Product_feed = () => {
           <div className="container">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-20 font-bold tracking-tight">Thể loại</h2>
-              <Link to="/all-products">
-                <button className="text-14 font-medium text-blue-600 hover:underline">
-                  Xem tất cả
-                </button>
-              </Link>
             </div>
             <Category />
           </div>
