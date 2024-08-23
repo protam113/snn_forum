@@ -8,6 +8,7 @@ import CreateBanner from "../pages/admin/banner/createBanner";
 import AdCategory from "../pages/admin/category/Category";
 import CreateCategory from "../pages/admin/category/createCategory";
 import EdtCategory from "../pages/admin/category/edtCategory";
+import StatisticalPage from "../pages/admin/statisticalMail.js/statisticalPage";
 import ResetPassword from "../pages/auth/authResetPass";
 import ConfirmPage from "../pages/auth/confirmPage";
 import Login from "../pages/auth/login";
@@ -37,7 +38,6 @@ import Manage from "../pages/user/recruitment/manage/manage";
 import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
 import RecruitmentDetail from "../pages/user/recruitment/recruitmentDetail";
-// import RecruitmentMain from "../pages/user/recruitment/recruitmentMain";
 import Search from "../pages/user/search";
 import setting from "../pages/user/setting/setting";
 import User from "../pages/user/Suser/user";
@@ -150,6 +150,11 @@ const privateRoutes = [
   {
     path: "/admin",
     component: AdHome,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/thong_ke",
+    component: StatisticalPage,
     layout: AdminLayout,
   },
   {

@@ -1,54 +1,60 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
-import useAdmin from "../../../../../hooks/useAdmin";
+import useStatical from "../../../../../hooks/useStatical";
 
 export default function UserChart() {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [chartData, setChartData] = useState({ labels: [], data: [] });
+  const [totalUsers, setTotalUsers] = useState(null);
 
-  const { users, loadingUsers, error } = useAdmin();
+  const { staticalUser, loading, error, fetchStaticalUser } = useStatical();
 
   useEffect(() => {
-    if (!loadingUsers && !error) {
-      const groupCounts = users.reduce((acc, user) => {
-        if (Array.isArray(user.groups)) {
-          user.groups.forEach((group) => {
-            acc[group.name] = (acc[group.name] || 0) + 1;
-          });
-        }
-        return acc;
-      }, {});
+    // Fetch data when component mounts
+    fetchStaticalUser();
+  }, [fetchStaticalUser]);
+
+  useEffect(() => {
+    if (!loading && !error && staticalUser) {
+      // Data for chart
+      const labels = ["Admin Count", "Manager Count", "No Group Count"];
+
+      const data = [
+        staticalUser.admin_count,
+        staticalUser.manager_count,
+        staticalUser.no_group_count,
+      ];
 
       setChartData({
-        labels: Object.keys(groupCounts),
-        data: Object.values(groupCounts),
+        labels,
+        data,
       });
+
+      // Set total users for displaying on the chart
+      setTotalUsers(staticalUser.total_users);
     }
-  }, [users, loadingUsers, error]);
+  }, [staticalUser, loading, error]);
 
   useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
 
-    const UserChartRef = chartRef.current.getContext("2d");
+    const ctx = chartRef.current.getContext("2d");
 
-    chartInstance.current = new Chart(UserChartRef, {
+    chartInstance.current = new Chart(ctx, {
       type: "doughnut",
       data: {
         labels: chartData.labels,
         datasets: [
           {
-            label: "User Count by Group",
+            label: "User Distribution",
             data: chartData.data,
             backgroundColor: [
               "rgb(255, 99, 132)",
               "rgb(54, 162, 235)",
-              "rgb(255, 205, 86)",
               "rgb(75, 192, 192)",
-              "rgb(153, 102, 255)",
-              "rgb(255, 159, 64)",
             ],
           },
         ],
@@ -66,6 +72,20 @@ export default function UserChart() {
               },
             },
           },
+          // Display total number on the chart
+          datalabels: {
+            display: true,
+            formatter: (value, context) => {
+              return context.dataIndex === 0 ? `${totalUsers}` : "";
+            },
+            color: "black",
+            font: {
+              weight: "bold",
+              size: 16,
+            },
+            align: "center",
+            anchor: "center",
+          },
         },
       },
     });
@@ -75,7 +95,7 @@ export default function UserChart() {
         chartInstance.current.destroy();
       }
     };
-  }, [chartData]);
+  }, [chartData, totalUsers]);
 
   return (
     <div>

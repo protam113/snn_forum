@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import useAuth from "./useAuth";
 import { authApi, endpoints } from "../api/api";
 
@@ -12,6 +12,7 @@ const useUserInfo = () => {
 
   const { getToken } = useAuth();
 
+  // Fetch user info and blogs
   const fetchUserInfo = useCallback(async () => {
     const token = await getToken();
 
@@ -47,6 +48,7 @@ const useUserInfo = () => {
     }
   }, [getToken]);
 
+  // Fetch user apply list
   const fetchUserApplyList = useCallback(async () => {
     const token = await getToken();
     if (!token) return;
@@ -63,60 +65,71 @@ const useUserInfo = () => {
     }
   }, [getToken]);
 
+  // Fetch user info and apply list on mount
   useEffect(() => {
     fetchUserInfo();
     fetchUserApplyList();
   }, [fetchUserInfo, fetchUserApplyList]);
 
-  const updateUserInfo = async (updatedInfo) => {
-    const token = await getToken();
+  // Memoize user roles to avoid unnecessary re-computations
+  const memoizedUserRoles = useMemo(() => userRoles, [userRoles]);
 
-    if (!token) return;
+  // Update user info
+  const updateUserInfo = useCallback(
+    async (updatedInfo) => {
+      const token = await getToken();
 
-    try {
-      const response = await authApi(token).patch(
-        endpoints.UpdateProfile,
-        updatedInfo,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setUserInfo(response.data);
-    } catch (err) {
-      console.error(
-        "Error updating user info:",
-        err.response?.data || err.message
-      );
-    }
-  };
+      if (!token) return;
 
-  const changePassword = async (data) => {
-    const token = await getToken();
+      try {
+        const response = await authApi(token).patch(
+          endpoints.UpdateProfile,
+          updatedInfo,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        setUserInfo(response.data);
+      } catch (err) {
+        console.error(
+          "Error updating user info:",
+          err.response?.data || err.message
+        );
+      }
+    },
+    [getToken]
+  );
 
-    if (!token) {
-      return { success: false, error: "No token available" };
-    }
+  // Change password
+  const changePassword = useCallback(
+    async (data) => {
+      const token = await getToken();
 
-    try {
-      await authApi(token).patch(endpoints.ChangePassword, data, {
-        headers: { "Content-Type": "application/json" },
-      });
-      return { success: true };
-    } catch (err) {
-      console.error(
-        "Error changing password:",
-        err.response?.data || err.message
-      );
-      return {
-        success: false,
-        error: err.response?.data || "Failed to change password",
-      };
-    }
-  };
+      if (!token) {
+        return { success: false, error: "No token available" };
+      }
 
-  const resetPassword = async (email, newPassword, code) => {
+      try {
+        await authApi(token).patch(endpoints.ChangePassword, data, {
+          headers: { "Content-Type": "application/json" },
+        });
+        return { success: true };
+      } catch (err) {
+        console.error(
+          "Error changing password:",
+          err.response?.data || err.message
+        );
+        return {
+          success: false,
+          error: err.response?.data || "Failed to change password",
+        };
+      }
+    },
+    [getToken]
+  );
+
+  // Reset password
+  const resetPassword = useCallback(async (email, newPassword, code) => {
     try {
       const response = await authApi().post(
         process.env.REACT_APP_Verify_ENDPOINT,
@@ -126,7 +139,6 @@ const useUserInfo = () => {
           code,
         }
       );
-
       return { success: true, data: response.data };
     } catch (err) {
       console.error(
@@ -138,9 +150,10 @@ const useUserInfo = () => {
         error: err.response?.data || "Failed to reset password",
       };
     }
-  };
+  }, []);
 
-  const requestVerificationCode = async (email) => {
+  // Request verification code
+  const requestVerificationCode = useCallback(async (email) => {
     try {
       await authApi().post(process.env.REACT_APP_Request_Code_ENDPOINT, {
         email,
@@ -156,11 +169,11 @@ const useUserInfo = () => {
         error: err.response?.data || "Failed to send verification code",
       };
     }
-  };
+  }, []);
 
   return {
     userInfo,
-    userRoles,
+    userRoles: memoizedUserRoles, // Use memoized user roles
     userApplyList,
     userBlogs,
     loading,

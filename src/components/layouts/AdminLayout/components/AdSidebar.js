@@ -2,6 +2,7 @@ import React from "react";
 import { FaHome, FaList, FaUsers, FaFlag } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
+import { FaChartArea } from "react-icons/fa";
 
 const AdSidebar = () => {
   const { theme } = useTheme();
@@ -48,6 +49,14 @@ const AdSidebar = () => {
               }`}
             />
             <span className="ml-8 text-base font-medium">Banners</span>
+          </Link>
+          <Link to="/admin/thong_ke" className={linkClasses}>
+            <FaChartArea
+              className={`absolute left-2 text-lg ${
+                theme === "dark" ? "text-white" : "text-black"
+              }`}
+            />
+            <span className="ml-8 text-base font-medium">Thống Kê</span>
           </Link>
         </div>
         <hr className="border-zinc-900 my-4" />

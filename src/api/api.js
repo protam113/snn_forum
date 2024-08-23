@@ -1,7 +1,9 @@
-// api/api.js
 import axios from "axios";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
+
+// Biến để đếm số lượng API được gọi
+let apiCallCount = 0;
 
 const authApi = (token = null) => {
   const config = {
@@ -12,7 +14,21 @@ const authApi = (token = null) => {
     },
   };
 
-  return axios.create(config);
+  const instance = axios.create(config);
+
+  // Interceptor để đếm và log số lượng API được gọi
+  instance.interceptors.request.use(
+    (config) => {
+      apiCallCount++;
+      console.log(`API Call Count: ${apiCallCount}`);
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
 
 // Các endpoint API
@@ -51,6 +67,13 @@ const endpoints = {
   GroupUser: process.env.REACT_APP_GroupUser_ENDPOINT,
   AddUser: process.env.REACT_APP_AddUser_ENDPOINT,
   RemoveUser: process.env.REACT_APP_RemoveUser_ENDPOINT,
+  StaticalUser: process.env.REACT_APP_StaticalUser_ENDPOINT,
+  StaticalProductCategoryGeneral:
+    process.env.REACT_APP_StaticalProductCategoryGeneral_ENDPOINT,
+  StaticalBlogGeneral: process.env.REACT_APP_StaticalBlogGeneral_ENDPOINT,
+  StaticalProductGeneral: process.env.REACT_APP_StaticalProductGeneral_ENDPOINT,
+  StaticalProductCategorySpecific:
+    process.env.REACT_APP_StaticalProductCategorySpecific_ENDPOINT,
 };
 
 const authApiPrivate = authApi();
