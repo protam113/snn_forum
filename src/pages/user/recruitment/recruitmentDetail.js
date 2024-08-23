@@ -4,15 +4,17 @@ import {
   FaEnvelope,
   FaPhone,
   FaLink,
-  FaUsers,
   FaDollarSign,
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import Loading from "../../error/load";
+import { HiMiniUserGroup } from "react-icons/hi2";
+
 import useRecruitment from "../../../hooks/useRecruitment";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { useTheme } from "../../../context/themeContext";
 import { BsClock } from "react-icons/bs";
+import { MdOutlineWork } from "react-icons/md";
 
 const RecruitmentDetail = () => {
   const { theme } = useTheme();
@@ -192,6 +194,29 @@ const RecruitmentDetail = () => {
               </a>
             </div>
           </div>
+
+          <div className="flex items-center gap-4">
+            <HiMiniUserGroup
+              className={`text-gray-500 h-6 w-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
+            <div className="flex-1">
+              <h4 className="text-16 font-medium">Số lượng</h4>
+              <p>{recruitment.quantity}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <MdOutlineWork
+              className={`text-gray-500 h-6 w-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
+            <div className="flex-1">
+              <h4 className="text-16 font-medium">Work</h4>
+              <p>{recruitment.work}</p>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
             <FaEnvelope
               className={`text-gray-500 h-6 w-6 ${
@@ -200,12 +225,7 @@ const RecruitmentDetail = () => {
             />
             <div className="flex-1">
               <h4 className="text-16 font-medium">Email</h4>
-              <a
-                href={`mailto:${recruitment.email}`}
-                className="text-blue-600 hover:underline"
-              >
-                {recruitment.email}
-              </a>
+              <p>{recruitment.mail}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">

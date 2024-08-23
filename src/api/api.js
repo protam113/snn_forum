@@ -3,8 +3,6 @@ import axios from "axios";
 const baseURL = process.env.REACT_APP_BASE_URL;
 
 // Biến để đếm số lượng API được gọi
-let apiCallCount = 0;
-
 const authApi = (token = null) => {
   const config = {
     baseURL,
@@ -14,21 +12,7 @@ const authApi = (token = null) => {
     },
   };
 
-  const instance = axios.create(config);
-
-  // Interceptor để đếm và log số lượng API được gọi
-  instance.interceptors.request.use(
-    (config) => {
-      apiCallCount++;
-      console.log(`API Call Count: ${apiCallCount}`);
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
-
-  return instance;
+  return axios.create(config);
 };
 
 // Các endpoint API

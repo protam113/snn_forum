@@ -28,7 +28,7 @@ const Sidebar = () => {
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             />
-            <span className="ml-8 text-14">Home</span>
+            <span className="ml-8 text-14">Trang Chủ</span>
           </Link>
           <Link to="/san_pham" className={linkClasses}>
             <FaBasketShopping
@@ -36,7 +36,7 @@ const Sidebar = () => {
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             />
-            <span className="ml-8 text-14">Shop</span>
+            <span className="ml-8 text-14">Sản phẩm</span>
           </Link>
           <Link to="/nguoi_dung" className={linkClasses}>
             <FaUser
@@ -44,7 +44,7 @@ const Sidebar = () => {
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             />
-            <span className="ml-8 text-14">User</span>
+            <span className="ml-8 text-14">Người dùng</span>
           </Link>
           {/* <Link to="/company" className={linkClasses}>
             <FaBuilding

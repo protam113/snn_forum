@@ -11,7 +11,7 @@ import { LoadingProvider } from "./context/LoadingContext";
 import { HelmetProvider } from "react-helmet-async";
 import useScrollToTop from "./hooks/useScrollToTop.js";
 import ProtectedRoutes from "./utils/ProtectedRoutes.js";
-
+import { BlogProvider } from "./context/BlogContex.js";
 function AppContent() {
   const { theme } = useTheme();
   useScrollToTop();
@@ -68,12 +68,14 @@ function App() {
     <Router>
       <AuthProvider>
         <ThemeProvider>
-          <LoadingProvider>
-            <HelmetProvider>
-              <AppContent />
-              <ToastContainer position="top-center" />
-            </HelmetProvider>
-          </LoadingProvider>
+          <BlogProvider>
+            <LoadingProvider>
+              <HelmetProvider>
+                <AppContent />
+                <ToastContainer position="top-center" />
+              </HelmetProvider>
+            </LoadingProvider>
+          </BlogProvider>
         </ThemeProvider>
       </AuthProvider>
     </Router>

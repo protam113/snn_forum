@@ -6,9 +6,9 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="flex flex-1">
+      <div className="flex flex-col lg:flex-row flex-1">
         <AdSidebar />
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 overflow-y-auto ">{children}</div>
       </div>
     </div>
   );

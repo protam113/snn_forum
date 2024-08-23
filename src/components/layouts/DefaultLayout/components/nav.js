@@ -39,7 +39,7 @@ const Navbar = () => {
         theme === "light" ? "bg-white" : "bg-zinc-900"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-7xl justify-between px-8 py-2 text-sm">
+      <div className="mx-auto flex w-full max-w-7xl justify-between px-8 py-2 text-16">
         {/* Logo section */}
         <section className="flex items-center">
           <Link to="/" className="flex items-center">

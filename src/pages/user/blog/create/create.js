@@ -11,6 +11,7 @@ import "react-quill/dist/quill.snow.css";
 import { useTheme } from "../../../../context/themeContext";
 import useBlog from "../../../../hooks/useBlog";
 import useUserInfo from "../../../../hooks/useUserInfo";
+import { MdPerson } from "react-icons/md";
 
 const Create = () => {
   const { theme } = useTheme();
@@ -18,7 +19,7 @@ const Create = () => {
   const [content, setContent] = useState("");
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState("public");
-  const [fileType, setFileType] = useState("image"); // Thêm trạng thái fileType
+  const [fileType, setFileType] = useState("image");
   const navigate = useNavigate();
   const { handleSubmitBlog, submitting, fileInputRef } = useBlog();
   const { userInfo } = useUserInfo();
@@ -74,8 +75,8 @@ const Create = () => {
       content,
       description,
       visibility,
-      selectedFiles, // Pass selectedFiles to the submit function
-      fileType, // Pass fileType to the submit function
+      selectedFiles,
+      fileType,
       () => {
         navigate(-1);
       },
@@ -110,18 +111,28 @@ const Create = () => {
 
         {/* User Profile Section */}
         <div className="relative flex items-center mt-16">
-          <img
-            src={userInfo?.profile_image}
-            alt="avatar"
-            className="w-16 h-16 rounded-full border-2 border-gray-800"
-          />
+          {userInfo.profile_image ? (
+            <img
+              src={userInfo.profile_image}
+              alt="avatar"
+              className={`size-12 rounded-full ${
+                theme === "dark" ? "border-white" : "border-black"
+              }`}
+            />
+          ) : (
+            <MdPerson
+              className={`size-12 rounded-full ${
+                theme === "dark" ? "text-white" : "text-gray-500"
+              }`}
+            />
+          )}
           <div className="ml-4">
             <h1
               className={`text-lg font-semibold ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             >
-              {userInfo?.first_name || "Your "} {userInfo?.last_name || " Name"}
+              {userInfo?.first_name || "Your"} {userInfo?.last_name || "Name"}
             </h1>
             <span
               className={`text-sm ${
@@ -133,52 +144,57 @@ const Create = () => {
           </div>
         </div>
         <hr className="mt-4" />
-        <label
-          className={`block mb-2 ${
-            theme === "dark" ? "text-white" : "text-black"
-          }`}
-        >
-          Trạng Thái:
-        </label>
-        <select
-          value={visibility}
-          onChange={(e) => setVisibility(e.target.value)}
-          className={`w-full p-2 border rounded-md ${
-            theme === "dark"
-              ? "bg-zinc-700 text-white border-zinc-600"
-              : "bg-white text-black border-zinc-800"
-          }`}
-        >
-          <option value="public">Public</option>
-          <option value="private">Private</option>
-        </select>
 
-        <div className="flex mt-8">
-          {/* File Type Selector */}
-          <div className="mb-4">
-            <label
-              className={`block mb-2 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            >
-              File Type:
-            </label>
-            <select
-              value={fileType}
-              onChange={(e) => setFileType(e.target.value)}
-              className={`w-full p-2 border rounded-md ${
-                theme === "dark"
-                  ? "bg-zinc-700 text-white border-zinc-600"
-                  : "bg-white text-black border-zinc-800"
-              }`}
-            >
-              <option value="image">Image</option>
-              <option value="pdf">PDF</option>
-            </select>
-          </div>
+        {/* Visibility Selector */}
+        <div className="mb-4">
+          <label
+            className={`block mb-2 ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
+            Trạng Thái:
+          </label>
+          <select
+            value={visibility}
+            onChange={(e) => setVisibility(e.target.value)}
+            className={`w-full p-2 border rounded-md ${
+              theme === "dark"
+                ? "bg-zinc-700 text-white border-zinc-600"
+                : "bg-white text-black border-zinc-800"
+            }`}
+          >
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
 
-          {/* Image/File Upload Section (Left Column) */}
-          <div className="w-1/3 pr-4">
+        <div className="flex flex-col lg:flex-row mt-8">
+          {/* Left Column - File Upload Section */}
+          <div className="w-full lg:w-1/3 pr-0 lg:pr-4 mb-8 lg:mb-0">
+            {/* File Type Selector */}
+            <div className="mb-4">
+              <label
+                className={`block mb-2 ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+              >
+                File Type:
+              </label>
+              <select
+                value={fileType}
+                onChange={(e) => setFileType(e.target.value)}
+                className={`w-full p-2 border rounded-md ${
+                  theme === "dark"
+                    ? "bg-zinc-700 text-white border-zinc-600"
+                    : "bg-white text-black border-zinc-800"
+                }`}
+              >
+                <option value="image">Image</option>
+                <option value="pdf">PDF</option>
+              </select>
+            </div>
+
+            {/* File Upload Section */}
             <div className="grid grid-cols-1 gap-4 mb-4">
               {selectedFiles.map((file, index) => (
                 <div
@@ -231,8 +247,8 @@ const Create = () => {
             />
           </div>
 
-          {/* Content Section (Right Column) */}
-          <div className="w-2/3 pl-4">
+          {/* Right Column - Content Section */}
+          <div className="w-full lg:w-2/3 pl-0 lg:pl-4">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label
@@ -241,7 +257,7 @@ const Create = () => {
                   }`}
                   htmlFor="title"
                 >
-                  Title:
+                  Tiêu Đề:
                 </label>
                 <input
                   id="title"
@@ -254,34 +270,49 @@ const Create = () => {
                       ? "bg-zinc-700 text-white border-zinc-600"
                       : "bg-white text-black border-zinc-800"
                   }`}
-                  required
                 />
               </div>
+
+              {/* Content Editor */}
               <div className="mb-4">
                 <label
                   className={`block mb-2 ${
                     theme === "dark" ? "text-white" : "text-black"
                   }`}
                 >
-                  Description:
+                  Nội Dung:
                 </label>
-                <ReactQuill
-                  value={description}
-                  onChange={setDescription}
-                  placeholder="Write a description..."
-                />
+                <div
+                  className={`border rounded-md overflow-hidden ${
+                    theme === "dark"
+                      ? "bg-zinc-700 border-zinc-600"
+                      : "bg-white border-zinc-800"
+                  }`}
+                >
+                  <ReactQuill
+                    value={description}
+                    onChange={(e) => setDescription(e)}
+                    className={`h-40 ${
+                      theme === "dark" ? "text-white" : "text-black"
+                    }`}
+                  />
+                </div>
               </div>
-              <button
-                type="submit"
-                className={`w-full p-2 rounded-md ${
-                  theme === "dark"
-                    ? "bg-blue-600 text-white hover:bg-blue-500"
-                    : "bg-blue-500 text-white hover:bg-blue-400"
-                }`}
-                disabled={submitting}
-              >
-                {submitting ? "Submitting..." : "Submit"}
-              </button>
+
+              {/* Submit Button */}
+              <div className="text-right">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className={`w-full py-2 px-4 rounded-md ${
+                    theme === "dark"
+                      ? "bg-blue-500 hover:bg-blue-600 text-white"
+                      : "bg-blue-700 hover:bg-blue-800 text-white"
+                  }`}
+                >
+                  {submitting ? "Đang Gửi..." : "Đăng"}
+                </button>
+              </div>
             </form>
           </div>
         </div>

@@ -12,6 +12,7 @@ import useRecruitment from "../../../hooks/useRecruitment";
 import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactQuill from "react-quill";
 
 const EdtRecruitment = () => {
   const { id: postId } = useParams();
@@ -60,9 +61,8 @@ const EdtRecruitment = () => {
     }));
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (value, field) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -225,15 +225,19 @@ const EdtRecruitment = () => {
               >
                 <FaMapMarkerAlt className="text-gray-500" /> Công Việc
               </label>
-              <input
+              <select
                 id="work"
                 name="work"
-                type="text"
                 value={formData.work}
                 onChange={handleChange}
-                placeholder="Nhập công việc"
                 className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
-              />
+              >
+                <option value="" disabled>
+                  Chọn loại công việc
+                </option>
+                <option value="part-time">Bán Thời Gian</option>
+                <option value="full-time">Toàn Thời Gian</option>
+              </select>
             </div>
 
             {/* Chi Tiết Công Việc */}
@@ -244,15 +248,13 @@ const EdtRecruitment = () => {
               >
                 Chi Tiết Công Việc
               </label>
-              <textarea
-                id="job_detail"
-                name="job_detail"
-                rows={4}
+              <ReactQuill
                 value={formData.job_detail}
-                onChange={handleChange}
-                placeholder="Chi tiết công việc..."
-                className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
-              ></textarea>
+                onChange={(value) => handleChange(value, "job_detail")}
+                className="mb-6"
+                placeholder="What's on your mind?"
+                style={{ height: "12rem" }}
+              />
             </div>
           </div>
 

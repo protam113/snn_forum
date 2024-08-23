@@ -9,14 +9,14 @@ const AdSidebar = () => {
 
   const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded-md hover:bg-gray-400 ${
     theme === "dark"
-      ? "bg-zinc-800 text-white hover:bg-zinc-700"
-      : "bg-white text-black hover:bg-gray-100"
+      ? " text-white hover:bg-zinc-700"
+      : " text-black hover:bg-gray-100"
   }`;
 
   return (
     <div>
       {/* Sidebar for desktop (lg) */}
-      <div className="hidden lg:block lg:w-60 lg:bg-white-900 lg:text-black lg:p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+      <div className=" lg:block lg:w-60 lg:bg-white-900 lg:text-black lg:p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
         <div className="relative flex flex-col space-y-4">
           <Link to="/admin" className={linkClasses}>
             <FaHome
