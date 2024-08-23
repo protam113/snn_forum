@@ -10,7 +10,7 @@ import Footer from "../../components/layouts/DefaultLayout/components/footer";
 
 const Login = () => {
   const { theme } = useTheme();
-  const { handleLogin } = React.useContext(AuthContext); // Use React.useContext to get the context
+  const { handleLogin } = React.useContext(AuthContext);
   const userRef = useRef(null);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -30,7 +30,7 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await handleLogin(username, password); // Call handleLogin from context
+    await handleLogin(username, password);
   };
 
   return (

@@ -1,5 +1,10 @@
 import React, { useState, useRef } from "react";
-import { FaTrashAlt, FaArrowLeft, FaFilePdf } from "react-icons/fa";
+import {
+  FaTrashAlt,
+  FaArrowLeft,
+  FaFilePdf,
+  FaFileUpload,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -13,16 +18,43 @@ const Create = () => {
   const [content, setContent] = useState("");
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState("public");
+  const [fileType, setFileType] = useState("image"); // Thêm trạng thái fileType
   const navigate = useNavigate();
   const { handleSubmitBlog, submitting, fileInputRef } = useBlog();
   const { userInfo } = useUserInfo();
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (selectedFiles.length + files.length <= 4) {
-      setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
-    } else {
-      alert("You can only upload up to 4 files.");
+    let newFiles = [];
+    let totalImages = selectedFiles.filter((file) =>
+      file.type.startsWith("image/")
+    ).length;
+    let totalPdfs = selectedFiles.filter(
+      (file) => file.type === "application/pdf"
+    ).length;
+
+    files.forEach((file) => {
+      if (fileType === "image" && file.type.startsWith("image/")) {
+        if (totalImages < 4) {
+          newFiles.push(file);
+          totalImages++;
+        } else {
+          alert("You can only upload up to 4 images.");
+        }
+      } else if (fileType === "pdf" && file.type === "application/pdf") {
+        if (totalPdfs < 1) {
+          newFiles.push(file);
+          totalPdfs++;
+        } else {
+          alert("You can only upload 1 PDF file.");
+        }
+      } else {
+        alert("Unsupported file type.");
+      }
+    });
+
+    if (newFiles.length > 0) {
+      setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
     }
   };
 
@@ -42,6 +74,8 @@ const Create = () => {
       content,
       description,
       visibility,
+      selectedFiles, // Pass selectedFiles to the submit function
+      fileType, // Pass fileType to the submit function
       () => {
         navigate(-1);
       },
@@ -56,8 +90,8 @@ const Create = () => {
       <div
         className={`relative max-w-6xl w-full p-6 border rounded-md shadow-lg ${
           theme === "dark"
-            ? "border-zinc-800  text-white"
-            : "border-white  text-black"
+            ? "border-zinc-800 text-white"
+            : "border-white text-black"
         }`}
       >
         {/* Back Button */}
@@ -98,140 +132,159 @@ const Create = () => {
             </span>
           </div>
         </div>
+        <hr className="mt-4" />
+        <label
+          className={`block mb-2 ${
+            theme === "dark" ? "text-white" : "text-black"
+          }`}
+        >
+          Trạng Thái:
+        </label>
+        <select
+          value={visibility}
+          onChange={(e) => setVisibility(e.target.value)}
+          className={`w-full p-2 border rounded-md ${
+            theme === "dark"
+              ? "bg-zinc-700 text-white border-zinc-600"
+              : "bg-white text-black border-zinc-800"
+          }`}
+        >
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
 
-        <div className="flex items-center justify-between mb-4">
-          <h2
-            className={`text-lg font-bold mt-8 ${
-              theme === "dark" ? "text-white" : "text-black"
-            }`}
-          >
-            Create Blog
-          </h2>
-          <div className="flex-grow ml-4">
+        <div className="flex mt-8">
+          {/* File Type Selector */}
+          <div className="mb-4">
             <label
               className={`block mb-2 ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
             >
-              Visibility:
+              File Type:
             </label>
             <select
-              value={visibility}
-              onChange={(e) => setVisibility(e.target.value)}
+              value={fileType}
+              onChange={(e) => setFileType(e.target.value)}
               className={`w-full p-2 border rounded-md ${
                 theme === "dark"
                   ? "bg-zinc-700 text-white border-zinc-600"
                   : "bg-white text-black border-zinc-800"
               }`}
             >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
+              <option value="image">Image</option>
+              <option value="pdf">PDF</option>
             </select>
           </div>
-        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              className={`block mb-2 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-              htmlFor="title"
+          {/* Image/File Upload Section (Left Column) */}
+          <div className="w-1/3 pr-4">
+            <div className="grid grid-cols-1 gap-4 mb-4">
+              {selectedFiles.map((file, index) => (
+                <div
+                  key={index}
+                  className="relative overflow-hidden"
+                  style={{ width: "100%", height: "100px" }}
+                >
+                  {file.type.startsWith("image/") ? (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Selected ${index}`}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : file.type === "application/pdf" ? (
+                    <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
+                      <FaFilePdf size={40} />
+                      <p className="text-xs">PDF</p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
+                      <p className="text-xs">Unsupported File</p>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFile(index)}
+                    className="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-1"
+                  >
+                    <FaTrashAlt />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div
+              onClick={handleFileClick}
+              className="mt-1 flex justify-center items-center cursor-pointer rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6"
             >
-              Title:
-            </label>
+              <div className="space-y-1 text-center">
+                <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
+                <p className="text-sm text-gray-600">Nhấp để thêm tệp!</p>
+              </div>
+            </div>
             <input
-              id="title"
-              type="text"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Title*"
-              className={`w-full p-2 border rounded-md ${
-                theme === "dark"
-                  ? "bg-zinc-700 text-white border-zinc-600"
-                  : "bg-white text-black border-gray-400"
-              }`}
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              className="hidden"
+              multiple
+              accept=".jpg, .jpeg, .png, .pdf"
             />
           </div>
-          <label
-            className={`block mb-2 ${
-              theme === "dark" ? "text-white" : "text-black"
-            }`}
-            htmlFor="description"
-          >
-            Description:
-          </label>
-          <ReactQuill
-            value={description}
-            onChange={setDescription}
-            className="mb-6"
-            placeholder="What's on your mind?"
-            style={{ height: "12rem" }}
-          />
-          <hr
-            className={`my-12 ${
-              theme === "dark" ? "border-gray-600" : "border-gray-300"
-            }`}
-          />
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            {selectedFiles.map((file, index) => (
-              <div
-                key={index}
-                className="relative overflow-hidden"
-                style={{ width: "100px", height: "100px" }}
-              >
-                {file.type.startsWith("image/") ? (
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`Selected ${index}`}
-                    className="object-cover w-full h-full"
-                  />
-                ) : file.type === "application/pdf" ? (
-                  <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
-                    <FaFilePdf size={40} />
-                    <p className="text-xs">PDF</p>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
-                    <p className="text-xs">Unsupported File</p>
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveFile(index)}
-                  className="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-1"
+          {/* Content Section (Right Column) */}
+          <div className="w-2/3 pl-4">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label
+                  className={`block mb-2 ${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                  htmlFor="title"
                 >
-                  <FaTrashAlt />
-                </button>
+                  Title:
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Title*"
+                  className={`w-full p-2 border rounded-md ${
+                    theme === "dark"
+                      ? "bg-zinc-700 text-white border-zinc-600"
+                      : "bg-white text-black border-zinc-800"
+                  }`}
+                  required
+                />
               </div>
-            ))}
+              <div className="mb-4">
+                <label
+                  className={`block mb-2 ${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  Description:
+                </label>
+                <ReactQuill
+                  value={description}
+                  onChange={setDescription}
+                  placeholder="Write a description..."
+                />
+              </div>
+              <button
+                type="submit"
+                className={`w-full p-2 rounded-md ${
+                  theme === "dark"
+                    ? "bg-blue-600 text-white hover:bg-blue-500"
+                    : "bg-blue-500 text-white hover:bg-blue-400"
+                }`}
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : "Submit"}
+              </button>
+            </form>
           </div>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            className="hidden"
-            multiple
-            accept=".jpg, .jpeg, .png, .pdf"
-          />
-
-          <button
-            type="button"
-            onClick={handleFileClick}
-            className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-          >
-            {selectedFiles.length < 4 ? "Add File" : "Max Files Reached"}
-          </button>
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full p-2 mt-4 text-white bg-green-600 rounded-md hover:bg-green-700"
-          >
-            {submitting ? "Submitting..." : "Submit"}
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

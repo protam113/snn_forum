@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Block from "../../../../design/Block";
-import { MdGroups2 } from "react-icons/md";
+import { MdGroups2, MdPerson } from "react-icons/md";
 import useUserSearch from "../../../../../hooks/useUserSearch";
 import useUserInfo from "../../../../../hooks/useUserInfo";
 import { useNavigate } from "react-router-dom";
@@ -52,15 +52,19 @@ const FSuggestion = () => {
           top5Users.map((user, index) => (
             <div
               key={user.id}
-              className="flex items-center justify-between"
+              className="flex items-center justify-between cursor-pointer"
               onClick={() => handleProfileClick(user.id)}
             >
               <div className="flex items-center">
-                <img
-                  src={user.profile_image}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full"
-                />
+                {user.profile_image ? (
+                  <img
+                    src={user.profile_image}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full"
+                  />
+                ) : (
+                  <MdPerson className="w-8 h-8 text-gray-400" />
+                )}
                 <div className="ml-4">
                   <p className="text-sm text-black">
                     {user.first_name} {user.last_name}

@@ -1,11 +1,14 @@
 import React, { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// icons
-import { FaTrashAlt, FaEdit, FaFlag } from "react-icons/fa";
+import {
+  FaTrashAlt,
+  FaEdit,
+  FaFlag,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { IoShareSocialOutline } from "react-icons/io5";
-
-// data api
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
 import useUserInfo from "../../../hooks/useUserInfo";
@@ -13,7 +16,6 @@ import formatDate from "../../../utils/formatDate";
 import Comment from "../../../components/comment/comment";
 import { useTheme } from "../../../context/themeContext";
 import useBlog from "../../../hooks/useBlog";
-
 import CommentsSection from "../../../components/comment/CommentsSection";
 import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
@@ -30,6 +32,7 @@ const Blog_detail = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [showLikesPopup, setShowLikesPopup] = useState(null);
   const [likesData, setLikesData] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const handleMenuClick = (id) => {
     setActiveMenu((prev) => (prev === id ? null : id));
@@ -74,23 +77,41 @@ const Blog_detail = () => {
       });
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [blog]);
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % blog.media.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(
+      (prev) => (prev - 1 + blog.media.length) % blog.media.length
+    );
+  };
 
   const renderMedia = (media) => {
     const extension = media.file.split(".").pop().toLowerCase();
 
     if (["jpg", "jpeg", "png", "gif"].includes(extension)) {
       return (
-        <img
+        <div
           key={media.file}
-          src={media.file}
-          alt="blog-media"
-          className={`object-cover w-[500px] h-full cursor-pointer ${
-            theme === "dark" ? "border-gray-700" : "border-gray-200"
-          }`}
-        />
+          className="relative w-full h-full flex items-center justify-center"
+        >
+          <img
+            src={blog.media[currentSlide].file}
+            alt="blog-media"
+            className={`object-cover w-[500px] h-full cursor-pointer ${
+              theme === "dark" ? "border-gray-700" : "border-gray-200"
+            }`}
+          />
+          <FaChevronLeft
+            className="absolute left-0 text-3xl cursor-pointer"
+            onClick={prevSlide}
+          />
+          <FaChevronRight
+            className="absolute right-0 text-3xl cursor-pointer"
+            onClick={nextSlide}
+          />
+        </div>
       );
     } else if (["pdf"].includes(extension)) {
       return (
@@ -107,10 +128,14 @@ const Blog_detail = () => {
     return null;
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [blog]);
+
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loading />{" "}
+        <Loading />
       </div>
     );
   if (message)
@@ -210,25 +235,21 @@ const Blog_detail = () => {
           <hr className="mt-2 border-gray-300" />
           {/* Media */}
           {blog.media.length > 0 && (
-            <div
-              className={`grid gap-4 ${
-                blog.media.length === 1
-                  ? "grid-cols-1"
-                  : blog.media.length === 2
-                  ? "grid-cols-2"
-                  : blog.media.length === 3
-                  ? "grid-cols-3"
-                  : "grid-cols-2"
-              }`}
-            >
-              {blog.media.map((media) => renderMedia(media))}
+            <div className="relative">
+              {blog.media.map((media, index) => (
+                <div
+                  key={media.file}
+                  className={`${index === currentSlide ? "block" : "hidden"}`}
+                >
+                  {renderMedia(media)}
+                </div>
+              ))}
+              {/* Next and Previous buttons */}
+              <button onClick={prevSlide}></button>
+              <button onClick={nextSlide}></button>
             </div>
           )}
-          <hr
-            className={`my-4 ${
-              theme === "dark" ? "border-gray-600" : "border-gray-300"
-            }`}
-          />
+
           {/* Like, Comment, Repost Buttons */}
           <div className="mt-4">
             <hr className="my-2 border-zinc-900" />

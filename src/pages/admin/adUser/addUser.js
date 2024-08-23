@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
+import { MdPerson } from "react-icons/md";
 import useAdmin from "../../../hooks/useAdmin";
 import useUserSearch from "../../../hooks/useUserSearch";
 import { useNavigate } from "react-router-dom";
@@ -98,11 +99,18 @@ const AddUser = () => {
                   onChange={() => handleUserChange(user.id)}
                   className="mb-2"
                 />
-                <img
-                  src={user.profile_image || "default-image.png"}
-                  alt={user.username}
-                  className="w-24 h-24 object-cover rounded-full mb-4"
-                />
+                {user.profile_image ? (
+                  <img
+                    src={user.profile_image}
+                    alt={user.username}
+                    className="w-24 h-24 object-cover rounded-full mb-4"
+                  />
+                ) : (
+                  <MdPerson
+                    className="w-24 h-24 text-gray-500 mb-4"
+                    aria-label="Default user icon"
+                  />
+                )}
                 <p className="text-lg font-semibold">{user.username}</p>
                 <p className="py-1 px-2 rounded-lg bg-gray-200 text-gray-800">
                   {getUserGroups(user)}

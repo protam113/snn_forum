@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
@@ -12,14 +12,17 @@ const EdtBlog = () => {
   const { theme } = useTheme();
   const { blogId } = useParams();
   const navigate = useNavigate();
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const { blog, loading, error, editBlog, fileInputRef } = useBlog(blogId);
+  const fileInputRef = useRef(null);
+  const { blog, loading, error, editBlog } = useBlog(blogId);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [formData, setFormData] = useState({
     content: "",
     description: "",
     visibility: "public",
-    media: null,
+    file_type: "image",
+    media: [],
+    id_media_remove: [],
   });
 
   useEffect(() => {
@@ -28,7 +31,9 @@ const EdtBlog = () => {
         content: blog.content || "",
         description: blog.description || "",
         visibility: blog.visibility || "public",
-        media: blog.media || [], // Giả sử blog.media chứa hình ảnh hiện tại
+        file_type: blog.file_type || "image",
+        media: blog.media || [],
+        id_media_remove: [], // Khởi tạo danh sách id_media_remove rỗng
       });
       setSelectedFiles(blog.media || []);
     }
@@ -44,6 +49,14 @@ const EdtBlog = () => {
   };
 
   const handleRemoveFile = (index) => {
+    const fileToRemove = selectedFiles[index];
+    if (fileToRemove.id) {
+      // Nếu là file cũ (đã có ID), thêm ID vào id_media_remove
+      setFormData((prevData) => ({
+        ...prevData,
+        id_media_remove: [...prevData.id_media_remove, fileToRemove.id],
+      }));
+    }
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -67,8 +80,15 @@ const EdtBlog = () => {
     e.preventDefault();
     setSubmitting(true);
     const data = new FormData();
+    // Thêm các tệp mới vào formData
+    selectedFiles.forEach((file) => {
+      if (file instanceof File) {
+        data.append("media", file);
+      }
+    });
+    // Thêm các trường còn lại vào formData
     Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null) {
+      if (key !== "media") {
         data.append(key, formData[key]);
       }
     });
@@ -96,11 +116,12 @@ const EdtBlog = () => {
   return (
     <div
       className={`container mx-auto p-4 ${
-        theme === "dark" ? " text-white" : " text-black"
+        theme === "dark" ? "text-white" : "text-black"
       }`}
     >
       <h1 className="text-2xl font-bold mb-4">Edit Blog</h1>
       <form onSubmit={handleSubmit}>
+        {/* Form content */}
         <div className="mb-4">
           <label
             htmlFor="content"
@@ -161,6 +182,29 @@ const EdtBlog = () => {
             <option value="private">Private</option>
           </select>
         </div>
+        <div className="mb-4">
+          <label
+            className={`block mb-2 ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
+            File Type:
+          </label>
+          <select
+            value={formData.file_type}
+            onChange={(e) =>
+              setFormData({ ...formData, file_type: e.target.value })
+            }
+            className={`w-full p-2 border rounded-md ${
+              theme === "dark"
+                ? "bg-zinc-700 text-white border-zinc-600"
+                : "bg-white text-black border-zinc-800"
+            }`}
+          >
+            <option value="image">Image</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {selectedFiles.map((file, index) => (
             <div
@@ -209,19 +253,16 @@ const EdtBlog = () => {
           onClick={handleFileClick}
           className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
         >
-          {selectedFiles.length < 4 ? "Add File" : "Max Files Reached"}
+          {selectedFiles.length > 0 ? "Change Files" : "Add Files"}
         </button>
-        <hr className="my-6" />
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={submitting}
-            className="bg-green-500 text-white px-4 py-2 rounded w-full"
-          >
-            {submitting ? "Saving..." : "Save"}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="w-full p-2 mt-4 text-white bg-green-600 rounded-md hover:bg-green-700"
+          disabled={submitting}
+        >
+          {submitting ? "Updating..." : "Update Blog"}
+        </button>
       </form>
     </div>
   );

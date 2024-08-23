@@ -19,6 +19,7 @@ import { useTheme } from "../../../context/themeContext";
 const CreateRecruitment = () => {
   const { theme } = useTheme();
   const { addRecruitment, loading } = useRecruitment();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     content: "",
@@ -33,7 +34,6 @@ const CreateRecruitment = () => {
     salary: "",
     location: "",
   });
-  const navigate = useNavigate();
 
   const handleLocationChange = (formattedLocation) => {
     const [province, district] = formattedLocation.split(", ");
@@ -45,13 +45,14 @@ const CreateRecruitment = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Kiểm tra tất cả các trường thông tin
     if (
       !formData.content ||
       !formData.link ||
@@ -63,17 +64,16 @@ const CreateRecruitment = () => {
       !formData.mail ||
       !formData.phone_number ||
       !formData.salary ||
-      !formData.location // Bao gồm location trong kiểm tra
+      !formData.location
     ) {
       toast.error("Vui lòng điền đầy đủ thông tin.");
       return;
     }
 
     try {
-      await addRecruitment(formData); // Truyền formData trực tiếp
+      await addRecruitment(formData);
       toast.success("Tin tuyển dụng đã được đăng thành công!");
 
-      // Reset formData
       setFormData({
         content: "",
         link: "",
@@ -116,7 +116,6 @@ const CreateRecruitment = () => {
         >
           {/* Cột Trái */}
           <div className="grid gap-6">
-            {/* Nội Dung Bổ Sung */}
             <div>
               <label
                 htmlFor="content"
@@ -135,7 +134,6 @@ const CreateRecruitment = () => {
               ></textarea>
             </div>
 
-            {/* Liên Kết */}
             <div>
               <label
                 htmlFor="link"
@@ -154,7 +152,6 @@ const CreateRecruitment = () => {
               />
             </div>
 
-            {/* Ngày và Kinh Nghiệm */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label
@@ -196,7 +193,6 @@ const CreateRecruitment = () => {
               </div>
             </div>
 
-            {/* Số Lượng */}
             <div>
               <label
                 htmlFor="quantity"
@@ -215,7 +211,6 @@ const CreateRecruitment = () => {
               />
             </div>
 
-            {/* Loại Công Việc */}
             <div>
               <label
                 htmlFor="work"
@@ -236,14 +231,13 @@ const CreateRecruitment = () => {
                 <option value="full-time">Toàn thời gian</option>
                 <option value="part-time">Bán thời gian</option>
                 <option value="contract">Hợp đồng</option>
-                <option value="contract">Thực Tập</option>
+                <option value="internship">Thực Tập</option>
               </select>
             </div>
           </div>
 
           {/* Cột Phải */}
           <div className="grid gap-6">
-            {/* Vị trí */}
             <div>
               <label
                 htmlFor="location"
@@ -258,7 +252,6 @@ const CreateRecruitment = () => {
               />
             </div>
 
-            {/* Mô Tả Công Việc */}
             <div>
               <label
                 htmlFor="job_detail"
@@ -268,7 +261,9 @@ const CreateRecruitment = () => {
               </label>
               <ReactQuill
                 value={formData.job_detail}
-                onChange={handleChange}
+                onChange={(value) =>
+                  setFormData((prev) => ({ ...prev, job_detail: value }))
+                }
                 className="mb-6"
                 placeholder="What's on your mind?"
                 style={{ height: "12rem" }}
@@ -280,7 +275,6 @@ const CreateRecruitment = () => {
               />
             </div>
 
-            {/* Email */}
             <div>
               <label
                 htmlFor="mail"
@@ -299,13 +293,12 @@ const CreateRecruitment = () => {
               />
             </div>
 
-            {/* Điện Thoại */}
             <div>
               <label
                 htmlFor="phone_number"
                 className="text-sm font-medium flex items-center gap-2 mb-1"
               >
-                <FaPhone className="text-gray-500" /> Điện Thoại
+                <FaPhone className="text-gray-500" /> Số Điện Thoại
               </label>
               <input
                 id="phone_number"
@@ -318,13 +311,12 @@ const CreateRecruitment = () => {
               />
             </div>
 
-            {/* Lương */}
             <div>
               <label
                 htmlFor="salary"
                 className="text-sm font-medium flex items-center gap-2 mb-1"
               >
-                <FaDollarSign className="text-gray-500" /> Lương
+                <FaDollarSign className="text-gray-500" /> Mức Lương
               </label>
               <select
                 id="salary"
@@ -336,22 +328,22 @@ const CreateRecruitment = () => {
                 <option value="" disabled>
                   Chọn mức lương
                 </option>
-                {salary.map((range) => (
-                  <option key={range.value} value={range.value}>
-                    {range.label}
+                {salary.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div className="col-span-2 flex justify-end">
+          <div className="flex justify-end mt-8">
             <button
               type="submit"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={loading}
-              className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {loading ? "Đang đăng..." : "Đăng Tin"}
+              {loading ? "Đang gửi..." : "Gửi"}
             </button>
           </div>
         </form>

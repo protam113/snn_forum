@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   FaEnvelope,
   FaPhone,
@@ -19,14 +19,11 @@ const RecruitmentDetail = () => {
   const { id: postId } = useParams();
   const { recruitment, loading, error } = useRecruitment(postId);
   const { userInfo } = useUserInfo();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
-      <div
-        className={`flex items-center justify-center min-h-screen ${
-          theme === "dark" ? "bg-zinc-900" : "bg-white"
-        }`}
-      >
+      <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     );
@@ -48,7 +45,6 @@ const RecruitmentDetail = () => {
     );
   }
 
-  // Kiểm tra xem người dùng hiện tại có phải là người đăng bài không
   const isOwner =
     userInfo && recruitment.user && userInfo.id === recruitment.user.id;
 
@@ -58,30 +54,31 @@ const RecruitmentDetail = () => {
         theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-black"
       }`}
     >
-      <div className="flex gap-6">
+      <div className="flex flex-col md:flex-row gap-6">
         {/* Job Details */}
-        <div className="w-3/4">
+        <div className="flex-1">
           <div className="mb-6">
-            {/* Title and Image */}
             <div className="flex items-center gap-4 mb-6">
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                {/* Placeholder for image */}
-                <span className="text-gray-400 text-xl">Logo</span>
+                <img
+                  src="https://static.chotot.com/storage/chotot-icons/png/jobtype_v2/2.png"
+                  alt="avatar"
+                  className="w-12 h-12 rounded-full"
+                />
               </div>
               <div className="text-16 font-bold">{recruitment.content}</div>
             </div>
           </div>
 
-          {/* Job Details */}
           <div
-            className={`grid grid-cols-3 gap-6 mb-6 ${
+            className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 ${
               theme === "dark" ? "text-white" : "text-black"
             }`}
           >
-            <div className="flex text-14 flex-col items-center">
+            <div className="flex flex-col items-center">
               <div
-                className={`bg-custom-red text-white p-2 rounded-full ${
-                  theme === "dark" ? "bg-red-600" : "bg-red-500"
+                className={`text-white p-2 rounded-full ${
+                  theme === "dark" ? "bg-custom-red" : "bg-custom-red"
                 }`}
               >
                 <FaDollarSign className="text-3xl" />
@@ -91,8 +88,8 @@ const RecruitmentDetail = () => {
             </div>
             <div className="flex flex-col items-center">
               <div
-                className={`bg-custom-red text-white p-2 rounded-full ${
-                  theme === "dark" ? "bg-red-600" : "bg-red-500"
+                className={`text-white p-2 rounded-full ${
+                  theme === "dark" ? "bg-custom-red" : "bg-custom-red"
                 }`}
               >
                 <FaMapMarkerAlt className="text-3xl" />
@@ -102,8 +99,8 @@ const RecruitmentDetail = () => {
             </div>
             <div className="flex flex-col items-center">
               <div
-                className={`bg-custom-red text-white p-2 rounded-full ${
-                  theme === "dark" ? "bg-red-600" : "bg-red-500"
+                className={`text-white p-2 rounded-full ${
+                  theme === "dark" ? "bg-custom-red" : "bg-custom-red"
                 }`}
               >
                 <BsClock className="text-3xl" />
@@ -113,23 +110,20 @@ const RecruitmentDetail = () => {
             </div>
           </div>
 
-          <div className="mb-6 flex space-x-4">
+          <div className="mb-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <a
               href={`/tuyen_dung/${postId}/ung_tuyen`}
-              className={`inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full max-w-xs text-center ${
-                theme === "dark"
-                  ? "bg-red-600 hover:bg-red-700"
-                  : "bg-red-500 hover:bg-red-600"
+              className={`inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full sm:w-auto text-center ${
+                theme === "dark" ? " hover:bg-red-700" : " hover:bg-red-600"
               }`}
             >
               Apply Now
             </a>
 
-            {/* Hiển thị liên kết danh sách đơn ứng tuyển nếu người dùng hiện tại là người đăng bài */}
             {isOwner && (
               <a
                 href={`/tuyen_dung/${postId}/danh_sach_ung_tuyen`}
-                className={`inline-block py-2 px-8 bg-blue-500 text-white rounded-lg text-16 font-semibold hover:bg-blue-400 transition duration-300 w-full max-w-xs text-center ${
+                className={`inline-block py-2 px-8 bg-blue-500 text-white rounded-lg text-16 font-semibold hover:bg-blue-400 transition duration-300 w-full sm:w-auto text-center ${
                   theme === "dark"
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-blue-500 hover:bg-blue-600"
@@ -139,11 +133,12 @@ const RecruitmentDetail = () => {
               </a>
             )}
           </div>
+
+          {/* Job Details Section */}
         </div>
 
-        {/* User Profile Information */}
         <div
-          className={`w-1/4 ${
+          className={`w-full md:w-1/4 ${
             theme === "dark" ? "bg-zinc-800" : "bg-gray-100"
           } p-4 rounded-lg`}
         >
@@ -161,7 +156,6 @@ const RecruitmentDetail = () => {
         </div>
       </div>
 
-      {/* Contact Information */}
       <div
         className={`bg-gray-100 p-4 rounded-lg ${
           theme === "dark" ? "bg-zinc-800 text-white" : "bg-white text-black"
@@ -206,7 +200,12 @@ const RecruitmentDetail = () => {
             />
             <div className="flex-1">
               <h4 className="text-16 font-medium">Email</h4>
-              <p>{recruitment.mail}</p>
+              <a
+                href={`mailto:${recruitment.email}`}
+                className="text-blue-600 hover:underline"
+              >
+                {recruitment.email}
+              </a>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -218,17 +217,6 @@ const RecruitmentDetail = () => {
             <div className="flex-1">
               <h4 className="text-16 font-medium">Phone</h4>
               <p>{recruitment.phone_number}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <FaUsers
-              className={`text-gray-500 h-6 w-6 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`}
-            />
-            <div className="flex-1">
-              <h4 className="text-16 font-medium">Positions</h4>
-              <p>{recruitment.quantity} positions</p>
             </div>
           </div>
         </div>

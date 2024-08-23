@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAdmin from "../../../hooks/useAdmin";
 import { FaUsers, FaSearch, FaTrash } from "react-icons/fa";
-import { MdGroup, MdAdd } from "react-icons/md";
+import { MdGroup, MdAdd, MdPerson } from "react-icons/md";
 import { toast } from "react-toastify";
 
 const groupColorMap = {
@@ -45,8 +45,6 @@ const AdUser = () => {
     setShowConfirm(true);
   };
 
-  // AdUser.js
-
   const confirmRemoveUser = async () => {
     if (userToRemove && selectedGroup) {
       try {
@@ -54,11 +52,11 @@ const AdUser = () => {
         setShowConfirm(false);
         setUserToRemove(null);
       } catch (error) {
-        console.error("Lỗi khi xóa người dùng:", error);
+        console.error("Error removing user:", error);
+        toast.error("Có lỗi xảy ra khi xóa người dùng.");
       }
     } else {
       toast.error("Người dùng hoặc nhóm không được chọn");
-      toast.error("Vui lòng chọn cả người dùng và nhóm");
     }
   };
 
@@ -67,12 +65,8 @@ const AdUser = () => {
     setUserToRemove(null);
   };
 
-  const getGroupClassName = (groupName) => {
-    return groupColorMap[groupName] || "bg-gray-300 text-gray-700";
-  };
-
   return (
-    <div className="p-6  min-h-screen">
+    <div className="p-6 min-h-screen">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <FaUsers className="text-blue-500" /> Quản lý người dùng
@@ -138,21 +132,21 @@ const AdUser = () => {
               key={user.id}
               className="bg-white border border-gray-300 rounded-lg shadow-lg p-4 flex flex-col items-center text-center"
             >
-              <img
-                src={user.profile_image || "default-image.png"}
-                alt={user.username}
-                className="w-24 h-24 object-cover rounded-full mb-4"
-              />
+              {user.profile_image ? (
+                <img
+                  src={user.profile_image}
+                  alt={user.username}
+                  className="w-24 h-24 object-cover rounded-full mb-4"
+                />
+              ) : (
+                <MdPerson
+                  className="w-24 h-24 text-gray-500 mb-4"
+                  aria-label="Default user icon"
+                />
+              )}
               <p className="text-lg font-semibold">{user.username}</p>
               <p className="text-gray-600">
                 {user.first_name} {user.last_name}
-              </p>
-              <p
-                className={`py-1 px-2 rounded-lg ${getGroupClassName(
-                  user.groups[0]?.name || ""
-                )}`}
-              >
-                {user.groups.map((group) => group.name).join(", ")}
               </p>
               <button
                 onClick={() => handleRemoveUser(user)}

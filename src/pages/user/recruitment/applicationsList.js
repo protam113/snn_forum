@@ -30,7 +30,7 @@ const ApplicationsList = () => {
 
   const handleStatusChange = async (applicationId, newStatus) => {
     try {
-      const result = await editApplyJob(applicationId, { status: newStatus });
+      await editApplyJob(applicationId, { status: newStatus });
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -50,31 +50,37 @@ const ApplicationsList = () => {
     );
 
   return (
-    <div className="overflow-x-auto p-4">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+    <div className="relative overflow-x-auto p-4">
+      <button
+        className="absolute top-4 left-4 text-blue-400 text-lg"
+        onClick={() => navigate(-1)}
+      >
+        &#8592; Quay lại
+      </button>
+      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md mt-10">
         <thead>
-          <tr className="border-b bg-gray-100 text-gray-600 text-sm">
-            <th className="py-3 px-6 text-left">#</th>
-            <th className="py-3 px-6 text-left">Username</th>
-            <th className="py-3 px-6 text-left">Họ tên</th>
-            <th className="py-3 px-6 text-left">Vị trí ứng tuyển</th>
-            <th className="border p-2">SDT</th>
-            <th className="border p-2">Mail</th>
-            <th className="py-3 px-6 text-left">Status</th>
-            <th className="py-3 px-6 text-left">Created Date</th>
-            <th className="py-3 px-6 text-left">CV</th>
+          <tr className="border-b bg-gray-100 text-gray-600 text-12">
+            <th className="py-3 px-6 text-center">#</th>
+            <th className="py-3 px-6 text-center">Username</th>
+            <th className="py-3 px-6 text-center">Họ tên</th>
+            <th className="py-3 px-6 text-center">Vị trí ứng tuyển</th>
+            <th className="py-3 px-6 text-center">SDT</th>
+            <th className="py-3 px-6 text-center">Mail</th>
+            <th className="py-3 px-6 text-center">Trạng thái</th>
+            <th className="py-3 px-6 text-center">Ngày ứng tuyển</th>
+            <th className="py-3 px-6 text-center">CV</th>
           </tr>
         </thead>
         <tbody>
           {applications.length === 0 ? (
             <tr>
-              <td colSpan="7" className="py-4 text-center text-gray-600">
+              <td colSpan="9" className="py-4 text-center text-gray-600">
                 No applications available
               </td>
             </tr>
           ) : (
             applications.map((application, index) => (
-              <tr key={application.id} className="border-b text-sm">
+              <tr key={application.id} className="border-b text-12">
                 <td className="py-4 px-6 text-gray-800">{index + 1}</td>
                 <td
                   className="py-4 px-6 text-gray-800 cursor-pointer hover:underline"
@@ -97,7 +103,7 @@ const ApplicationsList = () => {
                 <td className="border p-2">{application.phone_number}</td>
                 <td className="py-4 px-6 text-gray-800">
                   <select
-                    value={application.status} // Use the local status from the application object
+                    value={application.status}
                     onChange={(e) =>
                       handleStatusChange(application.id, e.target.value)
                     }

@@ -17,7 +17,6 @@ export default function MixChart() {
   const { recruitments } = useRecruitment(); // Get recruitments data
 
   useEffect(() => {
-    // Calculate the counts for each category
     const blogsCount = blogs.length;
     const productsCount = products.length;
     const recruitmentsCount = recruitments.length;
@@ -36,18 +35,18 @@ export default function MixChart() {
     const chartRefContext = chartRef.current.getContext("2d");
 
     chartInstance.current = new Chart(chartRefContext, {
-      type: "pie", // Use pie chart type
+      type: "pie",
       data: {
-        labels: chartData.labels, // Labels for each slice
+        labels: chartData.labels,
         datasets: [
           {
             label: "Counts",
-            data: chartData.data, // Data points for the slices
+            data: chartData.data,
             backgroundColor: [
               "rgba(75, 192, 192, 0.6)",
               "rgba(54, 162, 235, 0.6)",
               "rgba(255, 99, 132, 0.6)",
-            ], // Different colors for each slice
+            ],
             borderColor: [
               "rgba(75, 192, 192, 1)",
               "rgba(54, 162, 235, 1)",

@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       colors: {
         "custom-red": "#BF2734",
+        "custom-zinc": "#1c1e21",
       },
       screens: {
         mobile: "640px",
@@ -18,6 +19,9 @@ module.exports = {
         18: "18px",
         20: "20px",
         24: "24px",
+      },
+      borderWidth: {
+        0.5: "0.5px",
       },
     },
   },

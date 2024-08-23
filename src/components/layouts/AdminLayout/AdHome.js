@@ -1,5 +1,3 @@
-// components/Main.js
-
 import UserChart from "./components/chart/userChart";
 import LineChart from "./components/chart/lineChart";
 import MixChart from "./components/chart/MixedChart";

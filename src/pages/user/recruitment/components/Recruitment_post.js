@@ -16,7 +16,6 @@ const RecruitmentPost = () => {
   const { recruitments, loading, error, handleDeleteRecruitment } =
     useRecruitment();
 
-  // Sắp xếp các bài viết theo thứ tự mới nhất
   const sortedRecruitments = recruitments
     .slice()
     .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
@@ -43,7 +42,7 @@ const RecruitmentPost = () => {
 
   const handleDeleteClick = async (postId) => {
     await handleDeleteRecruitment(postId);
-    setActiveMenu(null); // Close the menu after deleting
+    setActiveMenu(null);
   };
 
   const handleCopyUrl = (postId) => {
@@ -104,7 +103,7 @@ const RecruitmentPost = () => {
                     theme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  {new Date(recruitment.created_date).toLocaleDateString()}
+                  {new Date(recruitment.date).toLocaleDateString()}
                 </p>
               </div>
               <div className="relative ml-auto">
@@ -192,9 +191,14 @@ const RecruitmentPost = () => {
               >
                 Số Lượng: {recruitment.quantity}
               </p>
-              <p className="text-white bg-red-400 px-2 py-1 rounded">
-                {new Date(recruitment.date).toLocaleDateString()}
-              </p>
+              <button
+                className={`bg-custom-red text-white text-14 px-4 py-2 rounded ${
+                  theme === "dark" ? "hover:bg-red-600" : "hover:bg-red-700"
+                }`}
+                onClick={() => handlePostClick(recruitment.id)}
+              >
+                Ứng tuyển ngay
+              </button>{" "}
             </div>
           </Block>
         );

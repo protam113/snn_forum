@@ -307,7 +307,16 @@ const useBlog = (blogId) => {
 
   // Handle submit blog
   const handleSubmitBlog = useCallback(
-    async (event, content, description, visibility, onClose, onSuccess) => {
+    async (
+      event,
+      content,
+      description,
+      visibility,
+      selectedFiles,
+      fileType,
+      onClose,
+      onSuccess
+    ) => {
       event.preventDefault();
       setSubmitting(true);
 
@@ -317,19 +326,18 @@ const useBlog = (blogId) => {
         formData.append("content", content);
         formData.append("description", description);
         formData.append("visibility", visibility);
+        formData.append("file_type", fileType); // Thêm file_type vào formData
 
-        if (fileInputRef.current?.files.length > 0) {
-          Array.from(fileInputRef.current.files).forEach((file) => {
-            formData.append("media", file);
-          });
-        }
+        selectedFiles.forEach((file) => {
+          formData.append("media", file);
+        });
 
         const response = await authApi(token).post(endpoints.Blog, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
         toast.success("Blog created successfully!");
-        onSuccess(response.data); // Truyền dữ liệu phản hồi nếu cần
+        onSuccess(response.data);
         onClose();
       } catch (err) {
         console.error("Error creating blog", err);
@@ -349,7 +357,6 @@ const useBlog = (blogId) => {
         return;
       }
 
-      // Thực hiện cập nhật blog với token hiện tại
       const response = await authApi(token).patch(
         endpoints.BlogDetail.replace(":id", blogId),
         data,

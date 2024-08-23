@@ -12,6 +12,7 @@ import useUserInfo from "../../../hooks/useUserInfo";
 import { Error404 } from "../../error/error";
 import { toast } from "react-toastify";
 import { IoShareSocialOutline } from "react-icons/io5";
+import { MdPerson } from "react-icons/md";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -51,7 +52,7 @@ const Blog = () => {
   };
 
   const handleDeleteClick = async (blogId) => {
-    if (window.confirm("Are you sure you want to delete this blog?")) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) {
       await handleDeleteBlog(blogId);
     }
   };
@@ -136,21 +137,30 @@ const Blog = () => {
         return (
           <React.Fragment key={blog.id}>
             <Block
-              className={`col-span-12 row-span-4 md:col-span-6 mb-4 p-4 ${
+              className={`p-4 rounded-lg border mt-4 ${
                 theme === "dark"
-                  ? "bg-zinc-800 text-white"
-                  : "bg-white text-black"
-              }`}
+                  ? "border-custom-zinc bg-gray-800"
+                  : "border-gray-300 bg-white"
+              } shadow-sm`}
             >
               <div className="flex items-center mb-4">
-                <img
-                  src={blog.user.profile_image}
-                  alt="avatar"
-                  className={`size-12 rounded-full ${
-                    theme === "dark" ? "border-white" : "border-black"
-                  }`}
-                  onClick={() => handleProfileClick(blog.user.id)}
-                />
+                {blog.user.profile_image ? (
+                  <img
+                    src={blog.user.profile_image}
+                    alt="avatar"
+                    className={`size-12 rounded-full ${
+                      theme === "dark" ? "border-white" : "border-black"
+                    }`}
+                    onClick={() => handleProfileClick(blog.user.id)}
+                  />
+                ) : (
+                  <MdPerson
+                    className={`size-12 rounded-full ${
+                      theme === "dark" ? "text-white" : "text-gray-500"
+                    }`}
+                    onClick={() => handleProfileClick(blog.user.id)}
+                  />
+                )}
                 <div className="ml-2">
                   <h1
                     className={`text-base font-bold leading-tight ${

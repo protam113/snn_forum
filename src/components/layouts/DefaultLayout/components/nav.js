@@ -212,7 +212,11 @@ const Navbar = () => {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
+                  className={`relative group px-4 py-2 transition-all md:hidden ${
+                    theme === "light"
+                      ? "text-white hover:text-gray-400"
+                      : "text-white hover:text-gray-400"
+                  }`}
                 >
                   <span className="text-14">Admin</span>
                 </Link>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdSearch, MdClear } from "react-icons/md";
+import { MdPerson } from "react-icons/md"; // Thêm import icon MdPerson
 import { useNavigate } from "react-router-dom";
 import useUserSearch from "../../../hooks/useUserSearch";
 import useUserInfo from "../../../hooks/useUserInfo";
@@ -43,7 +44,7 @@ const User = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-center mb-8">
         <div className="w-full max-w-md">
-          <div className="flex text-black items-center border rounded-lg bg-white border-zinc-800  ">
+          <div className="relative flex text-black items-center border rounded-lg bg-white border-zinc-800">
             <input
               type="text"
               placeholder="Search users..."
@@ -89,9 +90,7 @@ const User = () => {
                   className="w-12 h-12 rounded-full object-cover"
                 />
               ) : (
-                <span className="text-lg font-semibold text-gray-600">
-                  {user.first_name.charAt(0).toUpperCase() || "U"}
-                </span>
+                <MdPerson className="w-12 h-12 text-gray-600" />
               )}
             </div>
             <div>

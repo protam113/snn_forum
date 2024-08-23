@@ -13,17 +13,17 @@ export default function PolarAreaChart() {
   const { userBanner } = useUserBanner(); // Get all banners
 
   useEffect(() => {
-    fetchUsers(); // Fetch users on component mount
+    fetchUsers();
   }, [fetchUsers]);
 
   useEffect(() => {
     // Prepare data for polar area chart
     const data = {
-      labels: ["Users", "Categories", "Banners"], // Labels for each data point
+      labels: ["Users", "Categories", "Banners"],
       datasets: [
         {
           label: "Distribution", // Dataset label
-          data: [featuredUsers.length, categories.length, userBanner.length], // Data points
+          data: [featuredUsers.length, categories.length, userBanner.length],
           backgroundColor: [
             "rgba(75, 192, 192, 0.6)", // Color for Users
             "rgba(54, 162, 235, 0.6)", // Color for Categories

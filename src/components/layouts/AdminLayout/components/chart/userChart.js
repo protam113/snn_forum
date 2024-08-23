@@ -13,9 +13,12 @@ export default function UserChart() {
     if (!loadingUsers && !error) {
       // Process users data to count users by group
       const groupCounts = users.reduce((acc, user) => {
-        user.groups.forEach((group) => {
-          acc[group.name] = (acc[group.name] || 0) + 1;
-        });
+        // Ensure user.groups is defined and is an array
+        if (Array.isArray(user.groups)) {
+          user.groups.forEach((group) => {
+            acc[group.name] = (acc[group.name] || 0) + 1;
+          });
+        }
         return acc;
       }, {});
 
