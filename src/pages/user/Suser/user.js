@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdSearch, MdClear } from "react-icons/md";
-import { MdPerson } from "react-icons/md"; // Thêm import icon MdPerson
+import { MdPerson } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import useUserSearch from "../../../hooks/useUserSearch";
 import useUserInfo from "../../../hooks/useUserInfo";

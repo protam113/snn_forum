@@ -9,11 +9,15 @@ const useBanner = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Fetch banners
   const fetchAdminBanner = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const token = await getToken();
+      if (!token) {
+        throw new Error("Không có token");
+      }
       const response = await authApi(token).get(endpoints.AdminBanner);
       const results = response.data.results;
       setAdminBanner(results);
@@ -25,6 +29,7 @@ const useBanner = () => {
     }
   }, [getToken]);
 
+  // Add banner
   const addBanner = async (newBanner) => {
     setLoading(true);
     try {
@@ -48,8 +53,41 @@ const useBanner = () => {
 
       toast.success("Đã thêm banner thành công");
     } catch (err) {
-      setError(err.message || "Đã xảy ra lỗi");
-      toast.error(err.message || "Đã xảy ra lỗi khi thêm banner");
+      const errorMessage =
+        err.response?.data?.detail ||
+        err.message ||
+        "Đã xảy ra lỗi khi thêm banner";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete banner
+  const deleteBanner = async (bannerId) => {
+    setLoading(true);
+    try {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Không có token");
+      }
+      const url = endpoints.Banner.replace(":id", bannerId);
+      await authApi(token).delete(url);
+
+      // Update the state after successful deletion
+      setAdminBanner((prevBanners) =>
+        prevBanners.filter((banner) => banner.id !== bannerId)
+      );
+
+      toast.success("Đã xóa banner thành công");
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.detail ||
+        err.message ||
+        "Đã xảy ra lỗi khi xóa banner";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -64,6 +102,7 @@ const useBanner = () => {
     loading,
     error,
     addBanner,
+    deleteBanner,
   };
 };
 

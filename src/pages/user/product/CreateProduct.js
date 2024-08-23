@@ -80,14 +80,11 @@ const CreateProduct = () => {
         phone_number,
         numericPrice,
         () => {
-          toast.success("Product created successfully!");
           navigate("/san_pham");
         },
         () => {}
       );
-    } catch (err) {
-      toast.error("An error occurred while creating the product");
-    }
+    } catch (err) {}
   };
 
   // Hàm định dạng giá tiền

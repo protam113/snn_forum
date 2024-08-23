@@ -31,7 +31,6 @@ const FSuggestion = () => {
   if (error)
     return <p className="text-center py-4 text-red-500">Error: {error}</p>;
 
-  // Get only the top 5 featured users
   const top5Users = featuredUsers.slice(0, 5);
 
   return (

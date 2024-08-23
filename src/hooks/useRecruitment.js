@@ -10,9 +10,9 @@ const useRecruitment = (postId) => {
   const [recruitment, setRecruitment] = useState(null);
   const [applications, setApplications] = useState([]);
   const { getToken } = useAuth();
-  const fileInputRef = useRef(null);
 
   const fetchRecruitments = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await authApi().get(endpoints.Recruitment);
       const results = response.data.results;
@@ -39,10 +39,10 @@ const useRecruitment = (postId) => {
   const fetchRecruitment = useCallback(async () => {
     if (!postId) return;
 
+    setLoading(true);
     try {
       const url = endpoints.RecruitmentDetail.replace(":id", postId);
       const response = await authApi().get(url);
-
       setRecruitment(response.data);
     } catch (error) {
       console.error("Error fetching recruitment detail:", error);
@@ -104,28 +104,32 @@ const useRecruitment = (postId) => {
     [getToken]
   );
 
-  const editRecruitment = async (edtRecruitment) => {
-    try {
+  const editRecruitment = useCallback(
+    async (edtRecruitment) => {
       const token = await getToken();
       if (!token) {
         setError("No token available");
         return;
       }
-      const response = await authApi(token).patch(
-        endpoints.RecruitmentDetail.replace(":id", postId),
-        edtRecruitment,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setRecruitment(response.data);
-    } catch (err) {
-      console.error("Error updating recruitment", err);
-      toast.error("Failed to update recruitment.");
-    }
-  };
+
+      try {
+        const response = await authApi(token).patch(
+          endpoints.RecruitmentDetail.replace(":id", postId),
+          edtRecruitment,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        setRecruitment(response.data);
+      } catch (err) {
+        console.error("Error updating recruitment", err);
+        toast.error("Failed to update recruitment.");
+      }
+    },
+    [getToken, postId]
+  );
 
   const addApplyJob = useCallback(
     async (applyJob, postId) => {
@@ -152,7 +156,7 @@ const useRecruitment = (postId) => {
           formData.append("cv", applyJob.cv);
         }
 
-        const response = await authApi(token).post(url, formData, {
+        await authApi(token).post(url, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

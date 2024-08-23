@@ -2,9 +2,7 @@ import React from "react";
 import useCategories from "../../../../../hooks/useCategories";
 
 export default function CategoryChart() {
-  const { categories } = useCategories(); // Hook to get categories
-
-  // Calculate the total number of categories
+  const { categories } = useCategories();
   const totalCategories = categories.length;
 
   return (

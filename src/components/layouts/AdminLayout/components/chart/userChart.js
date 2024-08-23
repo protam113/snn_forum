@@ -11,9 +11,7 @@ export default function UserChart() {
 
   useEffect(() => {
     if (!loadingUsers && !error) {
-      // Process users data to count users by group
       const groupCounts = users.reduce((acc, user) => {
-        // Ensure user.groups is defined and is an array
         if (Array.isArray(user.groups)) {
           user.groups.forEach((group) => {
             acc[group.name] = (acc[group.name] || 0) + 1;
@@ -22,7 +20,6 @@ export default function UserChart() {
         return acc;
       }, {});
 
-      // Update chart data
       setChartData({
         labels: Object.keys(groupCounts),
         data: Object.values(groupCounts),

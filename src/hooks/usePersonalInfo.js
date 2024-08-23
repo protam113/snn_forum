@@ -19,15 +19,13 @@ const usePersonalInfo = () => {
       return;
     }
 
-    const token = await getToken();
-    if (!token) {
-      setPersonalInfo(null);
-      setPersonalBlogs([]);
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
+    setError(null);
 
     try {
+      const token = await getToken();
+      if (!token) throw new Error("No token available");
+
       // Fetch user personal info
       const userInfoUrl = endpoints.UserInfo.replace(":id", userId);
       const response = await authApi(token).get(userInfoUrl);
@@ -38,8 +36,10 @@ const usePersonalInfo = () => {
       const blogsResponse = await authApi(token).get(personalBlogsUrl);
       setPersonalBlogs(blogsResponse.data.results || []);
     } catch (err) {
-      console.error("Lỗi khi lấy thông tin người dùng hoặc blog", err);
-      setError("Lỗi khi lấy thông tin người dùng hoặc blog");
+      console.error("Error fetching user info or blogs:", err);
+      setError(
+        err.response?.data?.detail || "Error fetching user info or blogs"
+      );
     } finally {
       setLoading(false);
     }

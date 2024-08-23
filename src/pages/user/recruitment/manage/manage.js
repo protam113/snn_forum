@@ -21,19 +21,19 @@ const Manage = () => {
       <h5 className="text-20 font-semibold mb-4">Quản lý tuyển dụng</h5>
       <table className="w-full border-collapse">
         <thead>
-          <tr className="bg-gray-100">
+          <tr className="bg-gray-100 text-16">
             <th className="border p-2">Name</th>
-            <th className="border p-2">Date</th>
+            <th className="border p-2">Ngày Nộp</th>
             <th className="border p-2">Tên Công Việc</th>
 
             <th className="border p-2">CV</th>
-            <th className="border p-2">Status</th>
+            <th className="border p-2">Trạng Thái</th>
           </tr>
         </thead>
         <tbody>
           {userApplyList.length > 0 ? (
             userApplyList.map((application) => (
-              <tr key={application.id} className="text-center">
+              <tr key={application.id} className="text-center text-14">
                 <td className="border p-2">{application.fullname}</td>
                 <td className="border p-2">
                   {new Date(application.created_date).toLocaleDateString()}

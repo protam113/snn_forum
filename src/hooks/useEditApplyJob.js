@@ -10,7 +10,12 @@ const useEditApplyJob = (postId) => {
   // Function to edit the application
   const editApplyJob = useCallback(
     async (applicationId, updatedData) => {
-      if (!applicationId || !updatedData) return;
+      if (!applicationId || !updatedData) {
+        const errorMsg = "Missing application ID or update data";
+        setError(errorMsg);
+        console.error(errorMsg);
+        return;
+      }
 
       setLoading(true);
       setError(null);
@@ -27,8 +32,10 @@ const useEditApplyJob = (postId) => {
         return response.data; // Return updated data from the API if needed
       } catch (error) {
         console.error("Error editing application:", error);
-        setError(error.response?.data?.detail || "Error editing application");
-        throw error;
+        const errorMsg =
+          error.response?.data?.detail || "Error editing application";
+        setError(errorMsg);
+        throw new Error(errorMsg);
       } finally {
         setLoading(false);
       }

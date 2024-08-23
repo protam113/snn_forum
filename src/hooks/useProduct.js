@@ -60,49 +60,50 @@ const useProduct = (productId) => {
     ) => {
       event.preventDefault();
       setLoading(true);
+      setError(null);
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("quantity", quantity);
+      formData.append("description", description);
+      formData.append("condition", condition);
+      formData.append("fettle", fettle);
+      formData.append("location", location);
+
+      if (Array.isArray(category)) {
+        category.forEach((catId) => formData.append("category", catId));
+      } else {
+        formData.append("category", category);
+      }
+
+      formData.append("phone_number", phone_number);
+      formData.append("price", price);
+
+      if (fileInputRef.current?.files.length > 0) {
+        Array.from(fileInputRef.current.files).forEach((file) => {
+          formData.append("file", file);
+        });
+      }
 
       try {
         const token = await getToken();
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("quantity", quantity);
-        formData.append("description", description);
-        formData.append("condition", condition);
-        formData.append("fettle", fettle);
-        formData.append("location", location);
+        if (!token) throw new Error("No token available");
 
-        if (Array.isArray(category)) {
-          category.forEach((catId) => {
-            formData.append("category", catId);
-          });
-        } else {
-          formData.append("category", category);
-        }
+        const response = await authApi(token).post(
+          endpoints.Products,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
 
-        formData.append("phone_number", phone_number);
-        formData.append("price", price);
-
-        if (fileInputRef.current?.files.length > 0) {
-          Array.from(fileInputRef.current.files).forEach((file) => {
-            formData.append("file", file);
-          });
-        }
-
-        try {
-          const response = await authApi(token).post(
-            endpoints.Products,
-            formData,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
-            }
-          );
-          const createdProduct = response.data;
-          setProducts((prevProducts) => [...prevProducts, createdProduct]);
-          toast.success("Sản phẩm đã được thêm thành công");
-          if (onSuccess) onSuccess();
-          if (onClose) onClose();
-        } catch (err) {
-          if (err.response?.status === 401) {
+        setProducts((prevProducts) => [...prevProducts, response.data]);
+        toast.success("Sản phẩm đã được thêm thành công");
+        if (onSuccess) onSuccess();
+        if (onClose) onClose();
+      } catch (err) {
+        if (err.response?.status === 401) {
+          try {
             const newToken = await getToken();
             if (newToken) {
               const response = await authApi(newToken).post(
@@ -112,26 +113,21 @@ const useProduct = (productId) => {
                   headers: { "Content-Type": "multipart/form-data" },
                 }
               );
-              const createdProduct = response.data;
-              setProducts((prevProducts) => [...prevProducts, createdProduct]);
+              setProducts((prevProducts) => [...prevProducts, response.data]);
               toast.success("Sản phẩm đã được thêm thành công");
               if (onSuccess) onSuccess();
               if (onClose) onClose();
             } else {
               toast.error("Failed to refresh token");
             }
-          } else {
-            throw err;
+          } catch (error) {
+            toast.error("Đã xảy ra lỗi khi làm mới mã thông báo");
           }
+        } else {
+          toast.error(
+            err.response?.data?.detail || "Đã xảy ra lỗi khi thêm sản phẩm"
+          );
         }
-      } catch (err) {
-        console.error(
-          "Error adding product:",
-          err.response?.data || err.message
-        );
-        toast.error(
-          err.response?.data?.detail || "Đã xảy ra lỗi khi thêm sản phẩm"
-        );
       } finally {
         setLoading(false);
       }
@@ -139,16 +135,13 @@ const useProduct = (productId) => {
     [getToken]
   );
 
-  useEffect(() => {
-    fetchProducts();
-    fetchProduct();
-  }, [fetchProducts, fetchProduct]);
-
   const editProduct = async (edtProduct) => {
+    setLoading(true);
+    setError(null);
     try {
       const token = await getToken();
       if (!token) {
-        setError("No token available");
+        setError("Không có mã thông báo");
         return;
       }
       const response = await authApi(token).patch(
@@ -164,8 +157,15 @@ const useProduct = (productId) => {
     } catch (err) {
       console.error("Lỗi khi cập nhật sản phẩm!", err);
       toast.error("Lỗi khi cập nhật sản phẩm!");
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchProduct();
+  }, [fetchProducts, fetchProduct]);
 
   return {
     products,

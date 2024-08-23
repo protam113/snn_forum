@@ -19,15 +19,14 @@ const useApplicationsList = (postId) => {
       if (!token) throw new Error("Không có token");
 
       const url = endpoints.ApplyJob.replace(":id", postId);
-
       const response = await authApi(token).get(url);
 
-      setApplications(response.data.results);
-    } catch (error) {
-      setError(
-        error.response?.data?.detail ||
-          "Đã xảy ra lỗi khi lấy danh sách đơn ứng tuyển"
-      );
+      setApplications(response.data.results || []);
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.detail ||
+        "Đã xảy ra lỗi khi lấy danh sách đơn ứng tuyển";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

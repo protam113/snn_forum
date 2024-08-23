@@ -1,17 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
+import { MdDelete, MdEdit } from "react-icons/md";
 import useBanner from "../../../hooks/useBanner";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../error/load";
+import { toast } from "react-toastify";
+import EditBanner from "./edtBanner";
 
 const Banner = () => {
-  const { adminBanner, loading, error } = useBanner();
+  const { adminBanner, loading, error, deleteBanner } = useBanner();
+  const [selectedBanner, setSelectedBanner] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const handleCreateBanner = () => {
     navigate("/admin/banners/tao_banner");
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const handleEditBanner = (banner) => {
+    setSelectedBanner(banner);
+    setShowModal(true);
+  };
+
+  const handleDeleteBanner = async (bannerId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa banner này?")) {
+      try {
+        await deleteBanner(bannerId);
+        toast.success("Đã xóa banner thành công");
+      } catch (err) {
+        toast.error("Đã xảy ra lỗi khi xóa banner");
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedBanner(null);
+  };
+
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />
+      </div>
+    );
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-6">
@@ -52,14 +84,15 @@ const Banner = () => {
                   />
                 </td>
                 <td className="py-2 px-4 border-r">{banner.status}</td>
-                <td className="py-2 px-4">
-                  {/* Add actions like edit or delete */}
-                  <button className="text-blue-500 hover:underline">
-                    Edit
-                  </button>
-                  <button className="text-red-500 hover:underline ml-4">
-                    Delete
-                  </button>
+                <td className="py-2 px-4 flex items-center justify-center">
+                  <MdEdit
+                    className="text-blue-500 cursor-pointer mx-1"
+                    onClick={() => handleEditBanner(banner)}
+                  />
+                  <MdDelete
+                    className="text-red-500 cursor-pointer mx-1"
+                    onClick={() => handleDeleteBanner(banner.id)}
+                  />
                 </td>
               </tr>
             ))}
@@ -67,6 +100,9 @@ const Banner = () => {
         </table>
       ) : (
         <p className="text-center text-gray-500">No Banners Available</p>
+      )}
+      {showModal && selectedBanner && (
+        <EditBanner banner={selectedBanner} onClose={closeModal} />
       )}
     </div>
   );

@@ -10,14 +10,14 @@ import useUserInfo from "../../../../hooks/useUserInfo";
 import ThemeToggle from "../../../theme/ThemeToggle ";
 import { BiMenuAltRight } from "react-icons/bi";
 import { MdSupportAgent } from "react-icons/md";
+import { MdPerson } from "react-icons/md";
 
-import Loading from "../../../../pages/error/load";
 import Notifications from "../../../notification/noti";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
   const { theme } = useTheme();
-  const { userInfo, loading, error, userRoles } = useUserInfo();
+  const { userInfo, userRoles } = useUserInfo();
 
   const toggleNavbar = () => {
     setIsMobileNavVisible(!isMobileNavVisible);
@@ -141,11 +141,21 @@ const Navbar = () => {
                   }`}
                 />
               ) : (
-                <img
-                  src={userInfo.profile_image}
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full cursor-pointer"
-                />
+                <div className="flex items-center">
+                  {userInfo.profile_image ? (
+                    <img
+                      src={userInfo.profile_image}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full cursor-pointer"
+                    />
+                  ) : (
+                    <MdPerson
+                      className={`w-8 h-8 rounded-full cursor-pointer ${
+                        theme === "light" ? "text-zinc-900" : "text-white"
+                      }`}
+                    />
+                  )}
+                </div>
               )}
               <IoIosArrowDown
                 className={`ml-2 transition-transform ${
@@ -169,11 +179,19 @@ const Navbar = () => {
                   to={`/profile/${userInfo.id}`}
                   className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
                 >
-                  <img
-                    src={userInfo.profile_image}
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full"
-                  />
+                  {userInfo.profile_image ? (
+                    <img
+                      src={userInfo.profile_image}
+                      alt="Profile"
+                      className="w-8 h-8  rounded-full cursor-pointer"
+                    />
+                  ) : (
+                    <MdPerson
+                      className={`w-8 h-8 rounded-full bg-white cursor-pointer ${
+                        theme === "light" ? "text-zinc-900" : "text-white"
+                      }`}
+                    />
+                  )}
                   <span className="text-white">Profile</span>
                 </Link>
               ) : null}

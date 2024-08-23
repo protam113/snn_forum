@@ -1,11 +1,8 @@
 import React from "react";
-import useCategories from "../../../../../hooks/useCategories";
 import useUserBanner from "../../../../../hooks/useUserbanner";
 
 export default function BannerChart() {
-  const { userBanner } = useUserBanner(); // Get all banners
-
-  // Calculate the total number of categories
+  const { userBanner } = useUserBanner();
   const totalCategories = userBanner.length;
 
   return (
