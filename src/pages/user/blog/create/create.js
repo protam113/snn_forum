@@ -111,7 +111,7 @@ const Create = () => {
 
         {/* User Profile Section */}
         <div className="relative flex items-center mt-16">
-          {userInfo.profile_image ? (
+          {userInfo?.profile_image ? (
             <img
               src={userInfo.profile_image}
               alt="avatar"
@@ -270,47 +270,43 @@ const Create = () => {
                       ? "bg-zinc-700 text-white border-zinc-600"
                       : "bg-white text-black border-zinc-800"
                   }`}
+                  required
                 />
               </div>
-
-              {/* Content Editor */}
               <div className="mb-4">
                 <label
                   className={`block mb-2 ${
                     theme === "dark" ? "text-white" : "text-black"
                   }`}
+                  htmlFor="description"
                 >
-                  Nội Dung:
+                  Mô Tả:
                 </label>
-                <div
-                  className={`border rounded-md overflow-hidden ${
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows="4"
+                  placeholder="Description*"
+                  className={`w-full p-2 border rounded-md resize-none ${
                     theme === "dark"
-                      ? "bg-zinc-700 border-zinc-600"
-                      : "bg-white border-zinc-800"
+                      ? "bg-zinc-700 text-white border-zinc-600"
+                      : "bg-white text-black border-zinc-800"
                   }`}
-                >
-                  <ReactQuill
-                    value={description}
-                    onChange={(e) => setDescription(e)}
-                    className={`h-40 ${
-                      theme === "dark" ? "text-white" : "text-black"
-                    }`}
-                  />
-                </div>
+                  required
+                />
               </div>
-
-              {/* Submit Button */}
-              <div className="text-right">
+              <div className="text-center">
                 <button
                   type="submit"
-                  disabled={submitting}
-                  className={`w-full py-2 px-4 rounded-md ${
-                    theme === "dark"
-                      ? "bg-blue-500 hover:bg-blue-600 text-white"
-                      : "bg-blue-700 hover:bg-blue-800 text-white"
+                  className={`mt-4 px-6 py-2 font-semibold text-lg rounded-md ${
+                    submitting
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 text-white"
                   }`}
+                  disabled={submitting}
                 >
-                  {submitting ? "Đang Gửi..." : "Đăng"}
+                  {submitting ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </form>
