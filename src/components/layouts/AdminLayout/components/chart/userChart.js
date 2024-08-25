@@ -18,7 +18,7 @@ export default function UserChart() {
   useEffect(() => {
     if (!loading && !error && staticalUser) {
       // Data for chart
-      const labels = ["Admin Count", "Manager Count", "No Group Count"];
+      const labels = ["Admin", "Manager", "User"];
 
       const data = [
         staticalUser.admin_count,

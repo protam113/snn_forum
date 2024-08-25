@@ -9,22 +9,40 @@ const useBlog = (blogId) => {
   const [likedBlogs, setLikedBlogs] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [comments, setComments] = useState([]); // Bình luận cha
-  const [commentChild, setCommentChild] = useState([]); // Bình luận con
+  const [comments, setComments] = useState([]);
+  const [commentChild, setCommentChild] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [likeList, setLikeList] = useState([]);
   const [likeListVisible, setLikeListVisible] = useState(false);
-  const [message, setMessage] = useState("");
   const fileInputRef = useRef(null);
   const { getToken } = useAuth();
 
   // Fetch all blogs
   const fetchBlogs = useCallback(async () => {
+    setLoading(true);
     const token = await getToken();
+    const cacheKey = token ? "blogs_with_token" : "blogs_without_token";
+    const cacheTimeKey = `${cacheKey}_time`;
+    const cachedData = localStorage.getItem(cacheKey);
+    const cachedTime = localStorage.getItem(cacheTimeKey);
+
+    const now = new Date().getTime();
+    const cacheDuration = 60 * 1000;
+
+    if (
+      cachedData &&
+      cachedTime &&
+      now - parseInt(cachedTime) < cacheDuration
+    ) {
+      const parsedData = JSON.parse(cachedData);
+      setBlogs(parsedData.blogs);
+      setLikedBlogs(parsedData.likedBlogs || {});
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await authApi(token ? token : undefined).get(
-        endpoints.Blog
-      );
+      const response = await authApi(token).get(endpoints.Blog);
       const results = response.data.results;
 
       if (!Array.isArray(results)) {
@@ -36,16 +54,28 @@ const useBlog = (blogId) => {
       );
       setBlogs(sortedBlogs);
 
-      if (token) {
-        setLikedBlogs(
-          sortedBlogs.reduce((acc, blog) => {
+      const likedBlogs = token
+        ? sortedBlogs.reduce((acc, blog) => {
             acc[blog.id] = blog.liked || false;
             return acc;
           }, {})
-        );
-      }
+        : {};
+
+      setLikedBlogs(likedBlogs);
+
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({
+          blogs: sortedBlogs,
+          likedBlogs: likedBlogs,
+        })
+      );
+      localStorage.setItem(cacheTimeKey, now.toString());
     } catch (error) {
-      console.error("Error fetching blogs", error);
+      console.error(
+        "Error fetching blogs:",
+        error.response?.data || error.message
+      );
       setError("Error fetching blogs");
     } finally {
       setLoading(false);
@@ -375,7 +405,6 @@ const useBlog = (blogId) => {
   };
 
   return {
-    message,
     blogs,
     blog,
     likedBlogs,

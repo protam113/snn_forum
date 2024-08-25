@@ -1,21 +1,33 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import useAuth from "./useAuth";
 import { authApi, endpoints } from "../api/api";
 
-const useUserInfo = () => {
+const useUserInfo = (personId = null) => {
   const [userInfo, setUserInfo] = useState(null);
   const [userRoles, setUserRoles] = useState([]);
   const [userBlogs, setUserBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [personalBlogs, setPersonalBlogs] = useState([]);
   const [userApplyList, setUserApplyList] = useState([]);
+  const [personalInfo, setPersonalInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const { getToken } = useAuth();
 
-  // Fetch user info and blogs
-  const fetchUserInfo = useCallback(async () => {
-    const token = await getToken();
+  const userInfoFetchedRef = useRef(false);
+  const personalInfoFetchedRef = useRef(false);
+  const userApplyListFetchedRef = useRef(false);
 
+  useEffect(() => {
+    userInfoFetchedRef.current = false;
+    personalInfoFetchedRef.current = false;
+    userApplyListFetchedRef.current = false;
+  }, [personId]);
+
+  const fetchUserInfo = useCallback(async () => {
+    if (userInfoFetchedRef.current) return;
+
+    const token = await getToken();
     if (!token) {
       setUserInfo(null);
       setUserRoles([]);
@@ -25,60 +37,113 @@ const useUserInfo = () => {
     }
 
     try {
-      // Fetch user info
       const response = await authApi(token).get(endpoints.currentUser);
       const userData = response.data;
       setUserInfo(userData);
 
-      // Extract roles from the groups array
       const roles = userData.groups.map((group) => group.name);
       setUserRoles(roles);
 
-      const userId = userData.id;
-      const userBlogsUrl = endpoints.currentUserBlog.replace(":id", userId);
+      // Fetch bài viết của người dùng hiện tại
+      const userBlogsUrl = endpoints.currentUserBlog.replace(
+        ":id",
+        userData.id
+      );
       const blogsResponse = await authApi(token).get(userBlogsUrl);
       setUserBlogs(blogsResponse.data);
+
+      userInfoFetchedRef.current = true;
     } catch (err) {
       console.error(
         "Error fetching user info:",
         err.response?.data || err.message
       );
+      setError(err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
   }, [getToken]);
 
-  // Fetch user apply list
+  const fetchPersonalInfo = useCallback(async () => {
+    if (personalInfoFetchedRef.current || !personId) return;
+
+    setLoading(true);
+    const token = await getToken();
+    if (!token) return;
+
+    try {
+      const userInfoUrl = endpoints.UserInfo.replace(":id", personId);
+      const response = await authApi(token).get(userInfoUrl);
+      setPersonalInfo(response.data);
+      personalInfoFetchedRef.current = true;
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [personId, getToken]);
+
+  const fetchUserBlog = useCallback(async () => {
+    setLoading(true);
+    const token = await getToken();
+    if (!token) return;
+
+    try {
+      const url = endpoints.currentUserBlog.replace(":id", personId);
+
+      const response = await authApi(token).get(url);
+      const sortedBlogs = response.data.results.sort(
+        (a, b) => new Date(b.created_date) - new Date(a.created_date)
+      );
+      setPersonalBlogs(sortedBlogs);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [personId, getToken]);
+
   const fetchUserApplyList = useCallback(async () => {
+    if (userApplyListFetchedRef.current) return;
+
     const token = await getToken();
     if (!token) return;
 
     try {
       const response = await authApi(token).get(endpoints.UserApplyList);
       setUserApplyList(response.data.results);
+      userApplyListFetchedRef.current = true;
     } catch (err) {
-      console.error(
-        "Error fetching user apply list:",
-        err.response?.data || err.message
-      );
-      setError(err.response?.data || err.message);
+      handleError(err);
     }
   }, [getToken]);
 
-  // Fetch user info and apply list on mount
-  useEffect(() => {
-    fetchUserInfo();
-    fetchUserApplyList();
-  }, [fetchUserInfo, fetchUserApplyList]);
+  const handleError = (err) => {
+    console.error("Error:", err.response?.data || err.message);
+    setError(err.response?.data || err.message);
+  };
 
-  // Memoize user roles to avoid unnecessary re-computations
+  useEffect(() => {
+    if (personId) {
+      fetchPersonalInfo();
+      fetchUserBlog();
+    } else {
+      fetchUserInfo();
+      fetchUserApplyList();
+    }
+  }, [
+    fetchPersonalInfo,
+    fetchUserInfo,
+    fetchUserBlog,
+    fetchUserApplyList,
+    personId,
+  ]);
+
   const memoizedUserRoles = useMemo(() => userRoles, [userRoles]);
 
-  // Update user info
   const updateUserInfo = useCallback(
     async (updatedInfo) => {
       const token = await getToken();
-
       if (!token) return;
 
       try {
@@ -91,23 +156,16 @@ const useUserInfo = () => {
         );
         setUserInfo(response.data);
       } catch (err) {
-        console.error(
-          "Error updating user info:",
-          err.response?.data || err.message
-        );
+        handleError(err);
       }
     },
     [getToken]
   );
 
-  // Change password
   const changePassword = useCallback(
     async (data) => {
       const token = await getToken();
-
-      if (!token) {
-        return { success: false, error: "No token available" };
-      }
+      if (!token) return { success: false, error: "No token available" };
 
       try {
         await authApi(token).patch(endpoints.ChangePassword, data, {
@@ -115,10 +173,7 @@ const useUserInfo = () => {
         });
         return { success: true };
       } catch (err) {
-        console.error(
-          "Error changing password:",
-          err.response?.data || err.message
-        );
+        handleError(err);
         return {
           success: false,
           error: err.response?.data || "Failed to change password",
@@ -128,7 +183,6 @@ const useUserInfo = () => {
     [getToken]
   );
 
-  // Reset password
   const resetPassword = useCallback(async (email, newPassword, code) => {
     try {
       const response = await authApi().post(
@@ -141,10 +195,7 @@ const useUserInfo = () => {
       );
       return { success: true, data: response.data };
     } catch (err) {
-      console.error(
-        "Error resetting password:",
-        err.response?.data || err.message
-      );
+      handleError(err);
       return {
         success: false,
         error: err.response?.data || "Failed to reset password",
@@ -152,7 +203,6 @@ const useUserInfo = () => {
     }
   }, []);
 
-  // Request verification code
   const requestVerificationCode = useCallback(async (email) => {
     try {
       await authApi().post(process.env.REACT_APP_Request_Code_ENDPOINT, {
@@ -160,10 +210,7 @@ const useUserInfo = () => {
       });
       return { success: true };
     } catch (err) {
-      console.error(
-        "Error requesting verification code:",
-        err.response?.data || err.message
-      );
+      handleError(err);
       return {
         success: false,
         error: err.response?.data || "Failed to send verification code",
@@ -173,9 +220,11 @@ const useUserInfo = () => {
 
   return {
     userInfo,
-    userRoles: memoizedUserRoles, // Use memoized user roles
+    personalBlogs,
+    userRoles: memoizedUserRoles,
     userApplyList,
     userBlogs,
+    personalInfo,
     loading,
     error,
     updateUserInfo,

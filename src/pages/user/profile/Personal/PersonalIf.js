@@ -4,16 +4,12 @@ import Block from "../../../../components/design/Block";
 import Loading from "../../../error/load";
 import { useTheme } from "../../../../context/themeContext";
 import { useParams } from "react-router-dom";
-import usePersonalInfo from "../../../../hooks/usePersonalInfo";
+import useUserInfo from "../../../../hooks/useUserInfo";
 
 const PersonalIf = () => {
+  const { id: personId } = useParams();
   const { theme } = useTheme();
-  const { personalInfo, loading, error, setUserId } = usePersonalInfo();
-  const { id: userId } = useParams();
-
-  useEffect(() => {
-    setUserId(userId);
-  }, [userId, setUserId]);
+  const { personalInfo, loading, error } = useUserInfo(personId);
 
   if (loading) {
     return (

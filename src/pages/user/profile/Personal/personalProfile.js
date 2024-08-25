@@ -1,19 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import Block from "../../../../components/design/Block";
 import Loading from "../../../error/load";
-import usePersonalInfo from "../../../../hooks/usePersonalInfo";
 import { useTheme } from "../../../../context/themeContext";
-import { MdPerson } from "react-icons/md"; // Import MdPerson
+import { MdPerson } from "react-icons/md";
+import useUserInfo from "../../../../hooks/useUserInfo";
 
 const PersonalProfile = () => {
+  const { id: personId } = useParams();
   const { theme } = useTheme();
-  const { personalInfo, loading, error, setUserId } = usePersonalInfo();
-  const { id: userId } = useParams();
-
-  useEffect(() => {
-    setUserId(userId);
-  }, [userId, setUserId]);
+  const { personalInfo, loading, error } = useUserInfo(personId);
 
   if (loading) {
     return (
@@ -26,6 +22,8 @@ const PersonalProfile = () => {
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
+
+  // Check if the current user is the same as the personalInfo user
 
   return (
     <>

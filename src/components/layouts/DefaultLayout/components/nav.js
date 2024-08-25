@@ -7,7 +7,6 @@ import { useTheme } from "../../../../context/themeContext";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import LogoutButton from "../../../../pages/auth/logout";
 import useUserInfo from "../../../../hooks/useUserInfo";
-import ThemeToggle from "../../../theme/ThemeToggle ";
 import { BiMenuAltRight } from "react-icons/bi";
 import { MdSupportAgent } from "react-icons/md";
 import { MdPerson } from "react-icons/md";

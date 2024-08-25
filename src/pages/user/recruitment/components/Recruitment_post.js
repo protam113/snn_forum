@@ -24,14 +24,13 @@ const RecruitmentPost = () => {
     navigate(`/tuyen_dung/${postId}`);
   };
 
-  const handleProfileClick = (userId) => {
-    if (userInfo && userInfo.id === userId) {
-      navigate(`/profile/${userInfo.username}`);
+  const handleProfileClick = (personId) => {
+    if (userInfo && userInfo.id.toString() === personId) {
+      navigate(`/profile/${userInfo.id}`);
     } else {
-      navigate(`/profile_user/${userId}`);
+      navigate(`/profile/${personId}`);
     }
   };
-
   const handleEditClick = (postId) => {
     navigate(`/tuyen_dung/chinh_sua/${postId}/`);
   };

@@ -30,6 +30,7 @@ import Product from "../pages/user/product/product_feed";
 import Profile from "../pages/user/profile";
 import EditProfile from "../pages/user/profile/edtProfile";
 import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
+import ProfileMain from "../pages/user/ProfileMain";
 import ApplicationsList from "../pages/user/recruitment/applicationsList";
 import ApplyRecruitment from "../pages/user/recruitment/applyRecruitment";
 import CreateRecruitment from "../pages/user/recruitment/createRecruitment";
@@ -70,12 +71,7 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   { path: "/blog/edit/:blogId", component: EdtBlog, layout: DefaultLayout },
-  { path: "/profile/:id", component: Profile, layout: DefaultLayout },
-  {
-    path: "/profile_user/:id",
-    component: ProfileIf,
-    layout: DefaultLayout,
-  },
+  { path: "/profile/:id", component: ProfileMain, layout: DefaultLayout },
   {
     path: "/profile/:username/edit",
     component: EditProfile,

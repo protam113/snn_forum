@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import CreateBlog from "./blog/createBlog";
 import About from "./profile/MyProfile/about";
 import { useTheme } from "../../context/themeContext";
@@ -7,7 +7,6 @@ import Userblogs from "./profile/MyProfile/UserPosts";
 
 const Profile = () => {
   const { theme } = useTheme();
-  const [activeTab, setActiveTab] = useState("userblogs");
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -16,7 +16,7 @@ import { MdPerson } from "react-icons/md";
 
 const Userblogs = () => {
   const { userBlogs, loading, error } = useUserInfo();
-  const { likedBlogs, setLikedPosts, handleDeleteBlog, handleLike } = useBlog();
+  const { likedBlogs, handleDeleteBlog, handleLike } = useBlog();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = React.useState(null);

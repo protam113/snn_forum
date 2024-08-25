@@ -147,7 +147,7 @@ export default function StaticalBlogGeneral() {
   }, [chartData, totalBlogs]);
 
   return (
-    <div className="flex flex-col items-center p-4">
+    <div>
       <select
         onChange={handleMonthChange}
         value={selectedMonth}

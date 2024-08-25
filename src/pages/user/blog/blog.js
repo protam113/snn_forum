@@ -31,14 +31,16 @@ const Blog = () => {
     getBlogLikes,
   } = useBlog();
   const { userInfo } = useUserInfo();
-  const handleProfileClick = (userId) => {
-    if (userInfo && userInfo.id === userId) {
-      navigate(`/profile/${userInfo.username}`);
+
+  // console.log(`API called: `);
+
+  const handleProfileClick = (personId) => {
+    if (userInfo && userInfo.id.toString() === personId) {
+      navigate(`/profile/${userInfo.id}`);
     } else {
-      navigate(`/profile_user/${userId}`);
+      navigate(`/profile/${personId}`);
     }
   };
-
   const handleBlogClick = (blogId) => {
     navigate(`/blog/${blogId}`);
   };

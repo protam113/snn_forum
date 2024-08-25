@@ -15,6 +15,8 @@ export const AuthProvider = ({ children }) => {
 
   const refreshAccessToken = async () => {
     const refresh_token = Cookies.get("refresh_token");
+    console.log("Attempting to refresh token with:", refresh_token);
+
     if (refresh_token) {
       try {
         const api = authApi();
@@ -24,11 +26,13 @@ export const AuthProvider = ({ children }) => {
         const { access_token } = response.data;
         localStorage.setItem("access_token", access_token);
         setAuth((prevAuth) => ({ ...prevAuth, access_token }));
+        console.log("Token refreshed successfully");
       } catch (err) {
         console.error("Error refreshing access token", err);
         logout();
       }
     } else {
+      console.log("No refresh token found");
       logout();
     }
   };

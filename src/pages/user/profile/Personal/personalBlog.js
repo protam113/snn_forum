@@ -9,24 +9,19 @@ import formatDate from "../../../../utils/formatDate";
 import Loading from "../../../error/load";
 import LikePost from "../../../../components/buttons/likeBlog";
 import useBlog from "../../../../hooks/useBlog";
-import usePersonalInfo from "../../../../hooks/usePersonalInfo";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
+import useAuth from "../../../../hooks/useAuth";
 
 const PersonalBlog = () => {
-  const { userInfo } = useUserInfo();
-  const { personalBlogs, loading, error, setUserId } = usePersonalInfo();
+  const { id: personId } = useParams();
+  const { personalBlogs, loading, error } = useUserInfo(personId);
+  const { currentInfo } = useAuth();
+
   const { likedBlogs, handleLike } = useBlog();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [expandedBlogs, setExpandedBlogs] = React.useState({});
-  const { id: userId } = useParams();
-
-  useEffect(() => {
-    if (userId) {
-      setUserId(userId);
-    }
-  }, [userId, setUserId]);
 
   const handleBlogClick = (blogId) => {
     navigate(`/blog/${blogId}`);
@@ -100,9 +95,10 @@ const PersonalBlog = () => {
         <p>Không có bài viết nào để hiển thị.</p>
       ) : (
         posts
-          .filter((blog) => blog.user && blog.user.id !== userInfo?.id) // Ensure blog.user is not null
+          .filter((blog) => blog.user && blog.user.id !== currentInfo?.id)
           .map((blog) => (
             <Block
+              key={blog.id} // Add key for list items
               className={`p-4 rounded-lg border mt-4 ${
                 theme === "dark"
                   ? "border-custom-zinc bg-gray-800"
