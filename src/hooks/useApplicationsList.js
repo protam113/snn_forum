@@ -32,14 +32,11 @@ const useApplicationsList = (postId) => {
     }
   }, [postId, getToken]);
 
-  useEffect(() => {
-    fetchApplicationList();
-  }, [fetchApplicationList]);
-
   return {
     applications,
     loading,
     error,
+    fetchApplicationList,
   };
 };
 

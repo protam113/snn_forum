@@ -27,7 +27,7 @@ const useBlog = (blogId) => {
     const cachedTime = localStorage.getItem(cacheTimeKey);
 
     const now = new Date().getTime();
-    const cacheDuration = 60 * 1000;
+    const cacheDuration = 60 * 1000; // 1 minute
 
     if (
       cachedData &&
@@ -176,12 +176,6 @@ const useBlog = (blogId) => {
       setError("Error fetching child comments");
     }
   }, []);
-
-  // Fetch blog details
-  useEffect(() => {
-    fetchBlogs();
-    fetchBlog();
-  }, [fetchBlogs, fetchBlog]);
 
   useEffect(() => {
     if (blogId) {
@@ -426,6 +420,8 @@ const useBlog = (blogId) => {
     getBlogLikes,
     setSubmitting,
     handleEditComment,
+    fetchBlogs,
+    fetchBlog,
   };
 };
 

@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAdmin from "../../../hooks/useAdmin";
-import { FaUsers, FaSearch, FaTrash } from "react-icons/fa";
+import { FaUsers, FaSearch, FaTrash, FaFileExcel } from "react-icons/fa";
 import { MdGroup, MdAdd, MdPerson } from "react-icons/md";
 import { toast } from "react-toastify";
-
-const groupColorMap = {
-  admin: "bg-blue-500 text-white",
-  manager: "bg-yellow-500 text-white",
-};
+import useUserSearch from "../../../hooks/useUserSearch";
+import * as XLSX from "xlsx";
+import { useTheme } from "../../../context/themeContext";
+import useUserInfo from "../../../hooks/useUserInfo";
 
 const AdUser = () => {
+  const { theme } = useTheme();
+  const { results: featuredUsers, fetchUsers } = useUserSearch();
   const navigate = useNavigate();
   const {
     groups,
@@ -21,10 +22,19 @@ const AdUser = () => {
     selectedGroup,
     setSelectedGroup,
     removeUserFromGroup,
+    fetchGroups,
   } = useAdmin();
+  const { userRoles } = useUserInfo();
   const [viewMode, setViewMode] = useState("all");
   const [userToRemove, setUserToRemove] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    fetchUsers();
+    fetchGroups();
+  }, [fetchUsers, fetchGroups]);
+
+  const isAdmin = userRoles.includes("admin");
 
   const handleGroupChange = (event) => {
     const groupId = parseInt(event.target.value, 10);
@@ -65,26 +75,65 @@ const AdUser = () => {
     setUserToRemove(null);
   };
 
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(featuredUsers);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Users");
+
+    // Tạo file Excel và tải xuống
+    XLSX.writeFile(wb, "users_data.xlsx");
+  };
+
   return (
-    <div className="p-6 min-h-screen">
+    <div
+      className={`p-6 min-h-screen ${
+        theme === "dark" ? " text-gray-300" : " text-gray-900"
+      }`}
+    >
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
+        <h1 className="text-20 font-bold flex items-center gap-2">
           <FaUsers className="text-blue-500" /> Quản lý người dùng
         </h1>
-        <button
-          onClick={() => navigate("/admin/quan_ly_nguoi_dung/them_nguoi_dung")}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center gap-2"
-        >
-          <MdAdd />
-          Thêm người dùng
-        </button>
+        <div className="flex gap-4">
+          {isAdmin && ( // Chỉ hiển thị nút nếu người dùng là admin
+            <button
+              onClick={exportToExcel}
+              disabled={loadingUsers || featuredUsers.length === 0}
+              className={`px-4 text-16 py-2 rounded-lg flex items-center gap-2 ${
+                theme === "dark"
+                  ? "bg-green-600 text-gray-900"
+                  : "bg-green-500 text-white"
+              }`}
+            >
+              <FaFileExcel className="text-xl" /> {/* Thêm biểu tượng */}
+              Xuất Excel
+            </button>
+          )}
+          <button
+            onClick={() =>
+              navigate("/admin/quan_ly_nguoi_dung/them_nguoi_dung")
+            }
+            className={`px-4 text-16 py-2 rounded-lg flex items-center gap-2 ${
+              theme === "dark"
+                ? "bg-blue-600 text-gray-900"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            <MdAdd />
+            Thêm người dùng
+          </button>
+        </div>
       </div>
 
       <div className="mb-4 flex gap-4">
         <button
           onClick={() => handleViewModeChange("all")}
-          className={`px-4 py-2 rounded-lg text-white font-semibold flex items-center gap-2 ${
-            viewMode === "all" ? "bg-blue-500" : "bg-gray-500 hover:bg-gray-600"
+          className={`px-4 py-2 text-16 rounded-lg font-semibold flex items-center gap-2 ${
+            viewMode === "all"
+              ? "bg-blue-500 text-white"
+              : theme === "dark"
+              ? "bg-gray-600 text-gray-300 hover:bg-gray-500"
+              : "bg-gray-500 text-white hover:bg-gray-600"
           }`}
         >
           <FaSearch />
@@ -92,10 +141,12 @@ const AdUser = () => {
         </button>
         <button
           onClick={() => handleViewModeChange("group")}
-          className={`px-4 py-2 rounded-lg text-white font-semibold flex items-center gap-2 ${
+          className={`px-4 py-2 text-16 rounded-lg font-semibold flex items-center gap-2 ${
             viewMode === "group"
-              ? "bg-blue-500"
-              : "bg-gray-500 hover:bg-gray-600"
+              ? "bg-blue-500 text-white"
+              : theme === "dark"
+              ? "bg-gray-600 text-gray-300 hover:bg-gray-500"
+              : "bg-gray-500 text-white hover:bg-gray-600"
           }`}
         >
           <MdGroup />
@@ -105,11 +156,15 @@ const AdUser = () => {
 
       {viewMode === "group" && (
         <div className="mb-6">
-          <label className="block text-lg font-medium mb-2">Chọn nhóm:</label>
+          <label className="block text-14 font-medium mb-2">Chọn nhóm:</label>
           <select
             onChange={handleGroupChange}
             defaultValue=""
-            className="border border-gray-300 rounded-lg p-2 w-full bg-white"
+            className={`border border-gray-300 rounded-lg p-2 w-full ${
+              theme === "dark"
+                ? "bg-gray-800 text-gray-300"
+                : "bg-white text-gray-900"
+            }`}
           >
             <option value="">Chọn nhóm</option>
             {groups.map((group) => (
@@ -126,11 +181,13 @@ const AdUser = () => {
         {loadingUsers && <p className="text-blue-500">Loading users...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 text-14">
           {users.map((user) => (
             <li
               key={user.id}
-              className="bg-white border border-gray-300 rounded-lg shadow-lg p-4 flex flex-col items-center text-center"
+              className={`bg-white border border-gray-300 rounded-lg shadow-lg p-4 flex flex-col items-center text-center ${
+                theme === "dark" ? " border-gray-700" : ""
+              }`}
             >
               {user.profile_image ? (
                 <img
@@ -144,13 +201,17 @@ const AdUser = () => {
                   aria-label="Default user icon"
                 />
               )}
-              <p className="text-lg font-semibold">{user.username}</p>
+              <p className="text-16 font-semibold">{user.username}</p>
               <p className="text-gray-600">
                 {user.first_name} {user.last_name}
               </p>
               <button
                 onClick={() => handleRemoveUser(user)}
-                className="mt-4 text-red-500 hover:text-red-700"
+                className={`mt-4 ${
+                  theme === "dark"
+                    ? "text-red-400 hover:text-red-300"
+                    : "text-red-500 hover:text-red-700"
+                }`}
               >
                 <FaTrash />
               </button>
@@ -161,20 +222,32 @@ const AdUser = () => {
 
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div
+            className={`bg-white p-6 rounded-lg shadow-lg ${
+              theme === "dark" ? "bg-gray-700" : ""
+            }`}
+          >
             <p className="text-lg font-semibold mb-4">
               Bạn có chắc chắn muốn xóa người dùng này?
             </p>
             <div className="flex gap-4">
               <button
                 onClick={confirmRemoveUser}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                className={`px-4 py-2 rounded-lg ${
+                  theme === "dark"
+                    ? "bg-red-600 text-gray-900"
+                    : "bg-red-500 text-white"
+                }`}
               >
                 Xóa
               </button>
               <button
                 onClick={cancelRemoveUser}
-                className="px-4 py-2 bg-gray-300 rounded-lg"
+                className={`px-4 py-2 rounded-lg ${
+                  theme === "dark"
+                    ? "bg-gray-600 text-gray-300"
+                    : "bg-gray-300 text-gray-900"
+                }`}
               >
                 Hủy
               </button>

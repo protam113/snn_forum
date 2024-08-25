@@ -115,9 +115,6 @@ const useAdmin = () => {
   );
 
   // Fetch groups and users based on selected group
-  useEffect(() => {
-    fetchGroups();
-  }, [fetchGroups]);
 
   useEffect(() => {
     if (selectedGroup) {
@@ -138,6 +135,7 @@ const useAdmin = () => {
     setSelectedGroup,
     addUserToGroup,
     removeUserFromGroup,
+    fetchGroups,
   };
 };
 

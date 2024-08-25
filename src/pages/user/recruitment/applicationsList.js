@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useUserInfo from "../../../hooks/useUserInfo";
 import useEditApplyJob from "../../../hooks/useEditApplyJob";
@@ -11,6 +11,7 @@ const ApplicationsList = () => {
     applications,
     loading: loadingApplications,
     error: errorApplications,
+    fetchApplicationList,
   } = useApplicationsList(postId);
   const {
     loading: loadingEdit,
@@ -19,6 +20,10 @@ const ApplicationsList = () => {
   } = useEditApplyJob(postId);
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
+
+  useEffect(() => {
+    fetchApplicationList();
+  }, [fetchApplicationList]);
 
   const handleProfileClick = (userId, username) => {
     if (userInfo && userInfo.id === userId) {

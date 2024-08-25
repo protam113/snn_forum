@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../components/design/Block";
 import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
@@ -29,8 +29,14 @@ const Blog = () => {
     handleLike,
     handleDeleteBlog,
     getBlogLikes,
+    fetchBlogs,
   } = useBlog();
   const { userInfo } = useUserInfo();
+
+  // Fetch blog details
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
 
   // console.log(`API called: `);
 
@@ -97,7 +103,7 @@ const Blog = () => {
           key={media.file}
           src={media.file}
           alt="blog-media"
-          className={`object-cover w-100% h-full cursor-pointer ${
+          className={`object-cover w-full sm:h-64 md:h-80 lg:h-96 xl:h-auto cursor-pointer ${
             theme === "dark" ? "border-gray-800" : "border-white"
           }`}
         />
@@ -256,21 +262,24 @@ const Blog = () => {
                   Ẩn Bớt
                 </p>
               )}
-              {blog.media.length > 0 && (
-                <div
-                  className={`grid gap-4 ${
-                    blog.media.length === 1
-                      ? "grid-cols-1"
-                      : blog.media.length === 2
-                      ? "grid-cols-2"
-                      : blog.media.length === 3
-                      ? "grid-cols-3"
-                      : "grid-cols-2"
-                  }`}
-                >
-                  {blog.media.map((media) => renderMedia(media))}
-                </div>
-              )}
+              <div className="flex flex-col items-center p-4">
+                {/* Kiểm tra và hiển thị các phương tiện truyền thông nếu có */}
+                {blog.media.length > 0 && (
+                  <div
+                    className={`grid gap-4 ${
+                      blog.media.length === 1
+                        ? "grid-cols-1"
+                        : blog.media.length === 2
+                        ? "grid-cols-2"
+                        : blog.media.length === 3
+                        ? "grid-cols-3"
+                        : "grid-cols-2"
+                    }`}
+                  >
+                    {blog.media.map((media) => renderMedia(media, theme))}
+                  </div>
+                )}
+              </div>
               <hr
                 className={`my-4 ${
                   theme === "dark" ? "border-gray-600" : "border-gray-300"
