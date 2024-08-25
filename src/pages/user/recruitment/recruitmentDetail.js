@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   FaEnvelope,
@@ -19,9 +19,14 @@ import { MdOutlineWork } from "react-icons/md";
 const RecruitmentDetail = () => {
   const { theme } = useTheme();
   const { id: postId } = useParams();
-  const { recruitment, loading, error } = useRecruitment(postId);
+  const { recruitment, loading, error, fetchRecruitment } =
+    useRecruitment(postId);
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchRecruitment();
+  }, [fetchRecruitment]);
 
   if (loading) {
     return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaHotjar } from "react-icons/fa";
 import { useTheme } from "../../../../context/themeContext";
 import useRecruitment from "../../../../hooks/useRecruitment";
@@ -11,7 +11,11 @@ const RecruitmentSidebar = () => {
 
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { recruitments, loading, error } = useRecruitment();
+  const { recruitments, loading, error, fetchRecruitments } = useRecruitment();
+
+  useEffect(() => {
+    fetchRecruitments();
+  }, [fetchRecruitments]);
 
   const handlePostClick = (postId) => {
     navigate(`/recruitment/${postId}`);

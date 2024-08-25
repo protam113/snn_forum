@@ -38,7 +38,7 @@ const Recruitment = () => {
           <hr
             className={`my-4 border-${theme === "dark" ? "gray-700" : "white"}`}
           />
-          <JobSearchForm />
+          {/* <JobSearchForm /> */}
           <h1
             className={`text-20 font-bold ${
               theme === "dark" ? "text-white" : "text-black"

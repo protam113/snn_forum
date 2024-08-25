@@ -189,6 +189,8 @@ const useRecruitment = (postId) => {
     addRecruitment,
     editRecruitment,
     addApplyJob,
+    fetchRecruitments,
+    fetchRecruitment,
   };
 };
 

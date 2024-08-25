@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../../components/design/Block";
 import { FaEdit, FaTrashAlt, FaFlag, FaLink } from "react-icons/fa";
@@ -13,8 +13,17 @@ const RecruitmentPost = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { userInfo } = useUserInfo();
-  const { recruitments, loading, error, handleDeleteRecruitment } =
-    useRecruitment();
+  const {
+    recruitments,
+    loading,
+    error,
+    handleDeleteRecruitment,
+    fetchRecruitments,
+  } = useRecruitment();
+
+  useEffect(() => {
+    fetchRecruitments();
+  }, [fetchRecruitments]);
 
   const sortedRecruitments = recruitments
     .slice()
