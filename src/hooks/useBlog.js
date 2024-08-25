@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "react-toastify";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
+import { encryptData, decryptData } from "../utils/cryptoUtils";
 
 const useBlog = (blogId) => {
   const [blogs, setBlogs] = useState([]);
@@ -34,7 +35,7 @@ const useBlog = (blogId) => {
       cachedTime &&
       now - parseInt(cachedTime) < cacheDuration
     ) {
-      const parsedData = JSON.parse(cachedData);
+      const parsedData = decryptData(cachedData);
       setBlogs(parsedData.blogs);
       setLikedBlogs(parsedData.likedBlogs || {});
       setLoading(false);
@@ -63,13 +64,11 @@ const useBlog = (blogId) => {
 
       setLikedBlogs(likedBlogs);
 
-      localStorage.setItem(
-        cacheKey,
-        JSON.stringify({
-          blogs: sortedBlogs,
-          likedBlogs: likedBlogs,
-        })
-      );
+      const encryptedData = encryptData({
+        blogs: sortedBlogs,
+        likedBlogs: likedBlogs,
+      });
+      localStorage.setItem(cacheKey, encryptedData);
       localStorage.setItem(cacheTimeKey, now.toString());
     } catch (error) {
       console.error(

@@ -8,7 +8,7 @@ if (!secretKey) {
 
 export const encryptData = (data) => {
   if (typeof data !== "string") {
-    throw new Error("Data must be a string");
+    data = JSON.stringify(data); // Chuyển đổi thành chuỗi JSON nếu không phải là chuỗi
   }
 
   try {
@@ -31,7 +31,7 @@ export const decryptData = (ciphertext) => {
       throw new Error("Failed to decrypt data. Possible incorrect secret key.");
     }
 
-    return decryptedData;
+    return JSON.parse(decryptedData); // Chuyển đổi lại thành đối tượng nếu cần
   } catch (error) {
     throw new Error("Error during decryption: " + error.message);
   }

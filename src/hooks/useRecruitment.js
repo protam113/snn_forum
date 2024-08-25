@@ -1,18 +1,44 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
 import { toast } from "react-toastify";
+import { encryptData, decryptData } from "../utils/cryptoUtils";
 
 const useRecruitment = (postId) => {
   const [recruitments, setRecruitments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recruitment, setRecruitment] = useState(null);
-  const [applications, setApplications] = useState([]);
   const { getToken } = useAuth();
 
   const fetchRecruitments = useCallback(async () => {
     setLoading(true);
+
+    const cacheKey = "recruitments_data";
+    const cacheTimeKey = `${cacheKey}_time`;
+    const cachedData = localStorage.getItem(cacheKey);
+    const cachedTime = localStorage.getItem(cacheTimeKey);
+
+    const now = new Date().getTime();
+    const cacheDuration = 60 * 1000; // 1 minute
+
+    if (
+      cachedData &&
+      cachedTime &&
+      now - parseInt(cachedTime) < cacheDuration
+    ) {
+      try {
+        // Giải mã và sau đó parse JSON
+        const decryptedData = decryptData(cachedData);
+        const parsedData = JSON.parse(decryptedData);
+        setRecruitments(parsedData);
+      } catch (error) {
+        console.error("Error parsing cached data:", error.message);
+      }
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await authApi().get(endpoints.Recruitment);
       const results = response.data.results;
@@ -28,8 +54,17 @@ const useRecruitment = (postId) => {
         (a, b) => new Date(b.created_date) - new Date(a.created_date)
       );
       setRecruitments(sortedRecruitments);
+
+      // Chuyển đổi sang JSON trước khi mã hóa
+      const jsonData = JSON.stringify(sortedRecruitments);
+      const encryptedData = encryptData(jsonData);
+      localStorage.setItem(cacheKey, encryptedData);
+      localStorage.setItem(cacheTimeKey, now.toString());
     } catch (error) {
-      console.error("Error fetching recruitments:", error);
+      console.error(
+        "Error fetching recruitments:",
+        error.response?.data || error.message
+      );
       setError("Error fetching recruitments");
     } finally {
       setLoading(false);
@@ -174,17 +209,11 @@ const useRecruitment = (postId) => {
     [getToken]
   );
 
-  useEffect(() => {
-    fetchRecruitments();
-    fetchRecruitment();
-  }, [fetchRecruitments, fetchRecruitment]);
-
   return {
     recruitments,
     loading,
     error,
     recruitment,
-    applications,
     handleDeleteRecruitment,
     addRecruitment,
     editRecruitment,
