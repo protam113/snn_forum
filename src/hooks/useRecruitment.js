@@ -20,21 +20,15 @@ const useRecruitment = (postId) => {
     const cachedTime = localStorage.getItem(cacheTimeKey);
 
     const now = new Date().getTime();
-    const cacheDuration = 60 * 1000; // 1 minute
+    const cacheDuration = 60 * 1000;
 
     if (
       cachedData &&
       cachedTime &&
       now - parseInt(cachedTime) < cacheDuration
     ) {
-      try {
-        // Giải mã và sau đó parse JSON
-        const decryptedData = decryptData(cachedData);
-        const parsedData = JSON.parse(decryptedData);
-        setRecruitments(parsedData);
-      } catch (error) {
-        console.error("Error parsing cached data:", error.message);
-      }
+      const parsedData = decryptData(cachedData);
+      setRecruitments(parsedData);
       setLoading(false);
       return;
     }

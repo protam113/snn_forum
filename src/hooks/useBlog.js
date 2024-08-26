@@ -28,7 +28,7 @@ const useBlog = (blogId) => {
     const cachedTime = localStorage.getItem(cacheTimeKey);
 
     const now = new Date().getTime();
-    const cacheDuration = 60 * 1000; // 1 minute
+    const cacheDuration = 60 * 1000;
 
     if (
       cachedData &&
