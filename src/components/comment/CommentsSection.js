@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "../../context/themeContext";
 import useBlog from "../../hooks/useBlog";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,6 +23,7 @@ const CommentsSection = () => {
     handleDeleteComment,
     loadMoreComments,
     hasMoreComments,
+    fetchComments,
   } = useBlog(blogId);
   const [activeCommentMenu, setActiveCommentMenu] = useState(null);
   const [activeReply, setActiveReply] = useState(null);
@@ -30,6 +31,12 @@ const CommentsSection = () => {
   const handleCommentMenuClick = (commentId) => {
     setActiveCommentMenu((prev) => (prev === commentId ? null : commentId));
   };
+
+  useEffect(() => {
+    if (blogId) {
+      fetchComments();
+    }
+  }, [blogId, fetchComments]);
 
   const handleReplyClick = (commentId) => {
     setActiveReply((prev) => (prev === commentId ? null : commentId));

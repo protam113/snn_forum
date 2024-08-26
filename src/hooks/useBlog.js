@@ -106,7 +106,8 @@ const useBlog = (blogId) => {
       try {
         const url = endpoints.LikeBlog.replace(":id", blogId);
         const response = await authApi(token).get(url);
-        return response.data.results || [];
+        setLikeList(response.data);
+        return response.data;
       } catch (error) {
         console.error("Error fetching likes", error);
         throw error;
@@ -175,6 +176,11 @@ const useBlog = (blogId) => {
       setError("Error fetching child comments");
     }
   }, []);
+
+  useEffect(() => {
+    fetchBlogs();
+    fetchBlog();
+  }, [fetchBlogs, fetchBlog]);
 
   useEffect(() => {
     if (blogId) {
@@ -410,6 +416,7 @@ const useBlog = (blogId) => {
     likeListVisible,
     fileInputRef,
     handleLike,
+    setLikeList,
     handleDeleteBlog,
     handleDeleteComment,
     handleAddComment,
@@ -421,6 +428,7 @@ const useBlog = (blogId) => {
     handleEditComment,
     fetchBlogs,
     fetchBlog,
+    fetchComments,
   };
 };
 

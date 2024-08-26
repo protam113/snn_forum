@@ -27,12 +27,30 @@ const Blog_detail = () => {
   const { userInfo } = useUserInfo();
   const { id: blogId } = useParams();
   const navigate = useNavigate();
-  const { blog, loading, message, handleDeleteBlog, likedBlogs, getBlogLikes } =
-    useBlog(blogId);
+  const {
+    blog,
+    loading,
+    message,
+    handleDeleteBlog,
+    likedBlogs,
+    getBlogLikes,
+    fetchBlog,
+    setLikeList,
+  } = useBlog(blogId);
   const [activeMenu, setActiveMenu] = useState(null);
   const [showLikesPopup, setShowLikesPopup] = useState(null);
   const [likesData, setLikesData] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    fetchBlog();
+  }, [fetchBlog]);
+
+  useEffect(() => {
+    if (blogId) {
+      getBlogLikes(blogId).then(setLikeList).catch(console.error);
+    }
+  }, [blogId, getBlogLikes]);
 
   const handleMenuClick = (id) => {
     setActiveMenu((prev) => (prev === id ? null : id));
