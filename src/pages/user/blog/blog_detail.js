@@ -21,6 +21,7 @@ import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
 import { toast } from "react-toastify";
+import { MdPerson } from "react-icons/md";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -115,28 +116,28 @@ const Blog_detail = () => {
           className="relative w-full h-full flex items-center justify-center"
         >
           <img
-            src={blog.media[currentSlide].file}
+            src={media.file}
             alt="blog-media"
-            className={`object-cover w-[500px] h-full cursor-pointer ${
+            className={`object-contain w-full h-auto max-h-[80vh] cursor-pointer ${
               theme === "dark" ? "border-gray-700" : "border-gray-200"
             }`}
           />
           <FaChevronLeft
-            className="absolute left-0 text-3xl cursor-pointer"
+            className="absolute left-0 text-3xl cursor-pointer bg-gray-800 bg-opacity-50 p-2 rounded-full text-white"
             onClick={prevSlide}
           />
           <FaChevronRight
-            className="absolute right-0 text-3xl cursor-pointer"
+            className="absolute right-0 text-3xl cursor-pointer bg-gray-800 bg-opacity-50 p-2 rounded-full text-white"
             onClick={nextSlide}
           />
         </div>
       );
     } else if (["pdf"].includes(extension)) {
       return (
-        <div key={media.file} className="w-full">
+        <div key={media.file} className="w-full flex justify-center">
           <iframe
             src={media.file}
-            style={{ width: "400px", height: "500px" }}
+            className="w-full h-[70vh] md:w-[400px] md:h-[500px]"
             frameBorder="0"
             title="PDF Viewer"
           />
@@ -179,12 +180,23 @@ const Blog_detail = () => {
         <div className="max-w-6xl w-full">
           {/* Post Information and 3-dots menu */}
           <div className="flex items-center mb-4">
-            <img
-              src={blog.user.profile_image}
-              alt="profile"
-              className="w-12 h-12 rounded-full mr-4"
-              onClick={() => handleProfileClick(blog.user.id)}
-            />
+            {blog.user.profile_image ? (
+              <img
+                src={blog.user.profile_image}
+                alt="avatar"
+                className={`size-12 rounded-full ${
+                  theme === "dark" ? "border-white" : "border-black"
+                }`}
+                onClick={() => handleProfileClick(blog.user.id)}
+              />
+            ) : (
+              <MdPerson
+                className={`size-12 rounded-full ${
+                  theme === "dark" ? "text-white" : "text-gray-500"
+                }`}
+                onClick={() => handleProfileClick(blog.user.id)}
+              />
+            )}
             <div>
               <h1
                 className={`font-bold text-base ${
@@ -252,21 +264,22 @@ const Blog_detail = () => {
           </div>
           <hr className="mt-2 border-gray-300" />
           {/* Media */}
-          {blog.media.length > 0 && (
-            <div className="relative">
-              {blog.media.map((media, index) => (
-                <div
-                  key={media.file}
-                  className={`${index === currentSlide ? "block" : "hidden"}`}
-                >
-                  {renderMedia(media)}
-                </div>
-              ))}
-              {/* Next and Previous buttons */}
-              <button onClick={prevSlide}></button>
-              <button onClick={nextSlide}></button>
-            </div>
-          )}
+          <div className="relative w-full max-w-3xl mx-auto">
+            {blog.media.length > 0 && (
+              <div className="relative">
+                {blog.media.map((media, index) => (
+                  <div
+                    key={media.file}
+                    className={`${
+                      index === currentSlide ? "block" : "hidden"
+                    } w-full`}
+                  >
+                    {renderMedia(media)}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Like, Comment, Repost Buttons */}
           <div className="mt-4">
