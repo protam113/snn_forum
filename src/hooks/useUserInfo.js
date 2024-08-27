@@ -40,6 +40,9 @@ const useUserInfo = (personId = null) => {
     try {
       const response = await authApi(token).get(endpoints.currentUser);
       const userData = response.data;
+      if (!userData || !userData.id) {
+        throw new Error("User ID is missing or undefined");
+      }
       setUserInfo(userData);
 
       // Ensure userData.groups is defined and an array
@@ -57,7 +60,7 @@ const useUserInfo = (personId = null) => {
         ":id",
         userData.id
       );
-      const blogsResponse = await authApi(token).get(userBlogsUrl);
+      const blogsResponse = await authApi().get(userBlogsUrl);
       setUserBlogs(blogsResponse.data);
 
       userInfoFetchedRef.current = true;
