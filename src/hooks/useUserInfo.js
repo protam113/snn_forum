@@ -42,7 +42,10 @@ const useUserInfo = (personId = null) => {
       const userData = response.data;
       setUserInfo(userData);
 
-      const roles = userData.groups.map((group) => group.name);
+      // Ensure userData.groups is defined and an array
+      const roles = Array.isArray(userData.groups)
+        ? userData.groups.map((group) => group.name)
+        : [];
       setUserRoles(roles);
 
       // Mã hóa userId và lưu vào localStorage
@@ -68,6 +71,7 @@ const useUserInfo = (personId = null) => {
       setLoading(false);
     }
   }, [getToken]);
+
   const fetchPersonalInfo = useCallback(async () => {
     if (personalInfoFetchedRef.current || !personId) return;
 
@@ -86,6 +90,8 @@ const useUserInfo = (personId = null) => {
   }, [personId]);
 
   const fetchUserBlog = useCallback(async () => {
+    if (!personId) return;
+
     setLoading(true);
 
     try {

@@ -2,12 +2,12 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
-import useProduct from "./hooks/useProduct";
-import Product from "./pages/user/product/components/product";
+import Product from "./Product";
+import "@testing-library/jest-dom/extend-expect";
+import useProduct from "../hooks/useProduct";
 
 // Mock hook useProduct
-jest.mock("./hooks/useProduct");
+jest.mock("../../../../hooks/useProduct");
 
 describe("Product component", () => {
   test("displays loading indicator when loading", () => {
