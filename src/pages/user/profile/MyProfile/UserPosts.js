@@ -5,7 +5,8 @@ import { BsThreeDots } from "react-icons/bs";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import formatDate from "../../../../utils/formatDate";
 import Loading from "../../../error/load";
-import LikePost from "../../../../components/buttons/likeBlog";
+// import LikePost from "../../../../components/buttons/likeBlog";
+import Likeblog from "../../../../components/buttons/likeBlog";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import { useTheme } from "../../../../context/themeContext";
 import useBlog from "../../../../hooks/useBlog";
@@ -284,7 +285,7 @@ const Userblogs = () => {
             />
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <LikePost
+                <Likeblog
                   blogId={blog.id}
                   liked={likedBlogs[blog.id] || false}
                   onLike={handleLike}
