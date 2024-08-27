@@ -68,10 +68,12 @@ const useUserInfo = (personId = null) => {
     if (personalInfoFetchedRef.current || !personId) return;
 
     setLoading(true);
+    const token = await getToken();
+    if (!token) return;
 
     try {
       const userInfoUrl = endpoints.UserInfo.replace(":id", personId);
-      const response = await authApi().get(userInfoUrl);
+      const response = await authApi(token).get(userInfoUrl);
       setPersonalInfo(response.data);
       personalInfoFetchedRef.current = true;
     } catch (err) {
@@ -79,14 +81,17 @@ const useUserInfo = (personId = null) => {
     } finally {
       setLoading(false);
     }
-  }, [personId]);
+  }, [personId, getToken]);
 
   const fetchUserBlog = useCallback(async () => {
     setLoading(true);
+    const token = await getToken();
+    if (!token) return;
 
     try {
       const url = endpoints.currentUserBlog.replace(":id", personId);
-      const response = await authApi().get(url); // Không cần token ở đây nữa
+
+      const response = await authApi(token).get(url);
       const sortedBlogs = response.data.results.sort(
         (a, b) => new Date(b.created_date) - new Date(a.created_date)
       );
@@ -96,7 +101,7 @@ const useUserInfo = (personId = null) => {
     } finally {
       setLoading(false);
     }
-  }, [personId]);
+  }, [personId, getToken]);
 
   const fetchUserApplyList = useCallback(async () => {
     if (userApplyListFetchedRef.current) return;
