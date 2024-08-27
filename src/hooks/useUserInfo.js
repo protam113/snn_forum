@@ -40,44 +40,34 @@ const useUserInfo = (personId = null) => {
     try {
       const response = await authApi(token).get(endpoints.currentUser);
       const userData = response.data;
-      if (!userData || !userData.id) {
-        throw new Error("User ID is missing or undefined");
-      }
-
       setUserInfo(userData);
 
-      const roles = Array.isArray(userData.groups)
-        ? userData.groups.map((group) => group.name)
-        : [];
+      const roles = userData.groups.map((group) => group.name);
       setUserRoles(roles);
 
-      try {
-        const encryptedUserId = encryptData(userData.id);
-        localStorage.setItem("_id", encryptedUserId);
-      } catch (error) {
-        console.error(
-          "Error during encryption or saving to localStorage:",
-          error
-        );
-        // Bạn có thể cần xử lý lỗi ở đây
-      }
+      // Mã hóa userId và lưu vào localStorage
+      const encryptedUserId = encryptData(userData.id);
+      localStorage.setItem("_id", encryptedUserId);
 
+      // Fetch bài viết của người dùng hiện tại
       const userBlogsUrl = endpoints.currentUserBlog.replace(
         ":id",
         userData.id
       );
-      const blogsResponse = await authApi(token).get(userBlogsUrl);
+      const blogsResponse = await authApi().get(userBlogsUrl);
       setUserBlogs(blogsResponse.data);
 
       userInfoFetchedRef.current = true;
     } catch (err) {
-      console.error("Error fetching user info:", err.message);
-      setError(err.message);
+      console.error(
+        "Error fetching user info:",
+        err.response?.data || err.message
+      );
+      setError(err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
   }, [getToken]);
-
   const fetchPersonalInfo = useCallback(async () => {
     if (personalInfoFetchedRef.current || !personId) return;
 
@@ -96,8 +86,6 @@ const useUserInfo = (personId = null) => {
   }, [personId]);
 
   const fetchUserBlog = useCallback(async () => {
-    if (!personId) return;
-
     setLoading(true);
 
     try {
