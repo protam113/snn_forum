@@ -43,33 +43,36 @@ const useUserInfo = (personId = null) => {
       if (!userData || !userData.id) {
         throw new Error("User ID is missing or undefined");
       }
+
       setUserInfo(userData);
 
-      // Ensure userData.groups is defined and an array
       const roles = Array.isArray(userData.groups)
         ? userData.groups.map((group) => group.name)
         : [];
       setUserRoles(roles);
 
-      // Mã hóa userId và lưu vào localStorage
-      const encryptedUserId = encryptData(userData.id);
-      localStorage.setItem("_id", encryptedUserId);
+      try {
+        const encryptedUserId = encryptData(userData.id);
+        localStorage.setItem("_id", encryptedUserId);
+      } catch (error) {
+        console.error(
+          "Error during encryption or saving to localStorage:",
+          error
+        );
+        // Bạn có thể cần xử lý lỗi ở đây
+      }
 
-      // Fetch bài viết của người dùng hiện tại
       const userBlogsUrl = endpoints.currentUserBlog.replace(
         ":id",
         userData.id
       );
-      const blogsResponse = await authApi().get(userBlogsUrl);
+      const blogsResponse = await authApi(token).get(userBlogsUrl);
       setUserBlogs(blogsResponse.data);
 
       userInfoFetchedRef.current = true;
     } catch (err) {
-      console.error(
-        "Error fetching user info:",
-        err.response?.data || err.message
-      );
-      setError(err.response?.data || err.message);
+      console.error("Error fetching user info:", err.message);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
