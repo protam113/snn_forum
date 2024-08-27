@@ -9,7 +9,6 @@ const RightSidebar = () => {
       <SActivity />
       <hr className="border-zinc-900" />
       <div className="flex flex-col space-y-4 mb-4">
-        <p>Ads</p>
         <Ads_Input />
       </div>
       {/* <hr className="border-zinc-900" /> */}

@@ -34,7 +34,7 @@ const Info = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           {/* Profile Section */}
-          <div className="flex items-center p-2 bg-gray-200 rounded-lg">
+          <div className="flex items-center p-2  rounded-lg">
             {userInfo?.profile_image ? (
               <img
                 src={userInfo.profile_image}

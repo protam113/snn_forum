@@ -116,7 +116,7 @@ const Userblogs = () => {
           <Block
             className={`p-4 rounded-lg border mt-4 ${
               theme === "dark"
-                ? "border-custom-zinc bg-gray-800"
+                ? "border-custom-zinc bg-zinc-700"
                 : "border-gray-300 bg-white"
             } shadow-sm`}
           >
