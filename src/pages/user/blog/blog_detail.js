@@ -22,13 +22,14 @@ import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
 import { toast } from "react-toastify";
 import { MdPerson } from "react-icons/md";
 import useTokenCheck from "../../../hooks/useTokenCheck";
+import useUserInfo from "../../../hooks/useUserInfo";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
-  const { userId } = useTokenCheck();
+  const { userInfo } = useUserInfo();
   const { id: blogId } = useParams();
   const navigate = useNavigate();
-  const { blog, loading, message, handleDeleteBlog, likedBlogs, handleLike } =
+  const { blog, loading, message, handleDeleteBlog, likedBlogs } =
     useBlog(blogId);
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -38,8 +39,8 @@ const Blog_detail = () => {
   };
 
   const handleProfileClick = (personId) => {
-    if (userId && userId.toString() === personId) {
-      navigate(`/profile/${userId}`);
+    if (userInfo && userInfo.toString() === personId) {
+      navigate(`/profile/${userInfo.id}`);
     } else {
       navigate(`/profile/${personId}`);
     }
@@ -48,6 +49,8 @@ const Blog_detail = () => {
   const handleEditClick = (blogId) => {
     navigate(`/blog/edit/${blogId}`);
   };
+
+  const handleLike = (blogId, liked) => {};
 
   const handleCopyLink = (blogId) => {
     const blogUrl = `${window.location.origin}/blog/${blogId}`;
@@ -138,7 +141,7 @@ const Blog_detail = () => {
     <>
       <SEO
         title={blog.content || "Blog Detail"}
-        description={blog.description || "Details of the blog"}
+        description={blog.content || "Details of the blog"}
         name="XLR Team"
         type="article"
       />
@@ -184,7 +187,7 @@ const Blog_detail = () => {
               {activeMenu === blog.id && (
                 <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-zinc-400 shadow-lg rounded-lg z-10">
                   <ul>
-                    {userId === blog.user.id && (
+                    {userInfo === blog.user.id && (
                       <>
                         <li
                           className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
@@ -195,7 +198,7 @@ const Blog_detail = () => {
                         </li>
                         <li
                           className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
-                          onClick={() => handleDeleteBlog(blog.id, userId)}
+                          onClick={() => handleDeleteBlog(blog.id, userInfo)}
                         >
                           <FaTrashAlt className="mr-2 text-gray-400" />
                           Xóa

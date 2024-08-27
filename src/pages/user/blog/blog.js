@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../components/design/Block";
 import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
@@ -8,31 +8,42 @@ import useBlog from "../../../hooks/useBlog";
 import formatDate from "../../../utils/formatDate";
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
+import useUserInfo from "../../../hooks/useUserInfo";
 import { Error404 } from "../../error/error";
 import { toast } from "react-toastify";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdPerson } from "react-icons/md";
-import useTokenCheck from "../../../hooks/useTokenCheck";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [expandedBlogId, setExpandedBlogId] = useState(null);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { blogs, loading, error, likedBlogs, handleLike, handleDeleteBlog } =
-    useBlog();
-  const { userId } = useTokenCheck();
+  const {
+    blogs,
+    loading,
+    error,
+    likedBlogs,
+    handleLike,
+    handleDeleteBlog,
+    fetchBlogs,
+  } = useBlog();
+  const { userInfo } = useUserInfo();
+
+  // Fetch blog details
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
 
   // console.log(`API called: `);
 
   const handleProfileClick = (personId) => {
-    if (userId && userId.toString() === personId) {
-      navigate(`/profile/${userId}`);
+    if (userInfo && userInfo.id.toString() === personId) {
+      navigate(`/profile/${userInfo.id}`);
     } else {
       navigate(`/profile/${personId}`);
     }
   };
-
   const handleBlogClick = (blogId) => {
     navigate(`/blog/${blogId}`);
   };
@@ -113,7 +124,7 @@ const Blog = () => {
   return (
     <div className="post-list">
       {blogs.map((blog, index) => {
-        const isOwner = userId && userId === blog.user.id;
+        const isOwner = userInfo && userInfo.id === blog.user.id;
         const isExpanded = expandedBlogId === blog.id;
 
         return (
