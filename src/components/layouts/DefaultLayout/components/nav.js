@@ -12,14 +12,12 @@ import { MdSupportAgent } from "react-icons/md";
 import { MdPerson } from "react-icons/md";
 
 import Notifications from "../../../notification/noti";
-import useTokenCheck from "../../../../hooks/useTokenCheck";
 import LoginBtn from "../../../buttons/loginBtn";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
   const { theme } = useTheme();
   const { userInfo, userRoles } = useUserInfo();
-  const { hasToken } = useTokenCheck();
 
   const toggleNavbar = () => {
     setIsMobileNavVisible(!isMobileNavVisible);
@@ -256,7 +254,7 @@ const Navbar = () => {
                 <MdSupportAgent className="text-14" />
                 <span>Đóng góp</span>
               </Link>
-              {hasToken ? (
+              {userInfo ? (
                 <LogoutButton />
               ) : (
                 <Link to="/login" className="mt-4">
