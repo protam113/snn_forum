@@ -25,11 +25,11 @@ const ApplicationsList = () => {
     fetchApplicationList();
   }, [fetchApplicationList]);
 
-  const handleProfileClick = (userId, username) => {
-    if (userInfo && userInfo.id === userId) {
-      navigate(`/profile/${userInfo.username}`);
+  const handleProfileClick = (personId) => {
+    if (userInfo && userInfo.toString() === personId) {
+      navigate(`/profile/${userInfo.id}`);
     } else {
-      navigate(`/profile_user/${userId}`);
+      navigate(`/profile/${personId}`);
     }
   };
 
