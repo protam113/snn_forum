@@ -37,9 +37,7 @@ const Profile = () => {
           {/* Navigation Links */}
 
           {/* Render Content based on activeTab */}
-          <div className="mx-auto max-w-4xl py-5">
-            <Userblogs />
-          </div>
+          <div className="mx-auto max-w-4xl py-5">{/* <Userblogs /> */}</div>
         </div>
       </div>
 
