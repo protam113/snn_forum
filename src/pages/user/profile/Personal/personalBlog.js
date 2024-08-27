@@ -48,8 +48,6 @@ const PersonalBlog = () => {
   };
 
   const renderMedia = (media) => {
-    if (!media || !media.file) return null;
-
     const extension = media.file.split(".").pop().toLowerCase();
 
     if (["jpg", "jpeg", "png", "gif"].includes(extension)) {
@@ -58,10 +56,9 @@ const PersonalBlog = () => {
           key={media.file}
           src={media.file}
           alt="blog-media"
-          className={`object-cover w-full h-full cursor-pointer ${
-            theme === "dark" ? "border-gray-700" : "border-gray-200"
+          className={`object-cover w-full sm:h-64 md:h-80 lg:h-96 xl:h-auto cursor-pointer ${
+            theme === "dark" ? "border-gray-800" : "border-white"
           }`}
-          onClick={() => handleBlogClick(media.blogId)}
         />
       );
     } else if (["pdf"].includes(extension)) {
@@ -72,12 +69,10 @@ const PersonalBlog = () => {
             style={{ width: "100%", height: "500px" }}
             frameBorder="0"
             title="PDF Viewer"
-            onClick={() => handleBlogClick(media.blogId)}
           />
         </div>
       );
     }
-
     return null;
   };
 
@@ -175,21 +170,24 @@ const PersonalBlog = () => {
                   Xem ít hơn
                 </p>
               )}
-              {blog.media.length > 0 && (
-                <div
-                  className={`grid gap-4 ${
-                    blog.media.length === 1
-                      ? "grid-cols-1"
-                      : blog.media.length === 2
-                      ? "grid-cols-2"
-                      : blog.media.length === 3
-                      ? "grid-cols-3"
-                      : "grid-cols-2"
-                  }`}
-                >
-                  {blog.media.map((media) => renderMedia(media))}
-                </div>
-              )}
+              <div className="flex flex-col items-center p-4">
+                {/* Kiểm tra và hiển thị các phương tiện truyền thông nếu có */}
+                {blog.media.length > 0 && (
+                  <div
+                    className={`grid gap-4 ${
+                      blog.media.length === 1
+                        ? "grid-cols-1"
+                        : blog.media.length === 2
+                        ? "grid-cols-2"
+                        : blog.media.length === 3
+                        ? "grid-cols-3"
+                        : "grid-cols-2"
+                    }`}
+                  >
+                    {blog.media.map((media) => renderMedia(media, theme))}
+                  </div>
+                )}
+              </div>
               <hr
                 className={`my-4 ${
                   theme === "dark" ? "border-gray-600" : "border-gray-300"

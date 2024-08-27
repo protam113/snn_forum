@@ -8,45 +8,31 @@ import useBlog from "../../../hooks/useBlog";
 import formatDate from "../../../utils/formatDate";
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
-import useUserInfo from "../../../hooks/useUserInfo";
 import { Error404 } from "../../error/error";
 import { toast } from "react-toastify";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdPerson } from "react-icons/md";
+import useTokenCheck from "../../../hooks/useTokenCheck";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [expandedBlogId, setExpandedBlogId] = useState(null);
   const navigate = useNavigate();
-  const [showLikesPopup, setShowLikesPopup] = useState(null);
-  const [likesData, setLikesData] = useState([]);
   const { theme } = useTheme();
-  const {
-    blogs,
-    loading,
-    error,
-    likedBlogs,
-    handleLike,
-    handleDeleteBlog,
-    getBlogLikes,
-    fetchBlogs,
-  } = useBlog();
-  const { userInfo } = useUserInfo();
-
-  // Fetch blog details
-  useEffect(() => {
-    fetchBlogs();
-  }, [fetchBlogs]);
+  const { blogs, loading, error, likedBlogs, handleLike, handleDeleteBlog } =
+    useBlog();
+  const { userId } = useTokenCheck();
 
   // console.log(`API called: `);
 
   const handleProfileClick = (personId) => {
-    if (userInfo && userInfo.id.toString() === personId) {
-      navigate(`/profile/${userInfo.id}`);
+    if (userId && userId.toString() === personId) {
+      navigate(`/profile/${userId}`);
     } else {
       navigate(`/profile/${personId}`);
     }
   };
+
   const handleBlogClick = (blogId) => {
     navigate(`/blog/${blogId}`);
   };
@@ -67,18 +53,6 @@ const Blog = () => {
 
   const handleToggleExpand = (blogId) => {
     setExpandedBlogId((prev) => (prev === blogId ? null : blogId));
-  };
-
-  const handleLikesClick = async (blogId) => {
-    setShowLikesPopup((prev) => (prev === blogId ? null : blogId));
-    if (showLikesPopup !== blogId) {
-      try {
-        const likes = await getBlogLikes(blogId);
-        setLikesData(likes);
-      } catch (error) {
-        console.error("Error fetching likes", error);
-      }
-    }
   };
 
   const handleCopyLink = (blogId) => {
@@ -139,7 +113,7 @@ const Blog = () => {
   return (
     <div className="post-list">
       {blogs.map((blog, index) => {
-        const isOwner = userInfo && userInfo.id === blog.user.id;
+        const isOwner = userId && userId === blog.user.id;
         const isExpanded = expandedBlogId === blog.id;
 
         return (
@@ -290,35 +264,9 @@ const Blog = () => {
                   className={`text-gray-500 text-sm cursor-pointer ${
                     theme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}
-                  onClick={() => handleLikesClick(blog.id)}
-                  onMouseClick={() => handleLikesClick(blog.id)}
-                  onMouseLeave={() => setShowLikesPopup(null)}
                 >
                   {blog.likes_count} lượt thích • {blog.comment_count} bình luận
                 </p>
-                {showLikesPopup === blog.id && (
-                  <div className="absolute top-0 right-0 mt-12 p-4 w-80 bg-white border border-gray-300 shadow-lg rounded-lg">
-                    <h3 className="text-14 font-semibold">Likes</h3>
-                    <ul>
-                      {likesData.map((user) => (
-                        <li
-                          key={user.id}
-                          className="flex items-center mt-2"
-                          onClick={() => handleProfileClick(user.id)}
-                        >
-                          <img
-                            src={user.profile_image}
-                            alt="user-avatar"
-                            className="w-6 h-6 rounded-full mr-2"
-                          />
-                          <span className="text-12 text-black">
-                            {user.first_name} {user.last_name}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
               <hr
                 className={`my-2 ${

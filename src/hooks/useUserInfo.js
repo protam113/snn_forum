@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import useAuth from "./useAuth";
 import { authApi, endpoints } from "../api/api";
+import { encryptData, decryptData } from "../utils/cryptoUtils";
 
 const useUserInfo = (personId = null) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -44,6 +45,10 @@ const useUserInfo = (personId = null) => {
       const roles = userData.groups.map((group) => group.name);
       setUserRoles(roles);
 
+      // Mã hóa userId và lưu vào localStorage
+      const encryptedUserId = encryptData(userData.id);
+      localStorage.setItem("_id", encryptedUserId);
+
       // Fetch bài viết của người dùng hiện tại
       const userBlogsUrl = endpoints.currentUserBlog.replace(
         ":id",
@@ -63,7 +68,6 @@ const useUserInfo = (personId = null) => {
       setLoading(false);
     }
   }, [getToken]);
-
   const fetchPersonalInfo = useCallback(async () => {
     if (personalInfoFetchedRef.current || !personId) return;
 
@@ -71,7 +75,7 @@ const useUserInfo = (personId = null) => {
 
     try {
       const userInfoUrl = endpoints.UserInfo.replace(":id", personId);
-      const response = await authApi().get(userInfoUrl); // Không cần token ở đây nữa
+      const response = await authApi().get(userInfoUrl);
       setPersonalInfo(response.data);
       personalInfoFetchedRef.current = true;
     } catch (err) {

@@ -3,16 +3,16 @@ import { useTheme } from "../../context/themeContext";
 import useBlog from "../../hooks/useBlog";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../pages/error/load";
-import useUserInfo from "../../hooks/useUserInfo";
 import formatDate from "../../utils/formatDate";
 import { BsThreeDots } from "react-icons/bs";
 import { FaTrashAlt } from "react-icons/fa";
 import ReplyComment from "./ReplyComment";
+import useTokenCheck from "../../hooks/useTokenCheck";
 
 const CommentsSection = () => {
   const { theme } = useTheme();
   const { id: blogId } = useParams();
-  const { userInfo } = useUserInfo();
+  const { userId } = useTokenCheck();
   const navigate = useNavigate();
   const {
     blog,
@@ -43,8 +43,8 @@ const CommentsSection = () => {
   };
 
   const handleProfileClick = (personId) => {
-    if (userInfo && userInfo.id.toString() === personId) {
-      navigate(`/profile/${userInfo.id}`);
+    if (userId && userId.toString() === personId) {
+      navigate(`/profile/${userId}`);
     } else {
       navigate(`/profile/${personId}`);
     }
@@ -92,11 +92,11 @@ const CommentsSection = () => {
                   {activeCommentMenu === comment.id && (
                     <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-gray-300 shadow-lg rounded-lg z-10">
                       <ul className="text-gray-300">
-                        {userInfo?.username === comment.user.username && (
+                        {userId === comment.user.id && (
                           <li
                             className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
                             onClick={() =>
-                              handleDeleteComment(comment.id, userInfo)
+                              handleDeleteComment(comment.id, userId)
                             }
                           >
                             <FaTrashAlt className="mr-2 text-gray-400" />
@@ -124,7 +124,7 @@ const CommentsSection = () => {
                   Reply
                 </button>
               </p>
-              {activeReply === comment.id && userInfo && (
+              {activeReply === comment.id && userId && (
                 <ReplyComment
                   blogId={blogId}
                   parentId={comment.id}
@@ -155,10 +155,10 @@ const CommentsSection = () => {
                         </p>
                       </div>
                       <div className="ml-auto">
-                        {userInfo?.username === reply.user.username && (
+                        {userId === reply.user.id && (
                           <FaTrashAlt
                             onClick={() =>
-                              handleDeleteComment(reply.id, userInfo)
+                              handleDeleteComment(reply.id, userId)
                             }
                             className="text-gray-500 cursor-pointer"
                           />

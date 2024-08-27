@@ -282,18 +282,16 @@ const Create = () => {
                 >
                   Mô Tả:
                 </label>
-                <textarea
-                  id="description"
+                <ReactQuill
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows="4"
+                  onChange={setDescription}
                   placeholder="Description*"
-                  className={`w-full p-2 border rounded-md resize-none ${
+                  className={`w-full ${
                     theme === "dark"
                       ? "bg-zinc-700 text-white border-zinc-600"
                       : "bg-white text-black border-zinc-800"
                   }`}
-                  required
+                  theme={theme === "dark" ? "bubble" : "snow"}
                 />
               </div>
               <div className="text-center">

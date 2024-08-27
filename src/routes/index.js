@@ -27,9 +27,7 @@ import CreateProduct from "../pages/user/product/CreateProduct";
 import EdtProduct from "../pages/user/product/edtProduct";
 import ProductDetail from "../pages/user/product/product_detail";
 import Product from "../pages/user/product/product_feed";
-import Profile from "../pages/user/profile";
 import EditProfile from "../pages/user/profile/edtProfile";
-import ProfileIf from "../pages/user/profile/Personal/ProfileIf";
 import ProfileMain from "../pages/user/ProfileMain";
 import ApplicationsList from "../pages/user/recruitment/applicationsList";
 import ApplyRecruitment from "../pages/user/recruitment/applyRecruitment";
@@ -39,7 +37,6 @@ import Manage from "../pages/user/recruitment/manage/manage";
 import WorkManage from "../pages/user/recruitment/manage/workManage";
 import Recruitment from "../pages/user/recruitment/recruitment";
 import RecruitmentDetail from "../pages/user/recruitment/recruitmentDetail";
-import Search from "../pages/user/search";
 import setting from "../pages/user/setting/setting";
 import User from "../pages/user/Suser/user";
 
@@ -77,8 +74,6 @@ const publicRoutes = [
     component: EditProfile,
     layout: DefaultLayout,
   },
-
-  { path: "/search", component: Search, layout: DefaultLayout },
 
   { path: "/tuyen_dung", component: Recruitment, layout: DefaultLayout },
   {

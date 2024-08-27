@@ -12,11 +12,13 @@ import { MdSupportAgent } from "react-icons/md";
 import { MdPerson } from "react-icons/md";
 
 import Notifications from "../../../notification/noti";
+import useTokenCheck from "../../../../hooks/useTokenCheck";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
   const { theme } = useTheme();
   const { userInfo, userRoles } = useUserInfo();
+  const { userId, hasToken } = useTokenCheck();
 
   const toggleNavbar = () => {
     setIsMobileNavVisible(!isMobileNavVisible);
