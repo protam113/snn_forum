@@ -100,14 +100,14 @@ const Userblogs = () => {
     );
   if (error) return <p>Đã xảy ra lỗi khi lấy blog</p>;
 
-  const posts = userBlogs.results || [];
+  const blog = userBlogs.results || [];
 
   return (
     <div className="post-list">
-      {posts.length === 0 ? (
+      {blog.length === 0 ? (
         <p>Không có bài viết nào để hiển thị.</p>
       ) : (
-        posts.map((blog) => {
+        blog.map((blog) => {
           const isExpanded = expandedBlogId === blog.id;
 
           return (
@@ -253,16 +253,14 @@ const Userblogs = () => {
                 </p>
               )}
               <div className="flex flex-col items-center p-4">
-                {blog.media.length > 0 && (
+                {Array.isArray(blog.media) && blog.media.length > 0 && (
                   <div
                     className={`grid gap-4 ${
                       blog.media.length === 1
                         ? "grid-cols-1"
                         : blog.media.length === 2
                         ? "grid-cols-2"
-                        : blog.media.length === 3
-                        ? "grid-cols-3"
-                        : "grid-cols-2"
+                        : "grid-cols-2 sm:grid-cols-3"
                     }`}
                   >
                     {blog.media.map((media) => renderMedia(media))}
