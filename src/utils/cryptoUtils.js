@@ -7,10 +7,10 @@ if (!secretKey) {
   throw new Error("REACT_APP_SECRET_KEY chưa được định nghĩa");
 }
 
-// Hàm mã hóa dữ liệu
+// Encrypt data function
 export const encryptData = (data) => {
   if (typeof data !== "string") {
-    data = JSON.stringify(data); // Chuyển đổi đối tượng thành chuỗi nếu cần
+    data = JSON.stringify(data); // Convert object to string if needed
   }
 
   try {
@@ -20,7 +20,7 @@ export const encryptData = (data) => {
   }
 };
 
-// Hàm giải mã dữ liệu
+// Decrypt data function
 export const decryptData = (ciphertext) => {
   if (typeof ciphertext !== "string") {
     throw new Error("Ciphertext phải là một chuỗi");
@@ -36,17 +36,16 @@ export const decryptData = (ciphertext) => {
       );
     }
 
-    // Thử phân tích dữ liệu đã giải mã dưới dạng JSON nếu có thể
+    // Attempt to parse the decrypted data as JSON if possible
     try {
       return JSON.parse(decryptedData);
     } catch (e) {
-      return decryptedData; // Trả về dưới dạng chuỗi nếu phân tích JSON không thành công
+      return decryptedData; // Return as a string if JSON parsing fails
     }
   } catch (error) {
     throw new Error("Lỗi khi giải mã: " + error.message);
   }
 };
-
 // Hàm thiết lập dữ liệu đã mã hóa trong localStorage
 export const setEncryptedLocalStorage = (key, value) => {
   try {

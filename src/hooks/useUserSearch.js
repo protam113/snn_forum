@@ -13,11 +13,7 @@ const useUserSearch = (searchTerm, searchField = "username", delay = 500) => {
     const params = new URLSearchParams();
 
     if (searchTerm) {
-      if (searchField === "id") {
-        params.append("id", searchTerm);
-      } else {
-        params.append(searchField, searchTerm);
-      }
+      params.append(searchField, searchTerm);
     }
 
     return `${baseURL}?${params.toString()}`;
@@ -27,7 +23,7 @@ const useUserSearch = (searchTerm, searchField = "username", delay = 500) => {
     setLoading(true);
     setError(null);
     try {
-      const url = endpoints.createUser;
+      const url = endpoints.createUser; // Sử dụng endpoint tìm kiếm
       const response = await authApi().get(url);
       setResults(response.data.results);
     } catch (err) {
@@ -45,7 +41,7 @@ const useUserSearch = (searchTerm, searchField = "username", delay = 500) => {
         setError(null);
         try {
           const url = buildSearchUrl(
-            endpoints.createUser,
+            endpoints.createUser, // Sử dụng endpoint tìm kiếm
             debouncedSearchTerm,
             searchField
           );

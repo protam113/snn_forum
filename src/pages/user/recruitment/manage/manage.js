@@ -1,14 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ManageNav from "./manageNav";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 
 const Manage = () => {
-  const { userApplyList, loading, error, fetchUserApplyList } = useUserInfo();
+  const { userApplyList, loading, error } = useUserInfo();
 
-  useEffect(() => {
-    fetchUserApplyList();
-  }, [fetchUserApplyList]);
   if (loading)
     return (
       <div>

@@ -134,14 +134,11 @@ const Navbar = () => {
               className="flex cursor-pointer items-center px-4 py-2 transition-all text-back"
               onClick={toggleNavbar}
             >
-              {!userInfo ? (
-                <BiMenuAltRight
-                  className={`font-semibold text-2xl ${
-                    theme === "light" ? "text-zinc-900" : "text-white"
-                  }`}
-                />
-              ) : (
-                <div className="flex items-center">
+              {userInfo ? (
+                <Link
+                  to={`/profile/${userInfo.id}`}
+                  className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
+                >
                   {userInfo.profile_image ? (
                     <img
                       src={userInfo.profile_image}
@@ -150,13 +147,15 @@ const Navbar = () => {
                     />
                   ) : (
                     <MdPerson
-                      className={`w-8 h-8 rounded-full cursor-pointer ${
+                      className={`w-8 h-8 rounded-full bg-white cursor-pointer ${
                         theme === "light" ? "text-zinc-900" : "text-white"
                       }`}
                     />
                   )}
-                </div>
-              )}
+                  <span className="text-white">Profile</span>
+                </Link>
+              ) : null}
+
               <IoIosArrowDown
                 className={`ml-2 transition-transform ${
                   isMobileNavVisible ? "rotate-180" : "rotate-0"
@@ -254,13 +253,7 @@ const Navbar = () => {
                 <MdSupportAgent className="text-14" />
                 <span>Đóng góp</span>
               </Link>
-              {userInfo ? (
-                <LogoutButton />
-              ) : (
-                <Link to="/login" className="mt-4">
-                  <LoginBtn />
-                </Link>
-              )}
+              {userInfo ? <LogoutButton /> : <LoginBtn />}
             </div>
           </div>
         </section>

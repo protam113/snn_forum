@@ -64,30 +64,38 @@ export const AuthProvider = ({ children }) => {
           password,
         })
       );
+
       const { access_token, refresh_token } = response.data;
+
       const encryptedAccessToken = encryptData(access_token);
       const encryptedRefreshToken = encryptData(refresh_token);
+
       setAuth({ username, access_token: encryptedAccessToken });
       localStorage.setItem("access_token", encryptedAccessToken);
       Cookies.set("refresh_token", encryptedRefreshToken, { secure: true });
-      toast.success("Login successful! Redirecting to home...");
+
+      toast.success("Đăng nhập thành công!");
       setTimeout(() => {
         navigate("/");
       }, 2000);
     } catch (err) {
-      console.error("Login error: ", err);
-      if (!err.response) {
-        toast.error("No Server Response");
-      } else if (err.response.status === 400) {
-        toast.error("Incorrect username or password");
-      } else if (err.response.status === 401) {
-        toast.error("Unauthorized");
-      } else {
-        toast.error(
-          "Login Failed: " +
-            (err.response.data.message || "An unexpected error occurred")
-        );
-      }
+      console.error("Lỗi đăng nhập: ", err);
+      handleError(err);
+    }
+  };
+
+  const handleError = (err) => {
+    if (!err.response) {
+      toast.error("Không có phản hồi từ máy chủ");
+    } else if (err.response.status === 400) {
+      toast.error("Sai tên đăng nhập hoặc mật khẩu");
+    } else if (err.response.status === 401) {
+      toast.error("Không có quyền truy cập");
+    } else {
+      toast.error(
+        "Đăng nhập thất bại: " +
+          (err.response.data.message || "Đã xảy ra lỗi không mong muốn")
+      );
     }
   };
 

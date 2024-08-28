@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Block from "../../../../components/design/Block";
-import { FaRegCommentAlt } from "react-icons/fa";
+import { FaEdit, FaRegCommentAlt, FaTrashAlt } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdPerson } from "react-icons/md"; // Import MdPerson icon
 import { useTheme } from "../../../../context/themeContext";
@@ -11,13 +11,13 @@ import LikePost from "../../../../components/buttons/likeBlog";
 import useBlog from "../../../../hooks/useBlog";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
-import useAuth from "../../../../hooks/useAuth";
+import { BsThreeDots } from "react-icons/bs";
 
 const PersonalBlog = () => {
   const { id: personId } = useParams();
   const { personalBlogs, loading, error } = useUserInfo(personId);
-
-  const { likedBlogs, handleLike } = useBlog();
+  const [activeMenu, setActiveMenu] = useState(null);
+  const { likedBlogs, handleLike, handleDeleteBlog } = useBlog();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [expandedBlogs, setExpandedBlogs] = React.useState({});
@@ -31,6 +31,19 @@ const PersonalBlog = () => {
       ...prev,
       [blogId]: !prev[blogId],
     }));
+  };
+  const handleMenuClick = (blogId) => {
+    setActiveMenu((prev) => (prev === blogId ? null : blogId));
+  };
+
+  const handleEditClick = (blogId) => {
+    navigate(`/blog/edit/${blogId}`);
+  };
+
+  const handleDeleteClick = async (blogId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) {
+      await handleDeleteBlog(blogId);
+    }
   };
 
   const handleCopyLink = (blogId) => {
@@ -128,6 +141,38 @@ const PersonalBlog = () => {
                 >
                   {formatDate(blog.created_date)}
                 </p>
+              </div>
+              <div className="ml-auto relative">
+                <BsThreeDots
+                  className={`text-2xl cursor-pointer ${
+                    theme === "dark"
+                      ? "text-gray-300 hover:text-gray-200"
+                      : "text-black hover:text-gray-700"
+                  }`}
+                  onClick={() => handleMenuClick(blog.id)}
+                />
+                {activeMenu === blog.id && (
+                  <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-gray-300 shadow-lg rounded-lg z-10">
+                    <ul className="text-gray-300">
+                      <>
+                        <li
+                          className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
+                          onClick={() => handleEditClick(blog.id)}
+                        >
+                          <FaEdit className="mr-2 text-gray-400" />
+                          Chỉnh sửa
+                        </li>
+                        <li
+                          className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
+                          onClick={() => handleDeleteClick(blog.id)}
+                        >
+                          <FaTrashAlt className="mr-2 text-gray-400" />
+                          Xóa
+                        </li>
+                      </>
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
             <p

@@ -6,7 +6,6 @@ import { encryptData, decryptData } from "../utils/cryptoUtils";
 const useUserInfo = (personId = null) => {
   const [userInfo, setUserInfo] = useState(null);
   const [userRoles, setUserRoles] = useState([]);
-  const [userBlogs, setUserBlogs] = useState([]);
   const [personalBlogs, setPersonalBlogs] = useState([]);
   const [userApplyList, setUserApplyList] = useState([]);
   const [personalInfo, setPersonalInfo] = useState(null);
@@ -36,7 +35,7 @@ const useUserInfo = (personId = null) => {
     if (cachedData) {
       try {
         const decryptedData = decryptData(cachedData);
-        return JSON.parse(decryptedData);
+        return decryptedData; // Directly return the decrypted data
       } catch (error) {
         console.error("Error decrypting user info:", error);
         localStorage.removeItem("user_info");
@@ -45,7 +44,6 @@ const useUserInfo = (personId = null) => {
     }
     return null;
   };
-
   // Fetch User Info with Caching
   const fetchUserInfo = useCallback(async () => {
     if (userInfoFetchedRef.current) return;
@@ -67,7 +65,6 @@ const useUserInfo = (personId = null) => {
     if (!token) {
       setUserInfo(null);
       setUserRoles([]);
-      setUserBlogs([]);
       setLoading(false);
       return;
     }
@@ -82,14 +79,6 @@ const useUserInfo = (personId = null) => {
 
       const roles = userData.groups.map((group) => group.name);
       setUserRoles(roles);
-
-      // Fetch user blogs
-      const userBlogsUrl = endpoints.currentUserBlog.replace(
-        ":id",
-        userData.id
-      );
-      const blogsResponse = await authApi(token).get(userBlogsUrl);
-      setUserBlogs(blogsResponse.data);
 
       userInfoFetchedRef.current = true;
     } catch (err) {
@@ -146,12 +135,15 @@ const useUserInfo = (personId = null) => {
   }, [personId]);
 
   const fetchUserApplyList = useCallback(async () => {
+    // Ensure that this function is only executed once
     if (userApplyListFetchedRef.current) return;
 
-    const token = await getToken();
-    if (!token) return;
+    setLoading(true);
 
     try {
+      const token = await getToken();
+      if (!token) return;
+
       const response = await authApi(token).get(endpoints.UserApplyList);
       setUserApplyList(response.data.results);
       userApplyListFetchedRef.current = true;
@@ -160,26 +152,34 @@ const useUserInfo = (personId = null) => {
         "Error fetching user apply list:",
         err.response?.data || err.message
       );
-      setError(err.response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
   }, [getToken]);
 
   useEffect(() => {
-    // Fetch user info and apply list
-    if (!userInfoFetchedRef.current) {
-      fetchUserInfo();
-      fetchUserApplyList();
-    }
+    const fetchData = async () => {
+      if (!userInfoFetchedRef.current) {
+        await fetchUserInfo();
+        userInfoFetchedRef.current = true;
+      }
 
-    // Fetch personal info and user blogs if personId is available
-    if (personId && !personalInfoFetchedRef.current) {
-      fetchPersonalInfo();
-      fetchUserBlog();
-    }
+      if (!userApplyListFetchedRef.current) {
+        await fetchUserApplyList();
+      }
+
+      if (personId && !personalInfoFetchedRef.current) {
+        await fetchPersonalInfo();
+        personalInfoFetchedRef.current = true;
+        await fetchUserBlog();
+      }
+    };
+
+    fetchData();
   }, [
     fetchUserInfo,
-    fetchPersonalInfo,
     fetchUserApplyList,
+    fetchPersonalInfo,
     fetchUserBlog,
     personId,
   ]);
@@ -239,14 +239,11 @@ const useUserInfo = (personId = null) => {
 
   const resetPassword = useCallback(async (email, newPassword, code) => {
     try {
-      const response = await authApi().post(
-        process.env.REACT_APP_Verify_ENDPOINT,
-        {
-          email,
-          new_password: newPassword,
-          code,
-        }
-      );
+      const response = await authApi().post(endpoints.Verify, {
+        email,
+        new_password: newPassword,
+        code,
+      });
       return { success: true, data: response.data };
     } catch (err) {
       console.error(
@@ -285,7 +282,6 @@ const useUserInfo = (personId = null) => {
     personalBlogs,
     userRoles: memoizedUserRoles,
     userApplyList,
-    userBlogs,
     personalInfo,
     loading,
     error,

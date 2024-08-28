@@ -212,7 +212,6 @@ const Blog = () => {
               </div>
               <div onClick={() => handleBlogClick(blog.id)}>
                 <p
-                  onClick={() => handleBlogClick(blog.id)}
                   className={`mb-8 text-15 cursor-pointer font-semibold ${
                     theme === "dark" ? "text-gray-300" : "text-black"
                   }`}
@@ -220,7 +219,6 @@ const Blog = () => {
                   {blog.content}
                 </p>
                 <div
-                  onClick={() => handleBlogClick(blog.id)}
                   className={`mb-8 text-14 ${
                     theme === "dark" ? "text-gray-300" : "text-black"
                   } ${isExpanded ? "" : "line-clamp-3"}`}
