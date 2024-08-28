@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import useAuth from "./useAuth";
 import { authApi, endpoints } from "../api/api";
+import { encryptData, decryptData } from "../utils/cryptoUtils";
 
 const useUserInfo = (personId = null) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -24,9 +25,44 @@ const useUserInfo = (personId = null) => {
     userApplyListFetchedRef.current = false;
   }, [personId]);
 
+  // Cache User Info with encryption
+  const cacheUserInfo = (data) => {
+    const encryptedData = encryptData(JSON.stringify(data));
+    localStorage.setItem("user_info", encryptedData);
+  };
+
+  const getCachedUserInfo = () => {
+    const cachedData = localStorage.getItem("user_info");
+    if (cachedData) {
+      try {
+        const decryptedData = decryptData(cachedData);
+        return JSON.parse(decryptedData);
+      } catch (error) {
+        console.error("Error decrypting user info:", error);
+        localStorage.removeItem("user_info");
+        return null;
+      }
+    }
+    return null;
+  };
+
+  // Fetch User Info with Caching
   const fetchUserInfo = useCallback(async () => {
     if (userInfoFetchedRef.current) return;
 
+    setLoading(true);
+
+    // Try to get data from cache
+    const cachedData = getCachedUserInfo();
+    if (cachedData) {
+      setUserInfo(cachedData);
+      setUserRoles(cachedData.groups.map((group) => group.name));
+      setLoading(false);
+      userInfoFetchedRef.current = true;
+      return;
+    }
+
+    // Get the token
     const token = await getToken();
     if (!token) {
       setUserInfo(null);
@@ -37,14 +73,17 @@ const useUserInfo = (personId = null) => {
     }
 
     try {
+      // Fetch user info
       const response = await authApi(token).get(endpoints.currentUser);
       const userData = response.data;
+
       setUserInfo(userData);
+      cacheUserInfo(userData);
 
       const roles = userData.groups.map((group) => group.name);
       setUserRoles(roles);
 
-      // Fetch bài viết của người dùng hiện tại
+      // Fetch user blogs
       const userBlogsUrl = endpoints.currentUserBlog.replace(
         ":id",
         userData.id
@@ -64,44 +103,47 @@ const useUserInfo = (personId = null) => {
     }
   }, [getToken]);
 
+  // Caching and fetching for personal info
   const fetchPersonalInfo = useCallback(async () => {
     if (personalInfoFetchedRef.current || !personId) return;
 
-    setLoading(true);
-    const token = await getToken();
-    if (!token) return;
-
     try {
       const userInfoUrl = endpoints.UserInfo.replace(":id", personId);
-      const response = await authApi(token).get(userInfoUrl);
+      const response = await authApi().get(userInfoUrl); // No token needed
       setPersonalInfo(response.data);
       personalInfoFetchedRef.current = true;
     } catch (err) {
-      handleError(err);
+      console.error(
+        "Error fetching personal info:",
+        err.response?.data || err.message
+      );
+      setError(err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
-  }, [personId, getToken]);
+  }, [personId]);
 
   const fetchUserBlog = useCallback(async () => {
-    setLoading(true);
-    const token = await getToken();
-    if (!token) return;
+    if (!personId) return; // Skip if no personId
 
     try {
       const url = endpoints.currentUserBlog.replace(":id", personId);
+      const response = await authApi().get(url); // No token needed
 
-      const response = await authApi(token).get(url);
       const sortedBlogs = response.data.results.sort(
         (a, b) => new Date(b.created_date) - new Date(a.created_date)
       );
       setPersonalBlogs(sortedBlogs);
     } catch (err) {
-      handleError(err);
+      console.error(
+        "Error fetching user blogs:",
+        err.response?.data || err.message
+      );
+      setError(err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
-  }, [personId, getToken]);
+  }, [personId]);
 
   const fetchUserApplyList = useCallback(async () => {
     if (userApplyListFetchedRef.current) return;
@@ -114,28 +156,31 @@ const useUserInfo = (personId = null) => {
       setUserApplyList(response.data.results);
       userApplyListFetchedRef.current = true;
     } catch (err) {
-      handleError(err);
+      console.error(
+        "Error fetching user apply list:",
+        err.response?.data || err.message
+      );
+      setError(err.response?.data || err.message);
     }
   }, [getToken]);
 
-  const handleError = (err) => {
-    console.error("Error:", err.response?.data || err.message);
-    setError(err.response?.data || err.message);
-  };
-
   useEffect(() => {
-    if (personId) {
-      fetchPersonalInfo();
-      fetchUserBlog();
-    } else {
+    // Fetch user info and apply list
+    if (!userInfoFetchedRef.current) {
       fetchUserInfo();
       fetchUserApplyList();
     }
+
+    // Fetch personal info and user blogs if personId is available
+    if (personId && !personalInfoFetchedRef.current) {
+      fetchPersonalInfo();
+      fetchUserBlog();
+    }
   }, [
-    fetchPersonalInfo,
     fetchUserInfo,
-    fetchUserBlog,
+    fetchPersonalInfo,
     fetchUserApplyList,
+    fetchUserBlog,
     personId,
   ]);
 
@@ -155,8 +200,13 @@ const useUserInfo = (personId = null) => {
           }
         );
         setUserInfo(response.data);
+        cacheUserInfo(response.data); // Cache updated info
       } catch (err) {
-        handleError(err);
+        console.error(
+          "Error updating user info:",
+          err.response?.data || err.message
+        );
+        setError(err.response?.data || err.message);
       }
     },
     [getToken]
@@ -173,7 +223,11 @@ const useUserInfo = (personId = null) => {
         });
         return { success: true };
       } catch (err) {
-        handleError(err);
+        console.error(
+          "Error changing password:",
+          err.response?.data || err.message
+        );
+        setError(err.response?.data || err.message);
         return {
           success: false,
           error: err.response?.data || "Failed to change password",
@@ -195,7 +249,11 @@ const useUserInfo = (personId = null) => {
       );
       return { success: true, data: response.data };
     } catch (err) {
-      handleError(err);
+      console.error(
+        "Error resetting password:",
+        err.response?.data || err.message
+      );
+      setError(err.response?.data || err.message);
       return {
         success: false,
         error: err.response?.data || "Failed to reset password",
@@ -210,7 +268,11 @@ const useUserInfo = (personId = null) => {
       });
       return { success: true };
     } catch (err) {
-      handleError(err);
+      console.error(
+        "Error requesting verification code:",
+        err.response?.data || err.message
+      );
+      setError(err.response?.data || err.message);
       return {
         success: false,
         error: err.response?.data || "Failed to send verification code",
@@ -231,6 +293,7 @@ const useUserInfo = (personId = null) => {
     changePassword,
     resetPassword,
     requestVerificationCode,
+    fetchUserApplyList,
   };
 };
 

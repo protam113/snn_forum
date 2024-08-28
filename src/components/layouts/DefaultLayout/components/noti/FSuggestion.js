@@ -9,18 +9,9 @@ import { useTheme } from "../../../../../context/themeContext";
 const FSuggestion = () => {
   const { theme } = useTheme();
 
-  const {
-    results: featuredUsers,
-    loading,
-    error,
-    fetchUsers,
-  } = useUserSearch();
+  const { results: featuredUsers, loading, error } = useUserSearch();
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
 
   const handleProfileClick = (personId) => {
     if (userInfo && userInfo.id.toString() === personId) {

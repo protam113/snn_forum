@@ -1,34 +1,26 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
-import useUserInfo from "../../../../hooks/useUserInfo";
+import { useNavigate, useParams } from "react-router-dom";
+import Block from "../../../../components/design/Block";
+import { FaRegCommentAlt } from "react-icons/fa";
+import { IoShareSocialOutline } from "react-icons/io5";
+import { MdPerson } from "react-icons/md"; // Import MdPerson icon
+import { useTheme } from "../../../../context/themeContext";
 import formatDate from "../../../../utils/formatDate";
 import Loading from "../../../error/load";
 import LikePost from "../../../../components/buttons/likeBlog";
-import useClickOutside from "../../../../hooks/useClickOutside";
-import { useTheme } from "../../../../context/themeContext";
 import useBlog from "../../../../hooks/useBlog";
-import Block from "../../../../components/design/Block";
-import { IoShareSocialOutline } from "react-icons/io5";
+import useUserInfo from "../../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
-import { MdPerson } from "react-icons/md";
+import useAuth from "../../../../hooks/useAuth";
 
-const Userblogs = () => {
-  const { userBlogs, loading, error } = useUserInfo();
-  const { likedBlogs, handleDeleteBlog, handleLike } = useBlog();
+const PersonalBlog = () => {
+  const { id: personId } = useParams();
+  const { personalBlogs, loading, error } = useUserInfo(personId);
+
+  const { likedBlogs, handleLike } = useBlog();
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = React.useState(null);
   const [expandedBlogs, setExpandedBlogs] = React.useState({});
-
-  const handleMenuClick = (blogId) => {
-    setActiveMenu((prev) => (prev === blogId ? null : blogId));
-  };
-
-  const handleEditClick = (blogId) => {
-    navigate(`/blog/edit/${blogId}`);
-  };
 
   const handleBlogClick = (blogId) => {
     navigate(`/blog/${blogId}`);
@@ -40,18 +32,6 @@ const Userblogs = () => {
       [blogId]: !prev[blogId],
     }));
   };
-
-  const handleDeleteClick = async (blogId) => {
-    if (window.confirm("Are you sure you want to delete this blog?")) {
-      await handleDeleteBlog(blogId);
-    }
-  };
-
-  const menuRef = useClickOutside(() => {
-    if (activeMenu !== null) {
-      setActiveMenu(null);
-    }
-  });
 
   const handleCopyLink = (blogId) => {
     const blogUrl = `${window.location.origin}/blog/${blogId}`;
@@ -75,10 +55,9 @@ const Userblogs = () => {
           key={media.file}
           src={media.file}
           alt="blog-media"
-          className={`object-cover w-100% h-full cursor-pointer ${
-            theme === "dark" ? "border-gray-700" : "border-gray-200"
+          className={`object-cover w-full sm:h-64 md:h-80 lg:h-96 xl:h-auto cursor-pointer ${
+            theme === "dark" ? "border-gray-800" : "border-white"
           }`}
-          onClick={() => handleBlogClick(userBlogs.id)}
         />
       );
     } else if (["pdf"].includes(extension)) {
@@ -89,7 +68,6 @@ const Userblogs = () => {
             style={{ width: "100%", height: "500px" }}
             frameBorder="0"
             title="PDF Viewer"
-            onClick={() => handleBlogClick(userBlogs.id)}
           />
         </div>
       );
@@ -97,15 +75,13 @@ const Userblogs = () => {
     return null;
   };
 
-  if (loading)
-    return (
-      <p>
-        <Loading />
-      </p>
-    );
-  if (error) return <p>Đã xảy ra lỗi khi lấy blog</p>;
+  if (loading) return <Loading />;
+  if (error) {
+    console.error("Error fetching personal blogs:", error);
+    return <p>Đã xảy ra lỗi khi lấy blog</p>;
+  }
 
-  const posts = userBlogs.results || [];
+  const posts = personalBlogs || [];
 
   return (
     <>
@@ -114,6 +90,7 @@ const Userblogs = () => {
       ) : (
         posts.map((blog) => (
           <Block
+            key={blog.id} // Add key for list items
             className={`p-4 rounded-lg border mt-4 ${
               theme === "dark"
                 ? "border-custom-zinc bg-zinc-700"
@@ -121,7 +98,7 @@ const Userblogs = () => {
             } shadow-sm`}
           >
             <div className="flex items-center mb-4">
-              {blog.user.profile_image ? (
+              {blog.user?.profile_image ? (
                 <img
                   src={blog.user.profile_image}
                   alt="avatar"
@@ -131,8 +108,8 @@ const Userblogs = () => {
                 />
               ) : (
                 <MdPerson
-                  className={`text-4xl ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  className={`w-12 h-12 ${
+                    theme === "dark" ? "text-gray-500" : "text-gray-400"
                   }`}
                 />
               )}
@@ -142,7 +119,7 @@ const Userblogs = () => {
                     theme === "dark" ? "text-white" : "text-black"
                   }`}
                 >
-                  <span>{blog.user.username}</span>
+                  <span>{blog.user?.username || "Unknown"}</span>
                 </h1>
                 <p
                   className={`text-gray-500 text-14 ${
@@ -151,63 +128,6 @@ const Userblogs = () => {
                 >
                   {formatDate(blog.created_date)}
                 </p>
-              </div>
-              <div className="ml-auto relative">
-                <BsThreeDots
-                  className={`text-2xl cursor-pointer ${
-                    theme === "dark"
-                      ? "text-gray-300 hover:text-gray-200"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                  onClick={() => handleMenuClick(blog.id)}
-                />
-                {activeMenu === blog.id && (
-                  <div
-                    ref={menuRef} // Apply ref here
-                    className={`absolute right-0 mt-2 w-48 ${
-                      theme === "dark"
-                        ? "bg-gray-700 border-gray-600"
-                        : "bg-zinc-200 border-gray-300"
-                    } border shadow-lg rounded-lg z-10`}
-                  >
-                    <ul
-                      className={`text-black-300 ${
-                        theme === "dark" ? "text-gray-200" : "text-black"
-                      }`}
-                    >
-                      <li
-                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                        onClick={() => handleEditClick(blog.id)}
-                      >
-                        <FaEdit
-                          className={`mr-2 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-400"
-                          }`}
-                        />
-                        Chỉnh sửa
-                      </li>
-                      <li
-                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                        onClick={() => handleDeleteClick(blog.id)}
-                      >
-                        <FaTrashAlt
-                          className={`mr-2 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-400"
-                          }`}
-                        />
-                        Xóa
-                      </li>
-                      <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
-                        <FaFlag
-                          className={`mr-2 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-400"
-                          }`}
-                        />
-                        Báo cáo
-                      </li>
-                    </ul>
-                  </div>
-                )}
               </div>
             </div>
             <p
@@ -247,21 +167,24 @@ const Userblogs = () => {
                 Xem ít hơn
               </p>
             )}
-            {blog.media.length > 0 && (
-              <div
-                className={`grid gap-4 ${
-                  blog.media.length === 1
-                    ? "grid-cols-1"
-                    : blog.media.length === 2
-                    ? "grid-cols-2"
-                    : blog.media.length === 3
-                    ? "grid-cols-3"
-                    : "grid-cols-2"
-                }`}
-              >
-                {blog.media.map((media) => renderMedia(media))}
-              </div>
-            )}
+            <div className="flex flex-col items-center p-4">
+              {/* Kiểm tra và hiển thị các phương tiện truyền thông nếu có */}
+              {blog.media.length > 0 && (
+                <div
+                  className={`grid gap-4 ${
+                    blog.media.length === 1
+                      ? "grid-cols-1"
+                      : blog.media.length === 2
+                      ? "grid-cols-2"
+                      : blog.media.length === 3
+                      ? "grid-cols-3"
+                      : "grid-cols-2"
+                  }`}
+                >
+                  {blog.media.map((media) => renderMedia(media, theme))}
+                </div>
+              )}
+            </div>
             <hr
               className={`my-4 ${
                 theme === "dark" ? "border-gray-600" : "border-gray-300"
@@ -273,7 +196,8 @@ const Userblogs = () => {
                   theme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                {blog.likes_count} lượt thích • {blog.comments_count} bình luận
+                {blog.likes_count || 0} lượt thích • {blog.comments_count || 0}{" "}
+                bình luận
               </p>
             </div>
             <hr
@@ -294,11 +218,6 @@ const Userblogs = () => {
                   }`}
                   onClick={() => handleBlogClick(blog.id)}
                 />
-                {/* <BiRepost
-                  className={`text-2xl cursor-pointer ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-500"
-                  }`}
-                /> */}
               </div>
               <IoShareSocialOutline
                 className={`text-2xl cursor-pointer ${
@@ -314,4 +233,4 @@ const Userblogs = () => {
   );
 };
 
-export default Userblogs;
+export default PersonalBlog;

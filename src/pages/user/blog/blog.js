@@ -123,7 +123,7 @@ const Blog = () => {
 
   return (
     <div className="post-list">
-      {blogs.map((blog, index) => {
+      {blogs.map((blog) => {
         const isOwner = userInfo && userInfo.id === blog.user.id;
         const isExpanded = expandedBlogId === blog.id;
 
@@ -210,27 +210,29 @@ const Blog = () => {
                   )}
                 </div>
               </div>
-              <p
-                onClick={() => handleBlogClick(blog.id)}
-                className={`mb-8 text-15 cursor-pointer font-semibold ${
-                  theme === "dark" ? "text-gray-300" : "text-black"
-                }`}
-              >
-                {blog.content}
-              </p>
-              <div
-                onClick={() => handleBlogClick(blog.id)}
-                className={`mb-8 text-14 ${
-                  theme === "dark" ? "text-gray-300" : "text-black"
-                } ${isExpanded ? "" : "line-clamp-3"}`}
-                dangerouslySetInnerHTML={{
-                  __html: isExpanded
-                    ? blog.description
-                    : `${blog.description.slice(0, 300)}${
-                        blog.description.length > 300 ? "..." : ""
-                      }`,
-                }}
-              />
+              <div onClick={() => handleBlogClick(blog.id)}>
+                <p
+                  onClick={() => handleBlogClick(blog.id)}
+                  className={`mb-8 text-15 cursor-pointer font-semibold ${
+                    theme === "dark" ? "text-gray-300" : "text-black"
+                  }`}
+                >
+                  {blog.content}
+                </p>
+                <div
+                  onClick={() => handleBlogClick(blog.id)}
+                  className={`mb-8 text-14 ${
+                    theme === "dark" ? "text-gray-300" : "text-black"
+                  } ${isExpanded ? "" : "line-clamp-3"}`}
+                  dangerouslySetInnerHTML={{
+                    __html: isExpanded
+                      ? blog.description
+                      : `${blog.description.slice(0, 300)}${
+                          blog.description.length > 300 ? "..." : ""
+                        }`,
+                  }}
+                />
+              </div>
               {!isExpanded && blog.description.length > 300 && (
                 <p
                   className="text-red-500 cursor-pointer"

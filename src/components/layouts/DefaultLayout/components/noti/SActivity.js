@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../../design/Block";
 import { FaHotjar } from "react-icons/fa";
@@ -9,15 +9,11 @@ import { useTheme } from "../../../../../context/themeContext";
 import Loading from "../../../../../pages/error/load";
 
 const SActivity = () => {
-  const { blogs, loading, error, fetchBlogs } = useBlog();
+  const { blogs, loading, error } = useBlog();
   const { theme } = useTheme();
   const navigate = useNavigate();
 
   const MAX_LENGTH = 20;
-
-  useEffect(() => {
-    fetchBlogs();
-  }, [fetchBlogs]);
 
   const truncateText = (text, maxLength) => {
     return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;

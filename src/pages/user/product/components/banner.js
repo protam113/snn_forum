@@ -2,7 +2,7 @@ import React from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css"; // Để sử dụng các kiểu dáng mặc định
 import { Link } from "react-router-dom";
-import useUserBanner from "../../../../hooks/useUserbanner";
+import { useUserBanner } from "../../../../hooks/useUserbanner";
 
 // Dữ liệu mặc định khi không có banner
 const defaultBanners = [
@@ -16,7 +16,17 @@ const defaultBanners = [
 ];
 
 const Banner = () => {
-  const { userBanner } = useUserBanner();
+  const { data: userBanner = [], isLoading, isError } = useUserBanner();
+
+  if (isLoading) {
+    return <p className="text-center text-gray-500">Đang tải...</p>;
+  }
+
+  if (isError) {
+    return (
+      <p className="text-center text-gray-500">Có lỗi xảy ra khi tải banner.</p>
+    );
+  }
   // Sử dụng dữ liệu mặc định nếu không có dữ liệu từ API
   const bannersToShow = userBanner.length > 0 ? userBanner : defaultBanners;
 

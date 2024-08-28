@@ -12,19 +12,19 @@ const useProduct = (productId) => {
 
   const { getToken } = useAuth();
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await authApi().get(endpoints.Products);
-      setProducts(response.data.results || []);
-    } catch (err) {
-      setError("Đã xảy ra lỗi khi tải sản phẩm!");
-      toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // const fetchProducts = useCallback(async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const response = await authApi().get(endpoints.Products);
+  //     setProducts(response.data.results || []);
+  //   } catch (err) {
+  //     setError("Đã xảy ra lỗi khi tải sản phẩm!");
+  //     toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, []);
 
   const fetchProduct = useCallback(async () => {
     if (!productId) return;
@@ -163,9 +163,9 @@ const useProduct = (productId) => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    // fetchProducts();
     fetchProduct();
-  }, [fetchProducts, fetchProduct]);
+  }, [fetchProduct]);
 
   return {
     products,

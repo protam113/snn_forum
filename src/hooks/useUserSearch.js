@@ -2,12 +2,26 @@ import { authApi, endpoints } from "../api/api";
 import { useState, useEffect, useCallback } from "react";
 import useDebounce from "./useDebounce";
 
-const useUserSearch = (searchTerm, delay = 500) => {
+const useUserSearch = (searchTerm, searchField = "username", delay = 500) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, delay);
+
+  const buildSearchUrl = (baseURL, searchTerm, searchField) => {
+    const params = new URLSearchParams();
+
+    if (searchTerm) {
+      if (searchField === "id") {
+        params.append("id", searchTerm);
+      } else {
+        params.append(searchField, searchTerm);
+      }
+    }
+
+    return `${baseURL}?${params.toString()}`;
+  };
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -17,7 +31,7 @@ const useUserSearch = (searchTerm, delay = 500) => {
       const response = await authApi().get(url);
       setResults(response.data.results);
     } catch (err) {
-      console.error("Lỗi khi tìm kiếm người dùng:", err);
+      console.error("Error fetching users:", err);
       setError(err);
     } finally {
       setLoading(false);
@@ -30,11 +44,15 @@ const useUserSearch = (searchTerm, delay = 500) => {
         setLoading(true);
         setError(null);
         try {
-          const url = `${endpoints.createUser}?search=${debouncedSearchTerm}`;
+          const url = buildSearchUrl(
+            endpoints.createUser,
+            debouncedSearchTerm,
+            searchField
+          );
           const response = await authApi().get(url);
           setResults(response.data.results);
         } catch (err) {
-          console.error("Lỗi khi tìm kiếm người dùng:", err);
+          console.error("Error searching users:", err);
           setError(err);
         } finally {
           setLoading(false);
@@ -45,7 +63,7 @@ const useUserSearch = (searchTerm, delay = 500) => {
     } else {
       fetchUsers();
     }
-  }, [debouncedSearchTerm, fetchUsers]);
+  }, [debouncedSearchTerm, searchField, fetchUsers]);
 
   return { results, loading, error, fetchUsers };
 };

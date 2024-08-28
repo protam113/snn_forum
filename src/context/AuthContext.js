@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import {
+  removeLocalStorage,
+  encryptData, // Function to encrypt data
+  decryptData, // Function to decrypt data
+} from "../utils/cryptoUtils";
 
 export const AuthContext = createContext();
 
@@ -11,21 +16,31 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null);
   const navigate = useNavigate();
 
-  const getToken = () => localStorage.getItem("access_token");
+  const getToken = () => {
+    const encryptedToken = localStorage.getItem("access_token");
+    return encryptedToken ? decryptData(encryptedToken) : null;
+  };
 
   const refreshAccessToken = async () => {
-    const refresh_token = Cookies.get("refresh_token");
-    console.log("Attempting to refresh token with:", refresh_token);
+    const encryptedRefreshToken = Cookies.get("refresh_token");
+    const refreshToken = encryptedRefreshToken
+      ? decryptData(encryptedRefreshToken)
+      : null;
+    console.log("Attempting to refresh token with:", refreshToken);
 
-    if (refresh_token) {
+    if (refreshToken) {
       try {
         const api = authApi();
         const response = await api.post(endpoints.refreshLogin, {
-          refreshToken: refresh_token,
+          refreshToken: refreshToken,
         });
         const { access_token } = response.data;
-        localStorage.setItem("access_token", access_token);
-        setAuth((prevAuth) => ({ ...prevAuth, access_token }));
+        const encryptedAccessToken = encryptData(access_token);
+        localStorage.setItem("access_token", encryptedAccessToken);
+        setAuth((prevAuth) => ({
+          ...prevAuth,
+          access_token: encryptedAccessToken,
+        }));
         console.log("Token refreshed successfully");
       } catch (err) {
         console.error("Error refreshing access token", err);
@@ -50,9 +65,11 @@ export const AuthProvider = ({ children }) => {
         })
       );
       const { access_token, refresh_token } = response.data;
-      setAuth({ username, access_token });
-      localStorage.setItem("access_token", access_token);
-      Cookies.set("refresh_token", refresh_token, { secure: true });
+      const encryptedAccessToken = encryptData(access_token);
+      const encryptedRefreshToken = encryptData(refresh_token);
+      setAuth({ username, access_token: encryptedAccessToken });
+      localStorage.setItem("access_token", encryptedAccessToken);
+      Cookies.set("refresh_token", encryptedRefreshToken, { secure: true });
       toast.success("Login successful! Redirecting to home...");
       setTimeout(() => {
         navigate("/");
@@ -78,7 +95,22 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("access_token");
     Cookies.remove("refresh_token");
 
+    removeLocalStorage("user_info");
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    const cookies = document.cookie.split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=; Max-Age=-99999999;";
+    }
+
     setAuth(null);
+
     navigate("/login");
   };
 

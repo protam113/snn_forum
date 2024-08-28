@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { MdSearch, MdClear } from "react-icons/md";
-import { MdPerson } from "react-icons/md";
+import { MdSearch, MdClear, MdPerson } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import useUserSearch from "../../../hooks/useUserSearch";
 import useUserInfo from "../../../hooks/useUserInfo";
 
 const User = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { results, loading, error, fetchUsers } = useUserSearch(searchTerm);
+  const [searchField, setSearchField] = useState("username");
+  const { results, loading, error } = useUserSearch(searchTerm, searchField);
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
 
@@ -17,13 +17,12 @@ const User = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      fetchUsers();
+      // React Query will handle the search automatically
     }
   };
 
   const handleClear = () => {
     setSearchTerm("");
-    fetchUsers();
   };
 
   const handleProfileClick = (userId) => {
@@ -34,11 +33,9 @@ const User = () => {
     }
   };
 
-  useEffect(() => {
-    if (!searchTerm) {
-      fetchUsers();
-    }
-  }, [searchTerm, fetchUsers]);
+  const handleFieldChange = (e) => {
+    setSearchField(e.target.value);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -51,12 +48,11 @@ const User = () => {
               className="w-full py-2 px-4 bg-transparent focus:outline-none"
               value={searchTerm}
               onChange={handleChange}
-              onKeyDown={handleKeyPress}
             />
             <button
               type="button"
               className="bg-primary text-primary-foreground rounded-r-lg px-4 py-2 hover:bg-primary/90"
-              onClick={fetchUsers}
+              onClick={() => {}}
             >
               <MdSearch className="text-xl" />
             </button>
@@ -69,6 +65,17 @@ const User = () => {
               </button>
             )}
           </div>
+          <select
+            className="mt-2 w-full bg-white border rounded-lg py-2 px-4"
+            value={searchField}
+            onChange={handleFieldChange}
+          >
+            <option value="username">Username</option>
+            <option value="first_name">First Name</option>
+            <option value="last_name">Last Name</option>
+            <option value="email">Email</option>
+            <option value="id">ID</option>
+          </select>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -76,34 +83,36 @@ const User = () => {
         {error && (
           <p className="text-center text-red-500">Error: {error.message}</p>
         )}
-        {results.map((user) => (
-          <div
-            key={user.id}
-            className="flex items-center space-x-4 cursor-pointer"
-            onClick={() => handleProfileClick(user.id)}
-          >
-            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-              {user.profile_image ? (
-                <img
-                  src={user.profile_image}
-                  alt={`${user.first_name} ${user.last_name}`}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-              ) : (
-                <MdPerson className="w-12 h-12 text-gray-600" />
-              )}
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold">
-                {user.first_name} {user.last_name || "Unknown"}
-              </h3>
-              <p className="text-sm text-gray-600">@{user.username}</p>
-            </div>
-          </div>
-        ))}
-        {results.length === 0 && !loading && !error && (
-          <p className="text-center text-gray-500">No results found</p>
-        )}
+        {Array.isArray(results) && results.length > 0
+          ? results.map((user) => (
+              <div
+                key={user.id}
+                className="flex items-center space-x-4 cursor-pointer"
+                onClick={() => handleProfileClick(user.id)}
+              >
+                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                  {user.profile_image ? (
+                    <img
+                      src={user.profile_image}
+                      alt={`${user.first_name} ${user.last_name}`}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <MdPerson className="w-12 h-12 text-gray-600" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    {user.first_name} {user.last_name || "Unknown"}
+                  </h3>
+                  <p className="text-sm text-gray-600">@{user.username}</p>
+                </div>
+              </div>
+            ))
+          : !loading &&
+            !error && (
+              <p className="text-center text-gray-500">No results found</p>
+            )}
       </div>
     </div>
   );

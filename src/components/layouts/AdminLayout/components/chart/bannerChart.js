@@ -1,8 +1,18 @@
 import React from "react";
-import useUserBanner from "../../../../../hooks/useUserbanner";
+import { useUserBanner } from "../../../../../hooks/useUserbanner";
 
 export default function BannerChart() {
-  const { userBanner } = useUserBanner();
+  const { data: userBanner = [], isLoading, isError } = useUserBanner();
+
+  if (isLoading) {
+    return <p className="text-center text-gray-500">Đang tải...</p>;
+  }
+
+  if (isError) {
+    return (
+      <p className="text-center text-gray-500">Có lỗi xảy ra khi tải banner.</p>
+    );
+  }
   const totalCategories = userBanner.length;
 
   return (

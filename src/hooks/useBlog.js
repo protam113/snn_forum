@@ -22,7 +22,7 @@ const useBlog = (blogId) => {
   const fetchBlogs = useCallback(async () => {
     setLoading(true);
     const token = await getToken();
-    const cacheKey = token ? "blogs_with_token" : "blogs_without_token";
+    const cacheKey = "blogs";
     const cacheTimeKey = `${cacheKey}_time`;
     const cachedData = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(cacheTimeKey);

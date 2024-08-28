@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import useProduct from "../../../../hooks/useProduct";
 import Loading from "../../../error/load";
+import { useProducts } from "../../../../hooks/useProductdemo";
 
 // Hàm định dạng giá tiền
 const formatPrice = (price) => {
@@ -11,15 +12,20 @@ const formatPrice = (price) => {
 };
 
 const Product = () => {
-  const { products, loading, error } = useProduct();
+  // const { products, loading, error } = useProduct();
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loading />
-      </div>
-    );
-  if (error) return <p>{error}</p>;
+  // if (loading)
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <Loading />
+  //     </div>
+  //   );
+  // if (error) return <p>{error}</p>;
+
+  const { data: products, error, isLoading } = useProducts();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   // Giới hạn hiển thị chỉ 12 sản phẩm
   const displayedProducts = products.slice(0, 12);

@@ -1,31 +1,29 @@
-// src/utils/cryptoUtils.js
-
 import CryptoJS from "crypto-js";
 
-// Load the secret key from environment variables
+// Lấy khóa bí mật từ biến môi trường
 const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 if (!secretKey) {
-  throw new Error("REACT_APP_SECRET_KEY is not defined");
+  throw new Error("REACT_APP_SECRET_KEY chưa được định nghĩa");
 }
 
-// Function to encrypt data
+// Hàm mã hóa dữ liệu
 export const encryptData = (data) => {
   if (typeof data !== "string") {
-    data = JSON.stringify(data);
+    data = JSON.stringify(data); // Chuyển đổi đối tượng thành chuỗi nếu cần
   }
 
   try {
     return CryptoJS.AES.encrypt(data, secretKey).toString();
   } catch (error) {
-    throw new Error("Error during encryption: " + error.message);
+    throw new Error("Lỗi khi mã hóa: " + error.message);
   }
 };
 
-// Function to decrypt data
+// Hàm giải mã dữ liệu
 export const decryptData = (ciphertext) => {
   if (typeof ciphertext !== "string") {
-    throw new Error("Ciphertext must be a string");
+    throw new Error("Ciphertext phải là một chuỗi");
   }
 
   try {
@@ -33,43 +31,53 @@ export const decryptData = (ciphertext) => {
     const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
 
     if (!decryptedData) {
-      throw new Error("Failed to decrypt data. Possible incorrect secret key.");
+      throw new Error(
+        "Không thể giải mã dữ liệu. Có thể khóa bí mật không đúng."
+      );
     }
 
-    return JSON.parse(decryptedData);
+    // Thử phân tích dữ liệu đã giải mã dưới dạng JSON nếu có thể
+    try {
+      return JSON.parse(decryptedData);
+    } catch (e) {
+      return decryptedData; // Trả về dưới dạng chuỗi nếu phân tích JSON không thành công
+    }
   } catch (error) {
-    throw new Error("Error during decryption: " + error.message);
+    throw new Error("Lỗi khi giải mã: " + error.message);
   }
 };
 
-// Function to set encrypted data in localStorage
+// Hàm thiết lập dữ liệu đã mã hóa trong localStorage
 export const setEncryptedLocalStorage = (key, value) => {
   try {
     const encryptedValue = encryptData(value);
     localStorage.setItem(key, encryptedValue);
   } catch (error) {
-    console.error("Error setting encrypted data in localStorage:", error);
+    console.error(
+      "Lỗi khi thiết lập dữ liệu mã hóa trong localStorage:",
+      error
+    );
   }
 };
 
-// Function to get decrypted data from localStorage
+// Hàm lấy dữ liệu đã giải mã từ localStorage
 export const getDecryptedLocalStorage = (key) => {
   try {
     const encryptedValue = localStorage.getItem(key);
     if (!encryptedValue) return null;
     return decryptData(encryptedValue);
   } catch (error) {
-    console.error("Error getting decrypted data from localStorage:", error);
+    console.error("Lỗi khi lấy dữ liệu giải mã từ localStorage:", error);
     return null;
   }
 };
 
-// Function to remove item from localStorage
+// Hàm xóa mục khỏi localStorage
 export const removeLocalStorage = (key) => {
   localStorage.removeItem(key);
 };
 
-// Function to set encrypted data in cookies
+// Hàm thiết lập dữ liệu đã mã hóa trong cookie
 export const setEncryptedCookie = (name, value, days = 7) => {
   try {
     const encryptedValue = encryptData(value);
@@ -79,11 +87,11 @@ export const setEncryptedCookie = (name, value, days = 7) => {
       encryptedValue
     )};expires=${expires.toUTCString()};path=/`;
   } catch (error) {
-    console.error("Error setting encrypted cookie:", error);
+    console.error("Lỗi khi thiết lập cookie mã hóa:", error);
   }
 };
 
-// Function to get decrypted data from cookies
+// Hàm lấy dữ liệu đã giải mã từ cookie
 export const getDecryptedCookie = (name) => {
   const nameEQ = `${name}=`;
   const cookies = document.cookie.split(";");
@@ -95,7 +103,7 @@ export const getDecryptedCookie = (name) => {
         const encryptedValue = decodeURIComponent(c.substring(nameEQ.length));
         return decryptData(encryptedValue);
       } catch (error) {
-        console.error("Error decrypting cookie data:", error);
+        console.error("Lỗi khi giải mã dữ liệu cookie:", error);
         return null;
       }
     }
@@ -103,7 +111,7 @@ export const getDecryptedCookie = (name) => {
   return null;
 };
 
-// Function to remove cookie
+// Hàm xóa cookie
 export const removeCookie = (name) => {
   document.cookie = `${name}=; Max-Age=-99999999; path=/;`;
 };

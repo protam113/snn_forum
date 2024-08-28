@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Block from "../../../../components/design/Block";
 import { FaRegCommentAlt } from "react-icons/fa";
