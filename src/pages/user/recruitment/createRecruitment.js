@@ -8,33 +8,32 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import { salary } from "../../../data/SalaryRange";
-import useRecruitment from "../../../hooks/useRecruitment";
 import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "../../../context/themeContext";
 import { useTags } from "../../../hooks/useTag";
 import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
 import Toolbar from "../../../components/design/Toolbar";
+import { useAddRecruitment } from "../../../hooks/Recruitment/useRecruitment";
 
 const CreateRecruitment = () => {
-  const { addRecruitment, loading, submitting } = useRecruitment();
+  const { mutate: addRecruitmentMutation } = useAddRecruitment();
   const navigate = useNavigate();
   const { data: tags, isLoading } = useTags();
-
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     content: "",
     link: "",
     date: "",
     experience: "",
     quantity: "",
-    work: "",
     job_detail: "",
     mail: "",
     phone_number: "",
     salary: "",
     location: "",
+    tag_id: [],
   });
 
   const handleLocationChange = (formattedLocation) => {
@@ -52,21 +51,33 @@ const CreateRecruitment = () => {
     }
   };
 
+  const handleTagChange = (tagId) => {
+    setFormData((prev) => {
+      const tag_ids = prev.tag_id || [];
+      if (tag_ids.includes(tagId)) {
+        return { ...prev, tag_id: tag_ids.filter((id) => id !== tagId) };
+      } else {
+        return { ...prev, tag_id: [...tag_ids, tagId] };
+      }
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate all required fields
     if (
       !formData.content ||
       !formData.link ||
       !formData.date ||
       !formData.experience ||
       !formData.quantity ||
-      !formData.work ||
       !formData.job_detail ||
       !formData.mail ||
       !formData.phone_number ||
       !formData.salary ||
-      !formData.location
+      !formData.location ||
+      formData.tag_id.length === 0
     ) {
       toast.error("Vui lòng điền đầy đủ thông tin.");
       return;
@@ -74,34 +85,26 @@ const CreateRecruitment = () => {
 
     const htmlContent = marked(formData.job_detail);
 
+    const newRecruitment = {
+      ...formData,
+      job_detail: htmlContent,
+    };
+
+    setLoading(true);
     try {
-      await addRecruitment({
-        ...formData,
-        job_detail: htmlContent, // Lưu nội dung đã chuyển đổi thành HTML
+      await addRecruitmentMutation(newRecruitment, {
+        onSuccess: () => {
+          navigate(-1);
+        },
+        onError: () => {},
       });
-      toast.success("Tin tuyển dụng đã được đăng thành công!");
-
-      setFormData({
-        content: "",
-        link: "",
-        date: "",
-        experience: "",
-        quantity: "",
-        work: "",
-        job_detail: "",
-        mail: "",
-        phone_number: "",
-        salary: "",
-        location: "",
-      });
-
-      navigate(-1);
     } catch (error) {
       console.error(
         "Error adding recruitment:",
         error.response?.data || error.message
       );
-      toast.error("Đã xảy ra lỗi khi đăng tin tuyển dụng.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,6 +127,7 @@ const CreateRecruitment = () => {
       </header>
 
       <main>
+        {loading && <div className="loading-spinner">Loading...</div>}
         <form
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
           onSubmit={handleSubmit}
@@ -224,30 +228,6 @@ const CreateRecruitment = () => {
                 className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
               />
             </div>
-
-            <div>
-              <label
-                htmlFor="work"
-                className="text-sm font-medium flex items-center gap-2 mb-1"
-              >
-                Loại Công Việc
-              </label>
-              <select
-                id="work"
-                name="work"
-                value={formData.work}
-                onChange={handleChange}
-                className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
-              >
-                <option value="" disabled>
-                  Chọn loại công việc
-                </option>
-                <option value="full-time">Toàn thời gian</option>
-                <option value="part-time">Bán thời gian</option>
-                {/* <option value="contract">Hợp đồng</option>
-                <option value="internship">Thực Tập</option> */}
-              </select>
-            </div>
           </div>
 
           {/* Cột Phải */}
@@ -267,33 +247,10 @@ const CreateRecruitment = () => {
             </div>
             <div>
               <label
-                htmlFor="job_detail"
-                className="text-sm font-medium mb-1 block"
-              >
-                Mô Tả Công Việc
-              </label>
-              <Toolbar onInsert={handleInsert} />
-              <textarea
-                id="job_detail"
-                name="job_detail"
-                value={formData.job_detail}
-                onChange={(e) => handleChange(e)}
-                className="mb-6"
-                placeholder="Mô tả công việc"
-                rows={4}
-                style={{ width: "100%", height: "auto" }}
-              />
-              <div className="mt-4">
-                <ReactMarkdown>{formData.job_detail}</ReactMarkdown>
-              </div>
-            </div>
-
-            <div>
-              <label
                 htmlFor="mail"
                 className="text-sm font-medium flex items-center gap-2 mb-1"
               >
-                <FaEnvelope className="text-gray-500" /> Email
+                <FaEnvelope className="text-gray-500" /> Email Liên Hệ
               </label>
               <input
                 id="mail"
@@ -301,7 +258,7 @@ const CreateRecruitment = () => {
                 type="email"
                 value={formData.mail}
                 onChange={handleChange}
-                placeholder="contact@company.com"
+                placeholder="example@example.com"
                 className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
               />
             </div>
@@ -319,7 +276,7 @@ const CreateRecruitment = () => {
                 type="tel"
                 value={formData.phone_number}
                 onChange={handleChange}
-                placeholder="0123456789"
+                placeholder="+84 123 456 789"
                 className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
               />
             </div>
@@ -341,22 +298,58 @@ const CreateRecruitment = () => {
                 <option value="" disabled>
                   Chọn mức lương
                 </option>
-                {salary.map((s, index) => (
-                  <option key={index} value={s.value}>
-                    {s.label}
+                {salary.map((range) => (
+                  <option key={range.id} value={range.value}>
+                    {range.label}
                   </option>
                 ))}
               </select>
             </div>
+
+            {/* Checkbox tags */}
+            <div className="col-span-2">
+              <label className="text-sm font-medium flex items-center gap-2 mb-1">
+                Các Tags
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {!isLoading &&
+                  tags?.map((tag) => (
+                    <label key={tag.id} className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        className="form-checkbox"
+                        checked={formData.tag_id.includes(tag.id)} // Use 'tag_id' here
+                        onChange={() => handleTagChange(tag.id)}
+                      />
+                      <span className="ml-2">{tag.name}</span>
+                    </label>
+                  ))}
+              </div>
+            </div>
           </div>
 
-          <div className="flex justify-end mt-8">
+          {/* Trình Soạn Thảo Công Việc */}
+          <div className="col-span-2">
+            <Toolbar onInsert={handleInsert} />
+            <textarea
+              id="job_detail"
+              name="job_detail"
+              rows={6}
+              value={formData.job_detail}
+              onChange={handleChange}
+              placeholder="Nhập chi tiết công việc..."
+              className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
+            ></textarea>
+            <ReactMarkdown className="prose" children={formData.job_detail} />
+          </div>
+
+          {/* Nút Gửi */}
+          <div className="col-span-2 text-center mt-6">
             <button
               type="submit"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={submitting}
+              className="bg-blue-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600"
             >
-              {submitting ? "Đang gửi..." : "Gửi"}
+              Đăng Tin Tuyển Dụng
             </button>
           </div>
         </form>

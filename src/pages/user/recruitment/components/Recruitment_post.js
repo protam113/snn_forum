@@ -8,23 +8,19 @@ import useRecruitment from "../../../../hooks/useRecruitment";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 import formatDate from "../../../../utils/formatDate";
+import {
+  useDeleteRecruitment,
+  useRecruitmentList,
+} from "../../../../hooks/Recruitment/useRecruitment";
 
 const RecruitmentPost = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { userInfo } = useUserInfo();
-  const {
-    recruitments,
-    loading,
-    error,
-    handleDeleteRecruitment,
-    fetchRecruitments,
-  } = useRecruitment();
 
-  useEffect(() => {
-    fetchRecruitments();
-  }, [fetchRecruitments]);
+  const { data: recruitments, error, isLoading } = useRecruitmentList();
+  const { mutate: deleteRecruitmentMutation } = useDeleteRecruitment();
 
   const sortedRecruitments = (recruitments ?? [])
     .slice()
@@ -50,8 +46,12 @@ const RecruitmentPost = () => {
   };
 
   const handleDeleteClick = async (postId) => {
-    await handleDeleteRecruitment(postId);
-    setActiveMenu(null);
+    return deleteRecruitmentMutation(
+      { postId },
+      {
+        onSuccess: () => {},
+      }
+    );
   };
 
   const handleCopyUrl = (postId) => {
@@ -66,7 +66,7 @@ const RecruitmentPost = () => {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />

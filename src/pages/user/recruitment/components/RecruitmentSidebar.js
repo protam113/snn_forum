@@ -1,21 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FaHotjar } from "react-icons/fa";
 import { useTheme } from "../../../../context/themeContext";
-import useRecruitment from "../../../../hooks/useRecruitment";
 import Loading from "../../../error/load";
 import { useNavigate } from "react-router-dom";
 import useTokenCheck from "../../../../hooks/useTokenCheck";
+import { useRecruitmentList } from "../../../../hooks/Recruitment/useRecruitment";
 
 const RecruitmentSidebar = () => {
   const hasToken = useTokenCheck();
 
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { recruitments, loading, error, fetchRecruitments } = useRecruitment();
-
-  useEffect(() => {
-    fetchRecruitments();
-  }, [fetchRecruitments]);
+  const { data: recruitments, error, isLoading } = useRecruitmentList();
 
   const handlePostClick = (postId) => {
     navigate(`/recruitment/${postId}`);
@@ -25,7 +21,7 @@ const RecruitmentSidebar = () => {
     navigate("/tuyen_dung/tao_tin_tuyen_dung");
   };
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />

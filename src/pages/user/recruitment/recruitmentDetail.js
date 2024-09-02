@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { useParams } from "react-router-dom";
 import {
   FaEnvelope,
   FaPhone,
@@ -9,26 +9,24 @@ import {
 } from "react-icons/fa";
 import Loading from "../../error/load";
 import { HiMiniUserGroup } from "react-icons/hi2";
-
-import useRecruitment from "../../../hooks/useRecruitment";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { useTheme } from "../../../context/themeContext";
 import { BsClock } from "react-icons/bs";
 import { MdOutlineWork } from "react-icons/md";
+import { useRecruitmentDetail } from "../../../hooks/Recruitment/useRecruitment";
 
 const RecruitmentDetail = () => {
   const { theme } = useTheme();
   const { id: postId } = useParams();
-  const { recruitment, loading, error, fetchRecruitment } =
-    useRecruitment(postId);
+  const {
+    data: recruitment,
+    isLoading,
+    isError,
+    error,
+  } = useRecruitmentDetail(postId);
   const { userInfo } = useUserInfo();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchRecruitment();
-  }, [fetchRecruitment]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
@@ -36,7 +34,7 @@ const RecruitmentDetail = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <p className={`${theme === "dark" ? "text-white" : "text-black"}`}>
         Error: {error}
@@ -217,9 +215,26 @@ const RecruitmentDetail = () => {
                 theme === "dark" ? "text-gray-400" : "text-gray-500"
               }`}
             />
-            <div className="flex-1">
-              <h4 className="text-16 font-medium">Work</h4>
-              <p>{recruitment.work}</p>
+            <div
+              className={`mt-6 ${
+                theme === "dark" ? " text-white" : " text-black"
+              } p-4 rounded-lg`}
+            >
+              <h3 className="text-18 font-semibold mb-4">Tags</h3>
+              <div className="flex flex-wrap gap-2">
+                {recruitment.tags.map((tagObj) => (
+                  <span
+                    key={tagObj.id}
+                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                      theme === "dark"
+                        ? "bg-gray-700 text-white"
+                        : "bg-gray-200 text-black"
+                    }`}
+                  >
+                    {tagObj.tag.name}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-4">
