@@ -1,6 +1,7 @@
 // layout
 import AdHome from "../components/layouts/AdminLayout/AdHome";
 import { DefaultLayout, AdminLayout } from "../components/layouts/index";
+import AdminWeb from "../pages/admin/admin/adminWeb";
 import AddUser from "../pages/admin/adUser/addUser";
 import AdUser from "../pages/admin/adUser/adUser";
 import Banner from "../pages/admin/banner/banner";
@@ -9,6 +10,7 @@ import AdCategory from "../pages/admin/category/Category";
 import CreateCategory from "../pages/admin/category/createCategory";
 import EdtCategory from "../pages/admin/category/edtCategory";
 import StatisticalPage from "../pages/admin/statisticalMail.js/statisticalPage";
+import ManageTag from "../pages/admin/tag/ManageTag";
 import ResetPassword from "../pages/auth/authResetPass";
 import ConfirmPage from "../pages/auth/confirmPage";
 import Login from "../pages/auth/login";
@@ -23,6 +25,7 @@ import ContributeIdeas from "../pages/user/contributeIdeas";
 import Home from "../pages/user/home";
 import AllProduct from "../pages/user/product/allProduct";
 import CategoryProduct from "../pages/user/product/components/CategoryProduct";
+import CreateDemo from "../pages/user/product/createDemo";
 import CreateProduct from "../pages/user/product/CreateProduct";
 import EdtProduct from "../pages/user/product/edtProduct";
 import ProductDetail from "../pages/user/product/product_detail";
@@ -60,6 +63,9 @@ const publicRoutes = [
     component: NotiPage,
     layout: DefaultLayout,
   },
+
+  { path: "/demo", component: CreateDemo, layout: DefaultLayout },
+
   { path: "/", component: Home, layout: DefaultLayout },
   { path: "/create_blog", component: Create, layout: DefaultLayout },
   {
@@ -144,8 +150,18 @@ const privateRoutes = [
     layout: AdminLayout,
   },
   {
+    path: "/admin/thong_tin_web",
+    component: AdminWeb,
+    layout: AdminLayout,
+  },
+  {
     path: "/admin/thong_ke",
     component: StatisticalPage,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/tag",
+    component: ManageTag,
     layout: AdminLayout,
   },
   {

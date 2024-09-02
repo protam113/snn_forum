@@ -1,8 +1,8 @@
 // components/AllProduct.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useProduct from "../../../hooks/useProduct";
 import useCategories from "../../../hooks/useCategories";
+import { useProductList } from "../../../hooks/Product/useProduct";
 import Loading from "../../error/load";
 import ProductSidebar from "./components/productSidebar";
 
@@ -16,14 +16,9 @@ const AllProduct = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceOrder, setPriceOrder] = useState("asc");
   const [categoryId, setCategoryId] = useState(null);
-  const navigate = useNavigate(); // Hook để điều hướng
+  const navigate = useNavigate();
 
-  const {
-    products,
-    loading: productLoading,
-    error: productError,
-  } = useProduct();
-
+  const { data: products, error, isLoading } = useProductList();
   const {
     productsByCategory,
     loading: categoryLoading,
@@ -52,15 +47,16 @@ const AllProduct = () => {
     setPriceOrder("asc");
   };
 
-  if (productLoading || categoryLoading) {
+  if (isLoading || categoryLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     );
   }
-  if (productError || categoryError) {
-    return <p>{productError || categoryError}</p>;
+
+  if (error || categoryError) {
+    return <p>{error || categoryError}</p>;
   }
 
   return (
@@ -74,7 +70,7 @@ const AllProduct = () => {
         <div className="w-3/4 p-4">
           <button
             onClick={() => navigate(-1)}
-            className="mb-4  text-blue-700 hover:text-blue-400 px-4 py-2 rounded-md transition-colors"
+            className="mb-4 text-blue-700 hover:text-blue-400 px-4 py-2 rounded-md transition-colors"
           >
             Quay lại
           </button>
@@ -87,7 +83,11 @@ const AllProduct = () => {
               >
                 <div className="relative h-64">
                   <img
-                    src={product.file}
+                    src={
+                      product.medias.length > 0
+                        ? product.medias[0].media
+                        : "https://via.placeholder.com/150"
+                    }
                     alt={product.title}
                     className="w-full h-full object-cover"
                   />

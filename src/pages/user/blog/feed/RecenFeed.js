@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
-import useBlog from "../../../../hooks/useBlog";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../../error/load";
 import formatDate from "../../../../utils/formatDate";
+import { useBlogs } from "../../../../hooks/useFetchList";
 
 const RecentFeed = () => {
-  const { blogs, loading, error, fetchBlogs } = useBlog();
+  const { data: blogs = [], loading, error } = useBlogs();
   const navigate = useNavigate();
-  useEffect(() => {
-    fetchBlogs();
-  }, [fetchBlogs]);
+
   const handleBlogClick = (blogId) => {
     navigate(`/blog/${blogId}`);
   };

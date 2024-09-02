@@ -9,6 +9,8 @@ const useRecruitment = (postId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recruitment, setRecruitment] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
   const { getToken } = useAuth();
 
   const fetchRecruitments = useCallback(async () => {
@@ -128,6 +130,8 @@ const useRecruitment = (postId) => {
           error.response?.data || error.message
         );
         setError("Error adding recruitment");
+      } finally {
+        setSubmitting(false);
       }
     },
     [getToken]
@@ -205,6 +209,7 @@ const useRecruitment = (postId) => {
 
   return {
     recruitments,
+    submitting,
     loading,
     error,
     recruitment,

@@ -2,6 +2,8 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
+let apiCallCount = 0;
+
 // Biến để đếm số lượng API được gọi
 const authApi = (token = null) => {
   const config = {
@@ -12,11 +14,39 @@ const authApi = (token = null) => {
     },
   };
 
-  return axios.create(config);
+  const instance = axios.create(config);
+
+  instance.interceptors.request.use(
+    (request) => {
+      // Đếm số lượng API được gọi
+      apiCallCount += 1;
+
+      // Kiểm tra và log tên của API đang được gọi
+      // Đảm bảo rằng biến 'endpoints' đã được định nghĩa
+      const apiName = endpoints
+        ? Object.keys(endpoints).find((key) => request.url === endpoints[key])
+        : null;
+
+      console.log(
+        `API Call #${apiCallCount}: ${apiName || "Unknown API"} - ${
+          request.url
+        }`
+      );
+
+      return request;
+    },
+    (error) => {
+      // Xử lý lỗi request
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
 
 // Các endpoint API
 const endpoints = {
+  web: process.env.REACT_APP_Web_ENDPOINT,
   login: process.env.REACT_APP_LOGIN_ENDPOINT,
   refreshLogin: process.env.REACT_APP_refreshLogin_ENDPOINT,
   Verify: process.env.REACT_APP_Verify_ENDPOINT,
@@ -35,6 +65,8 @@ const endpoints = {
   CmtBlogReply: process.env.REACT_APP_CmtBlog_Replies_ENDPOINT,
   DelCmt: process.env.REACT_APP_DelCmt_ENDPOINT,
   Recruitment: process.env.REACT_APP_Recruitment_ENDPOINT,
+  Tag: process.env.REACT_APP_Tag_ENDPOINT,
+  TagId: process.env.REACT_APP_TagId_ENDPOINT,
   RecruitmentDetail: process.env.REACT_APP_RecruitmentDetail_ENDPOINT,
   ApplyJob: process.env.REACT_APP_Apply_Job_ENDPOINT,
   EditApplyJob: process.env.REACT_APP_Edit_Apply_Job_ENDPOINT,

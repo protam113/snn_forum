@@ -71,12 +71,10 @@ function App() {
         <AuthProvider>
           <ThemeProvider>
             <BlogProvider>
-              <LoadingProvider>
-                <HelmetProvider>
-                  <AppContent />
-                  <ToastContainer position="top-center" />
-                </HelmetProvider>
-              </LoadingProvider>
+              <HelmetProvider>
+                <AppContent />
+                <ToastContainer position="top-center" />
+              </HelmetProvider>
             </BlogProvider>
           </ThemeProvider>
         </AuthProvider>

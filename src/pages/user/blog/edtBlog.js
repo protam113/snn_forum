@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import useBlog from "../../../hooks/useBlog";
 import Loading from "../../error/load";
 import { FaFilePdf, FaTrashAlt } from "react-icons/fa";
 import { useTheme } from "../../../context/themeContext";
+import { marked } from "marked";
+import ReactMarkdown from "react-markdown";
+import TurndownService from "turndown";
+import Toolbar from "../../../components/design/Toolbar";
 
 const EdtBlog = () => {
   const { theme } = useTheme();
@@ -27,13 +29,18 @@ const EdtBlog = () => {
 
   useEffect(() => {
     if (blog) {
+      const turndownService = new TurndownService();
+      const descriptionMarkdown = turndownService.turndown(
+        blog.description || ""
+      );
+
       setFormData({
         content: blog.content || "",
-        description: blog.description || "",
+        description: descriptionMarkdown,
         visibility: blog.visibility || "public",
         file_type: blog.file_type || "image",
         media: blog.media || [],
-        id_media_remove: [], // Khởi tạo danh sách id_media_remove rỗng
+        id_media_remove: [],
       });
       setSelectedFiles(blog.media || []);
     }
@@ -63,10 +70,10 @@ const EdtBlog = () => {
     }
   };
 
-  const handleDescriptionChange = (value) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      description: value,
+  const handleInsert = (text) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: prev.job_detail + text,
     }));
   };
 
@@ -79,6 +86,7 @@ const EdtBlog = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+
     const data = new FormData();
     // Thêm các tệp mới vào formData
     selectedFiles.forEach((file) => {
@@ -94,6 +102,12 @@ const EdtBlog = () => {
     });
 
     try {
+      // Chuyển Markdown description thành HTML
+      const htmlDescription = marked(formData.description);
+
+      // Cập nhật formData với nội dung HTML
+      data.append("description", htmlDescription);
+
       await editBlog(data);
       toast.success("Blog updated successfully!");
       navigate(`/blog/${blogId}`);
@@ -121,7 +135,6 @@ const EdtBlog = () => {
     >
       <h1 className="text-2xl font-bold mb-4">Edit Blog</h1>
       <form onSubmit={handleSubmit}>
-        {/* Form content */}
         <div className="mb-4">
           <label
             htmlFor="content"
@@ -143,6 +156,8 @@ const EdtBlog = () => {
             rows="2"
           />
         </div>
+        <Toolbar onInsert={handleInsert} />
+
         <div className="mb-4">
           <label
             htmlFor="description"
@@ -152,13 +167,23 @@ const EdtBlog = () => {
           >
             Description
           </label>
-          <ReactQuill
+          <textarea
             value={formData.description}
-            onChange={handleDescriptionChange}
-            className={`mb-6 ${theme === "dark" ? "text-white" : "text-black"}`}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
+            }
+            className={`mb-6 ${
+              theme === "dark"
+                ? "text-white bg-gray-800"
+                : "text-black bg-white"
+            }`}
             placeholder="What's on your mind?"
-            style={{ height: "12rem" }}
+            rows={4}
+            style={{ width: "100%" }}
           />
+          <div className="mt-4">
+            <ReactMarkdown>{formData.description}</ReactMarkdown>
+          </div>
         </div>
         <hr className="my-6" />
         <div className="mb-4">
@@ -219,49 +244,40 @@ const EdtBlog = () => {
                   className="object-cover w-full h-full"
                 />
               ) : file?.type === "application/pdf" ? (
-                <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
-                  <FaFilePdf size={40} />
-                  <p className="text-xs">PDF</p>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
-                  <p className="text-xs">Unsupported File</p>
-                </div>
-              )}
+                <FaFilePdf className="w-full h-full text-gray-600" />
+              ) : null}
               <button
                 type="button"
                 onClick={() => handleRemoveFile(index)}
-                className="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-1"
+                className="absolute top-1 right-1 text-red-500"
               >
                 <FaTrashAlt />
               </button>
             </div>
           ))}
         </div>
-
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          className="hidden"
-          multiple
-          accept=".jpg, .jpeg, .png, .pdf"
-        />
-
         <button
           type="button"
           onClick={handleFileClick}
-          className="w-full p-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+          className="mb-4 p-2 bg-blue-500 text-white rounded"
         >
-          {selectedFiles.length > 0 ? "Change Files" : "Add Files"}
+          Upload Files
         </button>
-
+        <input
+          type="file"
+          multiple
+          onChange={handleFileChange}
+          ref={fileInputRef}
+          className="hidden"
+        />
         <button
           type="submit"
-          className="w-full p-2 mt-4 text-white bg-green-600 rounded-md hover:bg-green-700"
           disabled={submitting}
+          className={`w-full p-2 bg-blue-500 text-white rounded ${
+            submitting ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          {submitting ? "Updating..." : "Update Blog"}
+          {submitting ? "Saving..." : "Save"}
         </button>
       </form>
     </div>

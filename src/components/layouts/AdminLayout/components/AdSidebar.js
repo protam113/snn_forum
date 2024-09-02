@@ -2,16 +2,22 @@ import React from "react";
 import { FaHome, FaList, FaUsers, FaFlag } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
-import { FaChartArea } from "react-icons/fa";
+import { FaChartArea, FaTags } from "react-icons/fa";
+
+import { GrUserAdmin } from "react-icons/gr";
+import useUserInfo from "../../../../hooks/useUserInfo";
 
 const AdSidebar = () => {
   const { theme } = useTheme();
+  const { userRoles } = useUserInfo();
 
   const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded-md hover:bg-gray-400 ${
     theme === "dark"
       ? " text-white hover:bg-zinc-700"
       : " text-black hover:bg-gray-100"
   }`;
+
+  const isAdmin = userRoles.includes("admin");
 
   return (
     <div>
@@ -33,6 +39,14 @@ const AdSidebar = () => {
               }`}
             />
             <span className="ml-8 text-base font-medium">Category</span>
+          </Link>
+          <Link to="/admin/tag" className={linkClasses}>
+            <FaTags
+              className={`absolute left-2 text-lg ${
+                theme === "dark" ? "text-white" : "text-black"
+              }`}
+            />
+            <span className="ml-8 text-base font-medium">Tag</span>
           </Link>
           <Link to="/admin/quan_ly_nguoi_dung" className={linkClasses}>
             <FaUsers
@@ -58,6 +72,17 @@ const AdSidebar = () => {
             />
             <span className="ml-8 text-base font-medium">Thống Kê</span>
           </Link>
+
+          {isAdmin && (
+            <Link to="/admin/thong_tin_web" className={linkClasses}>
+              <GrUserAdmin
+                className={`absolute left-2 text-lg ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+              />
+              <span className="ml-8 text-base font-medium">Thông Tin Web</span>
+            </Link>
+          )}
         </div>
         <hr className="border-zinc-900 my-4" />
       </div>

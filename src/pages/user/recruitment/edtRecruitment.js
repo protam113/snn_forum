@@ -12,12 +12,18 @@ import useRecruitment from "../../../hooks/useRecruitment";
 import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate, useParams } from "react-router-dom";
-import ReactQuill from "react-quill";
+import Toolbar from "../../../components/design/Toolbar";
+import ReactMarkdown from "react-markdown";
+import { useTheme } from "../../../context/themeContext";
+import TurndownService from "turndown";
+import { marked } from "marked";
 
 const EdtRecruitment = () => {
+  const { theme } = useTheme();
   const { id: postId } = useParams();
   const navigate = useNavigate();
-  const { recruitment, editRecruitment, loading } = useRecruitment(postId);
+  const { recruitment, editRecruitment, loading, fetchRecruitment } =
+    useRecruitment(postId);
   const [formData, setFormData] = useState({
     content: "",
     link: "",
@@ -35,15 +41,29 @@ const EdtRecruitment = () => {
   const [location, setLocation] = useState("");
 
   useEffect(() => {
+    fetchRecruitment();
+  }, [fetchRecruitment]);
+
+  useEffect(() => {
     if (recruitment) {
+      const turndownService = new TurndownService();
+      const job_detailnMarkdown = turndownService.turndown(
+        formData.job_detail || ""
+      );
+
+      // Format the date to "yyyy-MM-dd"
+      const formattedDate = recruitment.date
+        ? new Date(recruitment.date).toISOString().split("T")[0]
+        : "";
+
       setFormData({
         content: recruitment.content || "",
         link: recruitment.link || "",
-        date: recruitment.date || "",
+        date: formattedDate,
         experience: recruitment.experience || "",
         quantity: recruitment.quantity || "",
         work: recruitment.work || "",
-        job_detail: recruitment.job_detail || "",
+        job_detail: job_detailnMarkdown,
         mail: recruitment.mail || "",
         phone_number: recruitment.phone_number || "",
         salary: recruitment.salary || "",
@@ -61,33 +81,53 @@ const EdtRecruitment = () => {
     }));
   };
 
-  const handleChange = (value, field) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleInsert = (text) => {
+    setFormData((prev) => ({
+      ...prev,
+      job_detail: prev.job_detail + text,
+    }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Chuyển Markdown job_detail thành HTML
+    const htmlJobDetail = marked(formData.job_detail);
+
+    // Cập nhật formData với nội dung HTML của job_detail
+    const updatedFormData = {
+      ...formData,
+      job_detail: htmlJobDetail,
+    };
+
     // Kiểm tra tất cả các trường thông tin
     if (
-      !formData.content ||
-      !formData.link ||
-      !formData.date ||
-      !formData.experience ||
-      !formData.quantity ||
-      !formData.work ||
-      !formData.job_detail ||
-      !formData.mail ||
-      !formData.phone_number ||
-      !formData.salary ||
-      !formData.location // Bao gồm location trong kiểm tra
+      !updatedFormData.content ||
+      !updatedFormData.link ||
+      !updatedFormData.date ||
+      !updatedFormData.experience ||
+      !updatedFormData.quantity ||
+      !updatedFormData.work ||
+      !updatedFormData.job_detail || // Đảm bảo job_detail không bị bỏ trống
+      !updatedFormData.mail ||
+      !updatedFormData.phone_number ||
+      !updatedFormData.salary ||
+      !updatedFormData.location // Bao gồm location trong kiểm tra
     ) {
       toast.error("Vui lòng điền đầy đủ thông tin.");
       return;
     }
 
     try {
-      await editRecruitment(formData);
+      await editRecruitment(updatedFormData);
       toast.success("Tin tuyển dụng đã được cập nhật thành công!");
       navigate(-1);
     } catch (error) {
@@ -248,13 +288,23 @@ const EdtRecruitment = () => {
               >
                 Chi Tiết Công Việc
               </label>
-              <ReactQuill
+              <Toolbar onInsert={handleInsert} />
+              <textarea
+                id="job_detail"
+                name="job_detail"
                 value={formData.job_detail}
-                onChange={(value) => handleChange(value, "job_detail")}
-                className="mb-6"
-                placeholder="What's on your mind?"
-                style={{ height: "12rem" }}
+                onChange={handleChange}
+                rows={5}
+                className={`w-full p-2 border rounded-md ${
+                  theme === "dark"
+                    ? "bg-zinc-700 text-white border-zinc-600"
+                    : "bg-white text-black border-zinc-800"
+                }`}
               />
+
+              <div className="mt-4 white-space-pre">
+                <ReactMarkdown>{formData.job_detail}</ReactMarkdown>
+              </div>
             </div>
           </div>
 

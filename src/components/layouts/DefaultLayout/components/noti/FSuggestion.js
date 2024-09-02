@@ -65,15 +65,12 @@ const FSuggestion = () => {
               onClick={() => handleProfileClick(user.id)}
             >
               <div className="flex items-center">
-                {user.profile_image ? (
-                  <img
-                    src={user.profile_image}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full"
-                  />
-                ) : (
-                  <MdPerson className="w-8 h-8 text-gray-400" />
-                )}
+                <img
+                  src={user.profile_image}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full"
+                />
+
                 <div className="ml-4">
                   <p
                     className={`text-sm  ${

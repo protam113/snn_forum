@@ -13,29 +13,74 @@ import { Error404 } from "../../error/error";
 import { toast } from "react-toastify";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdPerson } from "react-icons/md";
+import SkeletonBlog from "../../../components/design/SkeletonBlog";
+import { debounce } from "lodash";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [expandedBlogId, setExpandedBlogId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [lastLoadedPage, setLastLoadedPage] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const {
-    blogs,
-    loading,
-    error,
-    likedBlogs,
-    handleLike,
-    handleDeleteBlog,
-    fetchBlogs,
-  } = useBlog();
+  const { blogs, loading, error, likedBlogs, handleDeleteBlog, fetchBlogs } =
+    useBlog();
   const { userInfo } = useUserInfo();
 
-  // Fetch blog details
   useEffect(() => {
-    fetchBlogs();
-  }, [fetchBlogs]);
+    fetchBlogs(page)
+      .then((fetchedBlogs) => {
+        if (Array.isArray(fetchedBlogs) && fetchedBlogs.length < 10) {
+          setHasMore(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Không thể lấy blog:", error);
+      });
+  }, [fetchBlogs, page]);
 
-  // console.log(`API called: `);
+  useEffect(() => {
+    const handleScroll = debounce(() => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollThreshold = documentHeight * 0.7;
+
+      const nextPage = page + 1;
+
+      if (
+        scrollTop + windowHeight > scrollThreshold &&
+        !loading &&
+        hasMore &&
+        !loadingMore &&
+        nextPage > lastLoadedPage
+      ) {
+        setLoadingMore(true);
+
+        const fetchNextPage = async () => {
+          try {
+            await fetchBlogs(nextPage);
+            setPage(nextPage);
+            setLastLoadedPage(nextPage); // Lưu lại trang cuối cùng đã load
+          } catch (error) {
+            console.error("Không thể tải thêm blog:", error);
+          } finally {
+            setLoadingMore(false);
+          }
+        };
+
+        fetchNextPage();
+      }
+    }, 300);
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [page, loading, hasMore, loadingMore, fetchBlogs, lastLoadedPage]);
 
   const handleProfileClick = (personId) => {
     if (userInfo && userInfo.id.toString() === personId) {
@@ -110,8 +155,11 @@ const Blog = () => {
 
   if (loading)
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loading />
+      <div className="min-h-screen">
+        {/* Hiển thị Skeleton khi đang tải */}
+        {[...Array(3)].map((_, index) => (
+          <SkeletonBlog key={index} />
+        ))}
       </div>
     );
   if (error)
@@ -289,7 +337,6 @@ const Blog = () => {
                   <Likeblog
                     blogId={blog.id}
                     liked={likedBlogs[blog.id] || false}
-                    onLike={handleLike}
                   />
                   <FaRegCommentAlt
                     className={`text-2xl cursor-pointer ${
@@ -313,6 +360,7 @@ const Blog = () => {
                 </div>
               </div>
             </Block>
+            {loadingMore && <Loading />}
             {/* {(index + 1) % 2 === 0 && <RandomAd />} */}
           </React.Fragment>
         );

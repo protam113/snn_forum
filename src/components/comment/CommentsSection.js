@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "../../context/themeContext";
 import useBlog from "../../hooks/useBlog";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,12 +7,12 @@ import formatDate from "../../utils/formatDate";
 import { BsThreeDots } from "react-icons/bs";
 import { FaTrashAlt } from "react-icons/fa";
 import ReplyComment from "./ReplyComment";
-import useTokenCheck from "../../hooks/useTokenCheck";
+import useUserInfo from "../../hooks/useUserInfo";
 
 const CommentsSection = () => {
   const { theme } = useTheme();
   const { id: blogId } = useParams();
-  const { userId } = useTokenCheck();
+  const { userInfo } = useUserInfo();
   const navigate = useNavigate();
   const {
     blog,
@@ -21,10 +21,11 @@ const CommentsSection = () => {
     loading,
     error,
     handleDeleteComment,
+    handleExpandComment,
     loadMoreComments,
     hasMoreComments,
-    fetchComments,
   } = useBlog(blogId);
+
   const [activeCommentMenu, setActiveCommentMenu] = useState(null);
   const [activeReply, setActiveReply] = useState(null);
 
@@ -32,19 +33,16 @@ const CommentsSection = () => {
     setActiveCommentMenu((prev) => (prev === commentId ? null : commentId));
   };
 
-  useEffect(() => {
-    if (blogId) {
-      fetchComments();
-    }
-  }, [blogId, fetchComments]);
-
   const handleReplyClick = (commentId) => {
     setActiveReply((prev) => (prev === commentId ? null : commentId));
+    if (activeReply !== commentId) {
+      handleExpandComment(commentId);
+    }
   };
 
   const handleProfileClick = (personId) => {
-    if (userId && userId.toString() === personId) {
-      navigate(`/profile/${userId}`);
+    if (userInfo && userInfo.toString() === personId) {
+      navigate(`/profile/${userInfo.id}`);
     } else {
       navigate(`/profile/${personId}`);
     }
@@ -92,11 +90,11 @@ const CommentsSection = () => {
                   {activeCommentMenu === comment.id && (
                     <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-gray-300 shadow-lg rounded-lg z-10">
                       <ul className="text-gray-300">
-                        {userId === comment.user.id && (
+                        {userInfo.id === comment.user.id && (
                           <li
                             className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
                             onClick={() =>
-                              handleDeleteComment(comment.id, userId)
+                              handleDeleteComment(comment.id, userInfo)
                             }
                           >
                             <FaTrashAlt className="mr-2 text-gray-400" />
@@ -124,55 +122,57 @@ const CommentsSection = () => {
                   Reply
                 </button>
               </p>
-              {activeReply === comment.id && userId && (
+              {/* Replies */}
+              {activeReply === comment.id &&
+                commentChild
+                  .filter((reply) => reply.parent === comment.id)
+                  .map((reply) => (
+                    <div
+                      key={reply.id}
+                      className="ml-10 pl-4 border-l-2 border-gray-300 mt-4"
+                    >
+                      <div className="flex items-start mb-2">
+                        <img
+                          src={reply.user.profile_image}
+                          alt="profile"
+                          className="w-8 h-8 rounded-full mr-2"
+                        />
+                        <div>
+                          <p className="font-semibold text-sm text-black">
+                            {reply.user.first_name} {reply.user.last_name}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {formatDate(reply.created_date)}
+                          </p>
+                        </div>
+                        <div className="ml-auto">
+                          {userInfo.id === reply.user.id && (
+                            <FaTrashAlt
+                              onClick={() =>
+                                handleDeleteComment(reply.id, userInfo)
+                              }
+                              className="text-gray-500 cursor-pointer"
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <p className="ml-10 text-black">{reply.content}</p>
+                    </div>
+                  ))}
+
+              <hr
+                className={`my-2 ${
+                  theme === "dark" ? "border-gray-600" : "border-gray-300"
+                }`}
+              />
+
+              {activeReply === comment.id && userInfo && (
                 <ReplyComment
                   blogId={blogId}
                   parentId={comment.id}
                   onReplyAdded={() => setActiveReply(null)}
                 />
               )}
-
-              {/* Replies */}
-              {commentChild
-                .filter((reply) => reply.parent === comment.id)
-                .map((reply) => (
-                  <div
-                    key={reply.id}
-                    className="ml-10 pl-4 border-l-2 border-gray-300 mt-4"
-                  >
-                    <div className="flex items-start mb-2">
-                      <img
-                        src={reply.user.profile_image}
-                        alt="profile"
-                        className="w-8 h-8 rounded-full mr-2"
-                      />
-                      <div>
-                        <p className="font-semibold text-sm text-black">
-                          {reply.user.first_name} {reply.user.last_name}
-                        </p>
-                        <p className="text-gray-500 text-xs">
-                          {formatDate(reply.created_date)}
-                        </p>
-                      </div>
-                      <div className="ml-auto">
-                        {userId === reply.user.id && (
-                          <FaTrashAlt
-                            onClick={() =>
-                              handleDeleteComment(reply.id, userId)
-                            }
-                            className="text-gray-500 cursor-pointer"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <p className="ml-10 text-black">{reply.content}</p>
-                  </div>
-                ))}
-              <hr
-                className={`my-2 ${
-                  theme === "dark" ? "border-gray-600" : "border-gray-300"
-                }`}
-              />
             </div>
           ))
         ) : (

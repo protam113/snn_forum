@@ -1,12 +1,12 @@
 import React from "react";
 import ManageNav from "./manageNav";
-import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
+import useUserApplyList from "../../../../hooks/useUserApllylist";
 
 const Manage = () => {
-  const { userApplyList, loading, error } = useUserInfo();
+  const { data: userApplyList, isLoading, error } = useUserApplyList(); // Điều chỉnh tên biến
 
-  if (loading)
+  if (isLoading)
     return (
       <div>
         <Loading />

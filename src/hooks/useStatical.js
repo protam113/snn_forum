@@ -138,7 +138,7 @@ const useStatical = () => {
 
   // Fetch specific product category statistics
   const fetchStaticalProductCategorySpecific = useCallback(
-    async (startDate, endDate) => {
+    async (startDate, endDate, categoryId) => {
       setLoading(true);
       setError(null);
       try {
@@ -147,9 +147,8 @@ const useStatical = () => {
           throw new Error("Không có token");
         }
 
-        // Kiểm tra và đảm bảo startDate và endDate không bị undefined
-        if (!startDate || !endDate) {
-          throw new Error("Start date hoặc end date không hợp lệ");
+        if (!startDate || !endDate || !categoryId) {
+          throw new Error("Thông tin không đầy đủ");
         }
 
         const response = await authApi(token).get(
@@ -157,13 +156,25 @@ const useStatical = () => {
             endpoints.StaticalProductCategorySpecific
           }?start_date=${encodeURIComponent(
             startDate
-          )}&end_date=${encodeURIComponent(endDate)}`
+          )}&end_date=${encodeURIComponent(
+            endDate
+          )}&category_id=${encodeURIComponent(categoryId)}`
         );
-        setStaticalProductCategorySpecific(response.data);
+
+        // Kiểm tra dữ liệu phản hồi
+        if (response && response.data && typeof response.data === "object") {
+          return response.data;
+        } else {
+          console.error(
+            `Dữ liệu phản hồi không hợp lệ cho danh mục ${categoryId}`
+          );
+          return { total_products: 0, total_price: 0.0 }; // Hoặc giá trị mặc định khác
+        }
       } catch (err) {
-        console.error(err); // Ghi log lỗi để dễ dàng theo dõi
+        console.error(err);
         setError("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
         toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
+        return { total_products: 0, total_price: 0.0 }; // Hoặc giá trị mặc định khác
       } finally {
         setLoading(false);
       }

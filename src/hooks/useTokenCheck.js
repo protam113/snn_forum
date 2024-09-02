@@ -10,7 +10,7 @@ const useTokenCheck = () => {
     const accessToken = localStorage.getItem("access_token");
     const refreshToken = Cookies.get("refresh_token");
 
-    const encryptedUserId = localStorage.getItem("_id");
+    const encryptedUserId = localStorage.getItem("user_info");
     const decryptedUserId = encryptedUserId
       ? decryptData(encryptedUserId)
       : null;

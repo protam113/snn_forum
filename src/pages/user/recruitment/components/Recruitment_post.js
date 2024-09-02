@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../../components/design/Block";
-import { FaEdit, FaTrashAlt, FaFlag, FaLink } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaLink } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../../context/themeContext";
 import useRecruitment from "../../../../hooks/useRecruitment";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
+import formatDate from "../../../../utils/formatDate";
 
 const RecruitmentPost = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -25,7 +26,7 @@ const RecruitmentPost = () => {
     fetchRecruitments();
   }, [fetchRecruitments]);
 
-  const sortedRecruitments = recruitments
+  const sortedRecruitments = (recruitments ?? [])
     .slice()
     .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
@@ -65,13 +66,17 @@ const RecruitmentPost = () => {
     );
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     );
-  if (error) return <p>Đã xảy ra lỗi khi lấy blog</p>;
+  }
+
+  if (error) {
+    return <p>Đã xảy ra lỗi khi lấy thông tin tuyển dụng.</p>;
+  }
 
   return (
     <div className="post-list">
@@ -111,7 +116,7 @@ const RecruitmentPost = () => {
                     theme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  {new Date(recruitment.date).toLocaleDateString()}
+                  {formatDate(recruitment.created_date)}
                 </p>
               </div>
               <div className="relative ml-auto">

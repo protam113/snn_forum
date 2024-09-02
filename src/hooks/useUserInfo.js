@@ -134,40 +134,12 @@ const useUserInfo = (personId = null) => {
     }
   }, [personId]);
 
-  const fetchUserApplyList = useCallback(async () => {
-    // Ensure that this function is only executed once
-    if (userApplyListFetchedRef.current) return;
-
-    setLoading(true);
-
-    try {
-      const token = await getToken();
-      if (!token) return;
-
-      const response = await authApi(token).get(endpoints.UserApplyList);
-      setUserApplyList(response.data.results);
-      userApplyListFetchedRef.current = true;
-    } catch (err) {
-      console.error(
-        "Error fetching user apply list:",
-        err.response?.data || err.message
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [getToken]);
-
   useEffect(() => {
     const fetchData = async () => {
       if (!userInfoFetchedRef.current) {
         await fetchUserInfo();
         userInfoFetchedRef.current = true;
       }
-
-      if (!userApplyListFetchedRef.current) {
-        await fetchUserApplyList();
-      }
-
       if (personId && !personalInfoFetchedRef.current) {
         await fetchPersonalInfo();
         personalInfoFetchedRef.current = true;
@@ -176,13 +148,7 @@ const useUserInfo = (personId = null) => {
     };
 
     fetchData();
-  }, [
-    fetchUserInfo,
-    fetchUserApplyList,
-    fetchPersonalInfo,
-    fetchUserBlog,
-    personId,
-  ]);
+  }, [fetchUserInfo, fetchPersonalInfo, fetchUserBlog, personId]);
 
   const memoizedUserRoles = useMemo(() => userRoles, [userRoles]);
 
@@ -289,7 +255,6 @@ const useUserInfo = (personId = null) => {
     changePassword,
     resetPassword,
     requestVerificationCode,
-    fetchUserApplyList,
   };
 };
 

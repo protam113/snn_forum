@@ -21,7 +21,6 @@ import RecentFeed from "./feed/RecenFeed";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
 import { toast } from "react-toastify";
 import { MdPerson } from "react-icons/md";
-import useTokenCheck from "../../../hooks/useTokenCheck";
 import useUserInfo from "../../../hooks/useUserInfo";
 
 const Blog_detail = () => {
@@ -49,8 +48,6 @@ const Blog_detail = () => {
   const handleEditClick = (blogId) => {
     navigate(`/blog/edit/${blogId}`);
   };
-
-  const handleLike = (blogId, liked) => {};
 
   const handleCopyLink = (blogId) => {
     const blogUrl = `${window.location.origin}/blog/${blogId}`;
@@ -145,7 +142,7 @@ const Blog_detail = () => {
         name="XLR Team"
         type="article"
       />
-      <div className="post-detail flex flex-col items-center mt-8">
+      <article className="w-full max-w-2xl mx-auto py-8 px-4 md:px-6">
         <div className="max-w-6xl w-full">
           {/* Post Information and 3-dots menu */}
           <div className="flex items-center mb-4">
@@ -187,7 +184,7 @@ const Blog_detail = () => {
               {activeMenu === blog.id && (
                 <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-zinc-400 shadow-lg rounded-lg z-10">
                   <ul>
-                    {userInfo === blog.user.id && (
+                    {userInfo.id === blog.user.id && (
                       <>
                         <li
                           className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
@@ -267,7 +264,6 @@ const Blog_detail = () => {
                 <Likeblog
                   blogId={blog.id}
                   liked={likedBlogs[blog.id] || false}
-                  onLike={handleLike}
                 />
                 <IoShareSocialOutline
                   className={`text-2xl cursor-pointer ${
@@ -292,7 +288,7 @@ const Blog_detail = () => {
         <hr className="my-4 border-zinc-900" />
         <h1 className="font-bold text-custom-red text-20">Recent Feed</h1>
         <RecentFeed />{" "}
-      </div>
+      </article>
     </>
   );
 };

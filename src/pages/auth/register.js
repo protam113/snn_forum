@@ -41,8 +41,8 @@ const Register = () => {
     district: "",
   });
   const [about, setAbout] = useState("");
-  const [profileImage, setProfileImage] = useState(null);
-  const [profileBg, setProfileBg] = useState(null);
+  const [profile_image, setProfileImage] = useState(null);
+  const [profile_bg, setProfileBg] = useState(null);
   const [link, setLink] = useState("");
   const [profileImagePreview, setProfileImagePreview] = useState("");
   const [profileBgPreview, setProfileBgPreview] = useState("");
@@ -88,26 +88,26 @@ const Register = () => {
     phoneNumber,
     location,
     about,
-    profileImage,
-    profileBg,
+    profile_image,
+    profile_bg,
     link,
   ]);
 
   useEffect(() => {
-    if (profileImage) {
-      const objectUrl = URL.createObjectURL(profileImage);
+    if (profile_image) {
+      const objectUrl = URL.createObjectURL(profile_image);
       setProfileImagePreview(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl); // Cleanup on unmount
+      return () => URL.revokeObjectURL(objectUrl);
     }
-  }, [profileImage]);
+  }, [profile_image]);
 
   useEffect(() => {
-    if (profileBg) {
-      const objectUrl = URL.createObjectURL(profileBg);
+    if (profile_bg) {
+      const objectUrl = URL.createObjectURL(profile_bg);
       setProfileBgPreview(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl); // Cleanup on unmount
+      return () => URL.revokeObjectURL(objectUrl);
     }
-  }, [profileBg]);
+  }, [profile_bg]);
 
   const handleNextStep = () => {
     if (step < 4) {
@@ -146,17 +146,16 @@ const Register = () => {
     formData.append("first_name", firstName);
     formData.append("last_name", lastName);
     formData.append("phone_number", phoneNumber);
-    formData.append("location", JSON.stringify(location)); // Serialize location object
+    formData.append("location", JSON.stringify(location));
     formData.append("about", about);
     formData.append("link", link);
 
-    if (profileImage) {
-      formData.append("profile_image", profileImage);
+    if (profile_image) {
+      formData.append("profile_image", profile_image);
     }
-    if (profileBg) {
-      formData.append("profile_bg", profileBg);
+    if (profile_bg) {
+      formData.append("profile_bg", profile_bg);
     }
-
     try {
       const response = await axios.post(
         `${baseURL}${endpoints.RegisterUser}`,
@@ -171,7 +170,7 @@ const Register = () => {
       toast.success("Registration successful!");
       navigate("/xac_thuc");
     } catch (err) {
-      console.error(
+      toast.error(
         "Error details:",
         err.response ? err.response.data : err.message
       );

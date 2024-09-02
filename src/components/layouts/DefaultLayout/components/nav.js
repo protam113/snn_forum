@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoIosArrowDown, IoMdSettings } from "react-icons/io";
-import { FaRegBell } from "react-icons/fa";
 import Logo from "../../../../assets/img/Logo.svg";
 import { useTheme } from "../../../../context/themeContext";
 import useClickOutside from "../../../../hooks/useClickOutside";
@@ -11,13 +10,15 @@ import { BiMenuAltRight } from "react-icons/bi";
 import { MdSupportAgent } from "react-icons/md";
 import { MdPerson } from "react-icons/md";
 
-import Notifications from "../../../notification/noti";
 import LoginBtn from "../../../buttons/loginBtn";
+import { useWeb } from "../../../../hooks/useWeb";
+import Loading from "../../../../pages/error/load";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
   const { theme } = useTheme();
   const { userInfo, userRoles } = useUserInfo();
+  const { data: web, error, isLoading } = useWeb();
 
   const toggleNavbar = () => {
     setIsMobileNavVisible(!isMobileNavVisible);
@@ -31,6 +32,14 @@ const Navbar = () => {
     closeNavbar();
   });
 
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />
+      </div>
+    );
+  if (error) return <div>Error: {error.message}</div>;
+
   const isAdmin = userRoles.includes("admin") || userRoles.includes("manager");
 
   return (
@@ -43,7 +52,7 @@ const Navbar = () => {
         {/* Logo section */}
         <section className="flex items-center">
           <Link to="/" className="flex items-center">
-            <img src={Logo} alt="Logo" id="logo" className="mr-2" />
+            <img src={web.img} alt="Logo" id="logo" className="mr-2" />
             <div className="text-lg">
               <span className="text-custom-red font-bold">Tech</span>{" "}
               <span

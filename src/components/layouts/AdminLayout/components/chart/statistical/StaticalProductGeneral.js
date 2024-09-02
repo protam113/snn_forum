@@ -8,7 +8,7 @@ export default function StaticalProductGeneral() {
   const chartInstance = useRef(null);
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [totalProducts, setTotalProducts] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState("01"); // Default to January
+  const [selectedMonth, setSelectedMonth] = useState("01");
   const [months] = useState([
     { value: "01", label: "Tháng 1" },
     { value: "02", label: "Tháng 2" },

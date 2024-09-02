@@ -114,6 +114,36 @@ const useAdmin = () => {
     [getToken]
   );
 
+  const UpdateWeb = useCallback(
+    async (formData) => {
+      setError(null);
+      try {
+        const token = await getToken();
+
+        if (!token) {
+          throw new Error("Token không hợp lệ hoặc không có");
+        }
+
+        const response = await authApi().patch(endpoints.web, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast.success("Cập nhật web thành công");
+        return response.data;
+      } catch (error) {
+        console.error(
+          "Error updating web:",
+          error.response ? error.response.data : error.message
+        );
+        toast.error("Đã xảy ra lỗi khi cập nhật web!");
+        throw error;
+      }
+    },
+    [getToken]
+  );
+
   // Fetch groups and users based on selected group
 
   useEffect(() => {
@@ -136,6 +166,7 @@ const useAdmin = () => {
     addUserToGroup,
     removeUserFromGroup,
     fetchGroups,
+    UpdateWeb,
   };
 };
 

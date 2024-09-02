@@ -8,18 +8,20 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import { salary } from "../../../data/SalaryRange";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import useRecruitment from "../../../hooks/useRecruitment";
 import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../context/themeContext";
+import { useTags } from "../../../hooks/useTag";
+import { marked } from "marked";
+import ReactMarkdown from "react-markdown";
+import Toolbar from "../../../components/design/Toolbar";
 
 const CreateRecruitment = () => {
-  const { theme } = useTheme();
-  const { addRecruitment, loading } = useRecruitment();
+  const { addRecruitment, loading, submitting } = useRecruitment();
   const navigate = useNavigate();
+  const { data: tags, isLoading } = useTags();
 
   const [formData, setFormData] = useState({
     content: "",
@@ -70,8 +72,13 @@ const CreateRecruitment = () => {
       return;
     }
 
+    const htmlContent = marked(formData.job_detail);
+
     try {
-      await addRecruitment(formData);
+      await addRecruitment({
+        ...formData,
+        job_detail: htmlContent, // Lưu nội dung đã chuyển đổi thành HTML
+      });
       toast.success("Tin tuyển dụng đã được đăng thành công!");
 
       setFormData({
@@ -96,6 +103,13 @@ const CreateRecruitment = () => {
       );
       toast.error("Đã xảy ra lỗi khi đăng tin tuyển dụng.");
     }
+  };
+
+  const handleInsert = (text) => {
+    setFormData((prev) => ({
+      ...prev,
+      job_detail: prev.job_detail + text,
+    }));
   };
 
   return (
@@ -251,7 +265,6 @@ const CreateRecruitment = () => {
                 onLocationChange={handleLocationChange}
               />
             </div>
-
             <div>
               <label
                 htmlFor="job_detail"
@@ -259,20 +272,20 @@ const CreateRecruitment = () => {
               >
                 Mô Tả Công Việc
               </label>
-              <ReactQuill
+              <Toolbar onInsert={handleInsert} />
+              <textarea
+                id="job_detail"
+                name="job_detail"
                 value={formData.job_detail}
-                onChange={(value) =>
-                  setFormData((prev) => ({ ...prev, job_detail: value }))
-                }
+                onChange={(e) => handleChange(e)}
                 className="mb-6"
-                placeholder="What's on your mind?"
-                style={{ height: "12rem" }}
+                placeholder="Mô tả công việc"
+                rows={4}
+                style={{ width: "100%", height: "auto" }}
               />
-              <hr
-                className={`my-12 ${
-                  theme === "dark" ? "border-gray-600" : "border-gray-300"
-                }`}
-              />
+              <div className="mt-4">
+                <ReactMarkdown>{formData.job_detail}</ReactMarkdown>
+              </div>
             </div>
 
             <div>
@@ -328,8 +341,8 @@ const CreateRecruitment = () => {
                 <option value="" disabled>
                   Chọn mức lương
                 </option>
-                {salary.map((s) => (
-                  <option key={s.value} value={s.value}>
+                {salary.map((s, index) => (
+                  <option key={index} value={s.value}>
                     {s.label}
                   </option>
                 ))}
@@ -341,9 +354,9 @@ const CreateRecruitment = () => {
             <button
               type="submit"
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={loading}
+              disabled={submitting}
             >
-              {loading ? "Đang gửi..." : "Gửi"}
+              {submitting ? "Đang gửi..." : "Gửi"}
             </button>
           </div>
         </form>

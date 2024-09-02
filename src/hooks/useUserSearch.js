@@ -23,7 +23,7 @@ const useUserSearch = (searchTerm, searchField = "username", delay = 500) => {
     setLoading(true);
     setError(null);
     try {
-      const url = endpoints.createUser; // Sử dụng endpoint tìm kiếm
+      const url = endpoints.createUser;
       const response = await authApi().get(url);
       setResults(response.data.results);
     } catch (err) {
@@ -41,7 +41,7 @@ const useUserSearch = (searchTerm, searchField = "username", delay = 500) => {
         setError(null);
         try {
           const url = buildSearchUrl(
-            endpoints.createUser, // Sử dụng endpoint tìm kiếm
+            endpoints.createUser,
             debouncedSearchTerm,
             searchField
           );

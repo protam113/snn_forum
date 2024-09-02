@@ -1,24 +1,32 @@
 import React, { useEffect, useState, useRef } from "react";
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
-import ReactQuill from "react-quill";
 import useCategories from "../../../hooks/useCategories";
-import useProduct from "../../../hooks/useProduct";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  useEditProduct,
+  useProductDetail,
+} from "../../../hooks/Product/useProduct";
 
 const EdtProduct = () => {
   const { id: productId } = useParams();
   const navigate = useNavigate();
-  const { product, editProduct, error, loading } = useProduct(productId);
+  const {
+    data: product,
+    isLoading,
+    isError,
+    error,
+  } = useProductDetail(productId);
   const { categories } = useCategories();
   const fileInputRef = useRef(null);
+  const { mutate: editProductMutation } = useEditProduct();
 
   const [formData, setFormData] = useState({
     title: "",
     quantity: "",
     condition: "",
     fettle: "",
-    file: [],
+    media: [],
     location: "",
     category: [],
     description: "",
@@ -35,16 +43,24 @@ const EdtProduct = () => {
         quantity: product.quantity || "",
         condition: product.condition || "",
         fettle: product.fettle || "",
-        file: product.file || [],
+        media: product.file || [],
         location: product.location || "",
         category: product.category || [],
         description: product.description || "",
         price: product.price || "",
         phone_number: product.phone_number || "",
       });
-      setSelectedFiles(Array.isArray(product.file) ? product.file : []);
+      setSelectedFiles(Array.isArray(product.media) ? product.media : []);
     }
   }, [product]);
+
+  useEffect(() => {
+    if (!productId) {
+      console.error("Product ID is undefined.");
+      toast.error("Không tìm thấy sản phẩm.");
+      navigate(-1);
+    }
+  }, [productId, navigate]);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -75,34 +91,27 @@ const EdtProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !formData.title ||
-      !formData.quantity ||
-      !formData.condition ||
-      !formData.fettle ||
-      !formData.file ||
-      !formData.location ||
-      !formData.category.length ||
-      !formData.description ||
-      !formData.phone_number ||
-      !formData.price
-    ) {
-      toast.error("Vui lòng điền đầy đủ thông tin.");
+    if (!productId) {
+      toast.error("ID sản phẩm không hợp lệ.");
       return;
     }
 
     try {
-      await editProduct({ ...formData, file: selectedFiles });
-      toast.success("Sản phẩm đã được cập nhật thành công!");
+      await editProductMutation({
+        productId,
+        edtProduct: { ...formData, media: selectedFiles },
+      });
       navigate(-1);
     } catch (error) {
       console.error(
         "Error updating product:",
         error.response?.data || error.message
       );
-      toast.error("Đã xảy ra lỗi khi cập nhật sản phẩm.");
     }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -115,8 +124,8 @@ const EdtProduct = () => {
           </label>
           <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
             <input
-              id="file"
-              name="file"
+              id="media"
+              name="media"
               type="file"
               multiple
               accept="image/*"
@@ -190,14 +199,15 @@ const EdtProduct = () => {
           >
             Chi Tiết Sản Phẩm
           </label>
-          <ReactQuill
+          <textarea
             value={formData.description}
-            onChange={(value) =>
-              setFormData((prev) => ({ ...prev, description: value }))
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="mb-6"
+            className="mb-6 w-full p-2 border border-gray-300 rounded"
             placeholder="What's on your mind?"
-            style={{ height: "10rem" }}
+            rows={4}
+            style={{ resize: "vertical" }} // Cho phép người dùng thay đổi kích thước theo chiều dọc
           />
         </div>
         <hr className="mt-4" />
@@ -317,13 +327,19 @@ const EdtProduct = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-4">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
-            disabled={loading}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
           >
-            {loading ? "Đang cập nhật..." : "Cập nhật sản phẩm"}
+            Cập Nhật
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+          >
+            Hủy
           </button>
         </div>
       </form>

@@ -13,110 +13,122 @@ const useBlog = (blogId) => {
   const [comments, setComments] = useState([]);
   const [commentChild, setCommentChild] = useState([]);
   const [submitting, setSubmitting] = useState(false);
-  const [likeList, setLikeList] = useState([]);
-  const [likeListVisible, setLikeListVisible] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const fileInputRef = useRef(null);
   const { getToken } = useAuth();
 
   // Fetch all blogs
-  const fetchBlogs = useCallback(async () => {
-    setLoading(true);
-    const token = await getToken();
-    const cacheKey = "blogs";
-    const cacheTimeKey = `${cacheKey}_time`;
-    const cachedData = localStorage.getItem(cacheKey);
-    const cachedTime = localStorage.getItem(cacheTimeKey);
+  const fetchBlogs = useCallback(
+    async (page = 1) => {
+      setLoading(true);
+      const token = await getToken();
+      const cacheKey = `blogs_page_${page}`;
+      const cacheTimeKey = `${cacheKey}_time`;
+      const cachedData = localStorage.getItem(cacheKey);
+      const cachedTime = localStorage.getItem(cacheTimeKey);
 
-    const now = new Date().getTime();
-    const cacheDuration = 60 * 1000;
+      const now = new Date().getTime();
+      const cacheDuration = 60 * 1000; // 1 minute cache duration
 
-    if (
-      cachedData &&
-      cachedTime &&
-      now - parseInt(cachedTime) < cacheDuration
-    ) {
-      const parsedData = decryptData(cachedData);
-      setBlogs(parsedData.blogs);
-      setLikedBlogs(parsedData.likedBlogs || {});
-      setLoading(false);
-      return;
-    }
+      let newBlogs = [];
+      let newLikedBlogs = {};
 
-    try {
-      const response = await authApi(token).get(endpoints.Blog);
-      const results = response.data.results;
+      // Check if we have cached data
+      if (
+        cachedData &&
+        cachedTime &&
+        now - parseInt(cachedTime) < cacheDuration
+      ) {
+        const parsedData = decryptData(cachedData);
+        newBlogs = parsedData.blogs || [];
+        newLikedBlogs = parsedData.likedBlogs || {};
+      } else {
+        try {
+          const response = await authApi(token).get(
+            `${endpoints.Blog}?page=${page}`
+          );
+          const results = response.data.results || [];
+          const next = response.data.next; // Check if there's a next page
 
-      if (!Array.isArray(results)) {
-        throw new Error("Results is not an array");
+          if (!Array.isArray(results)) {
+            throw new Error("Results is not an array");
+          }
+
+          newBlogs = results.sort(
+            (a, b) => new Date(b.created_date) - new Date(a.created_date)
+          );
+
+          newLikedBlogs = token
+            ? newBlogs.reduce((acc, blog) => {
+                acc[blog.id] = blog.liked || false;
+                return acc;
+              }, {})
+            : {};
+
+          const encryptedData = encryptData({
+            blogs: newBlogs,
+            likedBlogs: newLikedBlogs,
+          });
+          localStorage.setItem(cacheKey, encryptedData);
+          localStorage.setItem(cacheTimeKey, now.toString());
+
+          // Determine if there are more blogs to load
+          setHasMore(!!response.data.next); // Set hasMore based on whether there is a next page
+        } catch (error) {
+          console.error(
+            "Error fetching blogs:",
+            error.response?.data || error.message
+          );
+          setError("Error fetching blogs");
+        }
       }
 
-      const sortedBlogs = results.sort(
-        (a, b) => new Date(b.created_date) - new Date(a.created_date)
-      );
-      setBlogs(sortedBlogs);
-
-      const likedBlogs = token
-        ? sortedBlogs.reduce((acc, blog) => {
-            acc[blog.id] = blog.liked || false;
-            return acc;
-          }, {})
-        : {};
-
-      setLikedBlogs(likedBlogs);
-
-      const encryptedData = encryptData({
-        blogs: sortedBlogs,
-        likedBlogs: likedBlogs,
+      setBlogs((prevBlogs) => {
+        const existingIds = new Set(prevBlogs.map((blog) => blog.id));
+        const filteredNewBlogs = newBlogs.filter(
+          (blog) => !existingIds.has(blog.id)
+        );
+        return [...prevBlogs, ...filteredNewBlogs];
       });
-      localStorage.setItem(cacheKey, encryptedData);
-      localStorage.setItem(cacheTimeKey, now.toString());
-    } catch (error) {
-      console.error(
-        "Error fetching blogs:",
-        error.response?.data || error.message
-      );
-      setError("Error fetching blogs");
-    } finally {
+
+      setLikedBlogs((prevLikedBlogs) => ({
+        ...prevLikedBlogs,
+        ...newLikedBlogs,
+      }));
+
       setLoading(false);
-    }
-  }, [getToken]);
+      return newBlogs; // Always return an array
+    },
+    [getToken]
+  );
 
   // Fetch blog details
   const fetchBlog = useCallback(async () => {
     if (!blogId) return;
 
+    setLoading(true);
+
     try {
+      const token = await getToken();
       const url = endpoints.BlogDetail.replace(":id", blogId);
-      const response = await authApi().get(url);
-      setBlog(response.data); // Directly setting the blog data
+
+      const response = token
+        ? await authApi(token).get(url)
+        : await authApi().get(url);
+
+      const blogData = response.data;
+
+      const likedByUser = token ? blogData.liked || false : false;
+
+      setBlog({ ...blogData, likedByUser });
     } catch (error) {
       setError("Error fetching blog details. Please try again later.");
       console.error(error);
     } finally {
       setLoading(false);
     }
-  }, [blogId]);
+  }, [blogId, getToken]);
 
-  // Fetch blog likes
-  const getBlogLikes = useCallback(
-    async (blogId) => {
-      const token = await getToken();
-      if (!token) return [];
-
-      try {
-        const url = endpoints.LikeBlog.replace(":id", blogId);
-        const response = await authApi(token).get(url);
-        setLikeList(response.data);
-        return response.data;
-      } catch (error) {
-        console.error("Error fetching likes", error);
-        throw error;
-      }
-    },
-    [getToken]
-  );
-
-  // Fetch comments
   const fetchComments = useCallback(async () => {
     if (!blogId) return;
 
@@ -154,8 +166,15 @@ const useBlog = (blogId) => {
     }
   }, [blogId]);
 
+  const commentChildrenCache = useRef({}); // Sử dụng useRef để lưu trữ các comment con đã được tải
+
   const fetchCommentChildren = useCallback(async (commentId) => {
     if (!commentId) return;
+
+    // Kiểm tra nếu dữ liệu đã được tải và lưu trữ
+    if (commentChildrenCache.current[commentId]) {
+      return;
+    }
 
     try {
       const url = endpoints.CmtBlogReply.replace(":id", commentId);
@@ -169,6 +188,9 @@ const useBlog = (blogId) => {
         const newChildComments = childComments.filter(
           (child) => !existingCommentIds.has(child.id)
         );
+
+        commentChildrenCache.current[commentId] = newChildComments;
+
         return [...prevChildren, ...newChildComments];
       });
     } catch (error) {
@@ -178,27 +200,19 @@ const useBlog = (blogId) => {
   }, []);
 
   useEffect(() => {
-    fetchBlogs();
     fetchBlog();
-  }, [fetchBlogs, fetchBlog]);
+  }, [fetchBlog]);
 
   useEffect(() => {
     if (blogId) {
       fetchComments();
-      getBlogLikes(blogId).then(setLikeList).catch(console.error);
     }
-  }, [blogId, fetchComments, getBlogLikes]);
+  }, [blogId, fetchComments]);
 
-  // Fetch child comments only when comments change
-  useEffect(() => {
-    if (comments.length > 0) {
-      comments.forEach((comment) => {
-        if (comment.id) {
-          fetchCommentChildren(comment.id);
-        }
-      });
-    }
-  }, [comments, fetchCommentChildren]);
+  // Chỉ tải bình luận con khi người dùng yêu cầu
+  const handleExpandComment = (commentId) => {
+    fetchCommentChildren(commentId);
+  };
 
   // Handle like/unlike
   const handleLike = useCallback(
@@ -217,14 +231,29 @@ const useBlog = (blogId) => {
 
       try {
         const url = endpoints.LikeBlog.replace(":id", blogId);
+        let response;
+
         if (newLikedStatus) {
-          await authApi(token).post(url);
+          // Like the blog
+          response = await authApi(token).post(url);
         } else {
-          await authApi(token).delete(url);
+          // Unlike the blog
+          response = await authApi(token).delete(url);
+        }
+
+        // Check if the response is successful
+        if (response.status >= 200 && response.status < 300) {
+          // Optionally update local cache or state here
+        } else {
+          throw new Error(`Unexpected response status: ${response.status}`);
         }
       } catch (error) {
-        console.error("Error handling like/unlike", error);
+        console.error(
+          "Error handling like/unlike:",
+          error.response?.data || error.message
+        );
         setError("Error handling like/unlike");
+        // Revert the like status on error
         setLikedBlogs((prevState) => ({
           ...prevState,
           [blogId]: !newLikedStatus,
@@ -236,26 +265,32 @@ const useBlog = (blogId) => {
 
   // Handle delete blog
 
-  const handleDeleteBlog = useCallback(
-    async (blogId) => {
+  const handleDeleteBlog = async (blogId) => {
+    try {
       const token = await getToken();
-      if (!token) {
-        setError("Authentication token is missing.");
-        return;
-      }
+      if (!token) return;
 
-      try {
-        const url = endpoints.BlogDetail.replace(":id", blogId);
-        await authApi(token).delete(url);
+      await authApi(token).delete(endpoints.DeleteBlog.replace(":id", blogId));
 
-        setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== blogId));
-      } catch (error) {
-        console.error("Error deleting blog", error);
-        setError("Error deleting blog");
+      const page = 1;
+      const cacheKey = `blogs_page_${page}`;
+      const cachedData = localStorage.getItem(cacheKey);
+      if (cachedData) {
+        const parsedData = decryptData(cachedData);
+        const updatedBlogs = parsedData.blogs.filter(
+          (blog) => blog.id !== blogId
+        );
+
+        const encryptedData = encryptData({
+          ...parsedData,
+          blogs: updatedBlogs,
+        });
+        localStorage.setItem(cacheKey, encryptedData);
       }
-    },
-    [getToken]
-  );
+    } catch (error) {
+      console.error("Lỗi khi xóa blog:", error);
+    }
+  };
 
   // Handle delete comment
   const handleDeleteComment = useCallback(
@@ -378,57 +413,105 @@ const useBlog = (blogId) => {
     [getToken]
   );
 
-  const editBlog = async (data) => {
-    try {
-      const token = await getToken();
-      if (!token) {
-        setError("No token available");
-        return;
-      }
+  const updateLocalStorage = (updatedBlog) => {
+    const cacheKey = "blogs";
+    const cachedData = localStorage.getItem(cacheKey);
 
-      const response = await authApi(token).patch(
-        endpoints.BlogDetail.replace(":id", blogId),
-        data,
-        {
+    if (cachedData) {
+      try {
+        const parsedData = decryptData(cachedData);
+        if (!parsedData || !Array.isArray(parsedData.blogs)) {
+          throw new Error("Dữ liệu trong localStorage không hợp lệ");
+        }
+
+        const updatedBlogs = parsedData.blogs.map((blog) =>
+          blog.id === updatedBlog.id ? updatedBlog : blog
+        );
+
+        const encryptedData = encryptData({
+          blogs: updatedBlogs,
+          likedBlogs: parsedData.likedBlogs || {},
+        });
+
+        localStorage.setItem(cacheKey, encryptedData);
+      } catch (localStorageError) {
+        console.error(
+          "Lỗi khi cập nhật localStorage:",
+          localStorageError.message
+        );
+        throw new Error("Không thể cập nhật dữ liệu trong localStorage");
+      } finally {
+        setSubmitting(false);
+      }
+    } else {
+      console.warn(
+        "Không tìm thấy dữ liệu trong localStorage với key:",
+        cacheKey
+      );
+    }
+  };
+
+  const editBlog = useCallback(
+    async (data) => {
+      try {
+        const token = await getToken();
+        if (!token) {
+          setError("No token available");
+          return;
+        }
+
+        if (!blogId || isNaN(blogId)) {
+          console.error("Invalid blogId:", blogId);
+          setError("Invalid blogId");
+          return;
+        }
+
+        const url = endpoints.BlogDetail.replace(":id", blogId);
+        console.log("Sending request to URL:", url);
+
+        const response = await authApi(token).patch(url, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
-      );
+        });
 
-      setBlog(response.data);
-    } catch (err) {
-      console.error("Error updating blog", err.response?.data || err.message);
-      setError("Error updating blog");
-    }
-  };
+        setBlog(response.data);
+        try {
+          updateLocalStorage(response.data);
+        } catch (updateError) {
+          setError(updateError.message);
+        }
+      } catch (err) {
+        console.error("Error updating blog", err);
+        toast.error("Failed to update blog.");
+        setError("Failed to update blog.");
+      }
+    },
+    [blogId, getToken]
+  );
 
   return {
     blogs,
     blog,
     likedBlogs,
+    hasMore,
     loading,
     error,
     comments,
     commentChild,
     submitting,
-    likeList,
-    likeListVisible,
     fileInputRef,
     handleLike,
-    setLikeList,
     handleDeleteBlog,
     handleDeleteComment,
     handleAddComment,
     handleSubmitBlog,
     editBlog,
-    setLikeListVisible,
-    getBlogLikes,
     setSubmitting,
     handleEditComment,
     fetchBlogs,
     fetchBlog,
-    fetchComments,
+    handleExpandComment,
   };
 };
 

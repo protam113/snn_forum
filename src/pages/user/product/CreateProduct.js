@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
-import ReactQuill from "react-quill";
 import useCategories from "../../../hooks/useCategories";
-import useProduct from "../../../hooks/useProduct";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Toolbar from "../../../components/design/Toolbar";
+import { marked } from "marked";
+import ReactMarkdown from "react-markdown";
+import { useTheme } from "../../../context/themeContext";
+import { useAddProduct } from "../../../hooks/Product/useProduct";
 
 const CreateProduct = () => {
   const { categories } = useCategories();
-  const { handleAddProduct, loading, fileInputRef } = useProduct();
+  const { theme } = useTheme();
   const navigate = useNavigate();
-  const [selectedFiles, setSelectedFiles] = useState([]);
   const [title, setTitle] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
@@ -20,12 +22,29 @@ const CreateProduct = () => {
   const [category, setCategory] = useState([]);
   const [price, setPrice] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+
+  const { mutate: addProductMutation } = useAddProduct();
+
+  useEffect(() => {
+    // Clean up object URLs to avoid memory leaks
+    return () => {
+      selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
+    };
+  }, [selectedFiles]);
+
+  const handleInsert = (text) => {
+    setDescription((prev) => prev + text);
+  };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files).map((file) => ({
-      ...file,
-      preview: URL.createObjectURL(file),
+      file, // Save the file object for FormData
+      preview: URL.createObjectURL(file), // Create a preview URL
     }));
+
     if (files.length + selectedFiles.length <= 4) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
     } else {
@@ -33,16 +52,9 @@ const CreateProduct = () => {
     }
   };
 
-  const handlePriceChange = (e) => {
-    const value = e.target.value;
-    if (!isNaN(value) && value.trim() !== "") {
-      setPrice(value);
-    } else {
-      setPrice(""); // Or set an error message
-    }
-  };
-
   const handleRemoveImage = (index) => {
+    // Revoke the object URL to free up memory
+    URL.revokeObjectURL(selectedFiles[index].preview);
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -58,36 +70,54 @@ const CreateProduct = () => {
     );
   };
 
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (!isNaN(value) && value.trim() !== "") {
+      setPrice(value);
+    } else {
+      setPrice(""); // Or set an error message
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const numericPrice = parseFloat(price); // Convert to a float number
+    const numericPrice = parseFloat(price);
     if (isNaN(numericPrice)) {
       toast.error("Price is not a valid number");
       return;
     }
 
+    const newProductData = {
+      title,
+      quantity,
+      description: marked(description),
+      condition,
+      fettle,
+      location,
+      category,
+      price: numericPrice,
+      phone_number,
+      images: selectedFiles.map((file) => file.file),
+    };
+
+    setLoading(true);
     try {
-      await handleAddProduct(
-        event,
-        title,
-        quantity,
-        description,
-        condition,
-        fettle,
-        location,
-        category,
-        phone_number,
-        numericPrice,
-        () => {
+      await addProductMutation(newProductData, {
+        onSuccess: () => {
           navigate("/san_pham");
         },
-        () => {}
-      );
-    } catch (err) {}
+        onError: () => {
+          toast.error("Failed to add product.");
+        },
+      });
+    } catch (error) {
+      toast.error("An error occurred while adding the product.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Hàm định dạng giá tiền
   const formatPrice = (price) => {
     if (!price) return "0 đ";
     const formattedPrice = new Intl.NumberFormat("vi-VN").format(price);
@@ -106,7 +136,7 @@ const CreateProduct = () => {
           <label htmlFor="file" className="block text-sm font-medium mb-1">
             Upload Images (max 4)
           </label>
-          <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+          <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg  cursor-pointer  transition-colors duration-200">
             <input
               id="file"
               name="file"
@@ -185,13 +215,22 @@ const CreateProduct = () => {
             >
               Chi Tiết Sản Phẩm
             </label>
-            <ReactQuill
-              value={description}
-              onChange={setDescription}
-              className="mb-6"
-              placeholder="What's on your mind?"
-              style={{ height: "10rem" }}
-            />
+            <div>
+              <Toolbar onInsert={handleInsert} />
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={5}
+                className={`w-full p-2 border rounded-md ${
+                  theme === "dark"
+                    ? "bg-zinc-700 text-white border-zinc-600"
+                    : "bg-white text-black border-zinc-800"
+                }`}
+              />
+              <div className="mt-4 white-space-pre">
+                <ReactMarkdown>{description}</ReactMarkdown>
+              </div>
+            </div>
           </div>
           <hr className="border-white my-6" />
           <div className="grid grid-cols-2 gap-6 mb-6">

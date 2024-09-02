@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import Block from "../../../../design/Block";
 import { FaHotjar } from "react-icons/fa";
 import { MdPerson } from "react-icons/md";
-import useBlog from "../../../../../hooks/useBlog";
 import formatDate from "../../../../../utils/formatDate";
 import { useTheme } from "../../../../../context/themeContext";
 import Loading from "../../../../../pages/error/load";
+import { useBlogs } from "../../../../../hooks/useFetchList";
 
 const SActivity = () => {
-  const { blogs, loading, error } = useBlog();
+  const { data: blogs = [], loading, error } = useBlogs();
   const { theme } = useTheme();
   const navigate = useNavigate();
 

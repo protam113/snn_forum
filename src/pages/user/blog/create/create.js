@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   FaTrashAlt,
   FaArrowLeft,
@@ -6,12 +6,13 @@ import {
   FaFileUpload,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import { useTheme } from "../../../../context/themeContext";
 import useBlog from "../../../../hooks/useBlog";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { MdPerson } from "react-icons/md";
+import Toolbar from "../../../../components/design/Toolbar";
+import { marked } from "marked";
+import ReactMarkdown from "react-markdown";
 
 const Create = () => {
   const { theme } = useTheme();
@@ -70,10 +71,11 @@ const Create = () => {
   };
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     handleSubmitBlog(
       event,
       content,
-      description,
+      marked(description),
       visibility,
       selectedFiles,
       fileType,
@@ -84,6 +86,10 @@ const Create = () => {
         console.log("Success Callback");
       }
     );
+  };
+
+  const handleInsert = (text) => {
+    setDescription((prev) => prev + text);
   };
 
   return (
@@ -247,68 +253,70 @@ const Create = () => {
             />
           </div>
 
-          {/* Right Column - Content Section */}
-          <div className="w-full lg:w-2/3 pl-0 lg:pl-4">
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label
-                  className={`block mb-2 ${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
-                  htmlFor="title"
-                >
-                  Tiêu Đề:
-                </label>
-                <input
-                  id="title"
-                  type="text"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Title*"
-                  className={`w-full p-2 border rounded-md ${
-                    theme === "dark"
-                      ? "bg-zinc-700 text-white border-zinc-600"
-                      : "bg-white text-black border-zinc-800"
-                  }`}
-                  required
-                />
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label
+                className={`block mb-2 ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+                htmlFor="title"
+              >
+                Tiêu Đề:
+              </label>
+              <input
+                id="title"
+                type="text"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Title*"
+                className={`w-full p-2 border rounded-md ${
+                  theme === "dark"
+                    ? "bg-zinc-700 text-white border-zinc-600"
+                    : "bg-white text-black border-zinc-800"
+                }`}
+                required
+              />
+            </div>
+            <Toolbar onInsert={handleInsert} />
+
+            <div className="mb-4">
+              <label
+                className={`block mb-2 ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+                htmlFor="content"
+              >
+                Nội Dung:
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={5}
+                className={`w-full p-2 border rounded-md ${
+                  theme === "dark"
+                    ? "bg-zinc-700 text-white border-zinc-600"
+                    : "bg-white text-black border-zinc-800"
+                }`}
+              />
+              <div className="mt-4 white-space-pre">
+                <ReactMarkdown>{description}</ReactMarkdown>
               </div>
-              <div className="mb-4">
-                <label
-                  className={`block mb-2 ${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
-                  htmlFor="description"
-                >
-                  Mô Tả:
-                </label>
-                <ReactQuill
-                  value={description}
-                  onChange={setDescription}
-                  placeholder="Description*"
-                  className={`w-full ${
-                    theme === "dark"
-                      ? "bg-zinc-700 text-white border-zinc-600"
-                      : "bg-white text-black border-zinc-800"
-                  }`}
-                  theme={theme === "dark" ? "bubble" : "snow"}
-                />
-              </div>
-              <div className="text-center">
-                <button
-                  type="submit"
-                  className={`mt-4 px-6 py-2 font-semibold text-lg rounded-md ${
-                    submitting
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-600 text-white"
-                  }`}
-                  disabled={submitting}
-                >
-                  {submitting ? "Submitting..." : "Submit"}
-                </button>
-              </div>
-            </form>
-          </div>
+            </div>
+
+            <div className="text-center">
+              <button
+                type="submit"
+                className={`mt-4 px-6 py-2 font-semibold text-lg rounded-md ${
+                  submitting
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 text-white"
+                }`}
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
