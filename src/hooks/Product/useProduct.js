@@ -64,13 +64,22 @@ const AddProduct = async (newProduct, token) => {
       formData.append("media", file);
     });
   }
+
   if (!token) throw new Error("No token available");
 
-  const response = await authApi(token).post(endpoints.Products, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  try {
+    const response = await authApi(token).post(endpoints.Products, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error adding product:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
 };
 
 const useAddProduct = () => {

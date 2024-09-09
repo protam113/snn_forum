@@ -1,133 +1,81 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Block from "../../../../components/design/Block";
-import { FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
-import Logo from "../../../../assets/img/Logo.svg";
-import { useTheme } from "../../../../context/themeContext";
+import React from "react";
+import Loading from "../../../error/load";
+import { useUserApplyList } from "../../../../hooks/useUserApllylist";
 
 const RecruitmentMng = () => {
-  const [activeMenu, setActiveMenu] = useState(null);
-  const navigate = useNavigate();
-  const { theme } = useTheme();
+  const { data: userApplyList = [], isLoading, error } = useUserApplyList();
 
-  const handlePostClick = (postId) => {
-    navigate(`/recruitment/${postId}`);
-  };
+  if (isLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
 
-  const handleEditClick = (postId) => {
-    navigate(`/recruitment/edit/${postId}/`);
-  };
-
-  const handleMenuClick = (postId) => {
-    setActiveMenu((prev) => (prev === postId ? null : postId));
-  };
-
-  // Define the content and expiry date as variables
-  const content =
-    "Nhân Viên Bảo Trì - Thu Nhập Lên Đến 15 Triệu - Đi Làm Tại Quận 1";
-  const expiryDate = "05/08/2024"; // Example expiry date
+  if (error) {
+    return <div>Error: {error.message || "An error occurred"}</div>;
+  }
 
   return (
-    <Block
-      className={`col-span-12 row-span-4 md:col-span-6 mb-4 p-4 ${
-        theme === "dark" ? "bg-zinc-800 text-white" : "bg-white text-black"
-      } border-2 ${
-        theme === "dark"
-          ? "border-transparent hover:border-zinc-700 hover:bg-zinc-700"
-          : "border-transparent hover:border-zinc-300 hover:bg-zinc-300"
-      } transition-colors duration-200`}
-    >
-      <div className="flex items-center mb-4">
-        <img src={Logo} alt="avatar" className="w-12 h-12 rounded-full" />
-        <div className="ml-2 flex-1">
-          <h1
-            className={`text-14 font-bold ${
-              theme === "dark" ? "text-white" : "text-black"
-            }`}
-          >
-            Song Nhat Nguyen
-          </h1>
-          <p
-            className={`text-gray-500 text-14 ${
-              theme === "dark" ? "text-gray-400" : "text-gray-500"
-            }`}
-          >
-            29/07/2024
-          </p>
-        </div>
-        <div className="relative">
-          <BsThreeDots
-            className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
-            onClick={() => handleMenuClick(1)} // Hardcoded postId for demo
-          />
-          {activeMenu === 1 && (
-            <div
-              className={`absolute right-0 mt-2 w-48 ${
-                theme === "dark"
-                  ? "bg-zinc-800 border-gray-700"
-                  : "bg-white border-gray-300"
-              } shadow-lg rounded-lg z-10`}
-            >
-              <ul className="text-gray-700">
-                <li
-                  className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                  onClick={() => handleEditClick(1)} // Hardcoded postId for demo
-                >
-                  <FaEdit className="mr-2 text-gray-400" />
-                  Chỉnh sửa
-                </li>
-                <li
-                  className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                  // onClick={() => handleDeletePost(post.id, userInfo)}
-                >
-                  <FaTrashAlt className="mr-2 text-gray-400" />
-                  Xóa
-                </li>
-                <li className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center">
-                  <FaFlag className="mr-2 text-gray-400" />
-                  Báo cáo
-                </li>
-              </ul>
-            </div>
+    <div className="banner p-4 rounded-lg shadow-md">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="bg-gray-100 text-16">
+            <th className="border p-2">Name</th>
+            <th className="border p-2">Ngày Nộp</th>
+            <th className="border p-2">Tên Công Việc</th>
+            <th className="border p-2">CV</th>
+            <th className="border p-2">Trạng Thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          {userApplyList.length > 0 ? (
+            userApplyList.map((application) => (
+              <tr key={application.id} className="text-center text-14">
+                <td className="border p-2">{application.fullname}</td>
+                <td className="border p-2">
+                  {new Date(application.created_date).toLocaleDateString()}
+                </td>
+                <td className="border p-2">{application.job_title}</td>
+                <td className="border p-2">
+                  <a
+                    href={application.cv}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    View CV
+                  </a>
+                </td>
+                <td className="border p-2">
+                  <span
+                    className={`p-1 rounded ${
+                      application.status === "pending"
+                        ? "bg-yellow-400 text-yellow-800"
+                        : application.status === "rejected"
+                        ? "bg-red-400 text-red-800"
+                        : application.status === "approved"
+                        ? "bg-green-400 text-green-800"
+                        : "bg-gray-400 text-gray-800" // Default color if status doesn't match
+                    }`}
+                  >
+                    {application.status.charAt(0).toUpperCase() +
+                      application.status.slice(1)}
+                  </span>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center p-4">
+                Không có đơn ứng tuyển!
+              </td>
+            </tr>
           )}
-        </div>
-      </div>
-      <p
-        className={`mb-4 font-semibold text-16 cursor-pointer ${
-          theme === "dark" ? "text-white" : "text-black"
-        }`}
-        onClick={() => handlePostClick(1)}
-      >
-        {content}
-      </p>
-      <div className="flex justify-between mb-4">
-        <p
-          className={`text-14 cursor-pointer ${
-            theme === "dark" ? "text-gray-200" : "text-black"
-          }`}
-        >
-          Mức lương
-        </p>
-        <p
-          className={`text-14 cursor-pointer ${
-            theme === "dark" ? "text-gray-200" : "text-black"
-          }`}
-        >
-          Khu vực
-        </p>
-      </div>
-      <div className="flex justify-between items-center">
-        <p
-          className={`text-14 cursor-pointer ${
-            theme === "dark" ? "text-gray-200" : "text-black"
-          }`}
-        >
-          Ngày hết hạn:
-        </p>
-        <p className="text-white bg-red-400 px-2 py-1 rounded">{expiryDate}</p>
-      </div>
-    </Block>
+        </tbody>
+      </table>
+    </div>
   );
 };
 

@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import { useTheme } from "../../../context/themeContext";
 import { useAddProduct } from "../../../hooks/Product/useProduct";
 import { useCategoryList } from "../../../hooks/Product/useCategories";
+import LocationSelectorp from "../../../components/Location/LocationP";
 
 const CreateProduct = () => {
   const { data: categories } = useCategoryList();
@@ -76,6 +77,11 @@ const CreateProduct = () => {
     } else {
       setPrice("");
     }
+  };
+
+  const handleLocationChange = (formattedLocation) => {
+    // Giả sử formattedLocation luôn là chuỗi
+    setLocation(formattedLocation);
   };
 
   const handleSubmit = async (event) => {
@@ -275,24 +281,19 @@ const CreateProduct = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-6 mb-6">
-            <div>
+            <div className="mb-6">
               <label
                 htmlFor="location"
                 className="block text-sm font-medium mb-1"
               >
-                Vị Trí
+                Vị trí
               </label>
-              <input
-                id="location"
-                name="location"
-                type="text"
-                placeholder="Enter location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md"
-                required
+              <LocationSelectorp
+                onLocationChange={handleLocationChange}
+                className="w-full"
               />
             </div>
+
             <div className="mb-6">
               <label
                 htmlFor="category"
@@ -300,19 +301,20 @@ const CreateProduct = () => {
               >
                 Danh Mục
               </label>
-              {categories.map((cat) => (
+              {categories?.map((cat) => (
                 <div key={cat.id} className="flex items-center mb-2">
-                  <input
-                    id={`category-${cat.id}`}
-                    name="category"
-                    type="checkbox"
-                    className="form-checkbox"
-                    value={cat.id}
-                    checked={category.includes(cat.id)}
-                    onChange={handleCategoryChange} // Sử dụng trực tiếp `handleCategoryChange`
-                  />
-                  <label htmlFor={`category-${cat.id}`} className="text-sm">
-                    {cat.name}
+                  <label className="inline-flex items-center">
+                    <input
+                      id={`category-${cat.id}`}
+                      name="category"
+                      type="checkbox"
+                      className="form-checkbox h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                      value={cat.id}
+                      checked={category.includes(cat.id)}
+                      onChange={handleCategoryChange}
+                    />
+
+                    <span className="text-sm ml-2">{cat.name}</span>
                   </label>
                 </div>
               ))}

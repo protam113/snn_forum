@@ -73,7 +73,7 @@ const Manage = () => {
           ) : (
             <tr>
               <td colSpan="5" className="text-center p-4">
-                No Applications Found!
+                Không có đơn ứng tuyển!
               </td>
             </tr>
           )}

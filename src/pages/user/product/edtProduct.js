@@ -7,6 +7,7 @@ import {
   useEditProduct,
   useProductDetail,
 } from "../../../hooks/Product/useProduct";
+import { useCategoryList } from "../../../hooks/Product/useCategories";
 
 const EdtProduct = () => {
   const { id: productId } = useParams();
@@ -17,7 +18,7 @@ const EdtProduct = () => {
     isError,
     error,
   } = useProductDetail(productId);
-  const { categories } = useCategories();
+  const { data: categories = [] } = useCategoryList();
   const fileInputRef = useRef(null);
   const { mutate: editProductMutation } = useEditProduct();
 

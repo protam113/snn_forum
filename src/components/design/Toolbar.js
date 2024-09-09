@@ -12,7 +12,10 @@ import {
 } from "react-icons/fa";
 
 const Toolbar = ({ onInsert }) => {
-  const insertAtCursor = (style) => {
+  const insertAtCursor = (style, event) => {
+    event.preventDefault(); // Ngăn chặn hành vi mặc định của sự kiện
+    event.stopPropagation(); // Ngăn chặn sự kiện tiếp tục lên các phần tử cha
+
     switch (style) {
       case "bold":
         onInsert("**bold text**");
@@ -53,81 +56,81 @@ const Toolbar = ({ onInsert }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 p-2 text-14 bg-white border border-gray-300 rounded-lg shadow-md mb-4">
+    <div className="flex flex-wrap gap-2 p-2 bg-gray-100 border border-gray-300 rounded-lg shadow-md mb-4">
       <button
-        onClick={() => insertAtCursor("bold")}
+        onClick={(e) => insertAtCursor("bold", e)}
         title="Bold"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaBold className="text-gray-800" />
       </button>
       <button
-        onClick={() => insertAtCursor("italic")}
+        onClick={(e) => insertAtCursor("italic", e)}
         title="Italic"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaItalic className="text-gray-800" />
       </button>
       <button
-        onClick={() => insertAtCursor("strike")}
+        onClick={(e) => insertAtCursor("strike", e)}
         title="Strikethrough"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaStrikethrough className="text-gray-800" />
       </button>
       <button
-        onClick={() => insertAtCursor("h1")}
+        onClick={(e) => insertAtCursor("h1", e)}
         title="Heading 1"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaHeading className="text-gray-800" />1
       </button>
       <button
-        onClick={() => insertAtCursor("h2")}
+        onClick={(e) => insertAtCursor("h2", e)}
         title="Heading 2"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaHeading className="text-gray-800" />2
       </button>
       <button
-        onClick={() => insertAtCursor("h3")}
+        onClick={(e) => insertAtCursor("h3", e)}
         title="Heading 3"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaHeading className="text-gray-800" />3
       </button>
       <button
-        onClick={() => insertAtCursor("ul")}
+        onClick={(e) => insertAtCursor("ul", e)}
         title="Unordered List"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaListUl className="text-gray-800" />
       </button>
       <button
-        onClick={() => insertAtCursor("ol")}
+        onClick={(e) => insertAtCursor("ol", e)}
         title="Ordered List"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaListOl className="text-gray-800" />
       </button>
       <button
-        onClick={() => insertAtCursor("quote")}
+        onClick={(e) => insertAtCursor("quote", e)}
         title="Blockquote"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaQuoteRight className="text-gray-800" />
       </button>
       <button
-        onClick={() => insertAtCursor("code")}
+        onClick={(e) => insertAtCursor("code", e)}
         title="Code Block"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaCode className="text-gray-800" />
       </button>
       <button
-        onClick={() => insertAtCursor("link")}
+        onClick={(e) => insertAtCursor("link", e)}
         title="Insert Link"
-        className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-300"
+        className="p-2 rounded-md hover:bg-gray-200 transition-colors duration-300"
       >
         <FaLink className="text-gray-800" />
       </button>

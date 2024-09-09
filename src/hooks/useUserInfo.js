@@ -7,7 +7,6 @@ const useUserInfo = (personId = null) => {
   const [userInfo, setUserInfo] = useState(null);
   const [userRoles, setUserRoles] = useState([]);
   const [personalBlogs, setPersonalBlogs] = useState([]);
-  const [userApplyList, setUserApplyList] = useState([]);
   const [personalInfo, setPersonalInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -247,7 +246,6 @@ const useUserInfo = (personId = null) => {
     userInfo,
     personalBlogs,
     userRoles: memoizedUserRoles,
-    userApplyList,
     personalInfo,
     loading,
     error,

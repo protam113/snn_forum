@@ -290,7 +290,10 @@ const Create = () => {
               </label>
               <textarea
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  console.log("Textarea value changed:", e.target.value);
+                  setDescription(e.target.value);
+                }}
                 rows={5}
                 className={`w-full p-2 border rounded-md ${
                   theme === "dark"
@@ -298,6 +301,7 @@ const Create = () => {
                     : "bg-white text-black border-zinc-800"
                 }`}
               />
+
               <div className="mt-4 white-space-pre">
                 <ReactMarkdown>{description}</ReactMarkdown>
               </div>

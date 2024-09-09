@@ -9,13 +9,19 @@ import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
 import TurndownService from "turndown";
 import Toolbar from "../../../components/design/Toolbar";
+import { useBlogDetail, useEditBlog } from "../../../hooks/Blog/useBlog";
 
 const EdtBlog = () => {
   const { theme } = useTheme();
   const { blogId } = useParams();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-  const { blog, loading, error, editBlog } = useBlog(blogId);
+  const { mutate: editBlog, isLoading, error } = useEditBlog(blogId); // Truyền blogId vào đây
+  const {
+    data: blog,
+    isLoading: blogLoading,
+    isError: blogError,
+  } = useBlogDetail(blogId);
   const [submitting, setSubmitting] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [formData, setFormData] = useState({
@@ -51,14 +57,13 @@ const EdtBlog = () => {
     if (files.length + selectedFiles.length <= 4) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
     } else {
-      alert("You can only upload up to 4 files.");
+      toast.error("You can only upload up to 4 files.");
     }
   };
 
   const handleRemoveFile = (index) => {
     const fileToRemove = selectedFiles[index];
     if (fileToRemove.id) {
-      // Nếu là file cũ (đã có ID), thêm ID vào id_media_remove
       setFormData((prevData) => ({
         ...prevData,
         id_media_remove: [...prevData.id_media_remove, fileToRemove.id],
@@ -73,7 +78,7 @@ const EdtBlog = () => {
   const handleInsert = (text) => {
     setFormData((prev) => ({
       ...prev,
-      description: prev.job_detail + text,
+      description: prev.description + text,
     }));
   };
 
@@ -88,13 +93,11 @@ const EdtBlog = () => {
     setSubmitting(true);
 
     const data = new FormData();
-    // Thêm các tệp mới vào formData
     selectedFiles.forEach((file) => {
       if (file instanceof File) {
         data.append("media", file);
       }
     });
-    // Thêm các trường còn lại vào formData
     Object.keys(formData).forEach((key) => {
       if (key !== "media") {
         data.append(key, formData[key]);
@@ -102,30 +105,25 @@ const EdtBlog = () => {
     });
 
     try {
-      // Chuyển Markdown description thành HTML
       const htmlDescription = marked(formData.description);
-
-      // Cập nhật formData với nội dung HTML
       data.append("description", htmlDescription);
 
-      await editBlog(data);
-      toast.success("Blog updated successfully!");
+      await editBlog({ edtBlog: data });
       navigate(`/blog/${blogId}`);
     } catch (err) {
       console.error("Failed to update blog", err);
-      toast.error("Failed to update blog.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading)
+  if (blogLoading)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     );
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (blogError) return <p className="text-center text-red-500">{blogError}</p>;
 
   return (
     <div

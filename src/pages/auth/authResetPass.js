@@ -62,9 +62,51 @@ const ResetPassword = () => {
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md">
       {!codeRequested ? (
-        <form onSubmit={handleRequestCode} className="space-y-5">
+        <form
+          onSubmit={handleRequestCode}
+          className="text-foreground py-12 md:py-16 lg:py-20"
+        >
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="max-w-xl mx-auto text-center space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Reset Your Password
+              </h2>
+              <p className="text-muted-foreground">
+                Enter your email address and we'll send you a code to reset your
+                password.
+              </p>
+              <div className="flex gap-2 w-full">
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="p-3 border rounded-lg border-gray-300 w-full"
+                  placeholder="Enter your email"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-white font-semibold rounded-lg bg-blue-600"
+                >
+                  Request Verification Code
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6 mt-6 max-w-lg mx-auto"
+        >
           <div className="flex flex-col">
-            <label className="mb-2 text-gray-700 font-medium" htmlFor="email">
+            <label
+              className="mb-2 text-sm font-medium text-gray-600"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -74,40 +116,35 @@ const ResetPassword = () => {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="p-3 border rounded-lg border-gray-300"
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
               placeholder="Enter your email"
               required
             />
           </div>
 
-          <button
-            type="submit"
-            className="px-6 py-3 text-white font-semibold rounded-lg bg-blue-600"
-          >
-            Request Verification Code
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-5 mt-5">
           <div className="flex flex-col">
-            <label className="mb-2 text-gray-700 font-medium" htmlFor="email">
-              Email
+            <label
+              className="mb-2 text-sm font-medium text-gray-600"
+              htmlFor="code"
+            >
+              Verification Code
             </label>
             <input
-              type="email"
-              id="email"
-              value={formData.email}
+              type="text"
+              id="code"
+              value={formData.code}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setFormData({ ...formData, code: e.target.value })
               }
-              className="p-3 border rounded-lg border-gray-300"
-              placeholder="Enter your email"
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+              placeholder="Enter verification code"
               required
             />
           </div>
+
           <div className="flex flex-col">
             <label
-              className="mb-2 text-gray-700 font-medium"
+              className="mb-2 text-sm font-medium text-gray-600"
               htmlFor="new-password"
             >
               New Password
@@ -119,8 +156,10 @@ const ResetPassword = () => {
               onChange={(e) =>
                 setFormData({ ...formData, newPassword: e.target.value })
               }
-              className={`p-3 border rounded-lg ${
-                isPasswordMismatch ? "border-red-500" : "border-gray-300"
+              className={`p-3 border rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:border-transparent ${
+                isPasswordMismatch
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
               }`}
               placeholder="Enter new password"
               required
@@ -129,7 +168,7 @@ const ResetPassword = () => {
 
           <div className="flex flex-col">
             <label
-              className="mb-2 text-gray-700 font-medium"
+              className="mb-2 text-sm font-medium text-gray-600"
               htmlFor="confirm-password"
             >
               Confirm New Password
@@ -139,27 +178,12 @@ const ResetPassword = () => {
               id="confirm-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`p-3 border rounded-lg ${
-                isPasswordMismatch ? "border-red-500" : "border-gray-300"
+              className={`p-3 border rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:border-transparent ${
+                isPasswordMismatch
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
               }`}
               placeholder="Confirm new password"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700 font-medium" htmlFor="code">
-              Verification Code
-            </label>
-            <input
-              type="text"
-              id="code"
-              value={formData.code}
-              onChange={(e) =>
-                setFormData({ ...formData, code: e.target.value })
-              }
-              className="p-3 border rounded-lg border-gray-300"
-              placeholder="Enter verification code"
               required
             />
           </div>
@@ -167,15 +191,17 @@ const ResetPassword = () => {
           <button
             type="submit"
             disabled={!isSubmitEnabled}
-            className={`px-6 py-3 text-white font-semibold rounded-lg ${
-              isSubmitEnabled ? "bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+            className={`w-full px-6 py-3 text-white font-semibold rounded-lg transition duration-300 ${
+              isSubmitEnabled
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-400 cursor-not-allowed"
             }`}
           >
             Reset Password
           </button>
 
           {isPasswordMismatch && (
-            <p className="text-red-500">Passwords do not match</p>
+            <p className="mt-3 text-sm text-red-500">Passwords do not match</p>
           )}
         </form>
       )}

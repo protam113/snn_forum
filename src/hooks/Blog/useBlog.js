@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
+import { toast } from "react-toastify";
 
 const fetchBlog = async (blogId, getToken) => {
   if (!blogId) return null;
@@ -32,4 +33,55 @@ const useBlogDetail = (blogId) => {
   });
 };
 
-export { useBlogDetail };
+const editBlog = async ({ blogId, edtBlog, token }) => {
+  if (!token) throw new Error("No token available");
+
+  const formData = new FormData();
+
+  for (const key in edtBlog) {
+    if (Array.isArray(edtBlog[key])) {
+      edtBlog[key].forEach((value) => formData.append(key, value));
+    } else {
+      formData.append(key, edtBlog[key]);
+    }
+  }
+
+  const url = endpoints.BlogDetail.replace(":id", blogId);
+
+  try {
+    const response = await authApi(token).patch(url, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error updating blog:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+const useEditBlog = (blogId) => {
+  const queryClient = useQueryClient();
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({ edtBlog }) => {
+      const token = await getToken();
+      return editBlog({ blogId, edtBlog, token });
+    },
+    onSuccess: () => {
+      toast.success("Blog đã được cập nhật thành công");
+      queryClient.invalidateQueries(["blog", blogId]); // Làm mới dữ liệu chi tiết blog
+      queryClient.invalidateQueries(["blogs"]); // Làm mới danh sách blog nếu cần
+    },
+    onError: (error) => {
+      toast.error(error.message || "Lỗi khi cập nhật blog!");
+    },
+  });
+};
+
+export { useBlogDetail, useEditBlog };

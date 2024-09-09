@@ -276,45 +276,6 @@ const useBlog = (blogId) => {
     }
   };
 
-  const editBlog = useCallback(
-    async (data) => {
-      try {
-        const token = await getToken();
-        if (!token) {
-          setError("No token available");
-          return;
-        }
-
-        if (!blogId || isNaN(blogId)) {
-          console.error("Invalid blogId:", blogId);
-          setError("Invalid blogId");
-          return;
-        }
-
-        const url = endpoints.BlogDetail.replace(":id", blogId);
-        console.log("Sending request to URL:", url);
-
-        const response = await authApi(token).patch(url, data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        setBlog(response.data);
-        try {
-          updateLocalStorage(response.data);
-        } catch (updateError) {
-          setError(updateError.message);
-        }
-      } catch (err) {
-        console.error("Error updating blog", err);
-        toast.error("Failed to update blog.");
-        setError("Failed to update blog.");
-      }
-    },
-    [blogId, getToken]
-  );
-
   return {
     likedBlogs,
     error,
@@ -327,7 +288,6 @@ const useBlog = (blogId) => {
     handleDeleteComment,
     handleAddComment,
     handleSubmitBlog,
-    editBlog,
     setSubmitting,
     handleEditComment,
     handleExpandComment,

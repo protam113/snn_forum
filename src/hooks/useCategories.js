@@ -10,8 +10,6 @@ const useCategories = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch categories
-
   // Fetch products by category
   const fetchProductByCategory = useCallback(async (categoryId) => {
     if (!categoryId) {
