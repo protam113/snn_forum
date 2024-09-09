@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
-import useStatical from "../../../../../../hooks/useStatical";
 import { toast } from "react-toastify";
+import { useStaticalBlogGeneral } from "../../../../../../hooks/Statistical/StaticalBlogGeneral";
 
 export default function StaticalBlogGeneral() {
   const chartRef = useRef(null);
@@ -24,23 +24,23 @@ export default function StaticalBlogGeneral() {
     { value: "12", label: "Tháng 12" },
   ]);
 
-  const { staticalBlogGeneral, loading, error, fetchStaticalBlogGeneral } =
-    useStatical();
+  // Sử dụng hook với các tham số startDate và endDate
+  const startDate = `2024-${selectedMonth}-01`;
+  const lastDay = new Date(2024, parseInt(selectedMonth), 0).getDate();
+  const endDate = `2024-${selectedMonth}-${lastDay}`;
+
+  const {
+    data: staticalBlogGeneral,
+    isLoading,
+    error,
+  } = useStaticalBlogGeneral(startDate, endDate);
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
 
   useEffect(() => {
-    const startDate = `2024-${selectedMonth}-01`;
-    const lastDay = new Date(2024, parseInt(selectedMonth), 0).getDate();
-    const endDate = `2024-${selectedMonth}-${lastDay}`;
-
-    fetchStaticalBlogGeneral(startDate, endDate);
-  }, [fetchStaticalBlogGeneral, selectedMonth]);
-
-  useEffect(() => {
-    if (!loading && !error && staticalBlogGeneral) {
+    if (!isLoading && !error && staticalBlogGeneral) {
       // Dữ liệu cho biểu đồ
       const labels = [
         "Tổng Số Lượt Thích",
@@ -85,7 +85,7 @@ export default function StaticalBlogGeneral() {
     } else if (error) {
       toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
     }
-  }, [staticalBlogGeneral, loading, error]);
+  }, [staticalBlogGeneral, isLoading, error]);
 
   useEffect(() => {
     if (chartInstance.current) {

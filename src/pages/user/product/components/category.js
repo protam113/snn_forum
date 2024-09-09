@@ -1,22 +1,34 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link
+import { Link } from "react-router-dom";
 import { Slide } from "react-slideshow-image";
-import "react-slideshow-image/dist/styles.css"; // Import the default styles
-import useCategories from "../../../../hooks/useCategories";
+import "react-slideshow-image/dist/styles.css";
+import { useCategoryList } from "../../../../hooks/Product/useCategories";
 
 const slidesToShow = 4;
 
 const createSlides = (categories, slidesToShow) => {
   const slides = [];
-  for (let i = 0; i < categories.length; i += slidesToShow) {
-    slides.push(categories.slice(i, i + slidesToShow));
+  if (categories) {
+    for (let i = 0; i < categories.length; i += slidesToShow) {
+      slides.push(categories.slice(i, i + slidesToShow));
+    }
   }
   return slides;
 };
 
 const Category = () => {
-  const { categories } = useCategories();
+  const { data: categories, isLoading, error } = useCategoryList();
   const slides = createSlides(categories, slidesToShow);
+
+  if (isLoading) {
+    return <p className="text-center text-gray-500">Loading...</p>;
+  }
+
+  if (error) {
+    return (
+      <p className="text-center text-red-500">Failed to load categories</p>
+    );
+  }
 
   return (
     <div className="py-6">

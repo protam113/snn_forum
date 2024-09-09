@@ -5,7 +5,6 @@ import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { useAddTag } from "../../../hooks/useTag";
 import EditTagPopup from "./EditTagPopup";
 import AddTagPopup from "./AddTagPopup";
-import { toast } from "react-toastify";
 
 const ManageTag = () => {
   const { data: tags, error, isLoading } = useTags();
@@ -64,7 +63,7 @@ const ManageTag = () => {
   return (
     <div className="container mx-auto px-4 py-6 bg-white shadow-md rounded-md">
       <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
-        <span>Tag Management</span>
+        <span> Quản lý Tag</span>
         <button
           className="bg-green-500 text-white px-2 py-1 rounded flex items-center text-sm"
           onClick={() => setShowAddTagPopup(true)}

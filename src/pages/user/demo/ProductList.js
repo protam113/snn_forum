@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Loading from "../../../error/load";
-import { useProductList } from "../../../../hooks/Product/useProduct";
+import useDemoProduct from "../../../hooks/Demo/FetchProduct";
+import Loading from "../../error/load";
 
 // Hàm định dạng giá tiền
 const formatPrice = (price) => {
@@ -10,10 +10,9 @@ const formatPrice = (price) => {
   return `${formattedPrice} đ`;
 };
 
-const Product = () => {
-  const { data: products, error, isLoading } = useProductList();
-
-  if (isLoading)
+const ProductList = () => {
+  const { products, loading, error } = useDemoProduct();
+  if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
@@ -35,7 +34,7 @@ const Product = () => {
           <Link
             key={product.id}
             className="bg-background rounded-lg shadow-lg overflow-hidden flex flex-col"
-            to={`/san_pham/chi_tiet_san_pham/${product.id}`}
+            to={`/demo/${product.id}`}
           >
             <div className="relative h-64">
               <img
@@ -69,4 +68,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default ProductList;

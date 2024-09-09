@@ -4,7 +4,6 @@ import AuthContext from "../context/AuthContext";
 const useAuth = () => {
   const context = useContext(AuthContext);
 
-  // Destructure getToken from context
   const { getToken } = context;
 
   if (!context) {

@@ -8,15 +8,14 @@ import useUserSearch from "../../../hooks/useUserSearch";
 import * as XLSX from "xlsx";
 import { useTheme } from "../../../context/themeContext";
 import useUserInfo from "../../../hooks/useUserInfo";
+import { useGroups } from "../../../hooks/Admin/useGroups";
 
 const AdUser = () => {
   const { theme } = useTheme();
   const { results: featuredUsers, fetchUsers } = useUserSearch();
   const navigate = useNavigate();
   const {
-    groups,
     users,
-    loadingGroups,
     loadingUsers,
     error,
     selectedGroup,
@@ -24,6 +23,7 @@ const AdUser = () => {
     removeUserFromGroup,
     fetchGroups,
   } = useAdmin();
+  const { data: groups, isLoading } = useGroups();
   const { userRoles } = useUserInfo();
   const [viewMode, setViewMode] = useState("all");
   const [userToRemove, setUserToRemove] = useState(null);
@@ -177,7 +177,7 @@ const AdUser = () => {
       )}
 
       <div>
-        {loadingGroups && <p className="text-blue-500">Loading groups...</p>}
+        {isLoading && <p className="text-blue-500">Loading groups...</p>}
         {loadingUsers && <p className="text-blue-500">Loading users...</p>}
         {error && <p className="text-red-500">{error}</p>}
 

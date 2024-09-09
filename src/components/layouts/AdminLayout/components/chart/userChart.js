@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
-import useStatical from "../../../../../hooks/useStatical";
+import { useStaticalUser } from "../../../../../hooks/Statistical/StaticalUser";
 
 export default function UserChart() {
   const chartRef = useRef(null);
@@ -8,15 +8,10 @@ export default function UserChart() {
   const [chartData, setChartData] = useState({ labels: [], data: [] });
   const [totalUsers, setTotalUsers] = useState(null);
 
-  const { staticalUser, loading, error, fetchStaticalUser } = useStatical();
+  const { data: staticalUser, isLoading, error } = useStaticalUser();
 
   useEffect(() => {
-    // Fetch data when component mounts
-    fetchStaticalUser();
-  }, [fetchStaticalUser]);
-
-  useEffect(() => {
-    if (!loading && !error && staticalUser) {
+    if (!isLoading && !error && staticalUser) {
       // Data for chart
       const labels = ["Admin", "Manager", "User"];
 
@@ -34,7 +29,7 @@ export default function UserChart() {
       // Set total users for displaying on the chart
       setTotalUsers(staticalUser.total_users);
     }
-  }, [staticalUser, loading, error]);
+  }, [staticalUser, isLoading, error]);
 
   useEffect(() => {
     if (chartInstance.current) {

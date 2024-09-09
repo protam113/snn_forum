@@ -1,9 +1,9 @@
 // components/ProductSidebar.js
 import React, { useState } from "react";
-import useCategories from "../../../../hooks/useCategories";
+import { useCategoryList } from "../../../../hooks/Product/useCategories";
 
 const ProductSidebar = ({ onFilterChange }) => {
-  const { categories } = useCategories();
+  const { data: categories } = useCategoryList();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceOrder, setPriceOrder] = useState("asc");
 

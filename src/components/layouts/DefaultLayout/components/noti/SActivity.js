@@ -45,9 +45,6 @@ const SActivity = () => {
           <span>Hot</span>
           <FaHotjar className="text-red-500" />
         </h2>
-        <a href="/" className="text-blue-500">
-          See all
-        </a>
       </div>
       <div className="space-y-5">
         {recentActivities.length === 0 ? (

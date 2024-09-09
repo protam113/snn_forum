@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
 

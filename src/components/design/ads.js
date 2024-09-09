@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import useTokenCheck from "../../hooks/useTokenCheck";
+import useUserInfo from "../../hooks/useUserInfo";
 
 const Ads_Input = () => {
-  const hasToken = useTokenCheck();
+  const { userInfo } = useUserInfo();
 
-  if (hasToken) {
+  if (userInfo) {
     return null;
   }
 

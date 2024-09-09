@@ -11,19 +11,6 @@ const useCategories = () => {
   const [error, setError] = useState(null);
 
   // Fetch categories
-  const fetchCategories = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await authApi().get(endpoints.Categories);
-      const results = response.data.results;
-      setCategories(results);
-    } catch (err) {
-      setError(err.message || "Đã xảy ra lỗi");
-      toast.error(err.message || "Đã xảy ra lỗi khi lấy danh mục");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   // Fetch products by category
   const fetchProductByCategory = useCallback(async (categoryId) => {
@@ -126,12 +113,7 @@ const useCategories = () => {
     [getToken]
   );
 
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
   return {
-    categories,
     productsByCategory,
     loading,
     error,

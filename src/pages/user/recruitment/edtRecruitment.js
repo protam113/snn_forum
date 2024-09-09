@@ -8,7 +8,6 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import { salary } from "../../../data/SalaryRange";
-import useRecruitment from "../../../hooks/useRecruitment";
 import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,41 +16,49 @@ import ReactMarkdown from "react-markdown";
 import { useTheme } from "../../../context/themeContext";
 import TurndownService from "turndown";
 import { marked } from "marked";
+import {
+  useRecruitmentDetail,
+  useEditRecruitment,
+} from "../../../hooks/Recruitment/useRecruitment";
+import { useTags } from "../../../hooks/useTag";
 
 const EdtRecruitment = () => {
   const { theme } = useTheme();
   const { id: postId } = useParams();
   const navigate = useNavigate();
-  const { recruitment, editRecruitment, loading, fetchRecruitment } =
-    useRecruitment(postId);
+  const { mutate: editRecruitmentMutation, isLoading: loading } =
+    useEditRecruitment();
+  const {
+    data: recruitment,
+    isLoading,
+    isError,
+    error,
+  } = useRecruitmentDetail(postId);
+  const { data: tags } = useTags();
+
   const [formData, setFormData] = useState({
     content: "",
     link: "",
     date: "",
     experience: "",
     quantity: "",
-    work: "",
     job_detail: "",
     mail: "",
     phone_number: "",
     salary: "",
     location: "",
+    tag_id: [],
   });
 
   const [location, setLocation] = useState("");
 
   useEffect(() => {
-    fetchRecruitment();
-  }, [fetchRecruitment]);
-
-  useEffect(() => {
     if (recruitment) {
       const turndownService = new TurndownService();
-      const job_detailnMarkdown = turndownService.turndown(
-        formData.job_detail || ""
+      const jobDetailMarkdown = turndownService.turndown(
+        recruitment.job_detail || ""
       );
 
-      // Format the date to "yyyy-MM-dd"
       const formattedDate = recruitment.date
         ? new Date(recruitment.date).toISOString().split("T")[0]
         : "";
@@ -62,16 +69,27 @@ const EdtRecruitment = () => {
         date: formattedDate,
         experience: recruitment.experience || "",
         quantity: recruitment.quantity || "",
-        work: recruitment.work || "",
-        job_detail: job_detailnMarkdown,
+        job_detail: jobDetailMarkdown,
         mail: recruitment.mail || "",
         phone_number: recruitment.phone_number || "",
         salary: recruitment.salary || "",
         location: recruitment.location || "",
+        tag_id: recruitment.tags.map((tag) => tag.tag.id) || [], // Update to match tag format
       });
       setLocation(recruitment.location || "");
     }
   }, [recruitment]);
+
+  const handleTagChange = (tagId) => {
+    setFormData((prev) => {
+      const tag_ids = prev.tag_id || [];
+      if (tag_ids.includes(tagId)) {
+        return { ...prev, tag_id: tag_ids.filter((id) => id !== tagId) };
+      } else {
+        return { ...prev, tag_id: [...tag_ids, tagId] };
+      }
+    });
+  };
 
   const handleLocationChange = (formattedLocation) => {
     const [province, district] = formattedLocation.split(", ");
@@ -99,43 +117,24 @@ const EdtRecruitment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Chuyển Markdown job_detail thành HTML
     const htmlJobDetail = marked(formData.job_detail);
 
-    // Cập nhật formData với nội dung HTML của job_detail
     const updatedFormData = {
       ...formData,
       job_detail: htmlJobDetail,
     };
 
-    // Kiểm tra tất cả các trường thông tin
-    if (
-      !updatedFormData.content ||
-      !updatedFormData.link ||
-      !updatedFormData.date ||
-      !updatedFormData.experience ||
-      !updatedFormData.quantity ||
-      !updatedFormData.work ||
-      !updatedFormData.job_detail || // Đảm bảo job_detail không bị bỏ trống
-      !updatedFormData.mail ||
-      !updatedFormData.phone_number ||
-      !updatedFormData.salary ||
-      !updatedFormData.location // Bao gồm location trong kiểm tra
-    ) {
-      toast.error("Vui lòng điền đầy đủ thông tin.");
-      return;
-    }
-
     try {
-      await editRecruitment(updatedFormData);
-      toast.success("Tin tuyển dụng đã được cập nhật thành công!");
+      await editRecruitmentMutation({
+        postId,
+        updatedRecruitment: updatedFormData,
+      });
       navigate(-1);
     } catch (error) {
       console.error(
         "Error updating recruitment:",
         error.response?.data || error.message
       );
-      toast.error("Đã xảy ra lỗi khi cập nhật tin tuyển dụng.");
     }
   };
 
@@ -372,6 +371,24 @@ const EdtRecruitment = () => {
                   </option>
                 ))}
               </select>
+            </div>
+            <div>
+              <label htmlFor="tag_id" className="text-sm font-medium mb-1">
+                Tags
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {tags?.map((tag) => (
+                  <label key={tag.id} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.tag_id.includes(tag.id)}
+                      onChange={() => handleTagChange(tag.id)}
+                      className="mr-2"
+                    />
+                    {tag.name}
+                  </label>
+                ))}
+              </div>
             </div>
 
             {/* Địa Điểm */}

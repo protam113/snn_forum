@@ -15,21 +15,22 @@ import formatDate from "../../../utils/formatDate";
 import Comment from "../../../components/comment/comment";
 import { useTheme } from "../../../context/themeContext";
 import useBlog from "../../../hooks/useBlog";
-import CommentsSection from "../../../components/comment/CommentsSection";
 import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
 import { toast } from "react-toastify";
 import { MdPerson } from "react-icons/md";
 import useUserInfo from "../../../hooks/useUserInfo";
+import { useBlogDetail } from "../../../hooks/Blog/useBlog";
+import CommentsSection from "../../../components/comment/CommentsSection";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
   const { userInfo } = useUserInfo();
   const { id: blogId } = useParams();
   const navigate = useNavigate();
-  const { blog, loading, message, handleDeleteBlog, likedBlogs } =
-    useBlog(blogId);
+  const { data: blog, isLoading, isError } = useBlogDetail(blogId);
+  const { handleDeleteBlog } = useBlog(blogId);
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -117,13 +118,13 @@ const Blog_detail = () => {
     window.scrollTo(0, 0);
   }, [blog]);
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     );
-  if (message)
+  if (isError)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Error404 />
@@ -256,15 +257,12 @@ const Blog_detail = () => {
                 theme === "dark" ? "text-gray-400" : "text-gray-500"
               }`}
             >
-              {blog.likes_count} lượt thích • {blog.comment_count} bình luận
+              {blog.likes_count} lượt thích {blog.comment_count} bình luận
             </p>
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <Likeblog
-                  blogId={blog.id}
-                  liked={likedBlogs[blog.id] || false}
-                />
+                <Likeblog blogId={blog.id} liked={blog.liked} />
                 <IoShareSocialOutline
                   className={`text-2xl cursor-pointer ${
                     theme === "dark" ? "text-gray-300" : "text-gray-500"
@@ -282,7 +280,7 @@ const Blog_detail = () => {
             </div>
           </div>
           <hr className="my-2 border-zinc-900" />
-          <CommentsSection />
+          <CommentsSection blogId={blogId} />
           <Comment blogId={blogId} />
         </div>
         <hr className="my-4 border-zinc-900" />

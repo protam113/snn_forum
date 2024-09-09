@@ -1,9 +1,21 @@
 import React from "react";
-import useCategories from "../../../../../hooks/useCategories";
+import { useCategoryList } from "../../../../../hooks/Product/useCategories";
 
 export default function CategoryChart() {
-  const { categories } = useCategories();
-  const totalCategories = categories.length;
+  const { data: categories, isLoading, error } = useCategoryList();
+
+  // Fallback value when categories is undefined
+  const totalCategories = categories ? categories.length : 0;
+
+  if (isLoading) {
+    return <p className="text-center text-gray-500">Loading...</p>;
+  }
+
+  if (error) {
+    return (
+      <p className="text-center text-red-500">Failed to load categories</p>
+    );
+  }
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4">

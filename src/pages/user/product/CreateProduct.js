@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
-import useCategories from "../../../hooks/useCategories";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Toolbar from "../../../components/design/Toolbar";
@@ -8,9 +7,10 @@ import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
 import { useTheme } from "../../../context/themeContext";
 import { useAddProduct } from "../../../hooks/Product/useProduct";
+import { useCategoryList } from "../../../hooks/Product/useCategories";
 
 const CreateProduct = () => {
-  const { categories } = useCategories();
+  const { data: categories } = useCategoryList();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
@@ -29,7 +29,6 @@ const CreateProduct = () => {
   const { mutate: addProductMutation } = useAddProduct();
 
   useEffect(() => {
-    // Clean up object URLs to avoid memory leaks
     return () => {
       selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
     };
@@ -41,8 +40,8 @@ const CreateProduct = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files).map((file) => ({
-      file, // Save the file object for FormData
-      preview: URL.createObjectURL(file), // Create a preview URL
+      file,
+      preview: URL.createObjectURL(file),
     }));
 
     if (files.length + selectedFiles.length <= 4) {
@@ -75,7 +74,7 @@ const CreateProduct = () => {
     if (!isNaN(value) && value.trim() !== "") {
       setPrice(value);
     } else {
-      setPrice(""); // Or set an error message
+      setPrice("");
     }
   };
 
@@ -307,10 +306,10 @@ const CreateProduct = () => {
                     id={`category-${cat.id}`}
                     name="category"
                     type="checkbox"
+                    className="form-checkbox"
                     value={cat.id}
                     checked={category.includes(cat.id)}
-                    onChange={handleCategoryChange}
-                    className="mr-2"
+                    onChange={handleCategoryChange} // Sử dụng trực tiếp `handleCategoryChange`
                   />
                   <label htmlFor={`category-${cat.id}`} className="text-sm">
                     {cat.name}

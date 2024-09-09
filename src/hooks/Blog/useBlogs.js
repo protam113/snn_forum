@@ -1,22 +1,16 @@
-// useBlogList.js
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
 
-const FetchBlogList = async ({ pageParam = 1 }) => {
+const FetchBlogList = async ({ pageParam = 1, token }) => {
   try {
-    const { getToken } = useAuth();
-    const token = await getToken();
-
     const response = token
       ? await authApi(token).get(`${endpoints.Blog}?page=${pageParam}`)
       : await authApi().get(`${endpoints.Blog}?page=${pageParam}`);
 
     const results = response.data.results || [];
     const next = response.data.next;
-
-    // Log the response for debugging purposes
-    console.log("Fetched data:", { results, next });
 
     return {
       blogs: results.sort(
@@ -30,11 +24,27 @@ const FetchBlogList = async ({ pageParam = 1 }) => {
   }
 };
 
-export const useBlogList = () => {
+const useBlogList = () => {
+  const { getToken } = useAuth();
+  const [token, setToken] = useState(null);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const fetchedToken = await getToken();
+      setToken(fetchedToken);
+      setIsReady(true);
+    };
+    fetchToken();
+  }, [getToken]);
+
   return useInfiniteQuery({
-    queryKey: ["blogs"],
-    queryFn: FetchBlogList,
+    queryKey: ["blogs", token],
+    queryFn: ({ pageParam }) => FetchBlogList({ pageParam, token }),
     getNextPageParam: (lastPage) => lastPage.nextPage,
+    enabled: isReady,
     staleTime: 60000,
   });
 };
+
+export { useBlogList };

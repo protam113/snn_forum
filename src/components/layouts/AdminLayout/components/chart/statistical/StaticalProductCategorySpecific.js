@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import useStatical from "../../../../../../hooks/useStatical";
 import { toast } from "react-toastify";
-import useCategories from "../../../../../../hooks/useCategories";
+import { useCategoryList } from "../../../../../../hooks/Product/useCategories";
 
 export default function StaticalProductCategoryGeneral() {
-  const { categories } = useCategories(); // Lấy danh sách danh mục
+  const { data: categories = [] } = useCategoryList();
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });

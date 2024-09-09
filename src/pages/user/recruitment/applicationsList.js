@@ -70,7 +70,6 @@ const ApplicationsList = () => {
             <th className="py-3 px-6 text-center">Họ tên</th>
             <th className="py-3 px-6 text-center">Vị trí ứng tuyển</th>
             <th className="py-3 px-6 text-center">SDT</th>
-            <th className="py-3 px-6 text-center">Mail</th>
             <th className="py-3 px-6 text-center">Trạng thái</th>
             <th className="py-3 px-6 text-center">Ngày ứng tuyển</th>
             <th className="py-3 px-6 text-center">CV</th>
@@ -104,9 +103,10 @@ const ApplicationsList = () => {
                 <td className="py-4 px-6 text-gray-800">
                   {application.job_title}
                 </td>
-                <td className="border p-2">{application.mail}</td>
-                <td className="border p-2">{application.phone_number}</td>
-                <td className="py-4 px-6 text-gray-800">
+                <td className="border p-2 text-center">
+                  {application.phone_number}
+                </td>
+                <td className="py-4 px-6 text-gray-800 text-center">
                   <select
                     value={application.status}
                     onChange={(e) =>
@@ -125,10 +125,10 @@ const ApplicationsList = () => {
                     <option value="rejected">Rejected</option>
                   </select>
                 </td>
-                <td className="py-4 px-6 text-gray-800">
+                <td className="py-4 px-6 text-gray-800 text-center">
                   {new Date(application.created_date).toLocaleDateString()}
                 </td>
-                <td className="py-4 px-6 text-gray-800">
+                <td className="py-4 px-6 text-gray-800 text-center">
                   <a
                     href={application.cv}
                     className="text-blue-500 hover:text-blue-700"

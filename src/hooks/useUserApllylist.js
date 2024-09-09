@@ -8,28 +8,30 @@ const fetchUserApplyList = async (token) => {
     const response = await authApi(token).get(endpoints.UserApplyList);
     return response.data.results || [];
   } catch (err) {
+    console.error("Error fetching user apply list:", err);
     toast.error("Error fetching user apply list!");
     throw err;
   }
 };
 
-export const useUserApplyList = () => {
+const useUserApplyList = () => {
   const { getToken } = useAuth();
 
   return useQuery({
     queryKey: ["userApplyList"],
     queryFn: async () => {
       const token = await getToken();
-      if (!token) throw new Error("No token available");
+      if (!token) {
+        throw new Error("No token available");
+      }
 
       return fetchUserApplyList(token);
     },
-    staleTime: 60000,
-    cacheTime: 300000,
+    staleTime: Infinity,
+    cacheTime: Infinity,
     onError: (error) => {
-      toast.error("Error fetching user apply list!");
+      toast.error(`Error fetching user apply list: ${error.message}`);
     },
   });
 };
-
-export default useUserApplyList;
+export { useUserApplyList };

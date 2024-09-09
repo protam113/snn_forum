@@ -72,7 +72,9 @@ const CreateBy = () => {
         title={<span className="text-16">Front-end</span>}
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">Lenf</h3>
+            <h3 className="text-16 font-bold text-custom-red">
+              Lenf (Pham Minh Hoang)
+            </h3>
             <ul className="text-14">
               <li>
                 <strong>Project Manager (PM):</strong> Oversees the project,
@@ -98,7 +100,9 @@ const CreateBy = () => {
         title={<span className="text-16">Back-End</span>}
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">ChuBA</h3>
+            <h3 className="text-16 font-bold text-custom-red">
+              ChuBA (Tran Thanh Hoang )
+            </h3>
 
             <ul className="text-14">
               <li>

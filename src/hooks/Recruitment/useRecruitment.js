@@ -59,10 +59,6 @@ const AddRecruitment = async (newRecruitment, token) => {
 
   if (!token) throw new Error("No token available");
 
-  formData.forEach((value, key) => {
-    console.log(key, value);
-  });
-
   const response = await authApi(token).post(endpoints.Recruitment, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -77,7 +73,6 @@ const useAddRecruitment = () => {
   return useMutation({
     mutationFn: async (newRecruitment) => {
       const token = await getToken();
-      console.log("Token:", token); // Log token để kiểm tra
       return AddRecruitment(newRecruitment, token);
     },
     onSuccess: () => {
@@ -170,10 +165,58 @@ const useDeleteRecruitment = () => {
   });
 };
 
+const addApplyJob = async (newApplyJob, token, postId) => {
+  const formData = new FormData();
+
+  for (const key in newApplyJob) {
+    if (Array.isArray(newApplyJob[key])) {
+      newApplyJob[key].forEach((value) => formData.append(key, value));
+    } else {
+      formData.append(key, newApplyJob[key]);
+    }
+  }
+
+  if (!token) throw new Error("No token available");
+
+  const response = await authApi(token).post(
+    endpoints.ApplyJob.replace(":id", postId),
+    formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+
+  return response.data;
+};
+
+const useAddApplyJob = (postId) => {
+  const queryClient = useQueryClient();
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async (newAddApplyJob) => {
+      const token = await getToken();
+      return addApplyJob(newAddApplyJob, token, postId);
+    },
+    onSuccess: () => {
+      toast.success("Đã ứng tuyển thành công!");
+      queryClient.invalidateQueries(["AddApplyJob"]);
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.detail ||
+          error.message ||
+          "Failed to apply for job."
+      );
+    },
+  });
+};
+
 export {
   useRecruitmentList,
   useRecruitmentDetail,
   useAddRecruitment,
   useEditRecruitment,
   useDeleteRecruitment,
+  useAddApplyJob,
 };

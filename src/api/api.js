@@ -2,9 +2,6 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-let apiCallCount = 0;
-
-// Biến để đếm số lượng API được gọi
 const authApi = (token = null) => {
   const config = {
     baseURL,
@@ -14,34 +11,7 @@ const authApi = (token = null) => {
     },
   };
 
-  const instance = axios.create(config);
-
-  instance.interceptors.request.use(
-    (request) => {
-      // Đếm số lượng API được gọi
-      apiCallCount += 1;
-
-      // Kiểm tra và log tên của API đang được gọi
-      // Đảm bảo rằng biến 'endpoints' đã được định nghĩa
-      const apiName = endpoints
-        ? Object.keys(endpoints).find((key) => request.url === endpoints[key])
-        : null;
-
-      console.log(
-        `API Call #${apiCallCount}: ${apiName || "Unknown API"} - ${
-          request.url
-        }`
-      );
-
-      return request;
-    },
-    (error) => {
-      // Xử lý lỗi request
-      return Promise.reject(error);
-    }
-  );
-
-  return instance;
+  return axios.create(config);
 };
 
 // Các endpoint API
@@ -90,6 +60,9 @@ const endpoints = {
   StaticalProductGeneral: process.env.REACT_APP_StaticalProductGeneral_ENDPOINT,
   StaticalProductCategorySpecific:
     process.env.REACT_APP_StaticalProductCategorySpecific_ENDPOINT,
+  StaticalJobPostGeneral: process.env.REACT_APP_StaticalJobPostGeneral_ENDPOINT,
+  StaticalJobApplicationGeneral:
+    process.env.REACT_APP_StaticalJobApplicationGeneral_ENDPOINT,
 };
 
 const authApiPrivate = authApi();

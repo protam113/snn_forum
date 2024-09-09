@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
-import useStatical from "../../../../../../hooks/useStatical";
 import { toast } from "react-toastify";
+import { useStaticalProductCategoryGeneral } from "../../../../../../hooks/Statistical/StaticalProductCategoryGeneral";
+import Loading from "../../../../../../pages/error/load";
 
 export default function StaticalProductCategoryGeneral() {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [selectedMonth, setSelectedMonth] = useState("01"); // Default to January
-  const [months] = useState([
+
+  const months = [
     { value: "01", label: "Tháng 1" },
     { value: "02", label: "Tháng 2" },
     { value: "03", label: "Tháng 3" },
@@ -21,30 +23,28 @@ export default function StaticalProductCategoryGeneral() {
     { value: "10", label: "Tháng 10" },
     { value: "11", label: "Tháng 11" },
     { value: "12", label: "Tháng 12" },
-  ]);
+  ];
 
   const {
-    staticalProductCategoryGeneral,
-    loading,
+    data: staticalProductCategoryGeneral,
+    isLoading,
     error,
-    fetchStaticalProductCategoryGeneral,
-  } = useStatical();
+  } = useStaticalProductCategoryGeneral(
+    `2024-${selectedMonth}-01`,
+    `2024-${selectedMonth}-${new Date(
+      2024,
+      parseInt(selectedMonth),
+      0
+    ).getDate()}`
+  );
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
 
   useEffect(() => {
-    const startDate = `2024-${selectedMonth}-01`;
-    const lastDay = new Date(2024, parseInt(selectedMonth), 0).getDate();
-    const endDate = `2024-${selectedMonth}-${lastDay}`;
-
-    fetchStaticalProductCategoryGeneral(startDate, endDate);
-  }, [fetchStaticalProductCategoryGeneral, selectedMonth]);
-
-  useEffect(() => {
-    if (!loading && !error && staticalProductCategoryGeneral) {
-      // Dữ liệu cho biểu đồ
+    if (!isLoading && !error && staticalProductCategoryGeneral) {
+      // Data for chart
       const labels = staticalProductCategoryGeneral.map((item) => item.name);
       const data = staticalProductCategoryGeneral.map(
         (item) => item.total_products || 0
@@ -81,7 +81,7 @@ export default function StaticalProductCategoryGeneral() {
     } else if (error) {
       toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
     }
-  }, [staticalProductCategoryGeneral, loading, error]);
+  }, [staticalProductCategoryGeneral, isLoading, error]);
 
   useEffect(() => {
     if (chartInstance.current) {
@@ -134,10 +134,16 @@ export default function StaticalProductCategoryGeneral() {
           </option>
         ))}
       </select>
-      <canvas
-        ref={chartRef}
-        className="w-[400px] h-[300px] border border-gray-200 rounded-md shadow-lg"
-      />
+      {isLoading ? (
+        <p>
+          <Loading />
+        </p>
+      ) : (
+        <canvas
+          ref={chartRef}
+          className="w-[400px] h-[300px] border border-gray-200 rounded-md shadow-lg"
+        />
+      )}
     </div>
   );
 }

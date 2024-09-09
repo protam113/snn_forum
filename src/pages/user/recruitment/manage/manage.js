@@ -1,18 +1,22 @@
 import React from "react";
 import ManageNav from "./manageNav";
 import Loading from "../../../error/load";
-import useUserApplyList from "../../../../hooks/useUserApllylist";
+import { useUserApplyList } from "../../../../hooks/useUserApllylist";
 
 const Manage = () => {
-  const { data: userApplyList, isLoading, error } = useUserApplyList(); // Điều chỉnh tên biến
+  const { data: userApplyList = [], isLoading, error } = useUserApplyList();
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div>
         <Loading />
       </div>
     );
-  if (error) return <div>Error: {error}</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message || "An error occurred"}</div>;
+  }
 
   return (
     <div className="banner p-4 rounded-lg shadow-md">
@@ -25,7 +29,6 @@ const Manage = () => {
             <th className="border p-2">Name</th>
             <th className="border p-2">Ngày Nộp</th>
             <th className="border p-2">Tên Công Việc</th>
-
             <th className="border p-2">CV</th>
             <th className="border p-2">Trạng Thái</th>
           </tr>
@@ -39,7 +42,6 @@ const Manage = () => {
                   {new Date(application.created_date).toLocaleDateString()}
                 </td>
                 <td className="border p-2">{application.job_title}</td>
-
                 <td className="border p-2">
                   <a
                     href={application.cv}
@@ -70,7 +72,7 @@ const Manage = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center p-4">
+              <td colSpan="5" className="text-center p-4">
                 No Applications Found!
               </td>
             </tr>

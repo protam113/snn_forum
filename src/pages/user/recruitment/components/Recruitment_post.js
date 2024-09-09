@@ -4,7 +4,6 @@ import Block from "../../../../components/design/Block";
 import { FaEdit, FaTrashAlt, FaLink } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../../context/themeContext";
-import useRecruitment from "../../../../hooks/useRecruitment";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 import formatDate from "../../../../utils/formatDate";

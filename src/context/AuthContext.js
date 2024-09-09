@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
     const refreshToken = encryptedRefreshToken
       ? decryptData(encryptedRefreshToken)
       : null;
-    console.log("Attempting to refresh token with:", refreshToken);
 
     if (refreshToken) {
       try {
@@ -41,13 +40,11 @@ export const AuthProvider = ({ children }) => {
           ...prevAuth,
           access_token: encryptedAccessToken,
         }));
-        console.log("Token refreshed successfully");
       } catch (err) {
         console.error("Error refreshing access token", err);
         logout();
       }
     } else {
-      console.log("No refresh token found");
       logout();
     }
   };

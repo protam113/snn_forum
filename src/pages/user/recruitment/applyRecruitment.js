@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
-import useRecruitment from "../../../hooks/useRecruitment";
 import { useParams, useNavigate } from "react-router-dom";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { toast } from "react-toastify";
+import { useAddApplyJob } from "../../../hooks/Recruitment/useRecruitment";
 
 const ApplyRecruitment = () => {
   const { id: postId } = useParams();
-  const { addApplyJob } = useRecruitment();
+  const { mutate: addApplyJobMutation } = useAddApplyJob(postId);
   const fileInputRef = useRef(null);
   const [cv, setCv] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -78,20 +78,17 @@ const ApplyRecruitment = () => {
       return;
     }
     try {
-      await addApplyJob(
-        {
-          job_title,
-          fullname,
-          phone_number,
-          email,
-          sex,
-          age,
-          cv,
-        },
-        postId
-      );
+      await addApplyJobMutation({
+        job_title,
+        fullname,
+        phone_number,
+        email,
+        sex,
+        age,
+        cv,
+      });
       toast.success("Application submitted successfully!");
-      navigate(-1); // Redirect or handle accordingly
+      navigate(-1);
     } catch (err) {
       console.error(err);
       toast.error("An error occurred while applying for the job.");

@@ -29,7 +29,7 @@ const CategoryProduct = () => {
       <div className="container mx-auto px-4">
         <button
           onClick={() => navigate(-1)}
-          className=" text-blue-500 px-4 py-2 rounded-md mb-4"
+          className="text-blue-500 px-4 py-2 rounded-md mb-4"
         >
           Quay lại
         </button>
@@ -46,7 +46,11 @@ const CategoryProduct = () => {
               >
                 <div className="relative h-64">
                   <img
-                    src={product.file}
+                    src={
+                      product.medias && product.medias.length > 0
+                        ? product.medias[0].media
+                        : "default-image-url.jpg"
+                    }
                     alt={product.title}
                     className="w-full h-full object-cover"
                   />

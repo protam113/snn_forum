@@ -8,23 +8,27 @@ import { BsThreeDots } from "react-icons/bs";
 import { FaTrashAlt } from "react-icons/fa";
 import ReplyComment from "./ReplyComment";
 import useUserInfo from "../../hooks/useUserInfo";
+import { useComments } from "../../hooks/Blog/useComment";
 
-const CommentsSection = () => {
+const CommentsSection = ({ blogId }) => {
   const { theme } = useTheme();
-  const { id: blogId } = useParams();
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
   const {
-    blog,
-    comments,
     commentChild,
     loading,
     error,
     handleDeleteComment,
     handleExpandComment,
-    loadMoreComments,
-    hasMoreComments,
   } = useBlog(blogId);
+
+  const {
+    data: { pages, pageParams } = { pages: [], pageParams: [] },
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+  } = useComments(blogId);
 
   const [activeCommentMenu, setActiveCommentMenu] = useState(null);
   const [activeReply, setActiveReply] = useState(null);
@@ -51,9 +55,10 @@ const CommentsSection = () => {
   if (loading) return <Loading />;
   if (error) return <p className="text-red-500">{error}</p>;
 
-  if (!blog) {
-    return <p className="text-gray-500">No blog found.</p>;
-  }
+  if (isLoading) return <p>Loading....</p>;
+  if (isError) return <p className="text-red-500">Error</p>;
+
+  const comments = pages.flatMap((page) => page.parentComments);
 
   return (
     <div className="comments-section">
@@ -113,6 +118,8 @@ const CommentsSection = () => {
               >
                 {comment.content}
                 <br className="mt-2" />
+              </p>
+              <div className="flex items-center space-x-2">
                 <button
                   className={`text-blue-500 text-sm ${
                     activeReply === comment.id ? "font-bold" : ""
@@ -121,7 +128,9 @@ const CommentsSection = () => {
                 >
                   Reply
                 </button>
-              </p>
+
+                <p>• Phản hồi {comment.reply_count}</p>
+              </div>
               {/* Replies */}
               {activeReply === comment.id &&
                 commentChild
@@ -181,12 +190,12 @@ const CommentsSection = () => {
           </p>
         )}
       </div>
-      {hasMoreComments && (
+      {hasNextPage && (
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
-          onClick={loadMoreComments}
+          className=" text-blue-500 hover:text-blue-300 text-14 px-4 py-2 rounded mt-4"
+          onClick={() => fetchNextPage()}
         >
-          Load More Comments
+          Tải Thêm{" "}
         </button>
       )}
     </div>
