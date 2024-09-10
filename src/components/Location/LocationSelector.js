@@ -12,45 +12,45 @@ const LocationSelector = ({
   const [currentDistrict, setCurrentDistrict] = useState(
     selectedDistrict || ""
   );
-  const [districts, setDistricts] = useState([]);
+
+  // Find the districts for the current province
+  const getDistricts = (provinceName) => {
+    const provinceData = provinces.find((p) => p.name === provinceName);
+    return provinceData ? provinceData.districts : [];
+  };
 
   useEffect(() => {
     setCurrentProvince(selectedProvince || "");
-    setCurrentDistrict(selectedDistrict || "");
-  }, [selectedProvince, selectedDistrict]);
+  }, [selectedProvince]);
 
   useEffect(() => {
-    const formattedLocation = `${currentProvince}, ${currentDistrict}`;
-    onLocationChange(formattedLocation);
-  }, [currentProvince, currentDistrict, onLocationChange]);
+    setCurrentDistrict(selectedDistrict || "");
+  }, [selectedDistrict]);
+
+  useEffect(() => {
+    // Reset the district when province changes
+    setCurrentDistrict("");
+    onLocationChange(`${currentProvince}, `); // Update parent component when province changes
+  }, [currentProvince]);
 
   const handleProvinceChange = (e) => {
-    const provinceName = e.target.value;
-    setCurrentProvince(provinceName);
-    const selectedProvinceData = provinces.find(
-      (province) => province.name === provinceName
-    );
-    setDistricts(selectedProvinceData ? selectedProvinceData.districts : []);
-    setCurrentDistrict(""); // Reset selected district
+    const newProvince = e.target.value;
+    setCurrentProvince(newProvince);
+    onLocationChange(`${newProvince}, ${currentDistrict}`);
   };
 
   const handleDistrictChange = (e) => {
-    setCurrentDistrict(e.target.value);
+    const newDistrict = e.target.value;
+    setCurrentDistrict(newDistrict);
+    onLocationChange(`${currentProvince}, ${newDistrict}`);
   };
 
+  const districts = getDistricts(currentProvince);
+
   return (
-    <div className="relative">
-      <label htmlFor="province" className="block mb-1">
-        Thành Phố/Tỉnh Thành:
-      </label>
-      <select
-        id="province"
-        value={currentProvince}
-        onChange={handleProvinceChange}
-        className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
-        required
-      >
-        <option value="">Chọn tỉnh/thành phố</option>
+    <div>
+      <select value={currentProvince} onChange={handleProvinceChange}>
+        <option value="">Select Province</option>
         {provinces.map((province) => (
           <option key={province.name} value={province.name}>
             {province.name}
@@ -58,27 +58,18 @@ const LocationSelector = ({
         ))}
       </select>
 
-      {districts.length > 0 && (
-        <>
-          <label htmlFor="district" className="block mb-1 mt-4">
-            Quận/Huyện:
-          </label>
-          <select
-            id="district"
-            value={currentDistrict}
-            onChange={handleDistrictChange}
-            className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
-            required
-          >
-            <option value="">Chọn quận/huyện</option>
-            {districts.map((district) => (
-              <option key={district} value={district}>
-                {district}
-              </option>
-            ))}
-          </select>
-        </>
-      )}
+      <select
+        value={currentDistrict}
+        onChange={handleDistrictChange}
+        disabled={!currentProvince}
+      >
+        <option value="">Select District</option>
+        {districts.map((district) => (
+          <option key={district} value={district}>
+            {district}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };

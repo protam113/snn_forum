@@ -3,14 +3,29 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import useCategories from "../../../hooks/useCategories";
 import Loading from "../../error/load";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import EdtCategory from "./edtCategory";
+import { useCategoryList } from "../../../hooks/Product/useCategories";
 
 const AdCategory = () => {
-  const { categories, loading, error, handleDeleteCategory } = useCategories();
+  const { handleDeleteCategory } = useCategories();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
+  const { data: categories, isLoading, error } = useCategoryList();
+  if (isLoading) {
+    return (
+      <p className="text-center text-gray-500">
+        <Loading />
+      </p>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="text-center text-red-500">Failed to load categories</p>
+    );
+  }
 
   const handleCreateCategory = () => {
     navigate("/admin/the_loai/tao_the_loai");
@@ -36,14 +51,6 @@ const AdCategory = () => {
     setShowModal(false);
     setSelectedCategory(null);
   };
-
-  if (loading)
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loading />
-      </div>
-    );
-  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="banner p-4 rounded-lg shadow-md">

@@ -1,12 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { toast } from "react-toastify";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
 import { encryptData, decryptData } from "../utils/cryptoUtils";
 
 const useBlog = (blogId) => {
-  const [blog, setBlog] = useState(null);
-  const [likedBlogs, setLikedBlogs] = useState({});
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentChild, setCommentChild] = useState([]);
@@ -238,46 +236,7 @@ const useBlog = (blogId) => {
     [getToken]
   );
 
-  const updateLocalStorage = (updatedBlog) => {
-    const cacheKey = "blogs";
-    const cachedData = localStorage.getItem(cacheKey);
-
-    if (cachedData) {
-      try {
-        const parsedData = decryptData(cachedData);
-        if (!parsedData || !Array.isArray(parsedData.blogs)) {
-          throw new Error("Dữ liệu trong localStorage không hợp lệ");
-        }
-
-        const updatedBlogs = parsedData.blogs.map((blog) =>
-          blog.id === updatedBlog.id ? updatedBlog : blog
-        );
-
-        const encryptedData = encryptData({
-          blogs: updatedBlogs,
-          likedBlogs: parsedData.likedBlogs || {},
-        });
-
-        localStorage.setItem(cacheKey, encryptedData);
-      } catch (localStorageError) {
-        console.error(
-          "Lỗi khi cập nhật localStorage:",
-          localStorageError.message
-        );
-        throw new Error("Không thể cập nhật dữ liệu trong localStorage");
-      } finally {
-        setSubmitting(false);
-      }
-    } else {
-      console.warn(
-        "Không tìm thấy dữ liệu trong localStorage với key:",
-        cacheKey
-      );
-    }
-  };
-
   return {
-    likedBlogs,
     error,
     comments,
     commentChild,

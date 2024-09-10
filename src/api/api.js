@@ -27,6 +27,7 @@ const endpoints = {
   currentUserBlog: process.env.REACT_APP_currentUserBlog_ENDPOINT,
   RegisterUser: process.env.REACT_APP_RegisterUser_ENDPOINT,
   createUser: process.env.REACT_APP_createUser_ENDPOINT,
+  AdminUser: process.env.REACT_APP_AdminUser_ENDPOINT,
   UserApplyList: process.env.REACT_APP_UserApplyList_ENDPOINT,
   Blog: process.env.REACT_APP_Blog_ENDPOINT,
   BlogDetail: process.env.REACT_APP_BlogDetail_ENDPOINT,
@@ -63,6 +64,8 @@ const endpoints = {
   StaticalJobPostGeneral: process.env.REACT_APP_StaticalJobPostGeneral_ENDPOINT,
   StaticalJobApplicationGeneral:
     process.env.REACT_APP_StaticalJobApplicationGeneral_ENDPOINT,
+  StaticalJobPostSpecific:
+    process.env.REACT_APP_StaticalJobPostSpecific_ENDPOINT,
 };
 
 const authApiPrivate = authApi();

@@ -1,5 +1,5 @@
 import React from "react";
-import { useUserBanner } from "../../../../../hooks/useUserbanner";
+import { useUserBanner } from "../../../../../hooks/Banner/useUserbanner";
 
 export default function BannerChart() {
   const { data: userBanner = [], isLoading, isError } = useUserBanner();

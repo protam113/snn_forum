@@ -9,6 +9,7 @@ import * as XLSX from "xlsx";
 import { useTheme } from "../../../context/themeContext";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { useGroups } from "../../../hooks/Admin/useGroups";
+import { useAdminUser } from "../../../hooks/Admin/useAdminUser";
 
 const AdUser = () => {
   const { theme } = useTheme();
@@ -28,6 +29,9 @@ const AdUser = () => {
   const [viewMode, setViewMode] = useState("all");
   const [userToRemove, setUserToRemove] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  // Example of initializing data
+  const { data = { pages: [] } } = useAdminUser();
 
   useEffect(() => {
     fetchUsers();
@@ -76,7 +80,16 @@ const AdUser = () => {
   };
 
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(featuredUsers);
+    // Check if data.pages is defined and has elements
+    if (!data || !data.pages) {
+      console.error("Data is not properly initialized.");
+      return;
+    }
+
+    // Kết hợp tất cả các trang dữ liệu
+    const allUsers = data.pages.flatMap((page) => page.results || []);
+
+    const ws = XLSX.utils.json_to_sheet(allUsers);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Users");
 
@@ -98,7 +111,7 @@ const AdUser = () => {
           {isAdmin && ( // Chỉ hiển thị nút nếu người dùng là admin
             <button
               onClick={exportToExcel}
-              disabled={loadingUsers || featuredUsers.length === 0}
+              disabled={loadingUsers || !data?.pages?.length}
               className={`px-4 text-16 py-2 rounded-lg flex items-center gap-2 ${
                 theme === "dark"
                   ? "bg-green-600 text-gray-900"

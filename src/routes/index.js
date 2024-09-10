@@ -9,7 +9,13 @@ import CreateBanner from "../pages/admin/banner/createBanner";
 import AdCategory from "../pages/admin/category/Category";
 import CreateCategory from "../pages/admin/category/createCategory";
 import EdtCategory from "../pages/admin/category/edtCategory";
+import StaticalJobPostGeneral from "../pages/admin/statisticalMail.js/StaticalJobPostGeneral";
+import StaticalJobPostSpecific from "../pages/admin/statisticalMail.js/StaticalJobPostSpecific";
+import StaticalProductCategory from "../pages/admin/statisticalMail.js/StaticalProductCategoryGeneral";
+import StaticalProduct from "../pages/admin/statisticalMail.js/StaticalProductGeneral";
+import StatisticalJobApplicationGeneral from "../pages/admin/statisticalMail.js/StatisticalJobApplicationGeneral";
 import StatisticalPage from "../pages/admin/statisticalMail.js/statisticalPage";
+import StatisticalBlogs from "../pages/admin/statisticalMail.js/StatisticsBlog";
 import ManageTag from "../pages/admin/tag/ManageTag";
 import ResetPassword from "../pages/auth/authResetPass";
 import ConfirmPage from "../pages/auth/confirmPage";
@@ -158,10 +164,37 @@ const privateRoutes = [
     layout: AdminLayout,
   },
   {
-    path: "/admin/thong_ke",
-    component: StatisticalPage,
+    path: "/admin/thong_ke/blog",
+    component: StatisticalBlogs,
     layout: AdminLayout,
   },
+  {
+    path: "/admin/thong_ke/san_pham",
+    component: StaticalProduct,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/thong_ke/the_loai",
+    component: StaticalProductCategory,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/thong_ke/don_ung_tuyen",
+    component: StatisticalJobApplicationGeneral,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/thong_ke/ung_tuyen",
+    component: StaticalJobPostGeneral,
+    layout: AdminLayout,
+  },
+
+  {
+    path: "/admin/thong_ke/tuyen_dung",
+    component: StaticalJobPostSpecific,
+    layout: AdminLayout,
+  },
+
   {
     path: "/admin/tag",
     component: ManageTag,

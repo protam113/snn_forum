@@ -1,9 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
-import { toast } from "react-toastify";
 import useAuth from "../useAuth";
+import { toast } from "react-toastify";
 
-const fetchStaticalUser = async (startDate, endDate, token) => {
+const fetchStatisticalJobApplicationGeneral = async (
+  startDate,
+  endDate,
+  token
+) => {
   try {
     if (!token) {
       throw new Error("Không có token");
@@ -14,10 +18,13 @@ const fetchStaticalUser = async (startDate, endDate, token) => {
     }
 
     const response = await authApi(token).get(
-      `${endpoints.StaticalUser}?start_date=${encodeURIComponent(
+      `${
+        endpoints.StaticalJobApplicationGeneral
+      }?start_date=${encodeURIComponent(
         startDate
       )}&end_date=${encodeURIComponent(endDate)}`
     );
+
     return response.data;
   } catch (err) {
     toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
@@ -25,20 +32,20 @@ const fetchStaticalUser = async (startDate, endDate, token) => {
   }
 };
 
-const useStaticalUser = (startDate, endDate) => {
+const useStatisticalJobApplicationGeneral = (startDate, endDate) => {
   const { getToken } = useAuth();
 
   return useQuery({
-    queryKey: ["staticalUser", startDate, endDate],
+    queryKey: ["statisticalJobApplicationGeneral", startDate, endDate],
     queryFn: async () => {
       const token = await getToken();
-      return fetchStaticalUser(startDate, endDate, token);
+      return fetchStatisticalJobApplicationGeneral(startDate, endDate, token);
     },
     staleTime: 60000,
     onError: (err) => {
-      console.log("Error fetching user statistics:", err);
+      console.log("Error fetching product category statistics:", err);
     },
   });
 };
 
-export { useStaticalUser };
+export { useStatisticalJobApplicationGeneral };

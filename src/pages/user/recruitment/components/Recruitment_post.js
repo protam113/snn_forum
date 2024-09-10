@@ -95,7 +95,10 @@ const RecruitmentPost = () => {
                 : "border-transparent hover:border-zinc-300 hover:bg-zinc-300"
             } transition-colors duration-200`}
           >
-            <div className="flex items-center mb-4">
+            <div
+              className="flex items-center mb-4"
+              onClick={() => handlePostClick(recruitment.id)}
+            >
               <img
                 src="https://static.chotot.com/storage/chotot-icons/png/jobtype_v2/2.png"
                 alt="avatar"
@@ -175,7 +178,6 @@ const RecruitmentPost = () => {
               className={`mb-4 font-semibold text-16 cursor-pointer ${
                 theme === "dark" ? "text-white" : "text-black"
               }`}
-              onClick={() => handlePostClick(recruitment.id)}
             >
               {recruitment.content}
             </p>

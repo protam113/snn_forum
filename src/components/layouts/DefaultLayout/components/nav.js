@@ -54,13 +54,13 @@ const Navbar = () => {
           <Link to="/" className="flex items-center">
             <img src={web.img} alt="Logo" id="logo" className="mr-2" />
             <div className="text-lg">
-              <span className="text-custom-red font-bold">Tech</span>{" "}
+              <span className="text-custom-red font-bold">H2H Tech</span>{" "}
               <span
                 className={`font-semibold ${
                   theme === "light" ? "text-zinc-900" : "text-white"
                 }`}
               >
-                Forum
+                Energy
               </span>
             </div>
           </Link>

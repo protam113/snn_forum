@@ -1,149 +1,235 @@
-import React, { useEffect, useRef, useState } from "react";
-import Chart from "chart.js/auto";
+import React, { useEffect, useState } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { toast } from "react-toastify";
-import { useStaticalProductCategoryGeneral } from "../../../../../../hooks/Statistical/StaticalProductCategoryGeneral";
-import Loading from "../../../../../../pages/error/load";
+import dayjs from "dayjs";
+import { useStaticalProductCategoryGeneral } from "../../../../../../hooks/Statistical/fetchStaticalProductGeneral";
+
+const formatPrice = (price) => {
+  if (!price) return "0 đ";
+  const formattedPrice = new Intl.NumberFormat("vi-VN").format(price);
+  return `${formattedPrice} đ`;
+};
 
 export default function StaticalProductCategoryGeneral() {
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
-  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-  const [selectedMonth, setSelectedMonth] = useState("01"); // Default to January
-
-  const months = [
-    { value: "01", label: "Tháng 1" },
-    { value: "02", label: "Tháng 2" },
-    { value: "03", label: "Tháng 3" },
-    { value: "04", label: "Tháng 4" },
-    { value: "05", label: "Tháng 5" },
-    { value: "06", label: "Tháng 6" },
-    { value: "07", label: "Tháng 7" },
-    { value: "08", label: "Tháng 8" },
-    { value: "09", label: "Tháng 9" },
-    { value: "10", label: "Tháng 10" },
-    { value: "11", label: "Tháng 11" },
-    { value: "12", label: "Tháng 12" },
-  ];
-
-  const {
-    data: staticalProductCategoryGeneral,
-    isLoading,
-    error,
-  } = useStaticalProductCategoryGeneral(
-    `2024-${selectedMonth}-01`,
-    `2024-${selectedMonth}-${new Date(
-      2024,
-      parseInt(selectedMonth),
-      0
-    ).getDate()}`
+  const [pieChartData, setPieChartData] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(null);
+  const [frequency, setFrequency] = useState("month");
+  const [selectedMonth, setSelectedMonth] = useState(dayjs().format("MM"));
+  const [selectedQuarter, setSelectedQuarter] = useState(
+    Math.ceil(dayjs().month() / 3)
+  );
+  const [selectedYear, setSelectedYear] = useState(dayjs().year());
+  const [startDate, setStartDate] = useState(
+    dayjs().startOf("month").format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = useState(
+    dayjs().endOf("month").format("YYYY-MM-DD")
   );
 
-  const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
+  const months = Array.from({ length: 12 }, (_, i) => ({
+    value: String(i + 1).padStart(2, "0"),
+    label: `Tháng ${i + 1}`,
+  }));
+
+  const quarters = [1, 2, 3, 4].map((q) => ({
+    value: q,
+    label: `Quý ${q}`,
+  }));
+
+  const getQuarterDates = (quarter, year) => {
+    switch (quarter) {
+      case 1:
+        return {
+          start: dayjs(`${year}-01-01`).startOf("quarter").format("YYYY-MM-DD"),
+          end: dayjs(`${year}-03-31`).endOf("quarter").format("YYYY-MM-DD"),
+        };
+      case 2:
+        return {
+          start: dayjs(`${year}-04-01`).startOf("quarter").format("YYYY-MM-DD"),
+          end: dayjs(`${year}-06-30`).endOf("quarter").format("YYYY-MM-DD"),
+        };
+      case 3:
+        return {
+          start: dayjs(`${year}-07-01`).startOf("quarter").format("YYYY-MM-DD"),
+          end: dayjs(`${year}-09-30`).endOf("quarter").format("YYYY-MM-DD"),
+        };
+      case 4:
+        return {
+          start: dayjs(`${year}-10-01`).startOf("quarter").format("YYYY-MM-DD"),
+          end: dayjs(`${year}-12-31`).endOf("quarter").format("YYYY-MM-DD"),
+        };
+      default:
+        return {
+          start: dayjs().startOf("year").format("YYYY-MM-DD"),
+          end: dayjs().endOf("year").format("YYYY-MM-DD"),
+        };
+    }
   };
 
   useEffect(() => {
-    if (!isLoading && !error && staticalProductCategoryGeneral) {
-      // Data for chart
-      const labels = staticalProductCategoryGeneral.map((item) => item.name);
-      const data = staticalProductCategoryGeneral.map(
-        (item) => item.total_products || 0
+    if (frequency === "day") {
+      setStartDate(dayjs().startOf("day").format("YYYY-MM-DD"));
+      setEndDate(dayjs().endOf("day").format("YYYY-MM-DD"));
+    } else if (frequency === "month") {
+      setStartDate(dayjs().startOf("month").format("YYYY-MM-DD"));
+      setEndDate(dayjs().endOf("month").format("YYYY-MM-DD"));
+    } else if (frequency === "quarter") {
+      const { start, end } = getQuarterDates(selectedQuarter, selectedYear);
+      setStartDate(start);
+      setEndDate(end);
+    } else if (frequency === "year") {
+      setStartDate(dayjs().startOf("year").format("YYYY-MM-DD"));
+      setEndDate(dayjs().endOf("year").format("YYYY-MM-DD"));
+    }
+  }, [frequency, selectedMonth, selectedQuarter, selectedYear]);
+
+  const {
+    data: staticalProductCategory,
+    isLoading,
+    error,
+  } = useStaticalProductCategoryGeneral(startDate, endDate, frequency);
+
+  const handleFrequencyChange = (event) => {
+    setFrequency(event.target.value);
+  };
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+    const startOfMonth = dayjs(`2024-${event.target.value}-01`)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    const endOfMonth = dayjs(`2024-${event.target.value}-01`)
+      .endOf("month")
+      .format("YYYY-MM-DD");
+    setStartDate(startOfMonth);
+    setEndDate(endOfMonth);
+  };
+
+  const handleQuarterChange = (event) => {
+    setSelectedQuarter(Number(event.target.value));
+  };
+
+  const handleYearChange = (event) => {
+    setSelectedYear(Number(event.target.value));
+  };
+
+  useEffect(() => {
+    if (!isLoading && !error && staticalProductCategory) {
+      // Tạo dữ liệu cho biểu đồ tròn
+      const pieChartData = staticalProductCategory.categories.map(
+        (category) => ({
+          name: category.name,
+          value: category.total_products, // hoặc category.total_price, tùy vào yêu cầu
+        })
       );
 
-      setChartData({
-        labels,
-        datasets: [
-          {
-            label: "Số Lượng Sản Phẩm Theo Thể Loại",
-            data,
-            backgroundColor: [
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-            ],
-            borderColor: [
-              "rgb(75, 192, 192)",
-              "rgb(153, 102, 255)",
-              "rgb(255, 159, 64)",
-              "rgb(255, 99, 132)",
-              "rgb(54, 162, 235)",
-              "rgb(255, 206, 86)",
-              "rgb(75, 192, 192)",
-            ],
-            borderWidth: 1,
-          },
-        ],
-      });
+      setPieChartData(pieChartData);
+      setTotalProducts(pieChartData.reduce((acc, item) => acc + item.value, 0));
+      setTotalPrice(
+        staticalProductCategory.categories.reduce(
+          (acc, category) => acc + category.total_price,
+          0
+        )
+      );
     } else if (error) {
       toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
     }
-  }, [staticalProductCategoryGeneral, isLoading, error]);
-
-  useEffect(() => {
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
-    }
-
-    const ctx = chartRef.current?.getContext("2d");
-
-    if (ctx) {
-      chartInstance.current = new Chart(ctx, {
-        type: "doughnut",
-        data: chartData,
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: "top",
-            },
-            tooltip: {
-              callbacks: {
-                label: function (tooltipItem) {
-                  return `${tooltipItem.label}: ${tooltipItem.raw}`;
-                },
-              },
-            },
-          },
-        },
-      });
-    } else {
-      console.error("Canvas context is not available");
-    }
-
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
-    };
-  }, [chartData]);
+  }, [staticalProductCategory, isLoading, error]);
 
   return (
-    <div className="flex flex-col items-center p-4">
+    <div>
       <select
-        onChange={handleMonthChange}
-        value={selectedMonth}
+        id="frequency"
+        value={frequency}
+        onChange={handleFrequencyChange}
         className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        {months.map((month) => (
-          <option key={month.value} value={month.value}>
-            {month.label}
-          </option>
-        ))}
+        <option value="day">Ngày</option>
+        <option value="month">Tháng</option>
+        <option value="quarter">Quý</option>
+        <option value="year">Năm</option>
       </select>
-      {isLoading ? (
-        <p>
-          <Loading />
-        </p>
-      ) : (
-        <canvas
-          ref={chartRef}
-          className="w-[400px] h-[300px] border border-gray-200 rounded-md shadow-lg"
-        />
+
+      {frequency === "month" && (
+        <select
+          id="month"
+          value={selectedMonth}
+          onChange={handleMonthChange}
+          className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {months.map((month) => (
+            <option key={month.value} value={month.value}>
+              {month.label}
+            </option>
+          ))}
+        </select>
       )}
+
+      {frequency === "quarter" && (
+        <select
+          id="quarter"
+          value={selectedQuarter}
+          onChange={handleQuarterChange}
+          className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {quarters.map((quarter) => (
+            <option key={quarter.value} value={quarter.value}>
+              {quarter.label}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {frequency === "year" && (
+        <select
+          id="year"
+          value={selectedYear}
+          onChange={handleYearChange}
+          className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {Array.from({ length: 10 }, (_, i) => ({
+            value: dayjs().year() - i,
+            label: dayjs().year() - i,
+          })).map((year) => (
+            <option key={year.value} value={year.value}>
+              {year.label}
+            </option>
+          ))}
+        </select>
+      )}
+
+      <div className="w-full h-80">
+        <h3 className="text-xl font-bold mb-4">
+          Biểu Đồ Tròn Các Thể Loại Sản Phẩm
+        </h3>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={pieChartData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius="80%"
+              label={({ name, value }) => `${name}: ${value}`}
+              labelLine={false}
+            >
+              {pieChartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={["#0088FE", "#00C49F", "#FFBB28", "#FF8042"][index % 4]}
+                />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="mt-4">
+        <p>Total Products: {totalProducts}</p>
+        <p>Total Price: {formatPrice(totalPrice)}</p>
+      </div>
     </div>
   );
 }

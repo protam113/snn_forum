@@ -3,10 +3,11 @@ import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
 import { toast } from "react-toastify";
 
-const fetchStaticalProductCategoryGeneral = async (
+const fetchStaticalProductGeneral = async (
   startDate,
   endDate,
-  token
+  token,
+  frequency = "day"
 ) => {
   try {
     if (!token) {
@@ -18,11 +19,11 @@ const fetchStaticalProductCategoryGeneral = async (
     }
 
     const response = await authApi(token).get(
-      `${
-        endpoints.StaticalProductCategoryGeneral
-      }?start_date=${encodeURIComponent(
+      `${endpoints.StaticalJobPostGeneral}?start_date=${encodeURIComponent(
         startDate
-      )}&end_date=${encodeURIComponent(endDate)}`
+      )}&end_date=${encodeURIComponent(endDate)}&frequency=${encodeURIComponent(
+        frequency
+      )}`
     );
 
     return response.data;
@@ -32,20 +33,20 @@ const fetchStaticalProductCategoryGeneral = async (
   }
 };
 
-const useStaticalProductCategoryGeneral = (startDate, endDate) => {
+const useStaticalProductGeneral = (startDate, endDate, frequency) => {
   const { getToken } = useAuth();
 
   return useQuery({
-    queryKey: ["staticalProductCategoryGeneral", startDate, endDate],
+    queryKey: ["staticalProductCategoryGeneral", startDate, endDate, frequency],
     queryFn: async () => {
       const token = await getToken();
-      return fetchStaticalProductCategoryGeneral(startDate, endDate, token);
+      return fetchStaticalProductGeneral(startDate, endDate, token, frequency);
     },
-    staleTime: 60000, // Thay đổi thời gian lưu trữ cache nếu cần
+    staleTime: 60000,
     onError: (err) => {
       console.log("Error fetching product category statistics:", err);
     },
   });
 };
 
-export { useStaticalProductCategoryGeneral };
+export { useStaticalProductGeneral };

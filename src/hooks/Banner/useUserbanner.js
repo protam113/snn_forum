@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { authApi, endpoints } from "../api/api";
+import { authApi, endpoints } from "../../api/api";
 
 const fetchUserBanner = async () => {
   try {

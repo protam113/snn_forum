@@ -47,20 +47,22 @@ const AdminWeb = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Log formData to ensure it's being populated correctly
-    console.log([...Object.entries(formData)]);
-
+    // Initialize FormData
     const formDataToSend = new FormData();
-    formDataToSend.append("img", formData.img);
-    formDataToSend.append("about", formData.about);
-    formDataToSend.append("phone_number", formData.phone_number);
-    formDataToSend.append("mail", formData.mail);
-    formDataToSend.append("location", formData.location);
-    formDataToSend.append("link", formData.link);
 
-    // Log formDataToSend to check the FormData being sent
+    // Append only non-null values to FormData
+    if (formData.img) formDataToSend.append("img", formData.img);
+    if (formData.about) formDataToSend.append("about", formData.about);
+    if (formData.phone_number)
+      formDataToSend.append("phone_number", formData.phone_number);
+    if (formData.mail) formDataToSend.append("mail", formData.mail);
+    if (formData.location) formDataToSend.append("location", formData.location);
+    if (formData.link) formDataToSend.append("link", formData.link);
+
+    // Log FormData for debugging
     console.log([...formDataToSend.entries()]);
 
+    // Perform update
     UpdateWeb(formDataToSend, {
       onSuccess: (data) => {
         console.log("Update successful:", data);
@@ -75,7 +77,7 @@ const AdminWeb = () => {
   };
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data: {error.message}</p>;
+  if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white shadow-lg rounded-lg">

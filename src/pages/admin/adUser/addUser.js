@@ -4,9 +4,12 @@ import { MdPerson } from "react-icons/md";
 import useAdmin from "../../../hooks/useAdmin";
 import useUserSearch from "../../../hooks/useUserSearch";
 import { useNavigate } from "react-router-dom";
+import { useGroups } from "../../../hooks/Admin/useGroups";
 
 const AddUser = () => {
-  const { groups, error, setSelectedGroup, addUserToGroup } = useAdmin();
+  const { error, setSelectedGroup, addUserToGroup } = useAdmin();
+  const { data: groups } = useGroups();
+
   const { results: featuredUsers, loading, fetchUsers } = useUserSearch();
   const [selectedGroup, setSelectedGroupState] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState(new Set());

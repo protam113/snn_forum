@@ -4,17 +4,16 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Logo from "../../assets/img/Logo.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { endpoints, baseURL } from "../../api/api";
 import Stepper from "../../components/step/Stepper";
-import axios from "axios";
+import { useRegister } from "../../hooks/Auth/useRegister";
+import LocationSelector from "../../components/Location/LocationSelector";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
   faTimes,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "../../context/themeContext";
-import LocationSelector from "../../components/Location/LocationSelector";
 
 const usernameRgx = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
 const passwordRgx = /^(?=.*[A-Z])(?=.*[@!#%])[A-Za-z\d@!#%]{8,24}$/;
@@ -26,24 +25,25 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
-  const [username, setUsername] = useState("");
   const [validName, setValidName] = useState(false);
   const [nameFocus, setNameFocus] = useState(false);
-  const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
   const [passFocus, setPassFocus] = useState(false);
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [location, setLocation] = useState({
-    province: "",
-    district: "",
+  const { mutate: register, isLoading } = useRegister();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    location: "",
+    about: "",
+    link: "",
+    profile_image: null,
+    profile_bg: null,
   });
-  const [about, setAbout] = useState("");
-  const [profile_image, setProfileImage] = useState(null);
-  const [profile_bg, setProfileBg] = useState(null);
-  const [link, setLink] = useState("");
+
   const [profileImagePreview, setProfileImagePreview] = useState("");
   const [profileBgPreview, setProfileBgPreview] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -56,17 +56,17 @@ const Register = () => {
   }, [step]);
 
   useEffect(() => {
-    const result = usernameRgx.test(username);
+    const result = usernameRgx.test(formData.username);
     setValidName(result);
-  }, [username]);
+  }, [formData.username]);
 
   useEffect(() => {
-    const result = passwordRgx.test(password);
+    const result = passwordRgx.test(formData.password);
     setValidPassword(result);
-  }, [password]);
+  }, [formData.password]);
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    setFormData({ ...formData, password: e.target.value });
   };
 
   const handlePasswordFocus = () => {
@@ -78,36 +78,20 @@ const Register = () => {
   };
 
   useEffect(() => {
-    setErrMsg("");
-  }, [
-    username,
-    password,
-    email,
-    firstName,
-    lastName,
-    phoneNumber,
-    location,
-    about,
-    profile_image,
-    profile_bg,
-    link,
-  ]);
-
-  useEffect(() => {
-    if (profile_image) {
-      const objectUrl = URL.createObjectURL(profile_image);
+    if (formData.profile_image) {
+      const objectUrl = URL.createObjectURL(formData.profile_image);
       setProfileImagePreview(objectUrl);
       return () => URL.revokeObjectURL(objectUrl);
     }
-  }, [profile_image]);
+  }, [formData.profile_image]);
 
   useEffect(() => {
-    if (profile_bg) {
-      const objectUrl = URL.createObjectURL(profile_bg);
+    if (formData.profile_bg) {
+      const objectUrl = URL.createObjectURL(formData.profile_bg);
       setProfileBgPreview(objectUrl);
       return () => URL.revokeObjectURL(objectUrl);
     }
-  }, [profile_bg]);
+  }, [formData.profile_bg]);
 
   const handleNextStep = () => {
     if (step < 4) {
@@ -122,77 +106,31 @@ const Register = () => {
   };
 
   const handleProfileImageChange = (e) => {
-    setProfileImage(e.target.files[0]);
+    setFormData({ ...formData, profile_image: e.target.files[0] });
   };
 
   const handleProfileBgChange = (e) => {
-    setProfileBg(e.target.files[0]);
+    setFormData({ ...formData, profile_bg: e.target.files[0] });
   };
 
   const handleLocationChange = (formattedLocation) => {
     const [province, district] = formattedLocation.split(", ");
-    setLocation({
-      province,
-      district,
+    setFormData({
+      ...formData,
+      location: {
+        province,
+        district,
+      },
     });
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", password);
-    formData.append("email", email);
-    formData.append("first_name", firstName);
-    formData.append("last_name", lastName);
-    formData.append("phone_number", phoneNumber);
-    formData.append("location", JSON.stringify(location));
-    formData.append("about", about);
-    formData.append("link", link);
-
-    if (profile_image) {
-      formData.append("profile_image", profile_image);
-    }
-    if (profile_bg) {
-      formData.append("profile_bg", profile_bg);
-    }
-    try {
-      const response = await axios.post(
-        `${baseURL}${endpoints.RegisterUser}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      toast.success("Registration successful!");
-      navigate("/xac_thuc");
-    } catch (err) {
-      toast.error(
-        "Error details:",
-        err.response ? err.response.data : err.message
-      );
-      if (!err?.response) {
-        toast.error("No Server Response");
-      } else if (err.response?.status === 400) {
-        const errors = err.response.data;
-        if (errors.email) {
-          toast.error("Email already in use. Please use a different email.");
-        }
-        if (errors.phone_number) {
-          toast.error(
-            "Phone number already in use. Please use a different number."
-          );
-        }
-        if (errors.username) {
-          toast.error(
-            "Username already taken. Please choose a different username."
-          );
-        }
-      } else {
-        toast.error("Registration Failed");
+  const handleRegister = async () => {
+    if (step === 4) {
+      try {
+        await register(formData);
+        navigate("/xac_thuc");
+      } catch (error) {
+        setErrMsg("Registration failed. Please try again.");
       }
     }
   };
@@ -201,7 +139,7 @@ const Register = () => {
 
   return (
     <div
-      className={` flex items-center justify-center ${
+      className={`flex items-center justify-center ${
         theme === "dark" ? "bg-zinc-800 text-white" : "bg-white text-black"
       }`}
     >
@@ -221,7 +159,13 @@ const Register = () => {
             </div>
           </div>
           <Stepper steps={steps} currentStep={step} />
-          <form onSubmit={handleRegister} className="flex flex-col space-y-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleRegister();
+            }}
+            className="flex flex-col space-y-4"
+          >
             <div className="flex-grow overflow-auto">
               {step === 1 && (
                 <>
@@ -233,8 +177,10 @@ const Register = () => {
                       type="text"
                       id="first_name"
                       autoComplete="off"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      value={formData.firstName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, firstName: e.target.value })
+                      }
                       className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900 "
                       required
                       placeholder="first_name"
@@ -248,8 +194,10 @@ const Register = () => {
                       type="text"
                       id="last_name"
                       autoComplete="off"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
+                      value={formData.lastName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, lastName: e.target.value })
+                      }
                       className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
                       required
                       placeholder="last_name"
@@ -263,8 +211,10 @@ const Register = () => {
                       type="email"
                       id="email"
                       autoComplete="off"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
                       required
                       placeholder="email@example.com"
@@ -278,8 +228,13 @@ const Register = () => {
                       type="text"
                       id="phone_number"
                       autoComplete="off"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      value={formData.phoneNumber}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          phoneNumber: e.target.value,
+                        })
+                      }
                       className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
                       required
                       placeholder="123-456-7890"
@@ -299,58 +254,39 @@ const Register = () => {
                         type="text"
                         id="username"
                         ref={userRef}
-                        value={username}
+                        value={formData.username}
                         autoComplete="off"
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) =>
+                          setFormData({ ...formData, username: e.target.value })
+                        }
                         className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
-                        aria-describedby="uidnote"
-                        aria-invalid={validName ? "false" : "true"}
-                        onFocus={() => setNameFocus(true)}
-                        onBlur={() => setNameFocus(false)}
                         required
+                        placeholder="username"
                       />
-                      <span
-                        className={
-                          validName
-                            ? "valid absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-                            : "hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-                        }
-                      >
-                        <FontAwesomeIcon icon={faCheck} />
-                      </span>
-                      <span
-                        className={
-                          validName || !username
-                            ? "hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
-                            : "invalid absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
-                        }
-                      >
-                        <FontAwesomeIcon icon={faTimes} />
-                      </span>
+                      <FontAwesomeIcon
+                        icon={faCheck}
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                          validName ? "text-green-500" : "hidden"
+                        }`}
+                      />
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                          !validName && formData.username
+                            ? "text-red-500"
+                            : "hidden"
+                        }`}
+                      />
                     </div>
                     <p
-                      id="uidnote"
-                      className={
-                        nameFocus && username && !validName
-                          ? "instructions"
-                          : "offscreen"
-                      }
+                      className={`text-sm ${
+                        validName ? "hidden" : "text-red-500"
+                      }`}
                     >
-                      <FontAwesomeIcon
-                        icon={faInfoCircle}
-                        className="text-12"
-                      />
-                      <span> </span>
-                      <span className="text-12">
-                        4 to 24 characters.
-                        <br />
-                        Must begin with a letter.
-                        <br />
-                        Letters, numbers, underscores, hyphens allowed.
-                      </span>
+                      Username must be 5-24 characters long and contain only
+                      letters, numbers, hyphens, or underscores.
                     </p>
                   </div>
-
                   <div className="relative">
                     <label htmlFor="password" className="block mb-1">
                       Password:
@@ -359,63 +295,43 @@ const Register = () => {
                       <input
                         type={showPassword ? "text" : "password"}
                         id="password"
-                        value={password}
+                        value={formData.password}
                         onChange={handlePasswordChange}
-                        className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
-                        aria-describedby="pwdnote"
-                        aria-invalid={validPassword ? "false" : "true"}
                         onFocus={handlePasswordFocus}
                         onBlur={handlePasswordBlur}
+                        className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
                         required
-                        placeholder="Enter your Password!!"
+                        placeholder="Password"
                       />
-                      <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                        {showPassword ? (
-                          <FaEyeSlash
-                            onClick={() => setShowPassword(false)}
-                            className="cursor-pointer"
-                          />
-                        ) : (
-                          <FaEye
-                            onClick={() => setShowPassword(true)}
-                            className="cursor-pointer"
-                          />
-                        )}
-                      </span>
-                      <span
-                        className={
-                          validPassword
-                            ? "valid absolute right-12 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-                            : "hidden absolute right-12 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-                        }
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
                       >
-                        <FontAwesomeIcon icon={faCheck} />
-                      </span>
-                      <span
-                        className={
-                          validPassword || !password
-                            ? "hidden absolute right-12 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
-                            : "invalid absolute right-12 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
-                        }
-                      >
-                        <FontAwesomeIcon icon={faTimes} />
-                      </span>
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                      <FontAwesomeIcon
+                        icon={faCheck}
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                          validPassword ? "text-green-500" : "hidden"
+                        }`}
+                      />
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                          !validPassword && formData.password
+                            ? "text-red-500"
+                            : "hidden"
+                        }`}
+                      />
                     </div>
                     <p
-                      id="pwdnote"
-                      className={
-                        passFocus && !validPassword
-                          ? "instructions text-gray-500 text-sm mt-2"
-                          : "offscreen"
-                      }
+                      className={`text-sm ${
+                        validPassword ? "hidden" : "text-red-500"
+                      }`}
                     >
-                      <FontAwesomeIcon icon={faInfoCircle} />
-                      8 to 24 characters.
-                      <br />
-                      Must include at least one uppercase letter and one special
-                      character.
-                      <br />
-                      Allowed special characters: !@#%
+                      Password must be 8-24 characters long and include at least
+                      one uppercase letter and one special character.
                     </p>
                   </div>
                 </>
@@ -423,26 +339,34 @@ const Register = () => {
 
               {step === 3 && (
                 <>
+                  <LocationSelector onLocationChange={handleLocationChange} />
                   <div className="relative">
                     <label htmlFor="about" className="block mb-1">
                       About:
                     </label>
                     <textarea
                       id="about"
-                      value={about}
-                      onChange={(e) => setAbout(e.target.value)}
+                      value={formData.about}
+                      onChange={(e) =>
+                        setFormData({ ...formData, about: e.target.value })
+                      }
                       className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
-                      placeholder="Tell us about yourself"
+                      placeholder="About yourself"
                     />
                   </div>
                   <div className="relative">
-                    <label htmlFor="location" className="block mb-1">
-                      Location:
+                    <label htmlFor="link" className="block mb-1">
+                      Link:
                     </label>
-                    <LocationSelector
-                      selectedProvince={location.province}
-                      selectedDistrict={location.district}
-                      onLocationChange={handleLocationChange}
+                    <input
+                      type="text"
+                      id="link"
+                      value={formData.link}
+                      onChange={(e) =>
+                        setFormData({ ...formData, link: e.target.value })
+                      }
+                      className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
+                      placeholder="Link to your profile"
                     />
                   </div>
                 </>
@@ -450,72 +374,72 @@ const Register = () => {
 
               {step === 4 && (
                 <>
-                  <div className="relative">
+                  <div className="relative mb-4">
                     <label htmlFor="profile_image" className="block mb-1">
                       Profile Image:
                     </label>
                     <input
                       type="file"
                       id="profile_image"
-                      accept="image/*"
                       onChange={handleProfileImageChange}
-                      className="border rounded-lg w-full bg-gray-50 border-zinc-900"
+                      className="border rounded-lg w-full"
                     />
                     {profileImagePreview && (
                       <img
                         src={profileImagePreview}
                         alt="Profile Preview"
-                        className="mt-2 w-24 h-24 object-cover rounded-full"
+                        className="mt-4 w-24 h-24 object-cover rounded-full"
                       />
                     )}
                   </div>
-                  <div className="relative">
+                  <div className="relative mb-4">
                     <label htmlFor="profile_bg" className="block mb-1">
-                      Profile Background:
+                      Profile Background Image:
                     </label>
                     <input
                       type="file"
                       id="profile_bg"
-                      accept="image/*"
                       onChange={handleProfileBgChange}
-                      className="border rounded-lg w-full bg-gray-50 border-zinc-900"
+                      className="border rounded-lg w-full"
                     />
                     {profileBgPreview && (
                       <img
                         src={profileBgPreview}
                         alt="Profile Background Preview"
-                        className="mt-2 w-full h-32 object-cover rounded-md"
+                        className="mt-4 w-full h-32 object-cover rounded-lg"
                       />
                     )}
                   </div>
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
-              <div className="flex justify-between mb-4">
-                {step > 1 && (
-                  <button
-                    onClick={handlePrevStep}
-                    className="px-4 py-2 bg-gray-300 rounded-lg"
-                  >
-                    Previous
-                  </button>
-                )}
-                {step < 4 && (
-                  <button
-                    onClick={handleNextStep}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                  >
-                    Next
-                  </button>
-                )}
-              </div>
+
+            <div className="flex justify-between">
+              {step > 1 && (
+                <button
+                  type="button"
+                  onClick={handlePrevStep}
+                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                >
+                  Previous
+                </button>
+              )}
+              {step < 4 && (
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                >
+                  Next
+                </button>
+              )}
               {step === 4 && (
                 <button
-                  onClick={handleRegister}
-                  className="px-8 py-4 bg-green-500 text-white rounded-lg w-full"
+                  type="submit"
+                  disabled={isLoading}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg"
                 >
-                  Register
+                  {isLoading ? "Registering..." : "Register"}
                 </button>
               )}
             </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css"; // Để sử dụng các kiểu dáng mặc định
 import { Link } from "react-router-dom";
-import { useUserBanner } from "../../../../hooks/useUserbanner";
+import { useUserBanner } from "../../../../hooks/Banner/useUserbanner";
 
 // Dữ liệu mặc định khi không có banner
 const defaultBanners = [

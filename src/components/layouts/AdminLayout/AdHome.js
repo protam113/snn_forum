@@ -1,6 +1,4 @@
 import UserChart from "./components/chart/userChart";
-import LineChart from "./components/chart/lineChart";
-import MixChart from "./components/chart/MixedChart";
 import { useTheme } from "../../../context/themeContext";
 import { Link } from "react-router-dom";
 import CategoryChart from "./components/chart/categoryChart";
@@ -11,46 +9,36 @@ const AdHome = () => {
 
   return (
     <div
-      className={`relative min-h-screen flex ${
-        theme === "dark" ? " text-white" : " text-black"
+      className={`relative min-h-screen flex flex-col ${
+        theme === "dark" ? " bg-gray-900 text-white" : " bg-gray-100 text-black"
       }`}
     >
-      <main className="p-4 sm:p-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Link to="/admin/the_loai" className=" shadow-md rounded-lg p-4">
-            <CategoryChart />
-          </Link>
-          <div className=" shadow-md rounded-lg p-4">
-            <div className="font-semibold text-lg">Group Admin</div>
-            <Link to="/admin/quan_ly_nguoi_dung">
-              <UserChart />
-            </Link>
-          </div>
-          <div className=" shadow-md rounded-lg p-4">
-            <Link to="/admin/banners" className=" shadow-md rounded-lg p-4">
-              <BannerChart />
-            </Link>
-          </div>
-        </div>
+      <header className="bg-blue-600 text-white p-4">
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+      </header>
+      <div className="flex flex-1">
+        <main className="flex-1 p-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="shadow-md rounded-lg p-4 bg-white">
+              <Link to="/admin/the_loai">
+                <CategoryChart />
+              </Link>
+            </div>
 
-        {/* Container for charts */}
-        {/* <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className=" shadow-md rounded-lg p-4">
-            <div className="font-semibold text-lg">Thống Kê</div>
-            <div className="text-sm text-gray-600">
-              Thống kê các số lượng người dùng, danh mục(categories) và banner.
+            <div className="shadow-md rounded-lg p-4 bg-white">
+              <Link to="/admin/banners">
+                <BannerChart />
+              </Link>
             </div>
-            <LineChart />
           </div>
-          <div className="shadow-md rounded-lg p-4">
-            <div className="font-semibold text-lg">Thống Kê</div>
-            <div className="text-sm text-gray-600">
-              Thống kê các số lượng bài viết, sản phẩm và tin tuyển dụng.
-            </div>
-            <MixChart />
-          </div>
-        </div> */}
-      </main>
+        </main>
+      </div>
+      <div className="shadow-md rounded-lg p-4 bg-white">
+        <div className="font-semibold text-lg mb-2">User Management</div>
+        <Link to="/admin/quan_ly_nguoi_dung">
+          <UserChart />
+        </Link>
+      </div>
     </div>
   );
 };

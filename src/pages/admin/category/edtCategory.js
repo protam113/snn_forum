@@ -20,13 +20,9 @@ const EdtCategory = ({ category, onClose }) => {
     setLoading(true);
     try {
       await editCategory(category.id, { name: categoryName });
-      toast.success("Category updated successfully");
       onClose();
     } catch (err) {
       setError(err.message || "An error occurred while updating the category");
-      toast.error(
-        err.message || "An error occurred while updating the category"
-      );
     } finally {
       setLoading(false);
     }

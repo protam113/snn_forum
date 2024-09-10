@@ -3,7 +3,7 @@ import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
 import { toast } from "react-toastify";
 
-const fetchStaticalBlogGeneral = async (
+const fetchStaticalProductCategoryGeneral = async (
   startDate,
   endDate,
   token,
@@ -19,7 +19,9 @@ const fetchStaticalBlogGeneral = async (
     }
 
     const response = await authApi(token).get(
-      `${endpoints.StaticalBlogGeneral}?start_date=${encodeURIComponent(
+      `${
+        endpoints.StaticalProductCategoryGeneral
+      }?start_date=${encodeURIComponent(
         startDate
       )}&end_date=${encodeURIComponent(endDate)}&frequency=${encodeURIComponent(
         frequency
@@ -33,21 +35,25 @@ const fetchStaticalBlogGeneral = async (
   }
 };
 
-const useStaticalBlogGeneral = (startDate, endDate, frequency) => {
+const useStaticalProductCategoryGeneral = (startDate, endDate, frequency) => {
   const { getToken } = useAuth();
 
   return useQuery({
-    queryKey: ["staticalBlogGeneral", startDate, endDate, frequency],
+    queryKey: ["staticalProductCategory", startDate, endDate, frequency],
     queryFn: async () => {
       const token = await getToken();
-      return fetchStaticalBlogGeneral(startDate, endDate, token, frequency);
+      return fetchStaticalProductCategoryGeneral(
+        startDate,
+        endDate,
+        token,
+        frequency
+      );
     },
     staleTime: 60000,
     onError: (err) => {
-      console.log("Error fetching blog statistics:", err);
+      console.log("Error fetching product category statistics:", err);
     },
-    refetchOnWindowFocus: true,
   });
 };
 
-export { useStaticalBlogGeneral };
+export { useStaticalProductCategoryGeneral };
