@@ -21,6 +21,7 @@ import {
   useEditRecruitment,
 } from "../../../hooks/Recruitment/useRecruitment";
 import { useTags } from "../../../hooks/useTag";
+import TagsList from "./components/TagList";
 
 const EdtRecruitment = () => {
   const { theme } = useTheme();
@@ -28,13 +29,7 @@ const EdtRecruitment = () => {
   const navigate = useNavigate();
   const { mutate: editRecruitmentMutation, isLoading: loading } =
     useEditRecruitment();
-  const {
-    data: recruitment,
-    isLoading,
-    isError,
-    error,
-  } = useRecruitmentDetail(postId);
-  const { data: tags } = useTags();
+  const { data: recruitment } = useRecruitmentDetail(postId);
 
   const [formData, setFormData] = useState({
     content: "",
@@ -372,23 +367,14 @@ const EdtRecruitment = () => {
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor="tag_id" className="text-sm font-medium mb-1">
-                Tags
+            <div className="col-span-2">
+              <label className="text-sm font-medium flex items-center gap-2 mb-1">
+                Các Tags
               </label>
-              <div className="flex flex-wrap gap-3">
-                {tags?.map((tag) => (
-                  <label key={tag.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={formData.tag_id.includes(tag.id)}
-                      onChange={() => handleTagChange(tag.id)}
-                      className="mr-2"
-                    />
-                    {tag.name}
-                  </label>
-                ))}
-              </div>
+              <TagsList
+                selectedTags={formData.tag_id}
+                onTagChange={handleTagChange}
+              />
             </div>
 
             {/* Địa Điểm */}

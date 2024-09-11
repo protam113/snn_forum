@@ -19,7 +19,7 @@ const fetchStaticalProductGeneral = async (
     }
 
     const response = await authApi(token).get(
-      `${endpoints.StaticalJobPostGeneral}?start_date=${encodeURIComponent(
+      `${endpoints.StaticalProductGeneral}?start_date=${encodeURIComponent(
         startDate
       )}&end_date=${encodeURIComponent(endDate)}&frequency=${encodeURIComponent(
         frequency

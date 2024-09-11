@@ -1,27 +1,22 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import useCategories from "../../../hooks/useCategories";
 
-const CreateCategory = () => {
-  const [name, setName] = useState("");
-  const { addCategory, loading, error } = useCategories();
-  const navigate = useNavigate();
+const CreateCategory = ({ onClose, onSave }) => {
+  const [newCategory, setNewCategory] = useState("");
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (name) {
-      try {
-        await addCategory({ name });
-        navigate(-1);
-      } catch (err) {}
+  const handleSave = async () => {
+    if (!newCategory) {
+      return;
     }
+    try {
+      await onSave(newCategory);
+      onClose();
+    } catch (error) {}
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4">Create New Category</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-semibold mb-4">Create New Category</h2>
         <div className="mb-4">
           <label
             htmlFor="categoryName"
@@ -32,21 +27,27 @@ const CreateCategory = () => {
           <input
             id="categoryName"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {loading ? "Adding..." : "Add Category"}
-        </button>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-      </form>
+        <div className="flex justify-end">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+            onClick={handleSave}
+          >
+            Lưu
+          </button>
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            onClick={onClose}
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

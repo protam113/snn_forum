@@ -7,11 +7,10 @@ import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
 import { useTheme } from "../../../context/themeContext";
 import { useAddProduct } from "../../../hooks/Product/useProduct";
-import { useCategoryList } from "../../../hooks/Product/useCategories";
 import LocationSelectorp from "../../../components/Location/LocationP";
+import CategoryList from "./components/categoryList";
 
 const CreateProduct = () => {
-  const { data: categories } = useCategoryList();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
@@ -61,13 +60,8 @@ const CreateProduct = () => {
     }
   };
 
-  const handleCategoryChange = (e) => {
-    const { value, checked } = e.target;
-    setCategory((prevCategories) =>
-      checked
-        ? [...prevCategories, value]
-        : prevCategories.filter((cat) => cat !== value)
-    );
+  const handleCategoryChange = (newSelectedCategories) => {
+    setCategory(newSelectedCategories);
   };
 
   const handlePriceChange = (e) => {
@@ -301,23 +295,10 @@ const CreateProduct = () => {
               >
                 Danh Mục
               </label>
-              {categories?.map((cat) => (
-                <div key={cat.id} className="flex items-center mb-2">
-                  <label className="inline-flex items-center">
-                    <input
-                      id={`category-${cat.id}`}
-                      name="category"
-                      type="checkbox"
-                      className="form-checkbox h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                      value={cat.id}
-                      checked={category.includes(cat.id)}
-                      onChange={handleCategoryChange}
-                    />
-
-                    <span className="text-sm ml-2">{cat.name}</span>
-                  </label>
-                </div>
-              ))}
+              <CategoryList
+                selectedCategories={category}
+                onCategoryChange={handleCategoryChange}
+              />
             </div>
           </div>
           <div className="mb-6">

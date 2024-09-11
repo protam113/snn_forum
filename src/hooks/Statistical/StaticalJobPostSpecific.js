@@ -19,7 +19,7 @@ const fetchStaticalJobPostSpecific = async (
     }
 
     if (!job_post_id) {
-      throw new Error("Không có job_post_id");
+      throw new Error("job_post_id không hợp lệ");
     }
 
     const response = await authApi(token).get(
@@ -43,9 +43,6 @@ const useStaticalJobPostSpecific = (startDate, endDate, job_post_id) => {
   return useQuery({
     queryKey: ["staticalJobPostSpecific", startDate, endDate, job_post_id],
     queryFn: async () => {
-      if (!job_post_id) {
-        throw new Error("Không có job_post_id"); // Ngăn gọi API khi không có ID
-      }
       const token = await getToken();
       return fetchStaticalJobPostSpecific(
         startDate,
@@ -55,6 +52,7 @@ const useStaticalJobPostSpecific = (startDate, endDate, job_post_id) => {
       );
     },
     staleTime: 60000,
+    enabled: !!job_post_id, // Chỉ gọi API khi có job_post_id
     onError: (err) => {
       console.log("Error fetching job post statistics:", err);
     },

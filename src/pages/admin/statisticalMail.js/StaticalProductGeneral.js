@@ -1,5 +1,5 @@
 import React from "react";
-import StaticalProductGeneral from "../../../components/layouts/AdminLayout/components/chart/statistical/StaticalProductCategoryGeneral";
+import StaticalProductGeneral from "../../../components/layouts/AdminLayout/components/chart/statistical/StaticalProductGeneral";
 
 const StaticalProduct = () => {
   return (

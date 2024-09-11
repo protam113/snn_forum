@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import {
   removeLocalStorage,
-  encryptData, // Function to encrypt data
-  decryptData, // Function to decrypt data
+  encryptData,
+  decryptData,
 } from "../utils/cryptoUtils";
 
 export const AuthContext = createContext();
@@ -41,8 +41,12 @@ export const AuthProvider = ({ children }) => {
           access_token: encryptedAccessToken,
         }));
       } catch (err) {
-        console.error("Error refreshing access token", err);
-        logout();
+        if (err.response?.status === 401) {
+          console.error("Refresh token đã hết hạn. Vui lòng đăng nhập lại.");
+          logout();
+        } else {
+          console.error("Lỗi khi refresh token", err);
+        }
       }
     } else {
       logout();
@@ -69,8 +73,10 @@ export const AuthProvider = ({ children }) => {
 
       setAuth({ username, access_token: encryptedAccessToken });
       localStorage.setItem("access_token", encryptedAccessToken);
-      Cookies.set("refresh_token", encryptedRefreshToken, { secure: true });
-
+      Cookies.set("refresh_token", encryptedRefreshToken, {
+        secure: true,
+        expires: 7,
+      });
       toast.success("Đăng nhập thành công!");
       setTimeout(() => {
         navigate("/");

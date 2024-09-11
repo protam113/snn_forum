@@ -1,5 +1,5 @@
 import React from "react";
-import StatucalJobPostSpecificChart from "../../../components/layouts/AdminLayout/components/chart/statistical/StatucalJobPostSpecificChart";
+import StaticalJobPostSpecificChart from "../../../components/layouts/AdminLayout/components/chart/statistical/StatucalJobPostSpecificChart";
 
 const StaticalJobPostSpecific = () => {
   return (
@@ -8,7 +8,7 @@ const StaticalJobPostSpecific = () => {
         <div className="font-semibold text-lg mb-2">
           Thống Kê Các Tin Tuyển Dụng Theo Tiêu Chí.
         </div>
-        <StatucalJobPostSpecificChart />
+        <StaticalJobPostSpecificChart />
       </div>
     </div>
   );

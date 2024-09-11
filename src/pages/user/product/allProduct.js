@@ -5,6 +5,7 @@ import useCategories from "../../../hooks/useCategories";
 import { useProductList } from "../../../hooks/Product/useProduct";
 import Loading from "../../error/load";
 import ProductSidebar from "./components/productSidebar";
+import { useUserCategoryList } from "../../../hooks/Product/useUserCategory";
 
 const formatPrice = (price) => {
   if (!price) return "0 đ";
@@ -19,12 +20,9 @@ const AllProduct = () => {
   const navigate = useNavigate();
 
   const { data: products, error, isLoading } = useProductList();
-  const {
-    productsByCategory,
-    loading: categoryLoading,
-    error: categoryError,
-    fetchProductByCategory,
-  } = useCategories();
+  const { productsByCategory, fetchProductByCategory } = useCategories();
+
+  const { data: categories } = useUserCategoryList();
 
   useEffect(() => {
     if (categoryId || selectedCategories.length > 0) {
@@ -47,7 +45,7 @@ const AllProduct = () => {
     setPriceOrder("asc");
   };
 
-  if (isLoading || categoryLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
@@ -55,8 +53,8 @@ const AllProduct = () => {
     );
   }
 
-  if (error || categoryError) {
-    return <p>{error || categoryError}</p>;
+  if (error) {
+    return <p>{error}</p>;
   }
 
   return (

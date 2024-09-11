@@ -1,12 +1,17 @@
 import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlinePlus,
+  AiOutlineWarning,
+} from "react-icons/ai";
 import { toast } from "react-toastify";
-import { useAddApplyJob } from "../../../hooks/Recruitment/useRecruitment";
+import { useAddApplyJob } from "../../../hooks/useUserApllylist";
 
 const ApplyRecruitment = () => {
   const { id: postId } = useParams();
-  const { mutate: addApplyJobMutation } = useAddApplyJob(postId);
+  const { mutate: addApplyJob, isLoading: isSubmitting } =
+    useAddApplyJob(postId);
   const fileInputRef = useRef(null);
   const [cv, setCv] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -16,7 +21,6 @@ const ApplyRecruitment = () => {
   const [email, setEmail] = useState("");
   const [sex, setSex] = useState("");
   const [age, setAge] = useState("");
-  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -38,12 +42,12 @@ const ApplyRecruitment = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "age" && value.length > 4) {
-      toast.error("Age should not exceed 4 characters.");
+    if (name === "age" && !/^\d*$/.test(value)) {
+      toast.error("Age should be a valid number.");
       return;
     }
     if (name === "sex") {
-      setSex(value === "true" ? true : false);
+      setSex(value === "true");
     } else {
       switch (name) {
         case "job_title":
@@ -74,11 +78,10 @@ const ApplyRecruitment = () => {
       return;
     }
     if (!email.includes("@")) {
-      toast.error("Enter a valid email address.");
       return;
     }
     try {
-      await addApplyJobMutation({
+      await addApplyJob({
         job_title,
         fullname,
         phone_number,
@@ -87,20 +90,23 @@ const ApplyRecruitment = () => {
         age,
         cv,
       });
-      toast.success("Application submitted successfully!");
-      navigate(-1);
     } catch (err) {
       console.error(err);
       toast.error("An error occurred while applying for the job.");
     }
   };
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-24 font-bold mb-6">Nhập Thông Tin</h1>
+      <h1 className="text-2xl font-bold mb-6">Nhập Thông Tin</h1>
+      <div className="mb-4 p-4 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
+        <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+        <span>Mỗi công việc chỉ có thể nộp đơn một lần.</span>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column for CV Upload and Preview */}
         <div>
-          <div className="mb-4 text-16">
+          <div className="mb-4 text-lg">
             <label className="block text-gray-700">
               Upload CV (PDF or Image)
             </label>
@@ -114,7 +120,6 @@ const ApplyRecruitment = () => {
                 className="absolute inset-0 opacity-0 cursor-pointer"
                 ref={fileInputRef}
               />
-
               <AiOutlinePlus className="text-gray-500" size={24} />
               <span className="text-gray-500">Chọn tệp</span>
             </div>
@@ -213,7 +218,7 @@ const ApplyRecruitment = () => {
             </label>
             <select
               name="sex"
-              value={sex ? "true" : "false"}
+              value={sex}
               onChange={handleChange}
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             >
@@ -239,9 +244,12 @@ const ApplyRecruitment = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white px-4 py-3 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className={`w-full px-4 py-3 rounded-md ${
+              isSubmitting ? "bg-indigo-300" : "bg-indigo-600"
+            } text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400`}
+            disabled={isSubmitting}
           >
-            Apply
+            {isSubmitting ? "Submitting..." : "Apply"}
           </button>
         </form>
       </div>

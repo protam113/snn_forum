@@ -6,6 +6,7 @@ const EditBanner = ({ banner, onClose }) => {
   const [title, setTitle] = useState(banner?.title || "");
   const [description, setDescription] = useState(banner?.description || "");
   const [image, setImage] = useState(null);
+  const [status, setStatus] = useState(banner?.status || "show");
   const { editBanner } = useBanner();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,6 +15,7 @@ const EditBanner = ({ banner, onClose }) => {
     if (banner) {
       setTitle(banner.title);
       setDescription(banner.description);
+      setStatus(banner.status || "show");
     }
   }, [banner]);
 
@@ -21,12 +23,10 @@ const EditBanner = ({ banner, onClose }) => {
     event.preventDefault();
     setLoading(true);
     try {
-      await editBanner(banner.id, { title, description, image });
-      toast.success("Cập nhật banner thành công");
+      await editBanner(banner.id, { title, description, image, status });
       onClose();
     } catch (err) {
       setError(err.message || "Đã xảy ra lỗi khi cập nhật banner");
-      toast.error(err.message || "Đã xảy ra lỗi khi cập nhật banner");
     } finally {
       setLoading(false);
     }
@@ -81,6 +81,23 @@ const EditBanner = ({ banner, onClose }) => {
               onChange={(e) => setImage(e.target.files[0])}
               className="mt-1 block w-full"
             />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="status"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Trạng thái
+            </label>
+            <select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            >
+              <option value="show">Hiển thị</option>
+              <option value="hide">Ẩn</option>
+            </select>
           </div>
           <div className="flex gap-2">
             <button

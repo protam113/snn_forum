@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
-import useCategories from "../../../hooks/useCategories";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useEditProduct,
   useProductDetail,
 } from "../../../hooks/Product/useProduct";
-import { useCategoryList } from "../../../hooks/Product/useCategories";
+import CategoryList from "./components/categoryList";
 
 const EdtProduct = () => {
   const { id: productId } = useParams();
@@ -18,7 +17,6 @@ const EdtProduct = () => {
     isError,
     error,
   } = useProductDetail(productId);
-  const { data: categories = [] } = useCategoryList();
   const fileInputRef = useRef(null);
   const { mutate: editProductMutation } = useEditProduct();
 
@@ -79,13 +77,10 @@ const EdtProduct = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCategoryChange = (e) => {
-    const { value } = e.target;
+  const handleCategoryChange = (newCategories) => {
     setFormData((prev) => ({
       ...prev,
-      category: prev.category.includes(value)
-        ? prev.category.filter((cat) => cat !== value)
-        : [...prev.category, value],
+      category: newCategories,
     }));
   };
 
@@ -276,23 +271,12 @@ const EdtProduct = () => {
               htmlFor="category"
               className="block text-sm font-medium mb-1"
             >
-              Loại
+              Danh Mục
             </label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleCategoryChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              multiple
-              required
-            >
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.name}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+            <CategoryList
+              selectedCategories={formData.category}
+              onCategoryChange={handleCategoryChange}
+            />
           </div>
           <div>
             <label htmlFor="price" className="block text-sm font-medium mb-1">

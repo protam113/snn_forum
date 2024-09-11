@@ -3,6 +3,7 @@ import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css"; // Để sử dụng các kiểu dáng mặc định
 import { Link } from "react-router-dom";
 import { useUserBanner } from "../../../../hooks/Banner/useUserbanner";
+import Loading from "../../../error/load";
 
 // Dữ liệu mặc định khi không có banner
 const defaultBanners = [
@@ -11,16 +12,19 @@ const defaultBanners = [
       "http://protam113.pythonanywhere.com/static/banners/2024/08/istockphoto-1455096102-612x612_fJ4DwOU.jpg",
     title: "Giải pháp điều khiển công nghiệp chuyên nghiệp",
     description:
-      "Tại Chilron, chúng tôi cung cấp các thiết bị điều khiển tiên tiến cho nồi hơi, đầu đốt, bếp gas, và lò dầu nhiệt để đáp ứng mọi yêu cầu của bạn về hiệu suất và độ tin cậy.",
+      "Tại H2H Tech Energy, chúng tôi cung cấp các thiết bị điều khiển tiên tiến cho nồi hơi, đầu đốt, bếp gas, và lò dầu nhiệt để đáp ứng mọi yêu cầu của bạn về hiệu suất và độ tin cậy.",
   },
 ];
 
 const Banner = () => {
   const { data: userBanner = [], isLoading, isError } = useUserBanner();
 
-  if (isLoading) {
-    return <p className="text-center text-gray-500">Đang tải...</p>;
-  }
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loading />
+      </div>
+    );
 
   if (isError) {
     return (

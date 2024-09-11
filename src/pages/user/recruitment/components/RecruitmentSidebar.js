@@ -3,18 +3,17 @@ import { FaHotjar } from "react-icons/fa";
 import { useTheme } from "../../../../context/themeContext";
 import Loading from "../../../error/load";
 import { useNavigate } from "react-router-dom";
-import useTokenCheck from "../../../../hooks/useTokenCheck";
-import { useRecruitmentList } from "../../../../hooks/Recruitment/useRecruitment";
+import { useRecruitmentList } from "../../../../hooks/useFetchList";
+import useUserInfo from "../../../../hooks/useUserInfo";
 
 const RecruitmentSidebar = () => {
-  const hasToken = useTokenCheck();
-
+  const { userInfo } = useUserInfo();
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { data: recruitments, error, isLoading } = useRecruitmentList();
+  const { data: recruitments = [], error, isLoading } = useRecruitmentList(); // Default to empty array
 
   const handlePostClick = (postId) => {
-    navigate(`/recruitment/${postId}`);
+    navigate(`/tuyen_dung/${postId}`);
   };
 
   const handleCreatePostClick = () => {
@@ -30,12 +29,15 @@ const RecruitmentSidebar = () => {
   if (error)
     return <p className="text-red-500">Đã xảy ra lỗi khi lấy tin tuyển dụng</p>;
 
-  const recentActivities = recruitments.slice(0, 10);
+  // Ensure recruitments is an array
+  const recentActivities = Array.isArray(recruitments)
+    ? recruitments.slice(0, 10)
+    : [];
 
   return (
     <div className="w-96 p-4 top-0 right-0 overflow-y-auto overflow-x-hidden hidden md:block">
       {/* Link to Create Post */}
-      {hasToken ? (
+      {userInfo ? (
         <button
           className={`w-full py-3 mb-6 rounded-lg text-white ${
             theme === "dark"
@@ -80,7 +82,7 @@ const RecruitmentSidebar = () => {
         <div className="grid gap-4">
           {recentActivities.map((activity) => (
             <div
-              key={activity.id} // Make sure to use a unique identifier
+              key={activity.id}
               className={`grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-lg p-3 transition-colors ${
                 theme === "dark"
                   ? "bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"
@@ -115,10 +117,6 @@ const RecruitmentSidebar = () => {
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="flex flex-col space-y-4 mb-4">
-        {/* <FSuggestion /> */}
       </div>
     </div>
   );

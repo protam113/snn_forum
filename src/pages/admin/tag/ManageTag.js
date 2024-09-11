@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { useDeleteTag, useEditTag, useTags } from "../../../hooks/useTag";
+import {
+  useDeleteTag,
+  useEditTag,
+  useTags,
+  useAddTag,
+} from "../../../hooks/useTag";
 import Loading from "../../error/load";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-import { useAddTag } from "../../../hooks/useTag";
 import EditTagPopup from "./EditTagPopup";
 import AddTagPopup from "./AddTagPopup";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const ManageTag = () => {
-  const { data: tags, error, isLoading } = useTags();
+  const [page, setPage] = useState(1);
+  const { data, error, isLoading } = useTags(page);
   const { mutate: addTagMutation } = useAddTag();
   const { mutate: editTagMutation } = useEditTag();
   const { mutate: deleteTagMutation } = useDeleteTag();
@@ -16,34 +22,25 @@ const ManageTag = () => {
   const [showAddTagPopup, setShowAddTagPopup] = useState(false);
 
   const handleAddTag = (newTag) => {
-    return addTagMutation(
+    addTagMutation(
       { name: newTag },
       {
-        onSuccess: () => {
-          setShowAddTagPopup(false);
-        },
+        onSuccess: () => setShowAddTagPopup(false),
       }
     );
   };
 
   const handleEditTag = (updatedTag) => {
-    return editTagMutation(
+    editTagMutation(
       { TagId: updatedTag.id, edtTag: updatedTag },
       {
-        onSuccess: () => {
-          setEditingTag(null);
-        },
+        onSuccess: () => setEditingTag(null),
       }
     );
   };
 
   const handleDeleteTag = (tagId) => {
-    return deleteTagMutation(
-      { TagId: tagId },
-      {
-        onSuccess: () => {},
-      }
-    );
+    deleteTagMutation({ TagId: tagId });
   };
 
   if (isLoading) {
@@ -61,35 +58,45 @@ const ManageTag = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 bg-white shadow-md rounded-md">
-      <h1 className="text-2xl font-bold mb-4 flex justify-between items-center">
-        <span> Quản lý Tag</span>
+    <div className="container mx-auto px-6 py-8 bg-white shadow-lg rounded-lg">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Quản lý Tag</h1>
         <button
-          className="bg-green-500 text-white px-2 py-1 rounded flex items-center text-sm"
+          className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors duration-300"
           onClick={() => setShowAddTagPopup(true)}
         >
           <FaPlus className="mr-2 text-lg" />
-          <span className="hidden md:inline">Add Tag</span>
+          <span>Thêm Tag</span>
         </button>
-      </h1>
+      </div>
 
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
-        <thead className="bg-gray-200">
+      <table className="w-full bg-white border border-gray-500 rounded-lg overflow-hidden shadow-sm text-16 font-semibold">
+        <thead className="bg-gray-100">
           <tr>
-            <th className="py-3 px-4 border-b text-left">ID</th>
-            <th className="py-3 px-4 border-b text-left">Name</th>
-            <th className="py-3 px-4 border-b text-left">Actions</th>
+            <th className="py-4 px-6 border-b text-center text-gray-700">ID</th>
+            <th className="py-4 px-6 border-b text-center text-gray-700">
+              Tên Tag
+            </th>
+            <th className="py-4 px-6 border-b text-center text-gray-700">
+              Hành động
+            </th>
           </tr>
         </thead>
         <tbody>
-          {tags?.length > 0 ? (
-            tags.map((tag) => (
-              <tr key={tag.id} className="hover:bg-gray-100">
-                <td className="py-2 px-4 border-b text-center">{tag.id}</td>
-                <td className="py-2 px-4 border-b">{tag.name}</td>
-                <td className="py-2 px-4 border-b text-center">
+          {data.tags.length > 0 ? (
+            data.tags.map((tag, index) => (
+              <tr
+                key={tag.id}
+                className="hover:bg-gray-50 transition-colors duration-200 text-14"
+              >
+                {/* Hiển thị thứ tự của tag thay vì ID */}
+                <td className="py-4 px-6 border-b text-center ">
+                  {index + 1 + (page - 1) * 20}
+                </td>
+                <td className="py-4 px-6 border-b text-center">{tag.name}</td>
+                <td className="py-4 px-6 border-b text-center">
                   <button
-                    className="text-blue-500 hover:text-blue-700 mr-2"
+                    className="text-blue-500 hover:text-blue-700 mr-4"
                     onClick={() => setEditingTag(tag)}
                   >
                     <FaEdit />
@@ -105,13 +112,37 @@ const ManageTag = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="3" className="py-2 px-4 text-center text-gray-500">
-                No tags available
+              <td
+                colSpan="3"
+                className="py-4 px-6 text-center text-gray-500 text-14"
+              >
+                Không có tag nào
               </td>
             </tr>
           )}
         </tbody>
       </table>
+
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center mr-2"
+        >
+          <FaArrowLeft className="mr-2" />
+          Previous
+        </button>
+        <button
+          onClick={() =>
+            setPage((prev) => (prev < data.totalPages ? prev + 1 : prev))
+          }
+          disabled={page === data.totalPages}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center"
+        >
+          Next
+          <FaArrowRight className="ml-2" />
+        </button>
+      </div>
 
       {editingTag && (
         <EditTagPopup

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useRecruitmentList } from "../../../../../../hooks/Recruitment/useRecruitment";
+import React, { useCallback, useState } from "react";
 import { useStaticalJobPostSpecific } from "../../../../../../hooks/Statistical/StaticalJobPostSpecific";
 import {
   LineChart,
@@ -10,15 +9,16 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   Cell,
 } from "recharts";
 import dayjs from "dayjs";
+import { debounce } from "lodash";
+import { useRecruitmentList } from "../../../../../../hooks/Recruitment/useRecruitment";
+import SkeletonBlog from "../../../../../design/SkeletonBlog";
 
-const StatucalJobPostSpecificChart = () => {
+const StaticalJobPostSpecificChart = () => {
   const currentMonth = dayjs().month() + 1;
   const startOfMonth = dayjs().startOf("month").format("YYYY-MM-DD");
   const endOfMonth = dayjs().endOf("month").format("YYYY-MM-DD");
@@ -27,12 +27,49 @@ const StatucalJobPostSpecificChart = () => {
   const [startDate, setStartDate] = useState(startOfMonth);
   const [endDate, setEndDate] = useState(endOfMonth);
 
-  const { data: recruitments, error, isLoading } = useRecruitmentList();
+  const {
+    data: recruitments,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    error,
+  } = useRecruitmentList();
+
   const {
     data: staticalData,
     isLoading: isLoadingStaticalData,
     error: staticalError,
-  } = useStaticalJobPostSpecific(startDate, endDate, selectedJobPostId);
+  } = useStaticalJobPostSpecific(
+    selectedJobPostId ? startDate : null, // Chỉ gọi API nếu có jobPostId
+    selectedJobPostId ? endDate : null, // Chỉ gọi API nếu có jobPostId
+    selectedJobPostId
+  );
+
+  const handleScroll = useCallback(
+    debounce(() => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      if (
+        scrollTop + windowHeight > documentHeight * 0.7 &&
+        !isFetchingNextPage
+      ) {
+        if (hasNextPage) {
+          fetchNextPage();
+        }
+      }
+    }, 300),
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
+
+  React.useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   const handleMonthChange = (month) => {
     const newStartDate = dayjs()
@@ -47,6 +84,15 @@ const StatucalJobPostSpecificChart = () => {
     setEndDate(newEndDate);
   };
 
+  if (isFetching && !recruitments)
+    return (
+      <div className="min-h-screen">
+        {[...Array(3)].map((_, index) => (
+          <SkeletonBlog key={index} />
+        ))}
+      </div>
+    );
+
   // Example data for gender stats
   const genderStatsData = [
     { name: "Nam", value: staticalData?.gender_stats?.male || 0 },
@@ -58,13 +104,14 @@ const StatucalJobPostSpecificChart = () => {
       {/* Danh sách tin tuyển dụng dưới dạng blog */}
       <div className="w-1/2 p-4">
         <h2 className="text-xl font-bold">Danh sách tin tuyển dụng</h2>
-        {isLoading && <p>Đang tải danh sách tin tuyển dụng...</p>}
+        {isFetching && <p>Đang tải danh sách tin tuyển dụng...</p>}
         {error && (
           <p>Đã xảy ra lỗi khi tải danh sách tin tuyển dụng: {error.message}</p>
         )}
         <div>
-          {recruitments && recruitments.length > 0 ? (
-            recruitments.map((recruitment) => (
+          {recruitments?.pages
+            .flatMap((page) => page.recruitments)
+            ?.map((recruitment) => (
               <div
                 key={recruitment.id}
                 className="p-4 border border-gray-300 mb-4 cursor-pointer"
@@ -79,10 +126,7 @@ const StatucalJobPostSpecificChart = () => {
                 <p>Kinh nghiệm: {recruitment.experience}</p>
                 <p>Số lượng: {recruitment.quantity}</p>
               </div>
-            ))
-          ) : (
-            <p>Không có tin tuyển dụng</p>
-          )}
+            ))}
         </div>
       </div>
 
@@ -179,4 +223,4 @@ const StatucalJobPostSpecificChart = () => {
   );
 };
 
-export default StatucalJobPostSpecificChart;
+export default StaticalJobPostSpecificChart;

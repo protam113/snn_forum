@@ -3,21 +3,24 @@ import { authApi, endpoints } from "../api/api";
 import { toast } from "react-toastify";
 import useAuth from "./useAuth";
 
-// Fetch Tag list
-const fetchTags = async () => {
+const fetchTags = async (page = 1) => {
   try {
-    const response = await authApi().get(endpoints.Tag);
-    return response.data.results || [];
+    const response = await authApi().get(`${endpoints.Tag}?page=${page}`);
+    return {
+      tags: response.data.results || [],
+      totalPages: Math.ceil(response.data.count / 20),
+      currentPage: page,
+    };
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
+    toast.error("Đã xảy ra lỗi khi tải tags!");
     throw error;
   }
 };
 
-const useTags = () => {
+const useTags = (page) => {
   return useQuery({
-    queryKey: ["tags"],
-    queryFn: fetchTags,
+    queryKey: ["tags", page],
+    queryFn: () => fetchTags(page),
     staleTime: 60 * 1000,
     cacheTime: 10 * 60 * 1000,
   });

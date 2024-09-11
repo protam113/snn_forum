@@ -1,12 +1,27 @@
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useQuery,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import { toast } from "react-toastify";
 import useAuth from "../useAuth";
 
-const fetchRecruitmentList = async () => {
+const fetchRecruitmentList = async ({ pageParam = 1 }) => {
   try {
-    const response = await authApi().get(endpoints.Recruitment);
-    return response.data.results || [];
+    const response = await authApi().get(
+      `${endpoints.Recruitment}?page=${pageParam}`
+    );
+    const results = response.data.results || [];
+    const next = response.data.next;
+
+    return {
+      recruitments: results.sort(
+        (a, b) => new Date(b.created_date) - new Date(a.created_date)
+      ),
+      nextPage: next ? pageParam + 1 : null,
+    };
   } catch (error) {
     toast.error("Đã xảy ra lỗi khi tải tin tuyển dụng!");
     throw error;
@@ -15,11 +30,12 @@ const fetchRecruitmentList = async () => {
 
 // Custom hook for Recruitment list
 const useRecruitmentList = () => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["recruitments"],
-    queryFn: fetchRecruitmentList,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    queryFn: ({ pageParam }) => fetchRecruitmentList({ pageParam }),
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 30 * 60 * 1000, // 30 minutes
   });
 };
 
@@ -165,58 +181,10 @@ const useDeleteRecruitment = () => {
   });
 };
 
-const addApplyJob = async (newApplyJob, token, postId) => {
-  const formData = new FormData();
-
-  for (const key in newApplyJob) {
-    if (Array.isArray(newApplyJob[key])) {
-      newApplyJob[key].forEach((value) => formData.append(key, value));
-    } else {
-      formData.append(key, newApplyJob[key]);
-    }
-  }
-
-  if (!token) throw new Error("No token available");
-
-  const response = await authApi(token).post(
-    endpoints.ApplyJob.replace(":id", postId),
-    formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    }
-  );
-
-  return response.data;
-};
-
-const useAddApplyJob = (postId) => {
-  const queryClient = useQueryClient();
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async (newAddApplyJob) => {
-      const token = await getToken();
-      return addApplyJob(newAddApplyJob, token, postId);
-    },
-    onSuccess: () => {
-      toast.success("Đã ứng tuyển thành công!");
-      queryClient.invalidateQueries(["AddApplyJob"]);
-    },
-    onError: (error) => {
-      toast.error(
-        error.response?.data?.detail ||
-          error.message ||
-          "Failed to apply for job."
-      );
-    },
-  });
-};
-
 export {
   useRecruitmentList,
   useRecruitmentDetail,
   useAddRecruitment,
   useEditRecruitment,
   useDeleteRecruitment,
-  useAddApplyJob,
 };
