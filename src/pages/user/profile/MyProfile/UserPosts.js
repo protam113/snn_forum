@@ -1,26 +1,52 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Block from "../../../../components/design/Block";
 import { FaEdit, FaRegCommentAlt, FaTrashAlt } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
-import { MdPerson } from "react-icons/md"; // Import MdPerson icon
 import { useTheme } from "../../../../context/themeContext";
 import formatDate from "../../../../utils/formatDate";
-import Loading from "../../../error/load";
 import LikePost from "../../../../components/buttons/likeBlog";
-import useBlog from "../../../../hooks/useBlog";
-import useUserInfo from "../../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
 import { BsThreeDots } from "react-icons/bs";
+import { useDeleteBlog } from "../../../../hooks/Blog/useBlogs";
+import { useUserBlog } from "../../../../hooks/User/useUserBlog";
+import SkeletonBlog from "../../../../components/design/SkeletonBlog";
+import { debounce } from "lodash";
 
 const PersonalBlog = () => {
   const { id: personId } = useParams();
-  const { personalBlogs, loading, error } = useUserInfo(personId);
   const [activeMenu, setActiveMenu] = useState(null);
-  const { likedBlogs, handleLike, handleDeleteBlog } = useBlog();
+  const { mutate: deleteBlogMutation } = useDeleteBlog();
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
+    useUserBlog(personId);
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [expandedBlogs, setExpandedBlogs] = React.useState({});
+
+  const handleScroll = useCallback(
+    debounce(() => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      if (
+        scrollTop + windowHeight > documentHeight * 0.7 &&
+        !isFetchingNextPage
+      ) {
+        if (hasNextPage) {
+          fetchNextPage();
+        }
+      }
+    }, 300),
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
+
+  React.useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   const handleBlogClick = (blogId) => {
     navigate(`/blog/${blogId}`);
@@ -42,7 +68,11 @@ const PersonalBlog = () => {
 
   const handleDeleteClick = async (blogId) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) {
-      await handleDeleteBlog(blogId);
+      try {
+        await deleteBlogMutation({ blogId });
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      }
     }
   };
 
@@ -88,14 +118,16 @@ const PersonalBlog = () => {
     return null;
   };
 
-  if (loading) return <Loading />;
-  if (error) {
-    console.error("Error fetching personal blogs:", error);
-    return <p>Đã xảy ra lỗi khi lấy blog</p>;
-  }
+  if (isFetching && !data)
+    return (
+      <div className="min-h-screen">
+        {[...Array(3)].map((_, index) => (
+          <SkeletonBlog key={index} />
+        ))}
+      </div>
+    );
 
-  const posts = personalBlogs || [];
-
+  const posts = data?.pages.flatMap((page) => page.recruitments) || [];
   return (
     <>
       {posts.length === 0 ? (
@@ -111,21 +143,13 @@ const PersonalBlog = () => {
             } shadow-sm`}
           >
             <div className="flex items-center mb-4">
-              {blog.user?.profile_image ? (
-                <img
-                  src={blog.user.profile_image}
-                  alt="avatar"
-                  className={`size-12 rounded-full ${
-                    theme === "dark" ? "border-white" : "border-black"
-                  }`}
-                />
-              ) : (
-                <MdPerson
-                  className={`w-12 h-12 ${
-                    theme === "dark" ? "text-gray-500" : "text-gray-400"
-                  }`}
-                />
-              )}
+              <img
+                src={blog.user.profile_image}
+                alt="avatar"
+                className={`size-12 rounded-full ${
+                  theme === "dark" ? "border-white" : "border-black"
+                }`}
+              />
               <div className="ml-2">
                 <h1
                   className={`text-base font-bold leading-tight ${
@@ -252,11 +276,7 @@ const PersonalBlog = () => {
             />
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <LikePost
-                  blogId={blog.id}
-                  liked={likedBlogs[blog.id] || false}
-                  onLike={handleLike}
-                />
+                <LikePost blogId={blog.id} liked={blog.liked} />
                 <FaRegCommentAlt
                   className={`text-2xl cursor-pointer ${
                     theme === "dark" ? "text-gray-300" : "text-gray-500"

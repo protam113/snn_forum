@@ -23,6 +23,7 @@ import { MdPerson } from "react-icons/md";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { useBlogDetail } from "../../../hooks/Blog/useBlog";
 import CommentsSection from "../../../components/comment/CommentsSection";
+import { useDeleteBlog } from "../../../hooks/Blog/useBlogs";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -30,10 +31,9 @@ const Blog_detail = () => {
   const { id: blogId } = useParams();
   const navigate = useNavigate();
   const { data: blog, isLoading, isError } = useBlogDetail(blogId);
-  const { handleDeleteBlog } = useBlog(blogId);
+  const { mutate: deleteBlogMutation } = useDeleteBlog();
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
-
   const handleMenuClick = (id) => {
     setActiveMenu((prev) => (prev === id ? null : id));
   };
@@ -46,6 +46,16 @@ const Blog_detail = () => {
     }
   };
 
+  const handleDeleteClick = async (blogId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) {
+      try {
+        await deleteBlogMutation({ blogId });
+        navigate("/");
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      }
+    }
+  };
   const handleEditClick = (blogId) => {
     navigate(`/blog/edit/${blogId}`);
   };
@@ -196,7 +206,7 @@ const Blog_detail = () => {
                         </li>
                         <li
                           className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
-                          onClick={() => handleDeleteBlog(blog.id, userInfo)}
+                          onClick={() => handleDeleteClick(blog.id, userInfo)}
                         >
                           <FaTrashAlt className="mr-2 text-gray-400" />
                           Xóa

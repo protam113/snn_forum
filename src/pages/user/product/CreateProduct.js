@@ -124,54 +124,56 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-6">Tạo Sản Phẩm</h1>
+    <div className="container mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <h1 className="text-24 font-bold mb-6">Tạo Sản Phẩm</h1>
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
         {/* Image Upload Section */}
-        <div className="flex flex-col gap-4">
-          <label htmlFor="file" className="block text-sm font-medium mb-1">
-            Upload Images (max 4)
-          </label>
-          <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg  cursor-pointer  transition-colors duration-200">
-            <input
-              id="file"
-              name="file"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageChange}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              ref={fileInputRef}
-            />
-            <AiOutlinePlus className="text-gray-500" size={24} />
-            <span className="text-gray-500">Chọn hình ảnh</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {selectedFiles.length > 0 &&
-              selectedFiles.map((image, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={image.preview}
-                    alt={`Preview ${index}`}
-                    className="w-full h-32 object-cover rounded-md"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
-                  >
-                    <AiOutlineDelete className="text-red-500" size={20} />
-                  </button>
-                </div>
-              ))}
+        <div className="">
+          <div className="grid gap-6">
+            <label htmlFor="file" className="block text-sm font-medium mb-1">
+              Upload Images (max 4)
+            </label>
+            <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg  cursor-pointer  transition-colors duration-200">
+              <input
+                id="file"
+                name="file"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                ref={fileInputRef}
+              />
+              <AiOutlinePlus className="text-gray-500" size={24} />
+              <span className="text-gray-500">Chọn hình ảnh</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {selectedFiles.length > 0 &&
+                selectedFiles.map((image, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={image.preview}
+                      alt={`Preview ${index}`}
+                      className="w-full h-32 object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
+                    >
+                      <AiOutlineDelete className="text-red-500" size={20} />
+                    </button>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
 
         {/* Product Information Section */}
-        <div>
+        <div className="grid gap-6">
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-1">
@@ -287,20 +289,23 @@ const CreateProduct = () => {
                 className="w-full"
               />
             </div>
-
-            <div className="mb-6">
-              <label
-                htmlFor="category"
-                className="block text-sm font-medium mb-1"
-              >
-                Danh Mục
-              </label>
-              <CategoryList
-                selectedCategories={category}
-                onCategoryChange={handleCategoryChange}
-              />
-            </div>
           </div>
+        </div>
+
+        <div className="grid gap-6 md:col-span-2 lg:col-span-1">
+          <div className="mb-6">
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium mb-1"
+            >
+              Danh Mục
+            </label>
+            <CategoryList
+              selectedCategories={category}
+              onCategoryChange={handleCategoryChange}
+            />
+          </div>
+
           <div className="mb-6">
             <label htmlFor="price" className="block text-sm font-medium mb-1">
               Giá
@@ -335,15 +340,15 @@ const CreateProduct = () => {
               required
             />
           </div>
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-              disabled={loading}
-            >
-              {loading ? "Submitting..." : "Create Product"}
-            </button>
-          </div>
+        </div>
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+            disabled={loading}
+          >
+            {loading ? "Submitting..." : "Create Product"}
+          </button>
         </div>
       </form>
     </div>

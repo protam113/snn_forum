@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FaTrashAlt,
   FaArrowLeft,
@@ -7,23 +7,27 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
-import useBlog from "../../../../hooks/useBlog";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { MdPerson } from "react-icons/md";
 import Toolbar from "../../../../components/design/Toolbar";
 import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
+import { useAddBlog } from "../../../../hooks/Blog/useBlogs";
 
 const Create = () => {
   const { theme } = useTheme();
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const navigate = useNavigate();
+  const { userInfo } = useUserInfo();
+
   const [content, setContent] = useState("");
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState("public");
   const [fileType, setFileType] = useState("image");
-  const navigate = useNavigate();
-  const { handleSubmitBlog, submitting, fileInputRef } = useBlog();
-  const { userInfo } = useUserInfo();
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const { mutate: addBlogMutation } = useAddBlog();
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -70,22 +74,41 @@ const Create = () => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    handleSubmitBlog(
-      event,
-      content,
-      marked(description),
-      visibility,
-      selectedFiles,
-      fileType,
-      () => {
-        navigate(-1);
-      },
-      () => {
-        console.log("Success Callback");
-      }
-    );
+
+    if (!content.trim()) {
+      alert("Vui lòng nhập tiêu đề.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("visibility", visibility);
+    formData.append("description", marked(description));
+    formData.append("fileType", fileType);
+
+    selectedFiles.forEach((file) => {
+      formData.append("media", file); // Sử dụng 'media' thay vì 'files'
+    });
+
+    console.log("FormData:", [...formData.entries()]); // Debugging line
+
+    setLoading(true);
+    try {
+      await addBlogMutation(formData, {
+        onSuccess: () => {
+          navigate(-1);
+        },
+        onError: (error) => {
+          console.error("Error submitting blog:", error);
+        },
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInsert = (text) => {
@@ -291,7 +314,6 @@ const Create = () => {
               <textarea
                 value={description}
                 onChange={(e) => {
-                  console.log("Textarea value changed:", e.target.value);
                   setDescription(e.target.value);
                 }}
                 rows={5}
@@ -311,13 +333,13 @@ const Create = () => {
               <button
                 type="submit"
                 className={`mt-4 px-6 py-2 font-semibold text-lg rounded-md ${
-                  submitting
+                  loading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 text-white"
                 }`}
-                disabled={submitting}
+                disabled={loading}
               >
-                {submitting ? "Submitting..." : "Submit"}
+                {loading ? "Submitting..." : "Submit"}
               </button>
             </div>
           </form>

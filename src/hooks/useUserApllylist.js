@@ -63,9 +63,7 @@ const addApplyJob = async (newApplyJob, token, postId) => {
 
     return response.data;
   } catch (error) {
-    // Log detailed error information
-
-    throw error; // Re-throw error to be handled in useMutation
+    throw error;
   }
 };
 
@@ -73,6 +71,7 @@ const useAddApplyJob = (postId) => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
   const navigate = useNavigate();
+
   return useMutation({
     mutationFn: async (newAddApplyJob) => {
       const token = await getToken();
@@ -86,11 +85,11 @@ const useAddApplyJob = (postId) => {
       queryClient.invalidateQueries(["userApplyList"]);
     },
     onError: (error) => {
-      toast.error(
-        error.response?.data?.detail ||
-          error.message ||
-          "Failed to apply for job."
-      );
+      if (error.response?.status === 500) {
+        toast.error("Bạn đã ứng tuyển vào vị trí này.");
+      } else {
+        toast.error(error.message || "Failed to apply for job.");
+      }
     },
   });
 };

@@ -30,6 +30,38 @@ const useCategoryList = (page) => {
   });
 };
 
+// Function to fetch products by category
+const fetchProductByCategory = async (categoryId, page = 1) => {
+  try {
+    if (!categoryId) {
+      throw new Error("Category ID is required");
+    }
+
+    const response = await authApi().get(
+      `${endpoints.CategoryProduct.replace(":id", categoryId)}?page=${page}`
+    );
+
+    return {
+      ProductsByCategory: response.data.results || [],
+      totalPages: Math.ceil(response.data.count / 20),
+      currentPage: page,
+    };
+  } catch (error) {
+    toast.error("Đã xảy ra lỗi khi lấy sản phẩm theo thể loại!");
+    throw error;
+  }
+};
+
+// Custom hook for product list
+const useProductByCategory = (categoryId, page) => {
+  return useQuery({
+    queryKey: ["productsByCategory", categoryId, page],
+    queryFn: () => fetchProductByCategory(categoryId, page),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000,
+  });
+};
+
 const AddCategory = async (newCategory, token) => {
   const formData = new FormData();
 
@@ -143,4 +175,10 @@ const useDeleteCategory = () => {
   });
 };
 
-export { useCategoryList, useAddCategory, useEditCategory, useDeleteCategory };
+export {
+  useCategoryList,
+  useAddCategory,
+  useEditCategory,
+  useDeleteCategory,
+  useProductByCategory,
+};

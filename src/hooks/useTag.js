@@ -17,15 +17,15 @@ const fetchTags = async (page = 1) => {
   }
 };
 
-const useTags = (page) => {
+const useTags = (page, hasTags) => {
   return useQuery({
     queryKey: ["tags", page],
     queryFn: () => fetchTags(page),
     staleTime: 60 * 1000,
     cacheTime: 10 * 60 * 1000,
+    enabled: hasTags || page === 1,
   });
 };
-
 const AddTag = async (newTag, token) => {
   const formData = new FormData();
 

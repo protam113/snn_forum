@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   AiOutlineClose,
   AiOutlinePlus,
@@ -90,10 +90,7 @@ const ApplyRecruitment = () => {
         age,
         cv,
       });
-    } catch (err) {
-      console.error(err);
-      toast.error("An error occurred while applying for the job.");
-    }
+    } catch (err) {}
   };
 
   return (

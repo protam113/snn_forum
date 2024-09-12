@@ -5,7 +5,7 @@ import { useUserCategoryList } from "../../../../hooks/Product/useUserCategory";
 const ProductSidebar = ({ onFilterChange }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceOrder, setPriceOrder] = useState("asc");
-  const { data: categories } = useUserCategoryList();
+  const { data: categories = [] } = useUserCategoryList();
 
   const handleCategoryChange = (e) => {
     const { value, checked } = e.target;

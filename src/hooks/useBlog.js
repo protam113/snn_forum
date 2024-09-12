@@ -8,7 +8,6 @@ const useBlog = (blogId) => {
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentChild, setCommentChild] = useState([]);
-  const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef(null);
   const { getToken } = useAuth();
 
@@ -193,61 +192,16 @@ const useBlog = (blogId) => {
   );
 
   // Handle submit blog
-  const handleSubmitBlog = useCallback(
-    async (
-      event,
-      content,
-      description,
-      visibility,
-      selectedFiles,
-      fileType,
-      onClose,
-      onSuccess
-    ) => {
-      event.preventDefault();
-      setSubmitting(true);
-
-      try {
-        const token = await getToken();
-        const formData = new FormData();
-        formData.append("content", content);
-        formData.append("description", description);
-        formData.append("visibility", visibility);
-        formData.append("file_type", fileType);
-
-        selectedFiles.forEach((file) => {
-          formData.append("media", file);
-        });
-
-        const response = await authApi(token).post(endpoints.Blog, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        toast.success("Blog created successfully!");
-        onSuccess(response.data);
-        onClose();
-      } catch (err) {
-        console.error("Error creating blog", err);
-        toast.error("Failed to create blog.");
-      } finally {
-        setSubmitting(false);
-      }
-    },
-    [getToken]
-  );
 
   return {
     error,
     comments,
     commentChild,
-    submitting,
     fileInputRef,
     handleLike,
     handleDeleteBlog,
     handleDeleteComment,
     handleAddComment,
-    handleSubmitBlog,
-    setSubmitting,
     handleEditComment,
     handleExpandComment,
   };

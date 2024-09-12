@@ -13,7 +13,6 @@ const Banner = () => {
   const navigate = useNavigate();
   const { data, isLoading, isError, fetchNextPage, hasNextPage } =
     useAdminBanner();
-
   const { deleteBanner } = useBanner();
 
   const handleCreateBanner = () => {
@@ -41,25 +40,30 @@ const Banner = () => {
     setSelectedBanner(null);
   };
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     );
+  }
 
-  if (isError)
-    return <p className="text-red-500">Đã xảy ra lỗi khi tải Banner</p>;
+  if (isError) {
+    return (
+      <div className="text-center text-red-500">
+        Đã xảy ra lỗi khi tải Banner
+      </div>
+    );
+  }
 
-  // Extract banners and pagination info from data
   const banners = data?.pages.flatMap((page) => page.adminBanner) || [];
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-6">
       <div className="flex justify-between items-center mb-4">
-        <h5 className="text-2xl font-semibold">Quản lý banner (Banner)</h5>
+        <h1 className="text-3xl font-semibold text-gray-800">Quản lý Banner</h1>
         <button
-          className="bg-custom-red text-white py-2 px-4 rounded hover:bg-red-600 transition-colors"
+          className="bg-red-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-700 transition-colors"
           onClick={handleCreateBanner}
         >
           Tạo Banner
@@ -67,53 +71,73 @@ const Banner = () => {
       </div>
       {banners.length > 0 ? (
         <>
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr className="w-full bg-gray-100 border-b">
-                <th className="py-2 px-4 border-r">ID</th>
-                <th className="py-2 px-4 border-r">Title</th>
-                <th className="py-2 px-4 border-r">Description</th>
-                <th className="py-2 px-4 border-r">Image</th>
-                <th className="py-2 px-4 border-r">Status</th>
-                <th className="py-2 px-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {banners.map((banner) => (
-                <tr key={banner.id} className="w-full bg-gray-100 border-b">
-                  <td className="py-2 px-4 border-r">{banner.id}</td>
-                  <td className="py-2 px-4 border-r">{banner.title}</td>
-                  <td className="py-2 px-4 border-r">
-                    {banner.description || "No description"}
-                  </td>
-                  <td className="py-2 px-4 border-r">
-                    <img
-                      src={banner.image}
-                      alt={banner.title}
-                      className="w-32 h-32 object-cover"
-                    />
-                  </td>
-                  <td className="py-2 px-4 border-r">{banner.status}</td>
-                  <td className="py-2 px-4 flex items-center justify-center">
-                    <MdEdit
-                      className="text-blue-500 cursor-pointer mx-1"
-                      onClick={() => handleEditBanner(banner)}
-                    />
-                    <MdDelete
-                      className="text-red-500 cursor-pointer mx-1"
-                      onClick={() => handleDeleteBanner(banner.id)}
-                    />
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
+              <thead className="bg-gray-100">
+                <tr className="border-b">
+                  <th className="py-3 px-4 text-left text-gray-600">ID</th>
+                  <th className="py-3 px-4 text-left text-gray-600">Title</th>
+                  <th className="py-3 px-4 text-left text-gray-600">
+                    Description
+                  </th>
+                  <th className="py-3 px-4 text-left text-gray-600">Image</th>
+                  <th className="py-3 px-4 text-left text-gray-600">Status</th>
+                  <th className="py-3 px-4 text-center text-gray-600">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {banners.map((banner) => (
+                  <tr key={banner.id} className="border-b hover:bg-gray-50">
+                    <td className="py-2 px-4 border-r text-gray-800">
+                      {banner.id}
+                    </td>
+                    <td className="py-2 px-4 border-r text-gray-800">
+                      {banner.title}
+                    </td>
+                    <td className="py-2 px-4 border-r text-gray-800">
+                      {banner.description || "No description"}
+                    </td>
+                    <td className="py-2 px-4 border-r">
+                      <img
+                        src={banner.image}
+                        alt={banner.title}
+                        className="w-32 h-32 object-cover rounded-md border border-gray-300"
+                      />
+                    </td>
+                    <td className="py-2 px-4 border-r ">
+                      <span
+                        className={`inline-flex items-center px-2 py-1 text-sm font-medium rounded-full ${
+                          banner.status === "hide"
+                            ? "text-red-800 bg-red-100"
+                            : "text-green-800 bg-green-100"
+                        }`}
+                      >
+                        {banner.status === "hide" ? "Ẩn" : "Hiện"}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4 border-r flex items-center justify-center space-x-2">
+                      <MdEdit
+                        className="text-blue-500 cursor-pointer hover:text-blue-600 transition-colors"
+                        onClick={() => handleEditBanner(banner)}
+                      />
+                      <MdDelete
+                        className="text-red-500 cursor-pointer hover:text-red-600 transition-colors"
+                        onClick={() => handleDeleteBanner(banner.id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {hasNextPage && (
             <button
-              className="mt-4 py-2 px-4 bg-custom-red text-white rounded hover:bg-red-600"
+              className="mt-4 py-2 px-4 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-colors"
               onClick={() => fetchNextPage()}
             >
-              Sang trang tiếp
+              Tải thêm
             </button>
           )}
         </>

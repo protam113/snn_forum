@@ -4,21 +4,25 @@ import { toast } from "react-toastify";
 import useAuth from "../useAuth";
 
 // Fetch product list
-const fetchProductList = async () => {
+const fetchProductList = async (page = 1) => {
   try {
-    const response = await authApi().get(endpoints.Products);
-    return response.data.results || [];
+    const response = await authApi().get(`${endpoints.Products}?page=${page}`);
+    const totalPages = Math.ceil(response.data.count / 20);
+    return {
+      Products: response.data.results || [],
+      totalPages,
+      currentPage: page,
+    };
   } catch (error) {
     toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
     throw error;
   }
 };
 
-// Custom hook for product list
-const useProductList = () => {
+const useProductList = (page) => {
   return useQuery({
-    queryKey: ["products"],
-    queryFn: fetchProductList,
+    queryKey: ["products", page],
+    queryFn: () => fetchProductList(page),
     staleTime: 5 * 60 * 1000,
     cacheTime: 30 * 60 * 1000,
   });

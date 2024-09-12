@@ -52,3 +52,18 @@
   border: 0.5px solid var(--border-color);
 }
 
+
+
+/* admin banner */
+
+/* styles.css */
+
+select option[value="show"] {
+  background-color: #d4edda; /* Màu nền xanh lá nhạt */
+  color: #155724; /* Màu chữ xanh lá */
+}
+
+select option[value="hide"] {
+  background-color: #f8d7da; /* Màu nền đỏ nhạt */
+  color: #721c24; /* Màu chữ đỏ */
+}

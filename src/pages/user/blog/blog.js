@@ -14,17 +14,18 @@ import { IoShareSocialOutline } from "react-icons/io5";
 import { MdPerson } from "react-icons/md";
 import SkeletonBlog from "../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
-import { useBlogList } from "../../../hooks/Blog/useBlogs";
+import { useBlogList, useDeleteBlog } from "../../../hooks/Blog/useBlogs";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [expandedBlogId, setExpandedBlogId] = useState(null);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { handleDeleteBlog } = useBlog();
+  // const { handleDeleteBlog } = useBlog();
   const { userInfo } = useUserInfo();
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useBlogList();
+  const { mutate: deleteBlogMutation } = useDeleteBlog();
 
   const handleScroll = useCallback(
     debounce(() => {
@@ -72,7 +73,12 @@ const Blog = () => {
 
   const handleDeleteClick = async (blogId) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) {
-      await handleDeleteBlog(blogId);
+      try {
+        await deleteBlogMutation({ blogId });
+        // Optional: cập nhật giao diện hoặc trạng thái sau khi xóa thành công
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      }
     }
   };
 

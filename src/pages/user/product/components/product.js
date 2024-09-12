@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Loading from "../../../error/load";
-import { useProductList } from "../../../../hooks/Product/useProduct";
+import { useProductList } from "../../../../hooks/Product/useProductMain";
 
 // Hàm định dạng giá tiền
 const formatPrice = (price) => {

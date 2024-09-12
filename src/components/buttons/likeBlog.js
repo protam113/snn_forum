@@ -15,9 +15,8 @@ const LikePost = ({ blogId, liked }) => {
     setLocalError(null);
 
     try {
-      // Gọi hàm handleLike với trạng thái hiện tại
       await handleLike(blogId, localLiked);
-      setLocalLiked((prev) => !prev); // Đảo ngược trạng thái liked
+      setLocalLiked((prev) => !prev);
     } catch (err) {
       setLocalError("Error handling like/unlike");
     } finally {
