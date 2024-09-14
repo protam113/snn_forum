@@ -26,7 +26,7 @@ const EditProfile = () => {
     profile_bg: "",
   });
 
-  const navigate = useNavigate(); // Hook để điều hướng
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -37,7 +37,6 @@ const EditProfile = () => {
         [name]: file,
       }));
 
-      // Tạo URL cho hình ảnh xem trước
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImages((prevState) => ({
@@ -90,12 +89,12 @@ const EditProfile = () => {
 
     try {
       await updateUserInfo(data);
-      toast.success("Profile updated successfully");
+      toast.success("Cập nhật thông tin thành công !");
       if (userInfo && userInfo.username) {
-        navigate(`/profile/${userInfo.username}`); // Chuyển hướng sau khi cập nhật thành công
+        navigate("/");
       }
     } catch (err) {
-      console.error("Failed to update profile", err);
+      console.error("Lỗi khi cập nhật thông tin!", err);
     }
   };
 

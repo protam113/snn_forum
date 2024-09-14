@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 import { useTheme } from "../../../../context/themeContext";
-import { MdPerson } from "react-icons/md";
 
 const Info = () => {
   const { userInfo, loading, error } = useUserInfo();
@@ -35,19 +34,12 @@ const Info = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           {/* Profile Section */}
           <div className="flex items-center p-2  rounded-lg">
-            {userInfo?.profile_image ? (
-              <img
-                src={userInfo.profile_image}
-                alt="avatar"
-                className="w-24 h-24 rounded-full border-4 border-gray-800"
-              />
-            ) : (
-              <MdPerson
-                className={`w-24 h-24 text-gray-400 ${
-                  theme === "dark" ? "bg-gray-800" : "bg-gray-200"
-                } rounded-full p-4 border-4 border-gray-800`}
-              />
-            )}
+            <img
+              src={userInfo.profile_image}
+              alt="avatar"
+              className="w-24 h-24 rounded-full border-4 border-gray-800"
+            />
+
             <div className="ml-4">
               <h1
                 className={`text-2xl font-semibold ${

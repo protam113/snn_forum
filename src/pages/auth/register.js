@@ -124,13 +124,51 @@ const Register = () => {
     });
   };
 
+  const validateFormData = () => {
+    let isValid = true;
+    const { username, password, email, firstName, lastName, phoneNumber } =
+      formData;
+
+    if (!username || !validName) {
+      toast.warn("Vui lòng nhập tên người dùng hợp lệ.");
+      isValid = false;
+    }
+    if (!password || !validPassword) {
+      toast.warn("Vui lòng nhập mật khẩu hợp lệ.");
+      isValid = false;
+    }
+    if (!email) {
+      toast.warn("Vui lòng nhập email.");
+      isValid = false;
+    }
+    if (!firstName) {
+      toast.warn("Vui lòng nhập tên.");
+      isValid = false;
+    }
+    if (!lastName) {
+      toast.warn("Vui lòng nhập họ.");
+      isValid = false;
+    }
+    if (!phoneNumber) {
+      toast.warn("Vui lòng nhập số điện thoại.");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleRegister = async () => {
     if (step === 4) {
-      try {
-        await register(formData);
-        navigate("/xac_thuc");
-      } catch (error) {
-        setErrMsg("Registration failed. Please try again.");
+      const isValid = validateFormData();
+      if (isValid) {
+        try {
+          await register(formData);
+
+          navigate("/xac_thuc");
+        } catch (error) {
+          // Xử lý lỗi và hiển thị thông báo
+          setErrMsg("Đăng ký không thành công. Vui lòng thử lại.");
+        }
       }
     }
   };

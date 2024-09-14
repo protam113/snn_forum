@@ -8,11 +8,10 @@ import LogoutButton from "../../../../pages/auth/logout";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { BiMenuAltRight } from "react-icons/bi";
 import { MdSupportAgent } from "react-icons/md";
-import { MdPerson } from "react-icons/md";
-
 import LoginBtn from "../../../buttons/loginBtn";
 import { useWeb } from "../../../../hooks/useWeb";
 import Loading from "../../../../pages/error/load";
+import { Error404 } from "../../../../pages/error/error";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
@@ -38,7 +37,12 @@ const Navbar = () => {
         <Loading />
       </div>
     );
-  if (error) return <div>Error: {error.message}</div>;
+  if (error)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Error404 message={error.message || "Đã xảy ra lỗi không xác định."} />
+      </div>
+    );
 
   const isAdmin = userRoles.includes("admin") || userRoles.includes("manager");
 
@@ -151,19 +155,11 @@ const Navbar = () => {
                 />
               ) : (
                 <div className="flex items-center">
-                  {userInfo.profile_image ? (
-                    <img
-                      src={userInfo.profile_image}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full cursor-pointer"
-                    />
-                  ) : (
-                    <MdPerson
-                      className={`w-8 h-8 rounded-full cursor-pointer ${
-                        theme === "light" ? "text-zinc-900" : "text-white"
-                      }`}
-                    />
-                  )}
+                  <img
+                    src={userInfo.profile_image}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full cursor-pointer"
+                  />
                 </div>
               )}
               <IoIosArrowDown
@@ -188,19 +184,12 @@ const Navbar = () => {
                   to={`/profile/${userInfo.id}`}
                   className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-zinc-600 rounded-md"
                 >
-                  {userInfo.profile_image ? (
-                    <img
-                      src={userInfo.profile_image}
-                      alt="Profile"
-                      className="w-8 h-8  rounded-full cursor-pointer"
-                    />
-                  ) : (
-                    <MdPerson
-                      className={`w-8 h-8 rounded-full bg-white cursor-pointer ${
-                        theme === "light" ? "text-zinc-900" : "text-white"
-                      }`}
-                    />
-                  )}
+                  <img
+                    src={userInfo.profile_image}
+                    alt="Profile"
+                    className="w-8 h-8  rounded-full cursor-pointer"
+                  />
+
                   <span className="text-white">Profile</span>
                 </Link>
               ) : null}

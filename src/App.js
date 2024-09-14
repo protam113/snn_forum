@@ -13,9 +13,27 @@ import useScrollToTop from "./hooks/useScrollToTop.js";
 import ProtectedRoutes from "./utils/ProtectedRoutes.js";
 import { BlogProvider } from "./context/BlogContex.js";
 import { SecureStorageProvider } from "./context/SecureStorageProvider.js";
+import ScrollToTop from "./hooks/useScrollToTop.js";
+import { ErrorProvider, useError } from "./context/ErrorProvider.js";
+import { Error404, Error500, WebMaintenance } from "./pages/error/error.js";
 function AppContent() {
   const { theme } = useTheme();
   useScrollToTop();
+  const { error } = useError();
+
+  if (error?.type === "maintenance") {
+    return <WebMaintenance />;
+  }
+
+  if (error?.type === "server") {
+    return <Error500 message="Lỗi máy chủ. Vui lòng thử lại sau." />;
+  }
+
+  if (error?.type === "default") {
+    return (
+      <Error404 message={error.message || "Đã xảy ra lỗi không xác định."} />
+    );
+  }
 
   return (
     <div
@@ -68,16 +86,19 @@ function App() {
   return (
     <Router>
       <SecureStorageProvider>
-        <AuthProvider>
-          <ThemeProvider>
-            <BlogProvider>
-              <HelmetProvider>
-                <AppContent />
-                <ToastContainer position="top-center" />
-              </HelmetProvider>
-            </BlogProvider>
-          </ThemeProvider>
-        </AuthProvider>
+        <ErrorProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <BlogProvider>
+                <ScrollToTop />
+                <HelmetProvider>
+                  <AppContent />
+                  <ToastContainer position="top-center" />
+                </HelmetProvider>
+              </BlogProvider>
+            </ThemeProvider>
+          </AuthProvider>
+        </ErrorProvider>
       </SecureStorageProvider>
     </Router>
   );

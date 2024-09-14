@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/themeContext";
-import { toast } from "react-toastify";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthContext from "../../context/AuthContext";
 import Logo from "../../assets/img/Logo.svg";
-import Logo_google from "../../assets/img/logo_google.svg";
+// import Logo_google from "../../assets/img/logo_google.svg";
 import Footer from "../../components/layouts/DefaultLayout/components/footer";
 
 const Login = () => {

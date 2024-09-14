@@ -69,7 +69,6 @@ const Blog_detail = () => {
       })
       .catch((error) => {
         toast.error("Failed to copy link");
-        console.error("Failed to copy link", error);
       });
   };
 

@@ -3,6 +3,7 @@ import { authApi, endpoints, baseURL } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 import {
   removeLocalStorage,
@@ -91,7 +92,7 @@ export const AuthProvider = ({ children }) => {
     if (!err.response) {
       toast.error("Không có phản hồi từ máy chủ");
     } else if (err.response.status === 400) {
-      toast.error("Sai tên đăng nhập hoặc mật khẩu");
+      toast.warn("Sai tên đăng nhập hoặc mật khẩu");
     } else if (err.response.status === 401) {
       toast.error("Không có quyền truy cập");
     } else {

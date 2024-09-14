@@ -1,154 +1,181 @@
 import React, { useState } from "react";
-import { FaHome, FaList, FaUsers, FaFlag } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useTheme } from "../../../../context/themeContext";
-import { FaChartArea, FaTags } from "react-icons/fa";
+import styled from "styled-components";
+import {
+  FaHome,
+  FaList,
+  FaUsers,
+  FaFlag,
+  FaChartArea,
+  FaTags,
+} from "react-icons/fa";
 import { GrUserAdmin } from "react-icons/gr";
-import useUserInfo from "../../../../hooks/useUserInfo";
-import useClickOutside from "../../../../hooks/useClickOutside";
 import { IoIosArrowDown } from "react-icons/io";
+import { BiMenuAltRight } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import useUserInfo from "../../../../hooks/useUserInfo";
 
-const AdSidebar = () => {
-  const { theme } = useTheme();
+const SidebarContainer = styled.div`
+  width: ${({ isOpen }) => (isOpen ? "250px" : "60px")};
+  background: #bf2734;
+  color: ${({ theme }) => theme.text};
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding-top: 20px;
+  transition: width 0.3s ease-in-out;
+`;
+
+const SidebarButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: -18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 4px ${({ theme }) => theme.shadow},
+    0 0 7px ${({ theme }) => theme.bg};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  transform: ${({ isOpen }) => (isOpen ? `initial` : `rotate(180deg)`)};
+  border: none;
+`;
+
+const LinkContainer = styled.div`
+  margin: 8px 0;
+  padding: 0 15%;
+
+  :hover {
+    background: ${({ theme }) => theme.bgHover};
+  }
+
+  .Links {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px;
+    height: 40px
+    }
+  }
+`;
+
+const Divider = styled.div`
+  height: 1px;
+  background: ${({ theme }) => theme.divider};
+  margin: 20px 0;
+`;
+
+const SubmenuContainer = styled.div`
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  padding-left: 20px;
+  transition: all 0.3s;
+`;
+
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { userRoles } = useUserInfo();
-  const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
-  const [isStatsVisible, setIsStatsVisible] = useState(false); // New state for "Thống Kê" visibility
-
-  const toggleNavbar = () => {
-    setIsMobileNavVisible(!isMobileNavVisible);
-  };
-
-  const closeNavbar = () => {
-    setIsMobileNavVisible(false);
-  };
+  const [isStatsVisible, setIsStatsVisible] = useState(false);
 
   const toggleStats = () => {
-    setIsStatsVisible(!isStatsVisible); // Toggle stats visibility
+    setIsStatsVisible(!isStatsVisible);
   };
 
-  const ref = useClickOutside(() => {
-    closeNavbar();
-  });
-
-  const linkClasses = `flex items-center space-x-4 p-3 rounded-md transition duration-300 ease-in-out hover:bg-gray-300 ${
-    theme === "dark"
-      ? "bg-gray-800 text-white hover:bg-gray-700"
-      : "bg-gray-100 text-black hover:bg-gray-200"
-  }`;
-
-  const isAdmin = userRoles.includes("admin");
-
   return (
-    <div
-      className={`lg:w-60 lg:bg-${
-        theme === "dark" ? "gray-800" : "white"
-      } lg:text-${
-        theme === "dark" ? "white" : "black"
-      } lg:p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto`}
-    >
-      <div className="flex flex-col space-y-2">
-        <Link to="/admin" className={linkClasses}>
-          <FaHome className="text-lg" />
-          <span className="text-base font-medium">Dashboard</span>
+    <SidebarContainer isOpen={sidebarOpen} className="text-white">
+      <SidebarButton
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="text-black"
+      >
+        <BiMenuAltRight />
+      </SidebarButton>
+      <LinkContainer>
+        <Link to="/admin" className="Links">
+          <FaHome className="Linkicon" />
+          {sidebarOpen && <span>Dashboard</span>}
         </Link>
-        <Link to="/admin/the_loai" className={linkClasses}>
-          <FaList className="text-lg" />
-          <span className="text-base font-medium">Category</span>
+      </LinkContainer>
+      <LinkContainer>
+        <Link to="/admin/the_loai" className="Links">
+          <FaList className="Linkicon" />
+          {sidebarOpen && <span>Category</span>}
         </Link>
-        <Link to="/admin/tag" className={linkClasses}>
-          <FaTags className="text-lg" />
-          <span className="text-base font-medium">Tag</span>
+      </LinkContainer>
+      <LinkContainer>
+        <Link to="/admin/tag" className="Links">
+          <FaTags className="Linkicon" />
+          {sidebarOpen && <span>Tag</span>}
         </Link>
-        <Link to="/admin/quan_ly_nguoi_dung" className={linkClasses}>
-          <FaUsers className="text-lg" />
-          <span className="text-base font-medium">Users</span>
+      </LinkContainer>
+      <LinkContainer>
+        <Link to="/admin/quan_ly_nguoi_dung" className="Links">
+          <FaUsers className="Linkicon" />
+          {sidebarOpen && <span>Users</span>}
         </Link>
-        <Link to="/admin/banners" className={linkClasses}>
-          <FaFlag className="text-lg" />
-          <span className="text-base font-medium">Banners</span>
+      </LinkContainer>
+      <LinkContainer>
+        <Link to="/admin/banners" className="Links">
+          <FaFlag className="Linkicon" />
+          {sidebarOpen && <span>Banners</span>}
         </Link>
-        <button className={linkClasses} onClick={toggleStats}>
-          <FaChartArea className="text-lg" />
-          <span className="text-base font-medium">Thống Kê</span>
+      </LinkContainer>
+      <LinkContainer>
+        <div
+          className="Links flex items-center justify-between"
+          onClick={toggleStats}
+        >
+          <div className="flex items-center">
+            <FaChartArea className="Linkicon" />
+            {sidebarOpen && <span className="ml-2">Thống Kê</span>}
+          </div>
           <IoIosArrowDown
             className={`ml-2 transition-transform ${
               isStatsVisible ? "rotate-180" : "rotate-0"
-            } ${theme === "light" ? "text-zinc-900" : "text-white"}`}
-          />
-        </button>
-        {isStatsVisible && (
-          <div
-            className={`pl-4 flex flex-col ${
-              theme === "dark" ? "bg-gray-800" : "bg-gray-100"
             }`}
-          >
-            <Link
-              to="/admin/thong_ke/blog"
-              className={`p-3 rounded-md transition duration-300 ease-in-out hover:bg-gray-300 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            >
-              <span className="text-base font-medium">Bài Viết</span>
+          />
+        </div>
+        {isStatsVisible && (
+          <SubmenuContainer isOpen={sidebarOpen} className=" text-14">
+            <Link to="/admin/thong_ke/blog" className="Links block mt-2">
+              <span>Bài Viết</span>
             </Link>
-            <Link
-              to="/admin/thong_ke/san_pham"
-              className={`p-3 rounded-md transition duration-300 ease-in-out hover:bg-gray-300 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            >
-              <span className="text-base font-medium">
-                Danh mục sản phẩm thống kê chung
-              </span>
+            <Link to="/admin/thong_ke/san_pham" className="Links block mt-2">
+              <span>Danh mục sản phẩm</span>
             </Link>
             <Link
               to="/admin/thong_ke/the_loai"
-              className={`p-3 rounded-md transition duration-300 ease-in-out hover:bg-gray-300 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
+              className="Links block mt-2 text-14"
             >
-              <span className="text-base font-medium">
-                Thống kê sản phẩm theo danh mục
-              </span>
+              <span>Thống kê sản phẩm theo danh mục</span>
             </Link>
             <Link
               to="/admin/thong_ke/don_ung_tuyen"
-              className={`p-3 rounded-md transition duration-300 ease-in-out hover:bg-gray-300 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
+              className="Links block mt-2"
             >
-              <span className="text-base font-medium">
-                Thống kê các đơn ứng tuyển
-              </span>
+              <span>Thống kê các đơn ứng tuyển</span>
             </Link>
-            <Link
-              to="/admin/thong_ke/ung_tuyen"
-              className={`p-3 rounded-md transition duration-300 ease-in-out hover:bg-gray-300 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            >
-              <span className="text-base font-medium">Thống kê ứng tuyển</span>
+            <Link to="/admin/thong_ke/ung_tuyen" className="Links block mt-2">
+              <span>Thống kê ứng tuyển</span>
             </Link>
-            <Link
-              to="/admin/thong_ke/tuyen_dung"
-              className={`p-3 rounded-md transition duration-300 ease-in-out hover:bg-gray-300 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            >
-              <span className="text-base font-medium">Thống kê tuyển dụng</span>
+            <Link to="/admin/thong_ke/tuyen_dung" className="Links block mt-2">
+              <span>Thống kê tuyển dụng</span>
             </Link>
-            {/* Thêm các liên kết khác nếu cần */}
-          </div>
+          </SubmenuContainer>
         )}
-        {isAdmin && (
-          <Link to="/admin/thong_tin_web" className={linkClasses}>
-            <GrUserAdmin className="text-lg" />
-            <span className="text-base font-medium">Thông Tin Web</span>
+      </LinkContainer>
+
+      {userRoles.includes("admin") && (
+        <LinkContainer>
+          <Link to="/admin/thong_tin_web" className="Links">
+            <GrUserAdmin className="Linkicon" />
+            {sidebarOpen && <span>Thông Tin Web</span>}
           </Link>
-        )}
-      </div>
-      <hr className="border-gray-400 my-4" />
-    </div>
+        </LinkContainer>
+      )}
+      <Divider />
+    </SidebarContainer>
   );
 };
 
-export default AdSidebar;
+export default Sidebar;

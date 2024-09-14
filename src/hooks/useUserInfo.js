@@ -6,7 +6,6 @@ import { encryptData, decryptData } from "../utils/cryptoUtils";
 const useUserInfo = (personId = null) => {
   const [userInfo, setUserInfo] = useState(null);
   const [userRoles, setUserRoles] = useState([]);
-  const [personalBlogs, setPersonalBlogs] = useState([]);
   const [personalInfo, setPersonalInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,12 +14,10 @@ const useUserInfo = (personId = null) => {
 
   const userInfoFetchedRef = useRef(false);
   const personalInfoFetchedRef = useRef(false);
-  const userApplyListFetchedRef = useRef(false);
 
   useEffect(() => {
     userInfoFetchedRef.current = false;
     personalInfoFetchedRef.current = false;
-    userApplyListFetchedRef.current = false;
   }, [personId]);
 
   // Cache User Info with encryption
@@ -34,7 +31,7 @@ const useUserInfo = (personId = null) => {
     if (cachedData) {
       try {
         const decryptedData = decryptData(cachedData);
-        return decryptedData; // Directly return the decrypted data
+        return JSON.parse(decryptedData); // Parse JSON before returning
       } catch (error) {
         console.error("Error decrypting user info:", error);
         localStorage.removeItem("user_info");
@@ -43,6 +40,7 @@ const useUserInfo = (personId = null) => {
     }
     return null;
   };
+
   // Fetch User Info with Caching
   const fetchUserInfo = useCallback(async () => {
     if (userInfoFetchedRef.current) return;
@@ -111,28 +109,6 @@ const useUserInfo = (personId = null) => {
     }
   }, [personId]);
 
-  const fetchUserBlog = useCallback(async () => {
-    if (!personId) return; // Skip if no personId
-
-    try {
-      const url = endpoints.currentUserBlog.replace(":id", personId);
-      const response = await authApi().get(url); // No token needed
-
-      const sortedBlogs = response.data.results.sort(
-        (a, b) => new Date(b.created_date) - new Date(a.created_date)
-      );
-      setPersonalBlogs(sortedBlogs);
-    } catch (err) {
-      console.error(
-        "Error fetching user blogs:",
-        err.response?.data || err.message
-      );
-      setError(err.response?.data || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [personId]);
-
   useEffect(() => {
     const fetchData = async () => {
       if (!userInfoFetchedRef.current) {
@@ -142,12 +118,11 @@ const useUserInfo = (personId = null) => {
       if (personId && !personalInfoFetchedRef.current) {
         await fetchPersonalInfo();
         personalInfoFetchedRef.current = true;
-        await fetchUserBlog();
       }
     };
 
     fetchData();
-  }, [fetchUserInfo, fetchPersonalInfo, fetchUserBlog, personId]);
+  }, [fetchUserInfo, fetchPersonalInfo, personId]);
 
   const memoizedUserRoles = useMemo(() => userRoles, [userRoles]);
 
@@ -244,7 +219,6 @@ const useUserInfo = (personId = null) => {
 
   return {
     userInfo,
-    personalBlogs,
     userRoles: memoizedUserRoles,
     personalInfo,
     loading,

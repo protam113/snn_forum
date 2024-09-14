@@ -12,9 +12,9 @@ const PrivacyPolicy = () => {
           <div className="space-y-4 p-4">
             <h3 className="text-18 font-bold text-custom-red">Giới thiệu</h3>
             <p className="text-14 leading-relaxed">
-              Chúng tôi tại <strong>SNN Tech Forum</strong> cam kết bảo vệ quyền
-              riêng tư của bạn. Chính sách này giải thích cách chúng tôi thu
-              thập, sử dụng và bảo vệ thông tin cá nhân của bạn.
+              Chúng tôi tại <strong>H2H Tech Energy</strong> cam kết bảo vệ
+              quyền riêng tư của bạn. Chính sách này giải thích cách chúng tôi
+              thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.
             </p>
 
             <h3 className="text-18 font-bold text-custom-red">

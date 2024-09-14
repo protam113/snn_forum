@@ -10,7 +10,6 @@ const useCategories = () => {
   // Fetch products by category
   const fetchProductByCategory = useCallback(async (categoryId) => {
     if (!categoryId) {
-      toast.error("Cần có ID danh mục");
       console.error("fetchProductByCategory: ID danh mục bị thiếu");
       return;
     }

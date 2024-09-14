@@ -16,10 +16,10 @@ export default function BannerChart() {
   const totalCategories = userBanner.length;
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4">
-      <div className="font-semibold text-lg">Total Banner</div>
-      <div className="text-sm text-gray-600">
-        The total number of banner in the system.
+    <div className="rounded-lg p-4 text-white">
+      <div className="font-semibold text-lg ">Total Banner</div>
+      <div className="text-sm text-gray-800">
+        Banner hiển thị trên hệ thống.
       </div>
       <div className="text-4xl font-bold">{totalCategories}</div>
     </div>

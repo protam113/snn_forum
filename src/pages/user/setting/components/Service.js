@@ -12,7 +12,7 @@ const Service = () => {
           <div className="space-y-4 p-4">
             <h3 className="text-lg font-bold text-custom-red">Giới thiệu</h3>
             <p className="text-14 leading-relaxed">
-              Chào mừng bạn đến với <strong>SNN Tech Forum</strong>, diễn đàn
+              Chào mừng bạn đến với <strong>H2H Tech Energy</strong>, diễn đàn
               trực tuyến dành riêng cho các chủ đề công nghệ, IT, IoT, lò hơi,
               điện, và năng lượng mặt trời. Diễn đàn của chúng tôi là một nền
               tảng mở để mọi người có chung đam mê và chí hướng về công nghệ có
@@ -20,14 +20,14 @@ const Service = () => {
               đề kỹ thuật.
             </p>
             <p className="text-14 leading-relaxed">
-              <strong>SNN Tech Forum</strong> được tạo ra với mục đích trở thành
-              một nơi giao lưu và học hỏi, nơi mà các thành viên có thể tự do
-              đặt câu hỏi, chia sẻ kinh nghiệm, và cập nhật những xu hướng công
-              nghệ mới nhất. Chúng tôi cam kết xây dựng một cộng đồng thân
+              <strong>H2H Tech Energy</strong> được tạo ra với mục đích trở
+              thành một nơi giao lưu và học hỏi, nơi mà các thành viên có thể tự
+              do đặt câu hỏi, chia sẻ kinh nghiệm, và cập nhật những xu hướng
+              công nghệ mới nhất. Chúng tôi cam kết xây dựng một cộng đồng thân
               thiện, hữu ích, và chuyên nghiệp.
             </p>
             <p className="text-14 leading-relaxed">
-              Diễn đàn <strong>SNN Tech Forum</strong> thuộc sở hữu của{" "}
+              Diễn đàn <strong>H2H Tech Energy</strong> thuộc sở hữu của{" "}
               <strong>SongNhatNguyen</strong> - một đơn vị hàng đầu trong việc
               cung cấp các giải pháp công nghệ và kỹ thuật. Để biết thêm thông
               tin về SongNhatNguyen, vui lòng truy cập website chính thức của
@@ -43,7 +43,7 @@ const Service = () => {
             <p className="text-14 leading-relaxed">
               Chúng tôi rất vui mừng được chào đón bạn tham gia vào cộng đồng
               của chúng tôi và hy vọng bạn sẽ có những trải nghiệm tuyệt vời tại{" "}
-              <strong>SNN Tech Forum</strong>.
+              <strong>H2H Tech Energy</strong>.
             </p>
           </div>
         }
@@ -58,7 +58,7 @@ const Service = () => {
         answer={
           <div>
             <p className="text-14 text-gray-700 leading-relaxed">
-              Khi sử dụng diễn đàn SNN Tech Forum, bạn đồng ý tuân thủ và chấp
+              Khi sử dụng diễn đàn H2H Tech Energy, bạn đồng ý tuân thủ và chấp
               nhận tất cả các điều khoản và điều kiện được quy định trong Điều
               khoản Dịch vụ của chúng tôi. Việc truy cập và sử dụng diễn đàn
               đồng nghĩa với việc bạn đã đọc, hiểu và chấp nhận các quy định
@@ -90,11 +90,11 @@ const Service = () => {
               Tài khoản người dùng
             </h3>
             <p className="text-14 leading-relaxed">
-              Khi tạo tài khoản trên <strong>SNN Tech Forum</strong>, bạn đồng ý
-              cung cấp thông tin chính xác và đầy đủ. Bạn có trách nhiệm bảo vệ
-              thông tin đăng nhập của mình và không chia sẻ với bất kỳ ai. Nếu
-              phát hiện bất kỳ hoạt động đáng ngờ nào, vui lòng thông báo cho
-              quản trị viên ngay lập tức.
+              Khi tạo tài khoản trên <strong>H2H Tech Energy</strong>, bạn đồng
+              ý cung cấp thông tin chính xác và đầy đủ. Bạn có trách nhiệm bảo
+              vệ thông tin đăng nhập của mình và không chia sẻ với bất kỳ ai.
+              Nếu phát hiện bất kỳ hoạt động đáng ngờ nào, vui lòng thông báo
+              cho quản trị viên ngay lập tức.
             </p>
             <p className="text-14 leading-relaxed">
               Người dùng phải đảm bảo an toàn cho tài khoản của mình và chịu
@@ -146,7 +146,7 @@ const Service = () => {
             </h3>
             <p className="text-14 leading-relaxed">
               Mọi nội dung do người dùng đăng tải trên{" "}
-              <strong>SNN Tech Forum</strong>
+              <strong>H2H Tech Energy</strong>
               phải tuân thủ các quy định về bản quyền và quyền sở hữu trí tuệ.
               Bằng việc đăng tải nội dung, người dùng cấp cho diễn đàn quyền sử
               dụng nội dung đó.

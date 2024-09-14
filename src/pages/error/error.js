@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { CiSettings } from "react-icons/ci";
 
 // 404 Error Component
-const Error404 = () => {
+const Error404 = ({ message }) => {
   const { theme } = useTheme();
 
   const handleRetry = () => {
@@ -24,13 +24,15 @@ const Error404 = () => {
     theme === "light" ? "hover:bg-blue-600" : "hover:bg-gray-600";
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen ">
+    <div
+      className={`flex flex-col items-center justify-center min-h-screen ${textColor}`}
+    >
       <img src={img404} alt="Error 404" className="w-1/2 mb-8" />
-      <h1 className={`text-9xl font-bold ${textColor} mb-4`}>404</h1>
-      <p className={`text-3xl font-semibold mb-2 ${textColor}`}>
-        It's just a 404 error
+      <h1 className={`text-9xl font-bold mb-4`}>404</h1>
+      <p className={`text-3xl font-semibold mb-2`}>
+        {message || "It's just a 404 error"}
       </p>
-      <p className={`text-lg ${textColor} text-center mb-8`}>
+      <p className={`text-lg text-center mb-8`}>
         What you're looking for may have been misplaced in Long Term Memory!
       </p>
       <button

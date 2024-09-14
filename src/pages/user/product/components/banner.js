@@ -62,10 +62,10 @@ const Banner = () => {
                       Khám phá sản phẩm
                     </Link>
                     <Link
-                      to="#"
+                      to="/san_pham/tat_ca_san_pham"
                       className="inline-flex items-center justify-center rounded-md border border-custom-red px-6 py-3 text-14 font-medium transition-colors hover:bg-primary-foreground hover:bg-red-200"
                     >
-                      Dịch vụ của chúng tôi
+                      Sản phẩm theo thể loại
                     </Link>
                   </div>
                 </div>

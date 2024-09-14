@@ -17,7 +17,7 @@ const fetchUserBlog = async ({ pageParam = 1, personId }) => {
       nextPage: next ? pageParam + 1 : null,
     };
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải tin tuyển dụng!");
+    toast.error("Đã xảy ra lỗi khi tải blog!");
     throw error;
   }
 };

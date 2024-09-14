@@ -75,7 +75,6 @@ const Blog = () => {
     if (window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) {
       try {
         await deleteBlogMutation({ blogId });
-        // Optional: cập nhật giao diện hoặc trạng thái sau khi xóa thành công
       } catch (error) {
         console.error("Error deleting blog:", error);
       }
@@ -95,7 +94,6 @@ const Blog = () => {
       })
       .catch((error) => {
         toast.error("Failed to copy link");
-        console.error("Failed to copy link", error);
       });
   };
 
