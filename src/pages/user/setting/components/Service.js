@@ -1,16 +1,35 @@
 import React from "react";
 import Accordion from "./Accordion";
+import { useTheme } from "../../../../context/themeContext";
 
 const Service = () => {
+  const { theme } = useTheme();
+
   return (
-    <div className="p-4 bg-gray-200 rounded-lg">
+    <div className="p-4 rounded-lg ">
       <Accordion
         title={
-          <span className="text-18 font-semibold">Điều khoản dịch vụ</span>
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Điều khoản dịch vụ
+          </span>
         }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">Giới thiệu</h3>
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
+              Giới thiệu
+            </h3>
             <p className="text-14 leading-relaxed">
               Chào mừng bạn đến với <strong>H2H Tech Energy</strong>, diễn đàn
               trực tuyến dành riêng cho các chủ đề công nghệ, IT, IoT, lò hơi,
@@ -34,7 +53,11 @@ const Service = () => {
               chúng tôi tại{" "}
               <a
                 href="https://songnhatnguyen.vn"
-                className="text-blue-600 underline"
+                className={`text-blue-600 underline ${
+                  theme === "dark"
+                    ? "hover:text-blue-400"
+                    : "hover:text-blue-800"
+                }`}
               >
                 songnhatnguyen.vn
               </a>
@@ -51,13 +74,21 @@ const Service = () => {
 
       <Accordion
         title={
-          <span className="text-18 font-semibold">
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
             Chấp nhận Điều khoản Dịch vụ
           </span>
         }
         answer={
-          <div>
-            <p className="text-14 text-gray-700 leading-relaxed">
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <p className="text-14 leading-relaxed">
               Khi sử dụng diễn đàn H2H Tech Energy, bạn đồng ý tuân thủ và chấp
               nhận tất cả các điều khoản và điều kiện được quy định trong Điều
               khoản Dịch vụ của chúng tôi. Việc truy cập và sử dụng diễn đàn
@@ -82,11 +113,25 @@ const Service = () => {
 
       <Accordion
         title={
-          <span className="text-18 font-semibold">Tài khoản người dùng</span>
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Tài khoản người dùng
+          </span>
         }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Tài khoản người dùng
             </h3>
             <p className="text-14 leading-relaxed">
@@ -103,11 +148,28 @@ const Service = () => {
           </div>
         }
       />
+
       <Accordion
-        title={<span className="text-18 font-semibold">Quy tắc cộng đồng</span>}
+        title={
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Quy tắc cộng đồng
+          </span>
+        }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Quy tắc cộng đồng
             </h3>
             <p className="text-14 leading-relaxed">
@@ -118,15 +180,28 @@ const Service = () => {
           </div>
         }
       />
+
       <Accordion
         title={
-          <span className="text-18 font-semibold">
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
             Quyền và trách nhiệm của quản trị viên
           </span>
         }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Quyền và trách nhiệm của quản trị viên
             </h3>
             <p className="text-14 leading-relaxed">
@@ -137,11 +212,28 @@ const Service = () => {
           </div>
         }
       />
+
       <Accordion
-        title={<span className="text-18 font-semibold">Sở hữu trí tuệ</span>}
+        title={
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Sở hữu trí tuệ
+          </span>
+        }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Sở hữu trí tuệ
             </h3>
             <p className="text-14 leading-relaxed">
@@ -154,89 +246,67 @@ const Service = () => {
           </div>
         }
       />
+
       <Accordion
         title={
-          <span className="text-18 font-semibold">
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
             Bảo mật và quyền riêng tư
           </span>
         }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Bảo mật và quyền riêng tư
             </h3>
             <p className="text-14 leading-relaxed">
-              Chúng tôi cam kết bảo vệ thông tin cá nhân của người dùng. Để biết
-              thêm chi tiết, vui lòng tham khảo chính sách riêng tư của chúng
-              tôi.
+              Chúng tôi cam kết bảo mật thông tin cá nhân của người dùng theo
+              quy định của pháp luật. Chính sách bảo mật chi tiết có thể được
+              xem tại trang chính sách bảo mật của chúng tôi.
             </p>
           </div>
         }
       />
+
       <Accordion
         title={
-          <span className="text-18 font-semibold">
-            Giới hạn trách nhiệm pháp lý
+          <span
+            className={`text-18 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Thay đổi Điều khoản Dịch vụ
           </span>
         }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
-              Giới hạn trách nhiệm pháp lý
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
+              Thay đổi Điều khoản Dịch vụ
             </h3>
             <p className="text-14 leading-relaxed">
-              Chúng tôi không chịu trách nhiệm đối với nội dung do người dùng
-              tạo ra. Diễn đàn không chịu trách nhiệm trong trường hợp xảy ra
-              thiệt hại do việc sử dụng diễn đàn.
-            </p>
-          </div>
-        }
-      />
-      <Accordion
-        title={
-          <span className="text-18 font-semibold">
-            Chấm dứt và đình chỉ tài khoản
-          </span>
-        }
-        answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
-              Chấm dứt và đình chỉ tài khoản
-            </h3>
-            <p className="text-14 leading-relaxed">
-              Chúng tôi có quyền chấm dứt hoặc đình chỉ tài khoản của bạn trong
-              trường hợp vi phạm các điều khoản dịch vụ hoặc các hành vi không
-              phù hợp khác.
-            </p>
-          </div>
-        }
-      />
-      <Accordion
-        title={
-          <span className="text-18 font-semibold">Thay đổi điều khoản</span>
-        }
-        answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">
-              Thay đổi điều khoản
-            </h3>
-            <p className="text-14 leading-relaxed">
-              Chúng tôi có quyền thay đổi điều khoản dịch vụ bất cứ lúc nào.
-              Người dùng sẽ được thông báo về các thay đổi qua email hoặc thông
-              báo trên diễn đàn.
-            </p>
-          </div>
-        }
-      />
-      <Accordion
-        title={<span className="text-18 font-semibold">Liên hệ</span>}
-        answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-lg font-bold text-custom-red">Liên hệ</h3>
-            <p className="text-14 leading-relaxed">
-              Nếu có bất kỳ câu hỏi nào về điều khoản dịch vụ hoặc cần hỗ trợ,
-              vui lòng liên hệ với chúng tôi qua email hoặc số điện thoại hỗ
-              trợ.
+              Chúng tôi có thể cập nhật Điều khoản Dịch vụ này theo thời gian.
+              Các thay đổi sẽ có hiệu lực ngay khi được đăng tải trên diễn đàn.
+              Người dùng có trách nhiệm kiểm tra thường xuyên để nắm bắt các
+              thay đổi.
             </p>
           </div>
         }

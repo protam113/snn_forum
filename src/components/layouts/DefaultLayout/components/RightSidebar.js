@@ -7,7 +7,7 @@ const RightSidebar = () => {
   return (
     <div className="w-80 text-white p-4 top-0 right-0 overflow-y-auto hidden md:block">
       <SActivity />
-      <hr className="border-zinc-900" />
+      <hr />
       <div className="flex flex-col space-y-4 mb-4">
         <Ads_Input />
       </div>

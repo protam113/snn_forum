@@ -6,11 +6,11 @@ import Accordion from "./Accordion";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import { toast } from "react-toastify";
 import ThemeToggle from "../../../../components/theme/ThemeToggle ";
-import useTokenCheck from "../../../../hooks/useTokenCheck";
+import { useTheme } from "../../../../context/themeContext";
 
 const ChangePassword = () => {
-  const { changePassword } = useUserInfo();
-  const hasToken = useTokenCheck();
+  const { changePassword, userInfo } = useUserInfo();
+  const { theme } = useTheme();
 
   const [formData, setFormData] = useState({
     oldPassword: "",
@@ -69,12 +69,24 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 rounded-lg shadow-md">
-      {hasToken ? (
+    <div
+      className={`p-6 rounded-lg shadow-md ${
+        theme === "dark" ? " text-gray-300" : " text-gray-800"
+      }`}
+    >
+      {userInfo ? (
         <Accordion
           title={
-            <div className="flex items-center text-lg font-semibold text-gray-800">
-              <RiLockPasswordLine className="mr-3 text-gray-600" />
+            <div
+              className={`flex items-center text-lg font-semibold mb-4 ${
+                theme === "dark" ? "text-gray-300" : "text-gray-800"
+              }`}
+            >
+              <RiLockPasswordLine
+                className={`mr-3 ${
+                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+                }`}
+              />
               Đổi Mật Khẩu
             </div>
           }
@@ -82,10 +94,16 @@ const ChangePassword = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="flex flex-col">
                 <label
-                  className="flex items-center mb-2 text-gray-700 font-medium"
+                  className={`flex items-center mb-2 font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
                   htmlFor="old-password"
                 >
-                  <FaLock className="mr-2 text-gray-600" />
+                  <FaLock
+                    className={`mr-2 ${
+                      theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  />
                   Mật khẩu cũ
                 </label>
                 <input
@@ -97,6 +115,10 @@ const ChangePassword = () => {
                   }
                   className={`p-3 border rounded-lg ${
                     isPasswordMismatch ? "border-red-500" : "border-gray-300"
+                  } ${
+                    theme === "dark"
+                      ? "bg-gray-700 text-gray-300"
+                      : "bg-white text-gray-800"
                   }`}
                   placeholder="Nhập mật khẩu cũ"
                   required
@@ -105,10 +127,16 @@ const ChangePassword = () => {
 
               <div className="flex flex-col">
                 <label
-                  className="flex items-center mb-2 text-gray-700 font-medium"
+                  className={`flex items-center mb-2 font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
                   htmlFor="new-password"
                 >
-                  <FaLockOpen className="mr-2 text-gray-600" />
+                  <FaLockOpen
+                    className={`mr-2 ${
+                      theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  />
                   Mật khẩu mới
                 </label>
                 <input
@@ -120,6 +148,10 @@ const ChangePassword = () => {
                   }
                   className={`p-3 border rounded-lg ${
                     isPasswordMismatch ? "border-red-500" : "border-gray-300"
+                  } ${
+                    theme === "dark"
+                      ? "bg-gray-700 text-gray-300"
+                      : "bg-white text-gray-800"
                   }`}
                   placeholder="Nhập mật khẩu mới"
                   required
@@ -128,10 +160,16 @@ const ChangePassword = () => {
 
               <div className="flex flex-col">
                 <label
-                  className="flex items-center mb-2 text-gray-700 font-medium"
+                  className={`flex items-center mb-2 font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
                   htmlFor="confirm-password"
                 >
-                  <MdOutlinePassword className="mr-2 text-gray-600" />
+                  <MdOutlinePassword
+                    className={`mr-2 ${
+                      theme === "dark" ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  />
                   Xác nhận mật khẩu mới
                 </label>
                 <input
@@ -141,6 +179,10 @@ const ChangePassword = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className={`p-3 border rounded-lg ${
                     isPasswordMismatch ? "border-red-500" : "border-gray-300"
+                  } ${
+                    theme === "dark"
+                      ? "bg-gray-700 text-gray-300"
+                      : "bg-white text-gray-800"
                   }`}
                   placeholder="Xác nhận mật khẩu mới"
                   required
@@ -150,11 +192,13 @@ const ChangePassword = () => {
               <button
                 type="submit"
                 disabled={!isSubmitEnabled}
-                className={`px-6 py-3 text-white font-semibold rounded-lg ${
+                className={`px-6 py-3 font-semibold rounded-lg ${
                   isSubmitEnabled
-                    ? "bg-blue-600"
+                    ? theme === "dark"
+                      ? "bg-blue-500"
+                      : "bg-blue-600"
                     : "bg-gray-400 cursor-not-allowed"
-                }`}
+                } text-white`}
               >
                 Đổi Mật Khẩu
               </button>
@@ -169,13 +213,26 @@ const ChangePassword = () => {
 
       <Accordion
         title={
-          <div className="flex items-center text-lg font-semibold text-gray-800">
-            <FaSun className="mr-3 text-gray-600" />
+          <div
+            className={`flex items-center text-lg font-semibold mb-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <FaSun
+              className={`mr-3 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            />
             Chế Độ
           </div>
         }
         answer={
           <div>
+            <hr
+              className={`mt-4 ${
+                theme === "dark" ? "border-zinc-800" : "border-white"
+              }`}
+            />
             <ThemeToggle />
           </div>
         }

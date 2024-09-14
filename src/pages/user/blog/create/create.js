@@ -13,6 +13,7 @@ import Toolbar from "../../../../components/design/Toolbar";
 import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
 import { useAddBlog } from "../../../../hooks/Blog/useBlogs";
+import { AiOutlineWarning } from "react-icons/ai";
 
 const Create = () => {
   const { theme } = useTheme();
@@ -222,7 +223,10 @@ const Create = () => {
                 <option value="pdf">PDF</option>
               </select>
             </div>
-
+            <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
+              <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+              <span>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</span>
+            </div>
             {/* File Upload Section */}
             <div className="grid grid-cols-1 gap-4 mb-4">
               {selectedFiles.map((file, index) => (

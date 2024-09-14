@@ -30,7 +30,7 @@ export const RevealBento = () => {
   );
 };
 
-const Block = ({ className, ...rest }) => {
+export const Block = ({ className, ...rest }) => {
   return (
     <motion.div
       variants={{

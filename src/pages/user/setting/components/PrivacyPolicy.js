@@ -1,23 +1,50 @@
 import React from "react";
 import Accordion from "./Accordion";
+import { useTheme } from "../../../../context/themeContext";
 
 const PrivacyPolicy = () => {
+  const { theme } = useTheme();
+
   return (
-    <div className="p-4 bg-gray-200 rounded-lg">
+    <div
+      className={`p-4 rounded-lg ${
+        theme === "dark" ? "text-gray-300" : "text-gray-800"
+      }`}
+    >
       <Accordion
         title={
-          <span className="text-16 font-semibold">Chính sách riêng tư</span>
+          <span
+            className={`text-16 font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Chính sách riêng tư
+          </span>
         }
         answer={
-          <div className="space-y-4 p-4">
-            <h3 className="text-18 font-bold text-custom-red">Giới thiệu</h3>
+          <div
+            className={`space-y-4 p-4 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-800"
+            }`}
+          >
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
+              Giới thiệu
+            </h3>
             <p className="text-14 leading-relaxed">
               Chúng tôi tại <strong>H2H Tech Energy</strong> cam kết bảo vệ
               quyền riêng tư của bạn. Chính sách này giải thích cách chúng tôi
               thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Thông tin chúng tôi thu thập
             </h3>
             <p className="text-14 leading-relaxed">
@@ -27,7 +54,11 @@ const PrivacyPolicy = () => {
               nghiệm người dùng.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Cách chúng tôi sử dụng thông tin
             </h3>
             <p className="text-14 leading-relaxed">
@@ -36,7 +67,11 @@ const PrivacyPolicy = () => {
               phân tích hành vi người dùng và cải thiện diễn đàn.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Chia sẻ thông tin
             </h3>
             <p className="text-14 leading-relaxed">
@@ -45,7 +80,11 @@ const PrivacyPolicy = () => {
               cần thiết.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Bảo mật thông tin
             </h3>
             <p className="text-14 leading-relaxed">
@@ -54,7 +93,11 @@ const PrivacyPolicy = () => {
               nhân viên được ủy quyền mới có quyền truy cập thông tin này.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Quyền của người dùng
             </h3>
             <p className="text-14 leading-relaxed">
@@ -63,7 +106,11 @@ const PrivacyPolicy = () => {
               thay đổi cài đặt thông báo trong tài khoản của mình.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Cookie và công nghệ theo dõi
             </h3>
             <p className="text-14 leading-relaxed">
@@ -71,7 +118,11 @@ const PrivacyPolicy = () => {
               có thể quản lý cài đặt cookie trong trình duyệt của mình.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
               Thay đổi chính sách
             </h3>
             <p className="text-14 leading-relaxed">
@@ -80,13 +131,23 @@ const PrivacyPolicy = () => {
               thông qua diễn đàn.
             </p>
 
-            <h3 className="text-18 font-bold text-custom-red">Liên hệ</h3>
+            <h3
+              className={`text-18 font-bold ${
+                theme === "dark" ? "text-red-400" : "text-custom-red"
+              }`}
+            >
+              Liên hệ
+            </h3>
             <p className="text-14 leading-relaxed">
               Nếu bạn có bất kỳ câu hỏi nào về chính sách riêng tư của chúng
               tôi, vui lòng liên hệ với chúng tôi qua email tại{" "}
               <a
                 href="mailto:xlr.devteam03@gmail.com"
-                className="text-blue-600 underline"
+                className={`text-blue-600 underline ${
+                  theme === "dark"
+                    ? "hover:text-blue-400"
+                    : "hover:text-blue-800"
+                }`}
               >
                 xlr.devteam03@gmail.com
               </a>

@@ -1,5 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlinePlus,
+  AiOutlineWarning,
+} from "react-icons/ai";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Toolbar from "../../../components/design/Toolbar";
@@ -136,6 +140,10 @@ const CreateProduct = () => {
             <label htmlFor="file" className="block text-sm font-medium mb-1">
               Upload Images (max 4)
             </label>
+            <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
+              <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+              <span>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</span>
+            </div>
             <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg  cursor-pointer  transition-colors duration-200">
               <input
                 id="file"

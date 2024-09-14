@@ -7,16 +7,41 @@ import {
   FaEnvelope,
   FaWhatsapp,
 } from "react-icons/fa";
+import { useTheme } from "../../../../context/themeContext";
 
 const CreateBy = () => {
+  const { theme } = useTheme();
+
   return (
-    <div className="p-4 bg-gray-200 rounded-lg">
+    <div
+      className={`p-4 rounded-lg ${
+        theme === "dark" ? "text-gray-300" : "text-black"
+      }`}
+    >
       <Accordion
-        title={<span className="text-16">About XLR Team</span>}
+        title={
+          <span
+            className={`text-16 ${
+              theme === "dark" ? "text-gray-300" : "text-black"
+            }`}
+          >
+            About XLR Team
+          </span>
+        }
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">All About Us</h3>
-            <p>
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-gray-100" : "text-custom-red"
+              }`}
+            >
+              All About Us
+            </h3>
+            <p
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-gray-300" : "text-zinc-400"
+              }`}
+            >
               XLR Team stands at the forefront of innovation, specializing in
               creating comprehensive solutions across web, mobile, and desktop
               platforms. We excel in leveraging cutting-edge technologies to
@@ -25,7 +50,11 @@ const CreateBy = () => {
               cost, ensuring that our services are both effective and
               budget-friendly.
             </p>
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-300" : "text-black"
+              }`}
+            >
               <li>
                 <a
                   href="https://www.instagram.com/_xlr.team03_/"
@@ -69,13 +98,29 @@ const CreateBy = () => {
       />
 
       <Accordion
-        title={<span className="text-16">Front-end</span>}
+        title={
+          <span
+            className={`text-16 ${
+              theme === "dark" ? "text-gray-300" : "text-black"
+            }`}
+          >
+            Front-end
+          </span>
+        }
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-gray-300" : "text-custom-red"
+              }`}
+            >
               Lenf (Pham Minh Hoang)
             </h3>
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-300" : "text-black"
+              }`}
+            >
               <li>
                 <strong>Project Manager (PM):</strong> Oversees the project,
                 coordinates between different teams, and ensures that the
@@ -97,14 +142,30 @@ const CreateBy = () => {
       />
 
       <Accordion
-        title={<span className="text-16">Back-End</span>}
+        title={
+          <span
+            className={`text-16 ${
+              theme === "dark" ? "text-gray-300" : "text-black"
+            }`}
+          >
+            Back-End
+          </span>
+        }
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">
-              ChuBA (Tran Thanh Hoang )
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-gray-300" : "text-custom-red"
+              }`}
+            >
+              ChuBA (Tran Thanh Hoang)
             </h3>
 
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-300" : "text-black"
+              }`}
+            >
               <li>
                 <strong>Developer (Dev):</strong> Develops the back-end
                 services, handles server-side logic, and ensures smooth data

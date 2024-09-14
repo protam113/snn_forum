@@ -1,17 +1,40 @@
 import React from "react";
 import Accordion from "./Accordion";
+import { useTheme } from "../../../../context/themeContext";
 
 const FAQ = () => {
+  const { theme } = useTheme();
+
   return (
-    <div className="p-4 bg-gray-200 rounded-lg">
+    <div
+      className={`p-4 rounded-lg ${
+        theme === "dark" ? "text-gray-300" : "text-gray-800"
+      }`}
+    >
       <Accordion
-        title={<span className="text-16">Công Nghệ Chúng Tôi Sử Dụng!</span>}
+        title={
+          <span
+            className={`text-16 ${
+              theme === "dark" ? "text-gray-100" : "text-gray-800"
+            }`}
+          >
+            Công Nghệ Chúng Tôi Sử Dụng!
+          </span>
+        }
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-red-500" : "text-custom-red"
+              }`}
+            >
               Front-end: React.js
             </h3>
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               <li>
                 <strong>Nhanh và Hiệu Quả:</strong> React.js giúp trang web của
                 chúng tôi tải nhanh và hoạt động mượt mà. Nó sử dụng một kỹ
@@ -42,10 +65,18 @@ const FAQ = () => {
                 dù bạn đang sử dụng điện thoại, máy tính bảng hay máy tính.
               </li>
             </ul>
-            <h3 className="text-16 font-bold text-custom-red">
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-red-500" : "text-custom-red"
+              }`}
+            >
               Back-end: Django
             </h3>
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               <li>
                 <strong>Quản Lý Tăng Trưởng Tốt:</strong> Django rất phù hợp cho
                 các trang web cần phát triển hoặc xử lý nhiều người dùng và dữ
@@ -74,20 +105,38 @@ const FAQ = () => {
 
       <Accordion
         title={
-          <span className="text-16">
+          <span
+            className={`text-16 ${
+              theme === "dark" ? "text-gray-100" : "text-gray-800"
+            }`}
+          >
             Thiết Kế: Tailwind CSS và CSS Tùy Chỉnh
           </span>
         }
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">Tailwind CSS</h3>
-            <p>
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-red-500" : "text-custom-red"
+              }`}
+            >
+              Tailwind CSS
+            </h3>
+            <p
+              className={`${
+                theme === "dark" ? "text-gray-300" : "text-gray-800"
+              }`}
+            >
               Chúng tôi sử dụng Tailwind CSS để tạo ra thiết kế hiện đại, sạch
               sẽ và đáp ứng. Tailwind cung cấp một bộ các lớp tiện ích giúp xây
               dựng thiết kế đẹp và đồng nhất mà không cần viết CSS tùy chỉnh cho
               từng phần tử.
             </p>
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               <li>
                 <strong>Bố Cục Đáp Ứng:</strong> Tailwind giúp chúng tôi đảm bảo
                 rằng trang web của chúng tôi trông tuyệt vời trên tất cả các
@@ -101,13 +150,27 @@ const FAQ = () => {
                 đảm bảo một vẻ ngoài độc đáo.
               </li>
             </ul>
-            <h3>CSS Tùy Chỉnh</h3>
-            <p>
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-red-500" : "text-custom-red"
+              }`}
+            >
+              CSS Tùy Chỉnh
+            </h3>
+            <p
+              className={`${
+                theme === "dark" ? "text-gray-300" : "text-gray-800"
+              }`}
+            >
               Ngoài Tailwind CSS, chúng tôi cũng sử dụng một chút CSS tùy chỉnh
               để xử lý các nhu cầu thiết kế cụ thể mà Tailwind có thể không bao
               phủ.
             </p>
-            <ul>
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               <li>
                 <strong>Phong Cách Tinh Chỉnh:</strong> CSS tùy chỉnh cho phép
                 chúng tôi áp dụng các phong cách chi tiết cho các phần tử đặc
@@ -126,19 +189,39 @@ const FAQ = () => {
       />
 
       <Accordion
-        title={<span className="text-16">Lấy Dữ Liệu: SWR với MySQL</span>}
+        title={
+          <span
+            className={`text-16 ${
+              theme === "dark" ? "text-gray-100" : "text-gray-800"
+            }`}
+          >
+            Lấy Dữ Liệu: SWR với MySQL
+          </span>
+        }
         answer={
           <div>
-            <h3 className="text-16 font-bold text-custom-red">
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-red-500" : "text-custom-red"
+              }`}
+            >
               Lấy Dữ Liệu Hiệu Quả
             </h3>
-            <p>
+            <p
+              className={`${
+                theme === "dark" ? "text-gray-300" : "text-gray-800"
+              }`}
+            >
               Chúng tôi sử dụng SWR (Stale-While-Revalidate) để lấy dữ liệu và
               lưu cache một cách hiệu quả trong ứng dụng React của chúng tôi.
               SWR giúp chúng tôi lấy, lưu cache và xác thực lại dữ liệu một cách
               liền mạch, đảm bảo rằng dữ liệu hiển thị luôn được cập nhật.
             </p>
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               <li>
                 <strong>Xác Thực Lại Tự Động:</strong> SWR tự động xác thực lại
                 dữ liệu trong nền, giữ cho thông tin luôn mới và đảm bảo rằng
@@ -149,75 +232,44 @@ const FAQ = () => {
                 <strong>Cập Nhật Giao Diện Lạc Quan:</strong> SWR hỗ trợ cập
                 nhật giao diện lạc quan, cung cấp trải nghiệm người dùng nhanh
                 hơn và phản hồi hơn bằng cách cập nhật giao diện ngay lập tức
-                trong khi lấy dữ liệu mới ở nền.
+                trước khi nhận được dữ liệu mới.
               </li>
             </ul>
-            <h3>Hợp Tác Với MySQL</h3>
-            <p>
-              Ở phía backend, chúng tôi sử dụng MySQL làm cơ sở dữ liệu để lưu
-              trữ và quản lý dữ liệu một cách hiệu quả.
-            </p>
-            <ul className="text-14">
-              <li>
-                <strong>Lưu Trữ Dữ Liệu Đáng Tin Cậy:</strong> MySQL là một hệ
-                thống quản lý cơ sở dữ liệu mạnh mẽ và đáng tin cậy, đảm bảo
-                tính toàn vẹn dữ liệu và hỗ trợ các truy vấn phức tạp.
-              </li>
-              <li>
-                <strong>Mở Rộng:</strong> MySQL có thể xử lý khối lượng dữ liệu
-                lớn và phù hợp với các ứng dụng cần mở rộng để đáp ứng nhu cầu
-                của người dùng đang phát triển.
-              </li>
-            </ul>
-          </div>
-        }
-      />
-
-      <Accordion
-        title={<span className="text-16">Xác Thực (Auth)</span>}
-        answer={
-          <div>
-            <h3 className="text-16 font-bold text-custom-red">
-              Sử Dụng Access Token và Refresh Token
+            <h3
+              className={`text-16 font-bold ${
+                theme === "dark" ? "text-red-500" : "text-custom-red"
+              }`}
+            >
+              MySQL
             </h3>
-            <p>
-              Chúng tôi sử dụng access token và refresh token để đảm bảo xác
-              thực người dùng an toàn và bảo vệ. Cách tiếp cận này giúp quản lý
-              phiên người dùng hiệu quả và an toàn.
+            <p
+              className={`${
+                theme === "dark" ? "text-gray-300" : "text-gray-800"
+              }`}
+            >
+              Để lưu trữ dữ liệu, chúng tôi sử dụng MySQL, một hệ quản trị cơ sở
+              dữ liệu quan hệ mạnh mẽ. MySQL cho phép chúng tôi lưu trữ và truy
+              xuất dữ liệu một cách hiệu quả, cung cấp một nền tảng vững chắc
+              cho các tính năng và thông tin của trang web.
             </p>
-            <h3 className="text-16 font-bold text-custom-red">Quản Lý Phiên</h3>
-            <ul className="text-14">
+            <ul
+              className={`text-14 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               <li>
-                <strong>Đăng Nhập Duy Trì:</strong> Người dùng có thể đăng nhập
-                và duy trì phiên của mình thông qua các token, giúp trải nghiệm
-                người dùng mượt mà và liên tục.
+                <strong>Hiệu Suất Tốt:</strong> MySQL xử lý lượng lớn dữ liệu và
+                các truy vấn phức tạp một cách nhanh chóng và hiệu quả.
               </li>
               <li>
-                <strong>Tạo và Quản Lý Tài Khoản:</strong> Cung cấp chức năng
-                cho người dùng để đăng ký và quản lý tài khoản cá nhân của mình
-                một cách an toàn.
-              </li>
-            </ul>
-          </div>
-        }
-      />
-
-      <Accordion
-        title={<span className="text-16">Chức Năng Trang Web</span>}
-        answer={
-          <div>
-            <h3 className="text-16 font-bold text-custom-red">
-              Xem và Tương Tác Với Dữ Liệu
-            </h3>
-            <ul className="text-14">
-              <li>
-                <strong>Xem Thông Tin:</strong> Người dùng có thể xem các thông
-                tin quan trọng hoặc nội dung trên trang web dễ dàng.
+                <strong>Khả Năng Mở Rộng:</strong> MySQL có thể mở rộng để đáp
+                ứng nhu cầu phát triển, đảm bảo rằng cơ sở dữ liệu có thể phát
+                triển cùng với ứng dụng của chúng tôi.
               </li>
               <li>
-                <strong>Gửi Thông Tin:</strong> Các tính năng như gửi phản hồi
-                hoặc yêu cầu liên hệ được hỗ trợ để người dùng có thể tương tác
-                với chúng tôi nhanh chóng.
+                <strong>Hỗ Trợ Quy Tắc và Ràng Buộc:</strong> MySQL hỗ trợ các
+                quy tắc và ràng buộc để đảm bảo tính toàn vẹn của dữ liệu, giúp
+                dữ liệu của chúng tôi luôn chính xác và đáng tin cậy.
               </li>
             </ul>
           </div>
