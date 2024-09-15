@@ -8,15 +8,14 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import { salary } from "../../../data/SalaryRange";
-import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate } from "react-router-dom";
-import { useTags } from "../../../hooks/useTag";
 import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
 import Toolbar from "../../../components/design/Toolbar";
 import { useAddRecruitment } from "../../../hooks/Recruitment/useRecruitment";
 import TagsList from "./components/TagList";
+import { useToastDesign } from "../../../context/ToastService";
 
 const CreateRecruitment = () => {
   const { mutate: addRecruitmentMutation } = useAddRecruitment();
@@ -35,6 +34,7 @@ const CreateRecruitment = () => {
     location: "",
     tag_id: [],
   });
+  const { addNotification } = useToastDesign();
 
   const handleLocationChange = (formattedLocation) => {
     const [province, district] = formattedLocation.split(", ");
@@ -72,7 +72,7 @@ const CreateRecruitment = () => {
       !formData.location ||
       formData.tag_id.length === 0
     ) {
-      toast.error("Vui lòng điền đầy đủ thông tin.");
+      addNotification("Vui lòng điền đầy đủ thông tin.", "warning");
       return;
     }
 

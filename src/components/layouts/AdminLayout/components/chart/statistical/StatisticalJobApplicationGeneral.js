@@ -11,7 +11,6 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { useStatisticalJobApplicationGeneral } from "../../../../../../hooks/Statistical/StatisticalJobApplicationGeneral";
 
@@ -86,7 +85,6 @@ export default function JobApplicationGeneral() {
 
       setPieChartData(pieChartData);
     } else if (error) {
-      toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
     }
   }, [statisticalJobApplicationGeneral, isLoading, error]);
 

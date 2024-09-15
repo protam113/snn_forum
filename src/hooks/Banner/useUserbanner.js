@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { authApi, endpoints } from "../../api/api";
 
 const fetchUserBanner = async () => {
@@ -19,7 +18,7 @@ const fetchUserBanner = async () => {
 
     return sortedUserBanner;
   } catch (err) {
-    toast.error("Đã xảy ra lỗi khi tải Banner người dùng");
+    console.error("Đã xảy ra lỗi khi tải Banner người dùng");
     throw err;
   }
 };
@@ -31,7 +30,7 @@ export const useUserBanner = () => {
     staleTime: 60000,
     cacheTime: 300000,
     onError: (error) => {
-      toast.error("Đã xảy ra lỗi khi tải Banner người dùng");
+      console.error("Đã xảy ra lỗi khi tải Banner người dùng");
     },
   });
 };

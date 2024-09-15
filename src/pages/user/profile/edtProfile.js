@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import useUserInfo from "../../../hooks/useUserInfo";
-import { toast } from "react-toastify";
 import LocationSelector from "../../../components/Location/LocationSelector";
 import Loading from "../../error/load";
+import { useToastDesign } from "../../../context/ToastService";
 
 const EditProfile = () => {
+  const { addNotification } = useToastDesign();
   const { userInfo, loading, error, updateUserInfo } = useUserInfo();
   const [formData, setFormData] = useState({
     first_name: "",
@@ -89,7 +90,7 @@ const EditProfile = () => {
 
     try {
       await updateUserInfo(data);
-      toast.success("Cập nhật thông tin thành công !");
+      addNotification("Cập nhật thông tin thành công !", "success");
       if (userInfo && userInfo.username) {
         navigate("/");
       }

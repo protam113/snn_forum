@@ -9,7 +9,7 @@ const AdHome = () => {
   return (
     <div
       className={`relative min-h-screen flex flex-col ${
-        theme === "dark" ? " bg-gray-900 text-white" : " bg-gray-100 text-black"
+        theme === "dark" ? "  text-white" : "  text-black"
       }`}
     >
       <header className="bg-custom-red text-white p-2">

@@ -27,8 +27,8 @@ const useComments = (blogId) => {
     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
     staleTime: Infinity,
     cacheTime: Infinity,
-    onError: (error) => {
-      console.error(`Error fetching parent comments: ${error.message}`);
+    onError: (err) => {
+      console.error(`Error fetching parent comments: ${err.message}`);
     },
   });
 };

@@ -20,10 +20,18 @@ const useUserInfo = (personId = null) => {
     personalInfoFetchedRef.current = false;
   }, [personId]);
 
-  // Cache User Info with encryption
   const cacheUserInfo = (data) => {
     const encryptedData = encryptData(JSON.stringify(data));
     localStorage.setItem("user_info", encryptedData);
+  };
+
+  const isValidJSON = (str) => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const getCachedUserInfo = () => {
@@ -31,7 +39,13 @@ const useUserInfo = (personId = null) => {
     if (cachedData) {
       try {
         const decryptedData = decryptData(cachedData);
-        return JSON.parse(decryptedData); // Parse JSON before returning
+        if (isValidJSON(decryptedData)) {
+          return JSON.parse(decryptedData);
+        } else {
+          console.error("Decrypted data is not valid JSON");
+          localStorage.removeItem("user_info");
+          return null;
+        }
       } catch (error) {
         console.error("Error decrypting user info:", error);
         localStorage.removeItem("user_info");
@@ -40,14 +54,11 @@ const useUserInfo = (personId = null) => {
     }
     return null;
   };
-
-  // Fetch User Info with Caching
   const fetchUserInfo = useCallback(async () => {
     if (userInfoFetchedRef.current) return;
 
     setLoading(true);
 
-    // Try to get data from cache
     const cachedData = getCachedUserInfo();
     if (cachedData) {
       setUserInfo(cachedData);
@@ -57,8 +68,8 @@ const useUserInfo = (personId = null) => {
       return;
     }
 
-    // Get the token
     const token = await getToken();
+
     if (!token) {
       setUserInfo(null);
       setUserRoles([]);
@@ -67,7 +78,6 @@ const useUserInfo = (personId = null) => {
     }
 
     try {
-      // Fetch user info
       const response = await authApi(token).get(endpoints.currentUser);
       const userData = response.data;
 
@@ -79,30 +89,21 @@ const useUserInfo = (personId = null) => {
 
       userInfoFetchedRef.current = true;
     } catch (err) {
-      console.error(
-        "Error fetching user info:",
-        err.response?.data || err.message
-      );
       setError(err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
   }, [getToken]);
 
-  // Caching and fetching for personal info
   const fetchPersonalInfo = useCallback(async () => {
     if (personalInfoFetchedRef.current || !personId) return;
 
     try {
       const userInfoUrl = endpoints.UserInfo.replace(":id", personId);
-      const response = await authApi().get(userInfoUrl); // No token needed
+      const response = await authApi().get(userInfoUrl);
       setPersonalInfo(response.data);
       personalInfoFetchedRef.current = true;
     } catch (err) {
-      console.error(
-        "Error fetching personal info:",
-        err.response?.data || err.message
-      );
       setError(err.response?.data || err.message);
     } finally {
       setLoading(false);

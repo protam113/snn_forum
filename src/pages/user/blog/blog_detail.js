@@ -18,12 +18,12 @@ import useBlog from "../../../hooks/useBlog";
 import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
-import { toast } from "react-toastify";
 import { MdPerson } from "react-icons/md";
 import useUserInfo from "../../../hooks/useUserInfo";
 import { useBlogDetail } from "../../../hooks/Blog/useBlog";
 import CommentsSection from "../../../components/comment/CommentsSection";
 import { useDeleteBlog } from "../../../hooks/Blog/useBlogs";
+import { useToastDesign } from "../../../context/ToastService";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -37,6 +37,7 @@ const Blog_detail = () => {
   const handleMenuClick = (id) => {
     setActiveMenu((prev) => (prev === id ? null : id));
   };
+  const { addNotification } = useToastDesign();
 
   const handleProfileClick = (personId) => {
     if (userInfo && userInfo.toString() === personId) {
@@ -65,10 +66,10 @@ const Blog_detail = () => {
     navigator.clipboard
       .writeText(blogUrl)
       .then(() => {
-        toast.success("Link copied to clipboard!");
+        addNotification("Link copied to clipboard!", "success");
       })
-      .catch((error) => {
-        toast.error("Failed to copy link");
+      .catch((err) => {
+        console.error("Failed to copy link");
       });
   };
 

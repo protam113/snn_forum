@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
-import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useEditProduct,
   useProductDetail,
 } from "../../../hooks/Product/useProduct";
 import CategoryList from "./components/categoryList";
+import { useToastDesign } from "../../../context/ToastService";
 
 const EdtProduct = () => {
   const { id: productId } = useParams();
@@ -19,6 +19,7 @@ const EdtProduct = () => {
   } = useProductDetail(productId);
   const fileInputRef = useRef(null);
   const { mutate: editProductMutation } = useEditProduct();
+  const { addNotification } = useToastDesign();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -56,7 +57,6 @@ const EdtProduct = () => {
   useEffect(() => {
     if (!productId) {
       console.error("Product ID is undefined.");
-      toast.error("Không tìm thấy sản phẩm.");
       navigate(-1);
     }
   }, [productId, navigate]);
@@ -88,7 +88,7 @@ const EdtProduct = () => {
     e.preventDefault();
 
     if (!productId) {
-      toast.error("ID sản phẩm không hợp lệ.");
+      addNotification("ID sản phẩm không hợp lệ.", "warning");
       return;
     }
 

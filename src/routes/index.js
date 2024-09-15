@@ -33,7 +33,6 @@ import ProductList from "../pages/user/demo/ProductList";
 import Home from "../pages/user/home";
 import AllProduct from "../pages/user/product/allProduct";
 import CategoryProduct from "../pages/user/product/components/CategoryProduct";
-import CreateDemo from "../pages/user/product/createDemo";
 import CreateProduct from "../pages/user/product/CreateProduct";
 import EdtProduct from "../pages/user/product/edtProduct";
 import ProductDetail from "../pages/user/product/product_detail";

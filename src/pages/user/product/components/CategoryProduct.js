@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useProductByCategory } from "../../../../hooks/Product/useCategories";
-import { toast } from "react-toastify"; // Make sure to import toast for error notifications
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat("vi-VN", {

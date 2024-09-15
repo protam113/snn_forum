@@ -7,7 +7,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { useStaticalProductGeneral } from "../../../../../../hooks/Statistical/StaticalProductGeneral";
 
@@ -147,7 +146,6 @@ export default function StaticalProductGeneral() {
       setTotalProducts(staticalProductGeneral.total_products);
       setTotalPrice(staticalProductGeneral.total_price);
     } else if (error) {
-      toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
     }
   }, [staticalProductGeneral, isLoading, error]);
 

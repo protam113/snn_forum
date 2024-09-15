@@ -1,5 +1,4 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
 
@@ -15,7 +14,7 @@ const fetchAdminBanner = async ({ pageParam = 1, token }) => {
       nextPage: response.data.next ? pageParam + 1 : undefined, // Return `undefined` if no next page
     };
   } catch (err) {
-    toast.error("Đã xảy ra lỗi khi tải Banner người dùng");
+    console.error("Đã xảy ra lỗi khi lấy danh Banner");
     throw err;
   }
 };
@@ -32,8 +31,8 @@ const useAdminBanner = () => {
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime: 60000,
     cacheTime: 300000,
-    onError: () => {
-      toast.error("Đã xảy ra lỗi khi tải Banner người dùng");
+    onError: (err) => {
+      console.error("Đã xảy ra lỗi khi lấy danh Banner");
     },
   });
 };

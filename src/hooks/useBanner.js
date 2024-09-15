@@ -1,33 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
-import { toast } from "react-toastify";
+import { useState } from "react";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
+import { useToastDesign } from "../context/ToastService";
 
 const useBanner = () => {
-  const [adminBanner, setAdminBanner] = useState([]);
   const { getToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { addNotification } = useToastDesign();
 
-  // Fetch banners
-  const fetchAdminBanner = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const token = await getToken();
-      if (!token) {
-        throw new Error("Không có token");
-      }
-      const response = await authApi(token).get(endpoints.AdminBanner);
-      const results = response.data.results;
-      setAdminBanner(results);
-    } catch (err) {
-      setError("Đã xảy ra lỗi khi lấy banner quản trị");
-      toast.error("Đã xảy ra lỗi khi lấy banner quản trị");
-    } finally {
-      setLoading(false);
-    }
-  }, [getToken]);
+  // Fetch
 
   // Add banner
   const addBanner = async (newBanner) => {
@@ -48,17 +30,11 @@ const useBanner = () => {
         }
       );
 
-      const createdBanner = response.data;
-      setAdminBanner((prevBanners) => [...prevBanners, createdBanner]);
+      const results = response.data;
 
-      toast.success("Đã thêm banner thành công");
+      addNotification("Đã thêm banner thành công", "success");
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.detail ||
-        err.message ||
-        "Đã xảy ra lỗi khi thêm banner";
-      setError(errorMessage);
-      toast.error(errorMessage);
+      console.error(error.message || "Lỗi khi them banner!");
     } finally {
       setLoading(false);
     }
@@ -80,21 +56,16 @@ const useBanner = () => {
         },
       });
 
-      const updatedBannerData = response.data;
-      setAdminBanner((prevBanners) =>
-        prevBanners.map((banner) =>
-          banner.id === bannerId ? updatedBannerData : banner
-        )
-      );
+      const results = response.data;
 
-      toast.success("Đã cập nhật banner thành công");
+      addNotification("Đã cập nhật banner thành công", "success");
     } catch (err) {
       const errorMessage =
         err.response?.data?.detail ||
         err.message ||
         "Đã xảy ra lỗi khi cập nhật banner";
       setError(errorMessage);
-      toast.error(errorMessage);
+      console.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -112,29 +83,21 @@ const useBanner = () => {
       await authApi(token).delete(url);
 
       // Update the state after successful deletion
-      setAdminBanner((prevBanners) =>
-        prevBanners.filter((banner) => banner.id !== bannerId)
-      );
 
-      toast.success("Đã xóa banner thành công");
+      addNotification("Đã xóa banner thành công", "success");
     } catch (err) {
       const errorMessage =
         err.response?.data?.detail ||
         err.message ||
         "Đã xảy ra lỗi khi xóa banner";
       setError(errorMessage);
-      toast.error(errorMessage);
+      console.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchAdminBanner();
-  }, [fetchAdminBanner]);
-
   return {
-    adminBanner,
     loading,
     error,
     addBanner,

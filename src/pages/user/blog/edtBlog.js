@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import useBlog from "../../../hooks/useBlog";
 import Loading from "../../error/load";
 import { FaFilePdf, FaTrashAlt } from "react-icons/fa";
 import { useTheme } from "../../../context/themeContext";
@@ -16,7 +14,7 @@ const EdtBlog = () => {
   const { blogId } = useParams();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-  const { mutate: editBlog, isLoading, error } = useEditBlog(blogId); // Truyền blogId vào đây
+  const { mutate: editBlog } = useEditBlog(blogId);
   const {
     data: blog,
     isLoading: blogLoading,
@@ -57,7 +55,7 @@ const EdtBlog = () => {
     if (files.length + selectedFiles.length <= 4) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
     } else {
-      toast.error("You can only upload up to 4 files.");
+      alert("You can only upload up to 4 files.");
     }
   };
 

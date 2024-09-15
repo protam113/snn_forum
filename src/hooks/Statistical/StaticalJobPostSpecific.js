@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { toast } from "react-toastify";
 
 const fetchStaticalJobPostSpecific = async (
   startDate,
@@ -30,9 +29,13 @@ const fetchStaticalJobPostSpecific = async (
       )}&job_post_id=${encodeURIComponent(job_post_id)}`
     );
 
+    if (!response.data) {
+      throw new Error("Dữ liệu trả về không hợp lệ");
+    }
+
     return response.data;
   } catch (err) {
-    toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
+    console.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê", err);
     throw err;
   }
 };
@@ -51,11 +54,16 @@ const useStaticalJobPostSpecific = (startDate, endDate, job_post_id) => {
         job_post_id
       );
     },
+    enabled: !!job_post_id && !!startDate && !!endDate,
     staleTime: 60000,
-    enabled: !!job_post_id, // Chỉ gọi API khi có job_post_id
-    onError: (err) => {
-      console.log("Error fetching job post statistics:", err);
+    cacheTime: 300000,
+    retry: (failureCount, error) => {
+      if (failureCount < 3 && error.message !== "Dữ liệu trả về không hợp lệ") {
+        return true;
+      }
+      return false;
     },
+    onError: () => {},
     refetchOnWindowFocus: true,
   });
 };

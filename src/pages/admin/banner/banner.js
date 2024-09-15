@@ -28,10 +28,7 @@ const Banner = () => {
     if (window.confirm("Bạn có chắc chắn muốn xóa banner này?")) {
       try {
         await deleteBanner(bannerId);
-        toast.success("Đã xóa banner thành công");
-      } catch (err) {
-        toast.error("Đã xảy ra lỗi khi xóa banner");
-      }
+      } catch (err) {}
     }
   };
 

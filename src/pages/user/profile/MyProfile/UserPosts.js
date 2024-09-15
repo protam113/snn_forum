@@ -6,12 +6,12 @@ import { IoShareSocialOutline } from "react-icons/io5";
 import { useTheme } from "../../../../context/themeContext";
 import formatDate from "../../../../utils/formatDate";
 import LikePost from "../../../../components/buttons/likeBlog";
-import { toast } from "react-toastify";
 import { BsThreeDots } from "react-icons/bs";
 import { useDeleteBlog } from "../../../../hooks/Blog/useBlogs";
 import { useUserBlog } from "../../../../hooks/User/useUserBlog";
 import SkeletonBlog from "../../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
+import { useToastDesign } from "../../../../context/ToastService";
 
 const PersonalBlog = () => {
   const { id: personId } = useParams();
@@ -22,6 +22,7 @@ const PersonalBlog = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [expandedBlogs, setExpandedBlogs] = React.useState({});
+  const { addNotification } = useToastDesign();
 
   const handleScroll = useCallback(
     debounce(() => {
@@ -81,10 +82,9 @@ const PersonalBlog = () => {
     navigator.clipboard
       .writeText(blogUrl)
       .then(() => {
-        toast.success("Link copied to clipboard!");
+        addNotification("Link copied to clipboard!", "success");
       })
       .catch((error) => {
-        toast.error("Failed to copy link");
         console.error("Failed to copy link", error);
       });
   };

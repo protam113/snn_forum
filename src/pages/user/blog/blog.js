@@ -4,24 +4,23 @@ import Block from "../../../components/design/Block";
 import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../context/themeContext";
-import useBlog from "../../../hooks/useBlog";
 import formatDate from "../../../utils/formatDate";
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
 import useUserInfo from "../../../hooks/useUserInfo";
-import { toast } from "react-toastify";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdPerson } from "react-icons/md";
 import SkeletonBlog from "../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
 import { useBlogList, useDeleteBlog } from "../../../hooks/Blog/useBlogs";
+import { useToastDesign } from "../../../context/ToastService";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [expandedBlogId, setExpandedBlogId] = useState(null);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  // const { handleDeleteBlog } = useBlog();
+  const { addNotification } = useToastDesign();
   const { userInfo } = useUserInfo();
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useBlogList();
@@ -90,10 +89,10 @@ const Blog = () => {
     navigator.clipboard
       .writeText(blogUrl)
       .then(() => {
-        toast.success("Link copied to clipboard!");
+        addNotification("Link copied to clipboard!", "success");
       })
       .catch((error) => {
-        toast.error("Failed to copy link");
+        console.error("Failed to copy link");
       });
   };
 

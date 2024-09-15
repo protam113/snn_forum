@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { useToastDesign } from "../../../context/ToastService";
 
 const EdtCategory = ({ category, onClose, onSave }) => {
   const [categoryName, setCategoryName] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const { addNotification } = useToastDesign();
+
   useEffect(() => {
     if (category) {
       setCategoryName(category.name);
@@ -11,14 +14,15 @@ const EdtCategory = ({ category, onClose, onSave }) => {
 
   const handleSave = async () => {
     if (!categoryName) {
-      toast.error("Vui lòng nhập tên category!");
+      setErrMsg("Vui lòng nhập tên category!"); // Cập nhật errMsg
       return;
     }
     try {
+      setErrMsg(""); // Xóa thông báo lỗi khi yêu cầu thành công
       await onSave({ id: category.id, name: categoryName });
       onClose();
     } catch (error) {
-      toast.error("Đã xảy ra lỗi khi cập nhật category.");
+      addNotification("Đã xảy ra lỗi khi cập nhật category.", "error");
     }
   };
 
@@ -26,6 +30,11 @@ const EdtCategory = ({ category, onClose, onSave }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <h2 className="text-xl font-bold mb-4">Edit Category</h2>
+        {errMsg && (
+          <div className="flex items-center justify-center px-4 py-2 rounded-lg border border-red-500 bg-red-100 text-red-600 mb-4">
+            <span>{errMsg}</span>
+          </div>
+        )}
         <div className="mb-4">
           <label
             htmlFor="categoryName"

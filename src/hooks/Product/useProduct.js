@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
-import { toast } from "react-toastify";
 import useAuth from "../useAuth";
+import { useToastDesign } from "../../context/ToastService";
 
 // Fetch product list
 const fetchProductList = async (page = 1) => {
@@ -14,7 +14,7 @@ const fetchProductList = async (page = 1) => {
       currentPage: page,
     };
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
+    console.error("Đã xảy ra lỗi khi tải sản phẩm!");
     throw error;
   }
 };
@@ -37,7 +37,7 @@ const fetchProductDetail = async (productId) => {
     const response = await authApi().get(url);
     return response.data;
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
+    console.error("Đã xảy ra lỗi khi tải sản phẩm!");
     throw error;
   }
 };
@@ -89,6 +89,7 @@ const AddProduct = async (newProduct, token) => {
 const useAddProduct = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async (newProduct) => {
@@ -96,11 +97,11 @@ const useAddProduct = () => {
       return AddProduct(newProduct, token);
     },
     onSuccess: () => {
-      toast.success("Sản phẩm đã được thêm thành công");
+      addNotification("Sản phẩm đã được thêm thành công", "success");
       queryClient.invalidateQueries(["products"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add product.");
+      console.error(error.message || "Failed to add product.");
     },
   });
 };
@@ -135,6 +136,7 @@ const updateProduct = async ({ productId, edtProduct, token }) => {
 const useEditProduct = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async ({ productId, edtProduct }) => {
@@ -142,12 +144,12 @@ const useEditProduct = () => {
       return updateProduct({ productId, edtProduct, token });
     },
     onSuccess: () => {
-      toast.success("Sản phẩm đã được cập nhật thành công");
+      addNotification("Sản phẩm đã được cập nhật thành công", "success");
       queryClient.invalidateQueries(["product"]);
       queryClient.invalidateQueries(["products"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Lỗi khi cập nhật sản phẩm!");
+      console.error(error.message || "Lỗi khi cập nhật sản phẩm!");
     },
   });
 };

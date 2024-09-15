@@ -1,6 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
-import { toast } from "react-toastify";
 
 const fetchUserBlog = async ({ pageParam = 1, personId }) => {
   try {
@@ -17,7 +16,7 @@ const fetchUserBlog = async ({ pageParam = 1, personId }) => {
       nextPage: next ? pageParam + 1 : null,
     };
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải blog!");
+    console.error("Đã xảy ra lỗi khi tải blog!");
     throw error;
   }
 };

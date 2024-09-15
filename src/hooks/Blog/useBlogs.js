@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
 import { toast } from "react-toastify";
+import { useToastDesign } from "../../context/ToastService";
 
 const FetchBlogList = async ({ pageParam = 1, token }) => {
   try {
@@ -23,8 +24,8 @@ const FetchBlogList = async ({ pageParam = 1, token }) => {
       ),
       nextPage: next ? pageParam + 1 : null,
     };
-  } catch (error) {
-    console.error("Error fetching blogs:", error);
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách blog:", err);
     throw new Error("Failed to fetch blogs");
   }
 };
@@ -61,15 +62,16 @@ const addBlog = async (formData, token) => {
     });
 
     return response.data;
-  } catch (error) {
-    console.error("Error adding blog:", error.response?.data || error.message);
-    throw error;
+  } catch (err) {
+    console.error("Lỗi khi tạo blog:", err);
+    throw err;
   }
 };
 
 const useAddBlog = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async (newBlog) => {
@@ -77,7 +79,7 @@ const useAddBlog = () => {
       return addBlog(newBlog, token);
     },
     onSuccess: () => {
-      toast.success("Blog đã được thêm thành công");
+      addNotification("Blog đã được thêm thành công", "success");
       queryClient.invalidateQueries(["blogs"]);
     },
     onError: (error) => {
@@ -101,6 +103,7 @@ const deleteBlog = async ({ blogId, token }) => {
 const useDeleteBlog = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async ({ blogId }) => {
@@ -108,11 +111,11 @@ const useDeleteBlog = () => {
       return deleteBlog({ blogId, token });
     },
     onSuccess: () => {
-      toast.success("Blog đã được xóa thành công");
+      addNotification("Blog đã được xóa thành công", "success");
       queryClient.invalidateQueries(["blogs"]);
     },
-    onError: (error) => {
-      console.error(error.message || "Lỗi khi xóa blog!");
+    onError: (err) => {
+      console.error("Lỗi khi xóa blog:", err);
     },
   });
 };

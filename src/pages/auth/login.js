@@ -9,12 +9,11 @@ import Footer from "../../components/layouts/DefaultLayout/components/footer";
 
 const Login = () => {
   const { theme } = useTheme();
-  const { handleLogin } = React.useContext(AuthContext);
+  const { handleLogin, errMsg } = React.useContext(AuthContext);
   const userRef = useRef(null);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errMsg, setErrMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -23,13 +22,12 @@ const Login = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setErrMsg("");
-  }, [username, password]);
-
   const onSubmit = async (e) => {
     e.preventDefault();
-    await handleLogin(username, password);
+
+    try {
+      await handleLogin(username, password); // Attempt to log in
+    } catch (error) {}
   };
 
   return (
@@ -67,8 +65,13 @@ const Login = () => {
               </span>
             </div>
           </div>
+          {errMsg && (
+            <div className="flex items-center justify-center px-4 py-2 rounded-lg border border-red-500 bg-red-100 text-red-600 mb-4">
+              <span>{errMsg}</span>
+            </div>
+          )}
           <form className="flex flex-col space-y-4" onSubmit={onSubmit}>
-            {/* <button
+            {/* <div
               type="button"
               className={`flex items-center justify-center px-4 py-2 rounded-lg border ${
                 theme === "dark"
@@ -76,13 +79,8 @@ const Login = () => {
                   : "bg-white text-black border-zinc-800 hover:bg-zinc-300"
               }`}
             >
-              <span className="mr-4">Log in with Google</span>
-              <img
-                src={Logo_google}
-                alt="Google Logo"
-                className="w-6 h-auto"
-              />
-            </button>
+              <span className="mr-4">Lỗi</span>
+            </div>
             <div className="flex items-center my-4">
               <hr className="flex-grow border-t border-gray-300" />
               <span className="px-4 text-gray-500">OR</span>
@@ -109,7 +107,6 @@ const Login = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-
             <label
               htmlFor="password"
               className={`${theme === "dark" ? "text-white" : "text-black"}`}
@@ -139,7 +136,6 @@ const Login = () => {
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
               </button>
             </div>
-
             <button
               type="submit"
               className="px-4 py-2 bg-custom-red text-white rounded-lg hover:bg-red-600 transition-colors"

@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../api/api";
-import { toast } from "react-toastify";
 
 // Hàm fetch cho products
 const fetchProducts = async () => {
@@ -8,7 +7,7 @@ const fetchProducts = async () => {
     const response = await authApi().get(endpoints.Products);
     return response.data.results || [];
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải sản phẩm!");
+    console.error("Đã xảy ra lỗi khi tải sản phẩm!");
     throw error;
   }
 };
@@ -28,7 +27,7 @@ const fetchRecruitmentList = async () => {
     const response = await authApi().get(endpoints.Recruitment);
     return response.data.results || [];
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải tin tuyển dụng!");
+    console.error("Đã xảy ra lỗi khi tải tin tuyển dụng!");
     throw error;
   }
 };
@@ -50,7 +49,7 @@ const fetchBlogList = async () => {
     const response = await authApi().get(endpoints.Blog);
     return response.data.results || [];
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải tin tuyển dụng!");
+    console.error("Đã xảy ra lỗi khi tải tin tuyển dụng!");
     throw error;
   }
 };

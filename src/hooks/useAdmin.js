@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { toast } from "react-toastify";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
+import { useToastDesign } from "../context/ToastService";
 
 const useAdmin = () => {
   const [groups, setGroups] = useState([]);
@@ -10,7 +10,7 @@ const useAdmin = () => {
   const { getToken } = useAuth();
   const [loading, setLoading] = useState({ groups: false, users: false });
   const [error, setError] = useState(null);
-
+  const { addNotification } = useToastDesign();
   // Fetch all groups
   const fetchGroups = useCallback(async () => {
     setLoading((prev) => ({ ...prev, groups: true }));
@@ -22,7 +22,6 @@ const useAdmin = () => {
       setGroups(results);
     } catch (err) {
       setError("Đã xảy ra lỗi khi lấy danh sách nhóm");
-      toast.error("Đã xảy ra lỗi khi lấy danh sách nhóm");
     } finally {
       setLoading((prev) => ({ ...prev, groups: false }));
     }
@@ -39,7 +38,6 @@ const useAdmin = () => {
       setUsers(results);
     } catch (err) {
       setError("Đã xảy ra lỗi khi lấy danh sách người dùng");
-      toast.error("Đã xảy ra lỗi khi lấy danh sách người dùng");
     } finally {
       setLoading((prev) => ({ ...prev, users: false }));
     }
@@ -58,7 +56,6 @@ const useAdmin = () => {
         setUsers(results);
       } catch (err) {
         setError("Đã xảy ra lỗi khi lấy người dùng trong nhóm");
-        toast.error("Đã xảy ra lỗi khi lấy người dùng trong nhóm");
       } finally {
         setLoading((prev) => ({ ...prev, users: false }));
       }
@@ -80,11 +77,13 @@ const useAdmin = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        toast.success("Người dùng đã được thêm vào nhóm thành công");
+        addNotification(
+          "Người dùng đã được thêm vào nhóm thành công",
+          "success"
+        );
         setSelectedGroup((prev) => (prev ? { ...prev, id: groupId } : null));
       } catch (err) {
         setError("Đã xảy ra lỗi khi thêm người dùng vào nhóm");
-        toast.error("Đã xảy ra lỗi khi thêm người dùng vào nhóm");
       }
     },
     [getToken]
@@ -104,11 +103,13 @@ const useAdmin = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        toast.success("Người dùng đã được gỡ khỏi nhóm thành công");
+        addNotification(
+          "Người dùng đã được gỡ khỏi nhóm thành công",
+          "success"
+        );
         setSelectedGroup((prev) => (prev ? { ...prev, id: groupId } : null));
       } catch (err) {
         setError("Đã xảy ra lỗi khi gỡ người dùng khỏi nhóm");
-        toast.error("Đã xảy ra lỗi khi gỡ người dùng khỏi nhóm");
       }
     },
     [getToken]
@@ -130,14 +131,14 @@ const useAdmin = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        toast.success("Cập nhật web thành công");
+        addNotification("Cập nhật web thành công", "success");
         return response.data;
       } catch (error) {
         console.error(
           "Error updating web:",
           error.response ? error.response.data : error.message
         );
-        toast.error("Đã xảy ra lỗi khi cập nhật web!");
+        console.error("Đã xảy ra lỗi khi cập nhật web!");
         throw error;
       }
     },

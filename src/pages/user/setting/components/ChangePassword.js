@@ -4,9 +4,9 @@ import { FaLock, FaLockOpen, FaSun } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
 import Accordion from "./Accordion";
 import useUserInfo from "../../../../hooks/useUserInfo";
-import { toast } from "react-toastify";
 import ThemeToggle from "../../../../components/theme/ThemeToggle ";
 import { useTheme } from "../../../../context/themeContext";
+import { useToastDesign } from "../../../../context/ToastService";
 
 const ChangePassword = () => {
   const { changePassword, userInfo } = useUserInfo();
@@ -21,6 +21,7 @@ const ChangePassword = () => {
   const [isPasswordMismatch, setIsPasswordMismatch] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const { addNotification } = useToastDesign();
 
   useEffect(() => {
     if (formData.newPassword && confirmPassword) {
@@ -50,21 +51,21 @@ const ChangePassword = () => {
     try {
       const result = await changePassword(data);
       if (result.success) {
-        toast.success("Password changed successfully");
+        addNotification("Password changed successfully", "success");
         setSuccess(true);
         setError(null);
         // Clear the form fields
         setFormData({ oldPassword: "", newPassword: "" });
         setConfirmPassword("");
       } else {
-        toast.error(result.error || "Failed to change password");
+        console.error(result.error || "Failed to change password");
         setSuccess(false);
         setError(result.error || "Failed to change password");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      addNotification("Đã xảy ra lỗi. Vui lòng thử lại.", "error");
       setSuccess(false);
-      setError("An error occurred. Please try again.");
+      setError("Đã xảy ra lỗi. Vui lòng thử lại.");
     }
   };
 
@@ -88,6 +89,12 @@ const ChangePassword = () => {
                 }`}
               />
               Đổi Mật Khẩu
+              <br />
+              {error && (
+                <div className="flex items-center justify-center px-4 py-2 rounded-lg border border-red-500 bg-red-100 text-red-600 mb-4">
+                  <span>{error}</span>
+                </div>
+              )}
             </div>
           }
           answer={
