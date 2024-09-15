@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { toast } from "react-toastify";
 import { useToastDesign } from "../../context/ToastService";
 
 const fetchBlog = async (blogId, getToken) => {
