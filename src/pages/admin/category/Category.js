@@ -44,7 +44,7 @@ const AdCategory = () => {
       "Bạn có chắc chắn muốn xóa category này không?"
     );
     if (isConfirmed) {
-      deleteCategoryMutation({ categoryId }); // Pass categoryId in an object
+      deleteCategoryMutation({ categoryId });
     }
   };
 

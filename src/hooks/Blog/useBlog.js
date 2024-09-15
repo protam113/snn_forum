@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { toast } from "react-toastify";
+import { useToastDesign } from "../../context/ToastService";
 
 const fetchBlog = async (blogId, getToken) => {
   if (!blogId) return null;
@@ -67,6 +67,7 @@ const editBlog = async ({ blogId, edtBlog, token }) => {
 const useEditBlog = (blogId) => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async ({ edtBlog }) => {
@@ -74,12 +75,12 @@ const useEditBlog = (blogId) => {
       return editBlog({ blogId, edtBlog, token });
     },
     onSuccess: () => {
-      toast.success("Blog đã được cập nhật thành công");
-      queryClient.invalidateQueries(["blog", blogId]); // Làm mới dữ liệu chi tiết blog
-      queryClient.invalidateQueries(["blogs"]); // Làm mới danh sách blog nếu cần
+      addNotification("Blog đã được cập nhật thành công", "success");
+      queryClient.invalidateQueries(["blog", blogId]);
+      queryClient.invalidateQueries(["blogs"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Lỗi khi cập nhật blog!");
+      console.error(error.message || "Lỗi khi cập nhật blog!");
     },
   });
 };

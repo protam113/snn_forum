@@ -40,7 +40,6 @@ const ManageTag = () => {
       {
         onSuccess: () => {
           setShowAddTagPopup(false);
-          // Optionally refetch tags or update state
         },
       }
     );
