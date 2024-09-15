@@ -27,8 +27,6 @@ import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
 import EdtBlog from "../pages/user/blog/edtBlog";
 import ContributeIdeas from "../pages/user/contributeIdeas";
-import Product_Detail from "../pages/user/demo/ProductDetail";
-import ProductList from "../pages/user/demo/ProductList";
 
 import Home from "../pages/user/home";
 import AllProduct from "../pages/user/product/allProduct";
@@ -70,9 +68,6 @@ const publicRoutes = [
     component: NotiPage,
     layout: DefaultLayout,
   },
-
-  { path: "/demo/", component: ProductList, layout: DefaultLayout },
-  { path: "/demo/:id", component: Product_Detail, layout: DefaultLayout },
 
   { path: "/", component: Home, layout: DefaultLayout },
   { path: "/create_blog", component: Create, layout: DefaultLayout },

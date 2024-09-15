@@ -2,11 +2,11 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-let authApiCallCount = 0; // Biến đếm số lần authApi được gọi
+// let authApiCallCount = 0;
 
 const authApi = (token = null) => {
-  authApiCallCount++; // Tăng biến đếm mỗi lần authApi được gọi
-  console.log(`authApi has been called ${authApiCallCount} times`);
+  // authApiCallCount++; // Tăng biến đếm mỗi lần authApi được gọi
+  // console.log(`authApi has been called ${authApiCallCount} times`);
 
   const config = {
     baseURL,
