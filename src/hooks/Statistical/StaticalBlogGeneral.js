@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { toast } from "react-toastify";
 
 const fetchStaticalBlogGeneral = async (
   startDate,
@@ -26,9 +25,13 @@ const fetchStaticalBlogGeneral = async (
       )}`
     );
 
+    if (!response.data || response.data.length === 0) {
+      throw new Error("Không có dữ liệu thống kê");
+    }
+
     return response.data;
   } catch (err) {
-    toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
+    console.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê", err);
     throw err;
   }
 };
@@ -42,10 +45,16 @@ const useStaticalBlogGeneral = (startDate, endDate, frequency) => {
       const token = await getToken();
       return fetchStaticalBlogGeneral(startDate, endDate, token, frequency);
     },
+    enabled: !!startDate && !!endDate && !!frequency,
     staleTime: 60000,
-    onError: (err) => {
-      console.log("Error fetching blog statistics:", err);
+    cacheTime: 300000,
+    retry: (failureCount, error) => {
+      if (failureCount < 3 && error.message !== "Không có dữ liệu thống kê") {
+        return true;
+      }
+      return false;
     },
+    onError: (er) => {},
     refetchOnWindowFocus: true,
   });
 };

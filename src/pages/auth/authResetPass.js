@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import useUserInfo from "../../hooks/useUserInfo";
+import { useToastDesign } from "../../context/ToastService";
 
 const ResetPassword = () => {
   const { resetPassword, requestVerificationCode } = useUserInfo();
@@ -13,6 +13,9 @@ const ResetPassword = () => {
   const [isSubmitEnabled, setIsSubmitEnabled] = useState(false);
   const [isPasswordMismatch, setIsPasswordMismatch] = useState(false);
   const [codeRequested, setCodeRequested] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+  const [errMsg1, setErrMsg1] = useState("");
+  const { addNotification } = useToastDesign();
 
   useEffect(() => {
     if (formData.newPassword && confirmPassword) {
@@ -34,10 +37,13 @@ const ResetPassword = () => {
 
     const result = await requestVerificationCode(formData.email);
     if (result.success) {
-      toast.success("Verification code sent to your email");
+      setErrMsg1("Verification code sent to your email");
       setCodeRequested(true);
     } else {
-      toast.error(result.error || "Failed to send verification code");
+      addNotification(
+        result.error || "Failed to send verification code",
+        "error"
+      );
     }
   };
 
@@ -50,12 +56,12 @@ const ResetPassword = () => {
       formData.code
     );
     if (result.success) {
-      toast.success("Password reset successfully");
+      setErrMsg("Password reset successfully");
       setFormData({ ...formData, newPassword: "", code: "" });
       setConfirmPassword("");
       setCodeRequested(false);
     } else {
-      toast.error(result.error || "Failed to reset password");
+      addNotification(result.error || "Failed to reset password", "error");
     }
   };
 
@@ -68,6 +74,11 @@ const ResetPassword = () => {
         >
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="max-w-xl mx-auto text-center space-y-4">
+              {errMsg && (
+                <div className="flex items-center justify-center px-4 py-2 rounded-lg border border-red-500 bg-red-100 text-red-600 mb-4">
+                  <span>{errMsg}</span>
+                </div>
+              )}
               <h2 className="text-3xl md:text-4xl font-bold">
                 Reset Your Password
               </h2>
@@ -103,6 +114,11 @@ const ResetPassword = () => {
           className="space-y-6 mt-6 max-w-lg mx-auto"
         >
           <div className="flex flex-col">
+            {errMsg1 && (
+              <div className="flex items-center justify-center px-4 py-2 rounded-lg border border-red-500 bg-red-100 text-red-600 mb-4">
+                <span>{errMsg1}</span>
+              </div>
+            )}
             <label
               className="mb-2 text-sm font-medium text-gray-600"
               htmlFor="email"

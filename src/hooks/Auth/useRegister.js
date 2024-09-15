@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import { toast } from "react-toastify";
+import { useToastDesign } from "../../context/ToastService";
 
 const validateInputs = ({
   username,
@@ -85,6 +86,8 @@ const Register = async ({
 };
 
 const useRegister = () => {
+  const { addNotification } = useToastDesign();
+
   return useMutation({
     mutationFn: async (registrationData) => {
       return Register(registrationData);
@@ -95,7 +98,7 @@ const useRegister = () => {
     onError: (error) => {
       const errorMessage =
         error.response?.data?.detail || error.message || "Registration failed.";
-      toast.error(errorMessage);
+      addNotification(errorMessage);
     },
   });
 };

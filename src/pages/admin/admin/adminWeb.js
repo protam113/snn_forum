@@ -59,20 +59,10 @@ const AdminWeb = () => {
     if (formData.location) formDataToSend.append("location", formData.location);
     if (formData.link) formDataToSend.append("link", formData.link);
 
-    // Log FormData for debugging
-    console.log([...formDataToSend.entries()]);
-
     // Perform update
     UpdateWeb(formDataToSend, {
-      onSuccess: (data) => {
-        console.log("Update successful:", data);
-      },
-      onError: (error) => {
-        console.error(
-          "Error updating web:",
-          error.response ? error.response.data : error.message
-        );
-      },
+      onSuccess: () => {},
+      onError: () => {},
     });
   };
 

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Logo from "../../assets/img/Logo.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -8,12 +7,9 @@ import Stepper from "../../components/step/Stepper";
 import { useRegister } from "../../hooks/Auth/useRegister";
 import LocationSelector from "../../components/Location/LocationSelector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faTimes,
-  faInfoCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "../../context/themeContext";
+import { useToastDesign } from "../../context/ToastService";
 
 const usernameRgx = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
 const passwordRgx = /^(?=.*[A-Z])(?=.*[@!#%])[A-Za-z\d@!#%]{8,24}$/;
@@ -43,11 +39,11 @@ const Register = () => {
     profile_image: null,
     profile_bg: null,
   });
-
   const [profileImagePreview, setProfileImagePreview] = useState("");
   const [profileBgPreview, setProfileBgPreview] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { addNotification } = useToastDesign();
 
   useEffect(() => {
     if (userRef.current) {
@@ -130,27 +126,27 @@ const Register = () => {
       formData;
 
     if (!username || !validName) {
-      toast.warn("Vui lòng nhập tên người dùng hợp lệ.");
+      setErrMsg("Vui lòng nhập tên người dùng hợp lệ.");
       isValid = false;
     }
     if (!password || !validPassword) {
-      toast.warn("Vui lòng nhập mật khẩu hợp lệ.");
+      setErrMsg("Vui lòng nhập mật khẩu hợp lệ.");
       isValid = false;
     }
     if (!email) {
-      toast.warn("Vui lòng nhập email.");
+      setErrMsg("Vui lòng nhập email.");
       isValid = false;
     }
     if (!firstName) {
-      toast.warn("Vui lòng nhập tên.");
+      setErrMsg("Vui lòng nhập tên.");
       isValid = false;
     }
     if (!lastName) {
-      toast.warn("Vui lòng nhập họ.");
+      setErrMsg("Vui lòng nhập họ.");
       isValid = false;
     }
     if (!phoneNumber) {
-      toast.warn("Vui lòng nhập số điện thoại.");
+      setErrMsg("Vui lòng nhập số điện thoại.");
       isValid = false;
     }
 
@@ -166,8 +162,10 @@ const Register = () => {
 
           navigate("/xac_thuc");
         } catch (error) {
-          // Xử lý lỗi và hiển thị thông báo
-          setErrMsg("Đăng ký không thành công. Vui lòng thử lại.");
+          addNotification(
+            "Đăng ký không thành công. Vui lòng thử lại.",
+            "error"
+          );
         }
       }
     }
@@ -181,21 +179,26 @@ const Register = () => {
         theme === "dark" ? "bg-zinc-800 text-white" : "bg-white text-black"
       }`}
     >
-      <p
-        ref={errRef}
-        className={errMsg ? "errmsg" : "offscreen"}
-        aria-live="assertive"
-      >
-        {errMsg}
-      </p>
       <div className="flex flex-col md:flex-row items-center md:space-x-8">
         <div className="p-8 rounded-lg shadow-md max-w-sm w-full flex flex-col justify-between ">
           <div className="flex items-center justify-center mb-6">
             <img src={Logo} alt="Logo" className="w-16 h-auto mr-4" />
             <div className="text-lg">
-              <span className="text-custom-red font-bold">Tech</span> Forum
+              <span className="text-custom-red font-bold">H2H Tech</span>{" "}
+              <span
+                className={`font-semibold ${
+                  theme === "light" ? "text-zinc-900" : "text-white"
+                }`}
+              >
+                Energy
+              </span>
             </div>
           </div>
+          {errMsg && (
+            <div className="flex items-center justify-center px-4 py-2 rounded-lg border border-red-500 bg-red-100 text-red-600 mb-4">
+              <span>{errMsg}</span>
+            </div>
+          )}
           <Stepper steps={steps} currentStep={step} />
           <form
             onSubmit={(e) => {

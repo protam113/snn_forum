@@ -2,7 +2,6 @@ import React, { createContext, useState } from "react";
 import { authApi, endpoints, baseURL } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 import {
@@ -10,12 +9,15 @@ import {
   encryptData,
   decryptData,
 } from "../utils/cryptoUtils";
+import { useToastDesign } from "./ToastService";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [errMsg, setErrMsg] = useState("");
   const [auth, setAuth] = useState(null);
   const navigate = useNavigate();
+  const { addNotification } = useToastDesign();
 
   const getToken = () => {
     const encryptedToken = localStorage.getItem("access_token");
@@ -78,27 +80,25 @@ export const AuthProvider = ({ children }) => {
         secure: true,
         expires: 7,
       });
-      toast.success("Đăng nhập thành công!");
+      addNotification("Đăng nhập thành công!", "success");
       setTimeout(() => {
         navigate("/");
       }, 2000);
     } catch (err) {
-      console.error("Lỗi đăng nhập: ", err);
       handleError(err);
     }
   };
 
   const handleError = (err) => {
     if (!err.response) {
-      toast.error("Không có phản hồi từ máy chủ");
+      addNotification("Không có phản hồi từ máy chủ", "error");
     } else if (err.response.status === 400) {
-      toast.warn("Sai tên đăng nhập hoặc mật khẩu");
-    } else if (err.response.status === 401) {
-      toast.error("Không có quyền truy cập");
+      addNotification("Sai tên đăng nhập hoặc mật khẩu", "warning");
+      setErrMsg("Sai tên đăng nhập hoặc mật khẩu");
     } else {
-      toast.error(
+      setErrMsg(
         "Đăng nhập thất bại: " +
-          (err.response.data.message || "Đã xảy ra lỗi không mong muốn")
+          (err.response.data?.message || "Đã xảy ra lỗi không mong muốn")
       );
     }
   };
@@ -129,6 +129,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        errMsg,
         auth,
         setAuth,
         handleLogin,

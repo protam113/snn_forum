@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { useStaticalProductCategoryGeneral } from "../../../../../../hooks/Statistical/fetchStaticalProductGeneral";
 
@@ -133,7 +132,6 @@ export default function StaticalProductCategoryGeneral() {
         )
       );
     } else if (error) {
-      toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
     }
   }, [staticalProductCategory, isLoading, error]);
 

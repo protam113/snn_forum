@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { toast } from "react-toastify";
 
 const fetchGroups = async (getToken) => {
   try {
@@ -9,7 +8,7 @@ const fetchGroups = async (getToken) => {
     const response = await authApi(token).get(endpoints.GroupList);
     return response.data.results || [];
   } catch (err) {
-    toast.error("Đã xảy ra lỗi khi lấy danh sách nhóm");
+    console.error("Đã xảy ra lỗi khi lấy danh sách nhóm");
     throw err;
   }
 };
@@ -22,7 +21,7 @@ const useGroups = () => {
     queryFn: () => fetchGroups(getToken),
     staleTime: 60000,
     onError: (err) => {
-      console.log("Error fetching groups:", err);
+      console.error("Error fetching groups:", err);
     },
   });
 };

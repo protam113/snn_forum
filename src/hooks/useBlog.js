@@ -2,7 +2,6 @@ import { useState, useCallback, useRef } from "react";
 import { toast } from "react-toastify";
 import { authApi, endpoints } from "../api/api";
 import useAuth from "./useAuth";
-import { encryptData, decryptData } from "../utils/cryptoUtils";
 
 const useBlog = (blogId) => {
   const [error, setError] = useState(null);
@@ -85,35 +84,6 @@ const useBlog = (blogId) => {
     [getToken]
   );
 
-  // Handle delete blog
-
-  const handleDeleteBlog = async (blogId) => {
-    try {
-      const token = await getToken();
-      if (!token) return;
-
-      await authApi(token).delete(endpoints.DeleteBlog.replace(":id", blogId));
-
-      const page = 1;
-      const cacheKey = `blogs_page_${page}`;
-      const cachedData = localStorage.getItem(cacheKey);
-      if (cachedData) {
-        const parsedData = decryptData(cachedData);
-        const updatedBlogs = parsedData.blogs.filter(
-          (blog) => blog.id !== blogId
-        );
-
-        const encryptedData = encryptData({
-          ...parsedData,
-          blogs: updatedBlogs,
-        });
-        localStorage.setItem(cacheKey, encryptedData);
-      }
-    } catch (error) {
-      console.error("Lỗi khi xóa blog:", error);
-    }
-  };
-
   // Handle delete comment
   const handleDeleteComment = useCallback(
     async (commentId) => {
@@ -191,15 +161,12 @@ const useBlog = (blogId) => {
     [getToken]
   );
 
-  // Handle submit blog
-
   return {
     error,
     comments,
     commentChild,
     fileInputRef,
     handleLike,
-    handleDeleteBlog,
     handleDeleteComment,
     handleAddComment,
     handleEditComment,

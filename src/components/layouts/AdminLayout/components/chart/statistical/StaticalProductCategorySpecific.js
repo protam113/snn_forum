@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import useStatical from "../../../../../../hooks/useStatical";
-import { toast } from "react-toastify";
 import { useCategoryList } from "../../../../../../hooks/Product/useCategories";
 
 export default function StaticalProductCategoryGeneral() {
@@ -84,7 +83,6 @@ export default function StaticalProductCategoryGeneral() {
         });
       } catch (err) {
         console.error(err);
-        toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
       }
     };
 

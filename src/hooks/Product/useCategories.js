@@ -1,32 +1,45 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
-import { toast } from "react-toastify";
 import useAuth from "../useAuth";
+import { useToastDesign } from "../../context/ToastService";
 
 const fetchCategoryList = async (page = 1) => {
   try {
     const response = await authApi().get(
       `${endpoints.Categories}?page=${page}`
     );
-    // console.log(response);
     return {
-      Categories: response.data.results || [],
+      categories: response.data.results || [],
       totalPages: Math.ceil(response.data.count / 20),
       currentPage: page,
     };
   } catch (error) {
-    toast.error("Đã xảy ra lỗi!");
+    console.error("Đã xảy ra lỗi khi tải danh sách danh mục!");
     throw error;
   }
 };
 
-// Custom hook for product list
 const useCategoryList = (page) => {
+  const { addNotification } = useToastDesign();
+
   return useQuery({
     queryKey: ["categories", page],
     queryFn: () => fetchCategoryList(page),
     staleTime: 5 * 60 * 1000,
     cacheTime: 30 * 60 * 1000,
+    retry: (failureCount, error) => {
+      if (failureCount < 3) {
+        return true;
+      }
+      return false;
+    },
+    onError: (error) => {
+      addNotification(
+        "Đã xảy ra lỗi khi tải danh sách danh mục:",
+        "error",
+        error.message
+      );
+    },
   });
 };
 
@@ -47,12 +60,11 @@ const fetchProductByCategory = async (categoryId, page = 1) => {
       currentPage: page,
     };
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi lấy sản phẩm theo thể loại!");
+    console.error("Đã xảy ra lỗi khi lấy sản phẩm theo thể loại!");
     throw error;
   }
 };
 
-// Custom hook for product list
 const useProductByCategory = (categoryId, page) => {
   return useQuery({
     queryKey: ["productsByCategory", categoryId, page],
@@ -76,13 +88,14 @@ const AddCategory = async (newCategory, token) => {
 
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to add Category.");
+    console.error(error.response?.data?.message || "Failed to add Category.");
   }
 };
 
 const useAddCategory = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async (newCategory) => {
@@ -90,11 +103,11 @@ const useAddCategory = () => {
       return AddCategory(newCategory, token);
     },
     onSuccess: () => {
-      toast.success("Category đã được thêm thành công");
+      addNotification("Category đã được thêm thành công", "success");
       queryClient.invalidateQueries(["categories"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add Category.");
+      console.error(error.message || "Failed to add Category.");
     },
   });
 };
@@ -110,7 +123,7 @@ const editCategory = async ({ categoryId, edtCategory, token }) => {
 
   try {
     const response = await authApi(token).patch(
-      endpoints.Category.replace(":id", categoryId), // Use your defined endpoint with :id placeholder
+      endpoints.Category.replace(":id", categoryId),
       formData,
       {
         headers: {
@@ -120,7 +133,7 @@ const editCategory = async ({ categoryId, edtCategory, token }) => {
     );
     return response.data;
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi cập nhật Category.");
+    console.error("Đã xảy ra lỗi khi cập nhật Category.");
     throw error;
   }
 };
@@ -128,6 +141,7 @@ const editCategory = async ({ categoryId, edtCategory, token }) => {
 const useEditCategory = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async ({ categoryId, edtCategory }) => {
@@ -135,11 +149,11 @@ const useEditCategory = () => {
       return editCategory({ categoryId, edtCategory, token });
     },
     onSuccess: () => {
-      toast.success("Category đã được cập nhật thành công");
+      addNotification("Category đã được cập nhật thành công", "success");
       queryClient.invalidateQueries(["categories"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Lỗi khi cập nhật Category!");
+      console.error(error.message || "Lỗi khi cập nhật Category!");
     },
   });
 };
@@ -151,7 +165,7 @@ const deleteCategory = async ({ categoryId, token }) => {
   try {
     await authApi(token).delete(endpoints.Category.replace(":id", categoryId));
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi xóa Category.");
+    console.error("Đã xảy ra lỗi khi xóa Category.");
     throw error;
   }
 };
@@ -159,6 +173,7 @@ const deleteCategory = async ({ categoryId, token }) => {
 const useDeleteCategory = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async ({ categoryId }) => {
@@ -166,11 +181,11 @@ const useDeleteCategory = () => {
       return deleteCategory({ categoryId, token });
     },
     onSuccess: () => {
-      toast.success("Category đã được xóa thành công");
+      addNotification("Category đã được xóa thành công", "success");
       queryClient.invalidateQueries(["categories"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Lỗi khi xóa category!");
+      console.error(error.message || "Lỗi khi xóa category!");
     },
   });
 };

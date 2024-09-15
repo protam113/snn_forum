@@ -7,7 +7,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider, useTheme } from "./context/themeContext";
 import "./App.css";
-import { LoadingProvider } from "./context/LoadingContext";
 import { HelmetProvider } from "react-helmet-async";
 import useScrollToTop from "./hooks/useScrollToTop.js";
 import ProtectedRoutes from "./utils/ProtectedRoutes.js";
@@ -16,6 +15,8 @@ import { SecureStorageProvider } from "./context/SecureStorageProvider.js";
 import ScrollToTop from "./hooks/useScrollToTop.js";
 import { ErrorProvider, useError } from "./context/ErrorProvider.js";
 import { Error404, Error500, WebMaintenance } from "./pages/error/error.js";
+import { ToastDesignProvider } from "./context/ToastService.js";
+
 function AppContent() {
   const { theme } = useTheme();
   useScrollToTop();
@@ -86,19 +87,21 @@ function App() {
   return (
     <Router>
       <SecureStorageProvider>
-        <ErrorProvider>
-          <AuthProvider>
-            <ThemeProvider>
-              <BlogProvider>
-                <ScrollToTop />
-                <HelmetProvider>
-                  <AppContent />
-                  <ToastContainer position="top-center" />
-                </HelmetProvider>
-              </BlogProvider>
-            </ThemeProvider>
-          </AuthProvider>
-        </ErrorProvider>
+        <ToastDesignProvider>
+          <ErrorProvider>
+            <AuthProvider>
+              <ThemeProvider>
+                <BlogProvider>
+                  <ScrollToTop />
+                  <HelmetProvider>
+                    <AppContent />
+                    <ToastContainer position="top-center" />
+                  </HelmetProvider>
+                </BlogProvider>
+              </ThemeProvider>
+            </AuthProvider>
+          </ErrorProvider>
+        </ToastDesignProvider>
       </SecureStorageProvider>
     </Router>
   );

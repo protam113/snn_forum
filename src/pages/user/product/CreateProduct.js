@@ -4,7 +4,6 @@ import {
   AiOutlinePlus,
   AiOutlineWarning,
 } from "react-icons/ai";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Toolbar from "../../../components/design/Toolbar";
 import { marked } from "marked";
@@ -13,6 +12,7 @@ import { useTheme } from "../../../context/themeContext";
 import { useAddProduct } from "../../../hooks/Product/useProduct";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import CategoryList from "./components/categoryList";
+import { useToastDesign } from "../../../context/ToastService";
 
 const CreateProduct = () => {
   const { theme } = useTheme();
@@ -29,6 +29,7 @@ const CreateProduct = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const { addNotification } = useToastDesign();
 
   const { mutate: addProductMutation } = useAddProduct();
 
@@ -51,7 +52,7 @@ const CreateProduct = () => {
     if (files.length + selectedFiles.length <= 4) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
     } else {
-      toast.error("You can only upload up to 4 files.");
+      alert("You can only upload up to 4 files.");
     }
   };
 
@@ -87,7 +88,7 @@ const CreateProduct = () => {
 
     const numericPrice = parseFloat(price);
     if (isNaN(numericPrice)) {
-      toast.error("Price is not a valid number");
+      addNotification("Price is not a valid number", "error");
       return;
     }
 
@@ -110,12 +111,9 @@ const CreateProduct = () => {
         onSuccess: () => {
           navigate("/san_pham");
         },
-        onError: () => {
-          toast.error("Failed to add product.");
-        },
+        onError: () => {},
       });
     } catch (error) {
-      toast.error("An error occurred while adding the product.");
     } finally {
       setLoading(false);
     }

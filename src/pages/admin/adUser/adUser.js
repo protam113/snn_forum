@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUsers, FaSearch, FaTrash, FaFileExcel } from "react-icons/fa";
-import { MdGroup, MdAdd, MdPerson } from "react-icons/md";
-import { toast } from "react-toastify";
+import { FaUsers, FaSearch, FaFileExcel } from "react-icons/fa";
+import { MdGroup, MdAdd } from "react-icons/md";
 import * as XLSX from "xlsx";
 import { useTheme } from "../../../context/themeContext";
 import useAdmin from "../../../hooks/useAdmin";
@@ -11,6 +10,7 @@ import { useGroups } from "../../../hooks/Admin/useGroups";
 import { useAdminUser } from "../../../hooks/Admin/useAdminUser";
 import UserList from "./UserList";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { useToastDesign } from "../../../context/ToastService";
 
 const AdUser = () => {
   const { theme } = useTheme();
@@ -26,6 +26,7 @@ const AdUser = () => {
   const { data: groups, isLoading } = useGroups();
   const { userRoles } = useUserInfo();
   const { data = { pages: [] } } = useAdminUser();
+  const { addNotification } = useToastDesign();
 
   const [viewMode, setViewMode] = useState("all");
   const [userToRemove, setUserToRemove] = useState(null);
@@ -59,11 +60,10 @@ const AdUser = () => {
         setShowConfirm(false);
         setUserToRemove(null);
       } catch (error) {
-        console.error("Error removing user:", error);
-        toast.error("Có lỗi xảy ra khi xóa người dùng.");
+        console.error("Có lỗi xảy ra khi xóa người dùng:", error);
       }
     } else {
-      toast.error("Người dùng hoặc nhóm không được chọn");
+      addNotification("Người dùng hoặc nhóm không được chọn", "error");
     }
   };
 

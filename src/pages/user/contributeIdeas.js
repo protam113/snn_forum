@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import { RiStarLine } from "react-icons/ri";
 import { IoMdMail } from "react-icons/io";
 import { FaPhoneAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useToastDesign } from "../../context/ToastService";
 
 const ContributeIdeas = () => {
+  const { addNotification } = useToastDesign();
+
   const onSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -26,17 +28,16 @@ const ContributeIdeas = () => {
         const data = await response.json();
 
         if (data.success) {
-          toast.success("Form Submitted Successfully");
+          addNotification("Gửi thành công!");
           event.target.reset();
         } else {
-          toast.error(data.message);
+          console.error(data.message);
         }
       } else {
         throw new Error("Unexpected response format");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast.error("Error submitting form. Please try again later.");
     }
   };
 

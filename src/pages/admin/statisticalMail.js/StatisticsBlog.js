@@ -4,12 +4,10 @@ import StaticalBlogGeneral from "../../../components/layouts/AdminLayout/compone
 const StatisticalBlogs = () => {
   return (
     <div className="p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="shadow-md rounded-lg p-4 bg-white border border-gray-200">
-          <div className="font-semibold text-lg mb-2">Thống Kê Bài Viết.</div>
-          <div className="text-sm text-gray-600 mb-4">Thống kê blog .</div>
-          <StaticalBlogGeneral />
-        </div>
+      <div className="shadow-md rounded-lg p-4  border border-gray-200">
+        <div className="font-semibold text-lg mb-2">Thống Kê Bài Viết.</div>
+        <div className="text-sm text-gray-600 mb-4">Thống kê blog .</div>
+        <StaticalBlogGeneral />
       </div>
     </div>
   );

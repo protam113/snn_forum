@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { toast } from "react-toastify";
 
 const fetchStatisticalJobApplicationGeneral = async (
   startDate,
@@ -25,9 +24,13 @@ const fetchStatisticalJobApplicationGeneral = async (
       )}&end_date=${encodeURIComponent(endDate)}`
     );
 
+    if (!response.data || response.data.length === 0) {
+      throw new Error("Không có dữ liệu thống kê");
+    }
+
     return response.data;
   } catch (err) {
-    toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
+    console.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê", err);
     throw err;
   }
 };
@@ -41,10 +44,17 @@ const useStatisticalJobApplicationGeneral = (startDate, endDate) => {
       const token = await getToken();
       return fetchStatisticalJobApplicationGeneral(startDate, endDate, token);
     },
+    enabled: !!startDate && !!endDate,
     staleTime: 60000,
-    onError: (err) => {
-      console.log("Error fetching product category statistics:", err);
+    cacheTime: 300000,
+    retry: (failureCount, error) => {
+      if (failureCount < 3 && error.message !== "Không có dữ liệu thống kê") {
+        return true;
+      }
+      return false;
     },
+    onError: () => {},
+    refetchOnWindowFocus: true,
   });
 };
 

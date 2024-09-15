@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../api/api";
-import { toast } from "react-toastify";
 import useAuth from "./useAuth";
+import { useToastDesign } from "../context/ToastService";
 
 const fetchTags = async (page = 1) => {
   try {
@@ -12,20 +12,32 @@ const fetchTags = async (page = 1) => {
       currentPage: page,
     };
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi tải tags!");
+    console.error("Đã xảy ra lỗi khi tải tags!");
     throw error;
   }
 };
 
 const useTags = (page, hasTags) => {
+  const { addNotification } = useToastDesign();
+
   return useQuery({
     queryKey: ["tags", page],
     queryFn: () => fetchTags(page),
-    staleTime: 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    staleTime: 60 * 1000, // 1 phút
+    cacheTime: 10 * 60 * 1000, // 10 phút
     enabled: hasTags || page === 1,
+    retry: (failureCount, error) => {
+      if (failureCount < 3 && error.message !== "Không có dữ liệu") {
+        return true;
+      }
+      return false;
+    },
+    onError: (error) => {
+      addNotification("Đã xảy ra lỗi khi tải tags:", "error", error.message);
+    },
   });
 };
+
 const AddTag = async (newTag, token) => {
   const formData = new FormData();
 
@@ -43,6 +55,7 @@ const AddTag = async (newTag, token) => {
 const useAddTag = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async (newTag) => {
@@ -50,11 +63,11 @@ const useAddTag = () => {
       return AddTag(newTag, token);
     },
     onSuccess: () => {
-      toast.success("Tag đã được thêm thành công");
+      addNotification("Tag đã được thêm thành công", "success");
       queryClient.invalidateQueries(["tags"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to add Tag.");
+      addNotification(error.message || "Failed to add Tag.", "error");
     },
   });
 };
@@ -81,7 +94,7 @@ const updateTag = async ({ TagId, edtTag, token }) => {
     );
     return response.data;
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi cập nhật tag.");
+    console.error("Đã xảy ra lỗi khi cập nhật tag.");
     throw error;
   }
 };
@@ -89,6 +102,7 @@ const updateTag = async ({ TagId, edtTag, token }) => {
 const useEditTag = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async ({ TagId, edtTag }) => {
@@ -96,11 +110,11 @@ const useEditTag = () => {
       return updateTag({ TagId, edtTag, token });
     },
     onSuccess: () => {
-      toast.success("Tag đã được cập nhật thành công");
+      addNotification("Tag đã được cập nhật thành công", "success");
       queryClient.invalidateQueries(["tags"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Lỗi khi cập nhật tag!");
+      console.error(error.message || "Lỗi khi cập nhật tag!");
     },
   });
 };
@@ -112,7 +126,7 @@ const deleteTag = async ({ TagId, token }) => {
   try {
     await authApi(token).delete(endpoints.TagId.replace(":id", TagId));
   } catch (error) {
-    toast.error("Đã xảy ra lỗi khi xóa tag.");
+    console.error("Đã xảy ra lỗi khi xóa tag.");
     throw error;
   }
 };
@@ -120,6 +134,7 @@ const deleteTag = async ({ TagId, token }) => {
 const useDeleteTag = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async ({ TagId }) => {
@@ -127,11 +142,11 @@ const useDeleteTag = () => {
       return deleteTag({ TagId, token });
     },
     onSuccess: () => {
-      toast.success("Tag đã được xóa thành công");
+      addNotification("Tag đã được xóa thành công", "success");
       queryClient.invalidateQueries(["tags"]);
     },
     onError: (error) => {
-      toast.error(error.message || "Lỗi khi xóa tag!");
+      addNotification(error.message || "Lỗi khi xóa tag!", "error");
     },
   });
 };

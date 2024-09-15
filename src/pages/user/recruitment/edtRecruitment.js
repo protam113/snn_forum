@@ -8,7 +8,6 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import { salary } from "../../../data/SalaryRange";
-import { toast } from "react-toastify";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate, useParams } from "react-router-dom";
 import Toolbar from "../../../components/design/Toolbar";
@@ -20,7 +19,6 @@ import {
   useRecruitmentDetail,
   useEditRecruitment,
 } from "../../../hooks/Recruitment/useRecruitment";
-import { useTags } from "../../../hooks/useTag";
 import TagsList from "./components/TagList";
 
 const EdtRecruitment = () => {

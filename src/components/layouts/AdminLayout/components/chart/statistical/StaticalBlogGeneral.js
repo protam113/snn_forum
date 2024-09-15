@@ -14,7 +14,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { toast } from "react-toastify";
 import { useStaticalBlogGeneral } from "../../../../../../hooks/Statistical/StaticalBlogGeneral";
 import dayjs from "dayjs";
 
@@ -161,7 +160,6 @@ export default function StaticalBlogGeneral() {
       setDailyData(dailyData);
       setTotalBlogs(staticalBlogGeneral.total_blogs || 0);
     } else if (error) {
-      toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
     }
   }, [staticalBlogGeneral, isLoading, error]);
 

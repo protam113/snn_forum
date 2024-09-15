@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
-import { toast } from "react-toastify";
 import useAuth from "../useAuth";
 
 const fetchStaticalUser = async (startDate, endDate, token) => {
@@ -18,9 +17,14 @@ const fetchStaticalUser = async (startDate, endDate, token) => {
         startDate
       )}&end_date=${encodeURIComponent(endDate)}`
     );
+
+    if (!response.data || response.data.length === 0) {
+      throw new Error("Không có dữ liệu thống kê");
+    }
+
     return response.data;
   } catch (err) {
-    toast.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê");
+    console.error("Đã xảy ra lỗi khi lấy dữ liệu thống kê", err);
     throw err;
   }
 };
@@ -32,12 +36,23 @@ const useStaticalUser = (startDate, endDate) => {
     queryKey: ["staticalUser", startDate, endDate],
     queryFn: async () => {
       const token = await getToken();
+
+      if (!startDate || !endDate) {
+        throw new Error("Start date hoặc end date không hợp lệ");
+      }
+
       return fetchStaticalUser(startDate, endDate, token);
     },
+    enabled: !!startDate && !!endDate,
     staleTime: 60000,
-    onError: (err) => {
-      console.log("Error fetching user statistics:", err);
+    cacheTime: 300000,
+    retry: (failureCount, error) => {
+      if (failureCount < 3 && error.message !== "Không có dữ liệu thống kê") {
+        return true;
+      }
+      return false;
     },
+    onError: () => {},
   });
 };
 

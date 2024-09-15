@@ -5,8 +5,8 @@ import {
   AiOutlinePlus,
   AiOutlineWarning,
 } from "react-icons/ai";
-import { toast } from "react-toastify";
 import { useAddApplyJob } from "../../../hooks/useUserApllylist";
+import { useToastDesign } from "../../../context/ToastService";
 
 const ApplyRecruitment = () => {
   const { id: postId } = useParams();
@@ -21,6 +21,7 @@ const ApplyRecruitment = () => {
   const [email, setEmail] = useState("");
   const [sex, setSex] = useState("");
   const [age, setAge] = useState("");
+  const { addNotification } = useToastDesign();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -43,7 +44,7 @@ const ApplyRecruitment = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "age" && !/^\d*$/.test(value)) {
-      toast.error("Age should be a valid number.");
+      addNotification("Age should be a valid number.", "warning");
       return;
     }
     if (name === "sex") {
@@ -74,7 +75,7 @@ const ApplyRecruitment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!cv) {
-      toast.error("No CV was submitted.");
+      addNotification("No CV was submitted.", "error");
       return;
     }
     if (!email.includes("@")) {

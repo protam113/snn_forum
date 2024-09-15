@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { authApi, endpoints } from "../api/api";
-import { toast } from "react-toastify";
 import useAuth from "./useAuth";
 import { useNavigate } from "react-router-dom";
+import { useToastDesign } from "../context/ToastService";
 
 const fetchUserApplyList = async (token) => {
   try {
@@ -10,7 +10,6 @@ const fetchUserApplyList = async (token) => {
     return response.data.results || [];
   } catch (err) {
     console.error("Error fetching user apply list:", err);
-    toast.error("Error fetching user apply list!");
     throw err;
   }
 };
@@ -31,7 +30,7 @@ const useUserApplyList = () => {
     staleTime: Infinity,
     cacheTime: Infinity,
     onError: (error) => {
-      toast.error(`Error fetching user apply list: ${error.message}`);
+      console.error(`Error fetching user apply list: ${error.message}`);
     },
   });
 };
@@ -71,6 +70,7 @@ const useAddApplyJob = (postId) => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
   const navigate = useNavigate();
+  const { addNotification } = useToastDesign();
 
   return useMutation({
     mutationFn: async (newAddApplyJob) => {
@@ -78,7 +78,7 @@ const useAddApplyJob = (postId) => {
       return addApplyJob(newAddApplyJob, token, postId);
     },
     onSuccess: () => {
-      toast.success("Đã ứng tuyển thành công!");
+      addNotification("Đã ứng tuyển thành công!", "success");
       setTimeout(() => {
         navigate(-1);
       }, 2000);
@@ -86,9 +86,9 @@ const useAddApplyJob = (postId) => {
     },
     onError: (error) => {
       if (error.response?.status === 500) {
-        toast.error("Bạn đã ứng tuyển vào vị trí này.");
+        addNotification("Bạn đã ứng tuyển vào vị trí này.", "warning");
       } else {
-        toast.error(error.message || "Failed to apply for job.");
+        console.error(error.message || "Failed to apply for job.");
       }
     },
   });

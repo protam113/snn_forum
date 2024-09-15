@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { toast } from "react-toastify";
 import { authApi, endpoints } from "../api/api";
 
 const useCategories = () => {
@@ -23,9 +22,6 @@ const useCategories = () => {
     } catch (err) {
       console.error("Lỗi khi lấy sản phẩm theo danh mục:", err);
       setError(err.message || "Đã xảy ra lỗi");
-      toast.error(
-        err.message || "Đã xảy ra lỗi khi lấy sản phẩm theo danh mục"
-      );
     } finally {
       setLoading(false);
     }
