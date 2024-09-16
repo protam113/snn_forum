@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { FaUpload, FaPaperPlane, FaExclamationTriangle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useBlog from "../../hooks/useBlog";
 import { useTheme } from "../../context/themeContext";
-import useTokenCheck from "../../hooks/useTokenCheck";
+import { useAddComment } from "../../hooks/Blog/useComment";
+import { useUser } from "../../context/UserProvider";
 
 const Comment = ({ blogId }) => {
-  const hasToken = useTokenCheck();
   const { theme } = useTheme();
-  const { handleAddComment } = useBlog(blogId);
+  const { mutate: addComment } = useAddComment(blogId);
+  const { userInfo } = useUser();
   const [selectedFile, setSelectedFile] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [error, setError] = useState(null);
@@ -27,12 +27,15 @@ const Comment = ({ blogId }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (commentText.trim() || selectedFile) {
+      const formData = {
+        content: commentText,
+        file: selectedFile,
+      };
+
       try {
-        await handleAddComment(blogId, {
-          content: commentText,
-          file: selectedFile,
-        });
+        await addComment({ blogId, contentData: formData });
         setCommentText("");
         setSelectedFile(null);
         setError(null);
@@ -40,10 +43,12 @@ const Comment = ({ blogId }) => {
         console.error("Error posting comment:", error);
         setError("Error posting comment. Please try again.");
       }
+    } else {
+      setError("Please enter a comment or upload a file.");
     }
   };
 
-  if (!hasToken) {
+  if (!userInfo) {
     return (
       <div className="flex flex-col p-4 rounded-lg space-y-4">
         <Link
@@ -60,6 +65,23 @@ const Comment = ({ blogId }) => {
   return (
     <div className="flex flex-col p-4 rounded-lg space-y-4">
       {error && <p className="text-red-500">{error}</p>}
+      {selectedFile && (
+        <div className="flex space-x-4 items-center">
+          <div className="relative">
+            <img
+              src={URL.createObjectURL(selectedFile)}
+              alt="Selected"
+              className="rounded-md w-20 h-10"
+            />
+            <button
+              onClick={handleRemoveImage}
+              className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center"
+            >
+              x
+            </button>
+          </div>
+        </div>
+      )}
       <div className="flex items-center space-x-4">
         <label className="flex items-center space-x-2 cursor-pointer">
           <FaUpload className="text-custom-red" />
@@ -84,23 +106,6 @@ const Comment = ({ blogId }) => {
           <FaPaperPlane />
         </button>
       </div>
-      {selectedFile && (
-        <div className="flex space-x-4 items-center">
-          <div className="relative">
-            <img
-              src={URL.createObjectURL(selectedFile)}
-              alt="Selected"
-              className="rounded-md w-20 h-10"
-            />
-            <button
-              onClick={handleRemoveImage}
-              className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center"
-            >
-              x
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

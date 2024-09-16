@@ -4,10 +4,10 @@ import { useTheme } from "../../../../context/themeContext";
 import Loading from "../../../error/load";
 import { useNavigate } from "react-router-dom";
 import { useRecruitmentList } from "../../../../hooks/useFetchList";
-import useUserInfo from "../../../../hooks/useUserInfo";
+import { useUser } from "../../../../context/UserProvider";
 
 const RecruitmentSidebar = () => {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { data: recruitments = [], error, isLoading } = useRecruitmentList(); // Default to empty array

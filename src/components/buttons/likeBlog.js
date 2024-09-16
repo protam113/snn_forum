@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { FaHeart } from "react-icons/fa";
-import useBlog from "../../hooks/useBlog";
+import { useLikeBlog } from "../../hooks/Blog/useBlogs";
 import Loading from "../../pages/error/load";
 
 const LikePost = ({ blogId, liked }) => {
-  const { handleLike } = useBlog();
+  const { mutate: addLikeBlogMutation } = useLikeBlog(); // Ensure you call the hook correctly
+
   const [localLiked, setLocalLiked] = useState(liked);
   const [localLoading, setLocalLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
@@ -15,7 +16,8 @@ const LikePost = ({ blogId, liked }) => {
     setLocalError(null);
 
     try {
-      await handleLike(blogId, localLiked);
+      // Make sure to pass the parameters as an object if that's how useLikeBlog expects it
+      await addLikeBlogMutation({ blogId, isLiked: localLiked });
       setLocalLiked((prev) => !prev);
     } catch (err) {
       setLocalError("Error handling like/unlike");

@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import useUserInfo from "../../hooks/useUserInfo";
+import { useUser } from "../../context/UserProvider";
 
 const Ads_Input = () => {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
 
   if (userInfo) {
     return null;

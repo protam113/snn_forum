@@ -1,10 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import useUserInfo from "../hooks/useUserInfo";
 import Loading from "../pages/error/load";
+import { useUser } from "../context/UserProvider";
 
 const ProtectedRoutes = ({ children, allowedRoles }) => {
-  const { userRoles, loading } = useUserInfo();
+  const { userRoles, loading } = useUser();
 
   // console.log("Loading in ProtectedRoutes:", loading);
   // console.log("User Roles in ProtectedRoutes:", userRoles);

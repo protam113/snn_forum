@@ -5,12 +5,12 @@ import { MdGroup, MdAdd } from "react-icons/md";
 import * as XLSX from "xlsx";
 import { useTheme } from "../../../context/themeContext";
 import useAdmin from "../../../hooks/useAdmin";
-import useUserInfo from "../../../hooks/useUserInfo";
 import { useGroups } from "../../../hooks/Admin/useGroups";
 import { useAdminUser } from "../../../hooks/Admin/useAdminUser";
 import UserList from "./UserList";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { useToastDesign } from "../../../context/ToastService";
+import { useUser } from "../../../context/UserProvider";
 
 const AdUser = () => {
   const { theme } = useTheme();
@@ -24,7 +24,8 @@ const AdUser = () => {
     removeUserFromGroup,
   } = useAdmin();
   const { data: groups, isLoading } = useGroups();
-  const { userRoles } = useUserInfo();
+  const { userRoles } = useUser();
+
   const { data = { pages: [] } } = useAdminUser();
   const { addNotification } = useToastDesign();
 

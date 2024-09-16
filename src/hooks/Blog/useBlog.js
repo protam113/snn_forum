@@ -45,38 +45,32 @@ const editBlog = async ({ blogId, edtBlog, token }) => {
       formData.append(key, edtBlog[key]);
     }
   }
-
-  const url = endpoints.BlogDetail.replace(":id", blogId);
-
-  try {
-    const response = await authApi(token).patch(url, formData, {
+  const response = await authApi(token).patch(
+    endpoints.BlogDetail.replace(":id", blogId),
+    formData,
+    {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Error updating blog:",
-      error.response?.data || error.message
-    );
-    throw error;
-  }
+    }
+  );
+
+  return response.data;
 };
 
-const useEditBlog = (blogId) => {
+const useEditBlog = () => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
   const { addNotification } = useToastDesign();
 
   return useMutation({
-    mutationFn: async ({ edtBlog }) => {
+    mutationFn: async ({ edtBlog, blogId }) => {
       const token = await getToken();
       return editBlog({ blogId, edtBlog, token });
     },
     onSuccess: () => {
       addNotification("Blog đã được cập nhật thành công", "success");
-      queryClient.invalidateQueries(["blog", blogId]);
+      queryClient.invalidateQueries(["blog"]);
       queryClient.invalidateQueries(["blogs"]);
     },
     onError: (error) => {

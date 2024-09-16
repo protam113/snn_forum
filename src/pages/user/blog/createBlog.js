@@ -1,11 +1,11 @@
 import { useNavigate, Link } from "react-router-dom";
 import { IoIosCreate } from "react-icons/io";
 import { FaExclamationTriangle } from "react-icons/fa";
-import useUserInfo from "../../../hooks/useUserInfo";
+import { useUser } from "../../../context/UserProvider";
 
 const CreateBlog = () => {
   const navigate = useNavigate();
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
 
   const handleClick = () => {
     navigate("/create_blog");

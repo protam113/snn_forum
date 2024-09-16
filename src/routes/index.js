@@ -14,7 +14,6 @@ import StaticalJobPostSpecific from "../pages/admin/statisticalMail.js/StaticalJ
 import StaticalProductCategory from "../pages/admin/statisticalMail.js/StaticalProductCategoryGeneral";
 import StaticalProduct from "../pages/admin/statisticalMail.js/StaticalProductGeneral";
 import StatisticalJobApplicationGeneral from "../pages/admin/statisticalMail.js/StatisticalJobApplicationGeneral";
-import StatisticalPage from "../pages/admin/statisticalMail.js/statisticalPage";
 import StatisticalBlogs from "../pages/admin/statisticalMail.js/StatisticsBlog";
 import ManageTag from "../pages/admin/tag/ManageTag";
 import ResetPassword from "../pages/auth/authResetPass";
@@ -76,7 +75,7 @@ const publicRoutes = [
     component: Blog_detail,
     layout: DefaultLayout,
   },
-  { path: "/blog/edit/:blogId", component: EdtBlog, layout: DefaultLayout },
+  { path: "/blog/edit/:id", component: EdtBlog, layout: DefaultLayout },
   { path: "/profile/:id", component: ProfileMain, layout: DefaultLayout },
   {
     path: "/profile/:username/edit",

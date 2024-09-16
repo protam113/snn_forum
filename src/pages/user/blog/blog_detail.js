@@ -14,20 +14,19 @@ import Likeblog from "../../../components/buttons/likeBlog";
 import formatDate from "../../../utils/formatDate";
 import Comment from "../../../components/comment/comment";
 import { useTheme } from "../../../context/themeContext";
-import useBlog from "../../../hooks/useBlog";
 import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
 import { MdPerson } from "react-icons/md";
-import useUserInfo from "../../../hooks/useUserInfo";
 import { useBlogDetail } from "../../../hooks/Blog/useBlog";
 import CommentsSection from "../../../components/comment/CommentsSection";
 import { useDeleteBlog } from "../../../hooks/Blog/useBlogs";
 import { useToastDesign } from "../../../context/ToastService";
+import { useUser } from "../../../context/UserProvider";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
   const { id: blogId } = useParams();
   const navigate = useNavigate();
   const { data: blog, isLoading, isError } = useBlogDetail(blogId);
@@ -57,6 +56,7 @@ const Blog_detail = () => {
       }
     }
   };
+
   const handleEditClick = (blogId) => {
     navigate(`/blog/edit/${blogId}`);
   };

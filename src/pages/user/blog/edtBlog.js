@@ -8,19 +8,17 @@ import ReactMarkdown from "react-markdown";
 import TurndownService from "turndown";
 import Toolbar from "../../../components/design/Toolbar";
 import { useBlogDetail, useEditBlog } from "../../../hooks/Blog/useBlog";
+import { useToastDesign } from "../../../context/ToastService";
 
 const EdtBlog = () => {
+  const { id: blogId } = useParams();
   const { theme } = useTheme();
-  const { blogId } = useParams();
+  const { addNotification } = useToastDesign();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const { mutate: editBlog } = useEditBlog(blogId);
-  const {
-    data: blog,
-    isLoading: blogLoading,
-    isError: blogError,
-  } = useBlogDetail(blogId);
-  const [submitting, setSubmitting] = useState(false);
+  const { data: blog, isLoading, isError } = useBlogDetail(blogId);
+  const [submitting] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [formData, setFormData] = useState({
     content: "",
@@ -88,40 +86,38 @@ const EdtBlog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
 
-    const data = new FormData();
-    selectedFiles.forEach((file) => {
-      if (file instanceof File) {
-        data.append("media", file);
-      }
-    });
-    Object.keys(formData).forEach((key) => {
-      if (key !== "media") {
-        data.append(key, formData[key]);
-      }
-    });
+    if (!blogId) {
+      addNotification("ID bài viết không hợp lệ.", "warning");
+      return;
+    }
 
     try {
-      const htmlDescription = marked(formData.description);
-      data.append("description", htmlDescription);
-
-      await editBlog({ edtBlog: data });
-      navigate(`/blog/${blogId}`);
-    } catch (err) {
-      console.error("Failed to update blog", err);
-    } finally {
-      setSubmitting(false);
+      const formDataToSend = {
+        ...formData,
+        description: marked(formData.description),
+        media: selectedFiles,
+      };
+      await editBlog({
+        blogId,
+        edtBlog: formDataToSend,
+      });
+      navigate(-1);
+    } catch (error) {
+      console.error(
+        "Lỗi khi cập nhật blog:",
+        error.response?.data || error.message
+      );
     }
   };
 
-  if (blogLoading)
+  if (isLoading)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
       </div>
     );
-  if (blogError) return <p className="text-center text-red-500">{blogError}</p>;
+  if (isError) return <p className="text-center text-red-500">{isError}</p>;
 
   return (
     <div

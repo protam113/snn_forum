@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../../design/Block";
 import { FaHotjar } from "react-icons/fa";
 import { MdPerson } from "react-icons/md";
 import formatDate from "../../../../../utils/formatDate";
 import { useTheme } from "../../../../../context/themeContext";
-import Loading from "../../../../../pages/error/load";
-import { useBlogs } from "../../../../../hooks/useFetchList";
+import { useBlogList } from "../../../../../hooks/Blog/useBlogs";
 
 const SActivity = () => {
-  const { data: blogs = [], loading, error } = useBlogs();
+  const [allBlogs, setAllBlogs] = useState([]);
+  const { data: blogsData } = useBlogList();
   const { theme } = useTheme();
   const navigate = useNavigate();
 
@@ -23,16 +23,22 @@ const SActivity = () => {
     navigate(`/blog/${blogId}`);
   };
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loading />
-      </div>
-    );
-  if (error)
-    return <p className="text-center text-red-500">Error loading activities</p>;
+  const getRecentBlogs = (blogs) => {
+    return blogs
+      .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+      .slice(0, 5);
+  };
 
-  const recentActivities = blogs.slice(0, 5);
+  useEffect(() => {
+    if (blogsData) {
+      // Kết hợp tất cả các trang
+      const combinedBlogs = blogsData.pages.flatMap((page) => page.blogs);
+      setAllBlogs(combinedBlogs);
+    }
+  }, [blogsData]);
+
+  // Lấy 5 bài viết gần đây từ dữ liệu đã fetch
+  const recentActivities = getRecentBlogs(allBlogs);
 
   return (
     <Block className="p-4 border-zinc-300 rounded-lg mb-6">

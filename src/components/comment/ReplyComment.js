@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane, FaUpload } from "react-icons/fa";
 import { useTheme } from "../../context/themeContext";
-import useBlog from "../../hooks/useBlog";
+import { useAddComment } from "../../hooks/Blog/useComment";
+import { AiOutlineWarning } from "react-icons/ai";
 
 const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
   const { theme } = useTheme();
-  const { handleAddComment } = useBlog(blogId);
+  const { mutate: addComment } = useAddComment();
   const [replyText, setReplyText] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState(null);
@@ -24,46 +25,38 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (replyText.trim() || selectedFile) {
       try {
-        await handleAddComment(
-          blogId,
-          { content: replyText, file: selectedFile },
-          parentId
-        );
+        const commentData = {
+          content: replyText || "",
+          file: selectedFile || null,
+        };
+
+        addComment({ blogId, contentData: commentData, parentId });
+
         setReplyText("");
         setSelectedFile(null);
         setError(null);
+
         if (onReplyAdded) onReplyAdded();
       } catch (error) {
         console.error("Error posting reply:", error);
         setError("Error posting reply. Please try again.");
       }
+    } else {
+      setError("Reply text or file is required.");
     }
   };
 
   return (
     <div className="flex flex-col p-4 rounded-lg space-y-4">
-      {error && <p className="text-red-500">{error}</p>}
-      <div className="flex items-center space-x-4">
-        <textarea
-          value={replyText}
-          rows={2}
-          onChange={handleReplyChange}
-          placeholder="Write a reply..."
-          className={`flex-grow rounded-md border-b-2 ${
-            theme === "dark" ? "text-white" : "text-black"
-          } ${theme === "dark" ? "border-zinc-400" : "border-zinc-500"} ${
-            theme === "dark" ? "bg-zinc-800" : "bg-white"
-          } focus:outline-none focus:ring-2 focus:ring-gray-500`}
-        />
-        <button
-          onClick={handleSubmit}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-custom-red hover:bg-gray-600 text-white"
-        >
-          <FaPaperPlane />
-        </button>
-      </div>
+      {error && (
+        <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
+          <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+          <span> {error}</span>
+        </div>
+      )}
       {selectedFile && (
         <div className="flex space-x-4 items-center">
           <div className="relative">
@@ -85,6 +78,29 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
           </div>
         </div>
       )}
+      <div className="flex items-center space-x-4">
+        {/* <label className="flex items-center space-x-2 cursor-pointer">
+          <FaUpload className="text-custom-red" />
+          <input type="file" onChange={handleFileChange} className="hidden" />
+        </label> */}
+        <textarea
+          value={replyText}
+          rows={2}
+          onChange={handleReplyChange}
+          placeholder="Write a reply..."
+          className={`flex-grow rounded-md border-b-2 ${
+            theme === "dark" ? "text-white" : "text-black"
+          } ${theme === "dark" ? "border-zinc-400" : "border-zinc-500"} ${
+            theme === "dark" ? "bg-zinc-800" : "bg-white"
+          } focus:outline-none focus:ring-2 focus:ring-gray-500`}
+        />
+        <button
+          onClick={handleSubmit}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-custom-red hover:bg-gray-600 text-white"
+        >
+          <FaPaperPlane />
+        </button>
+      </div>
     </div>
   );
 };

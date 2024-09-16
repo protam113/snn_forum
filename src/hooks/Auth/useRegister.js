@@ -93,12 +93,14 @@ const useRegister = () => {
       return Register(registrationData);
     },
     onSuccess: () => {
-      toast.success("Registration successful!");
+      addNotification("Đăng ký thành công!", "success");
     },
     onError: (error) => {
       const errorMessage =
-        error.response?.data?.detail || error.message || "Registration failed.";
-      addNotification(errorMessage);
+        error.response?.data?.detail ||
+        error.message ||
+        "Đăng ký không thành công.";
+      addNotification(errorMessage, "error");
     },
   });
 };

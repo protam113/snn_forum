@@ -50,7 +50,7 @@ const LocationSelector = ({
   return (
     <div>
       <select value={currentProvince} onChange={handleProvinceChange}>
-        <option value="">Select Province</option>
+        <option value="">Tỉnh/Thành Phố</option>
         {provinces.map((province) => (
           <option key={province.name} value={province.name}>
             {province.name}
@@ -63,7 +63,7 @@ const LocationSelector = ({
         onChange={handleDistrictChange}
         disabled={!currentProvince}
       >
-        <option value="">Select District</option>
+        <option value=""> Quận/Huyện</option>
         {districts.map((district) => (
           <option key={district} value={district}>
             {district}

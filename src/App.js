@@ -16,6 +16,7 @@ import ScrollToTop from "./hooks/useScrollToTop.js";
 import { ErrorProvider, useError } from "./context/ErrorProvider.js";
 import { Error404, Error500, WebMaintenance } from "./pages/error/error.js";
 import { ToastDesignProvider } from "./context/ToastService.js";
+import { UserProvider } from "./context/UserProvider.js";
 
 function AppContent() {
   const { theme } = useTheme();
@@ -90,15 +91,17 @@ function App() {
         <ToastDesignProvider>
           <ErrorProvider>
             <AuthProvider>
-              <ThemeProvider>
-                <BlogProvider>
-                  <ScrollToTop />
-                  <HelmetProvider>
-                    <AppContent />
-                    <ToastContainer position="top-center" />
-                  </HelmetProvider>
-                </BlogProvider>
-              </ThemeProvider>
+              <UserProvider>
+                <ThemeProvider>
+                  <BlogProvider>
+                    <ScrollToTop />
+                    <HelmetProvider>
+                      <AppContent />
+                      <ToastContainer position="top-center" />
+                    </HelmetProvider>
+                  </BlogProvider>
+                </ThemeProvider>
+              </UserProvider>
             </AuthProvider>
           </ErrorProvider>
         </ToastDesignProvider>

@@ -15,15 +15,10 @@ const useUserInfo = (personId = null) => {
   const userInfoFetchedRef = useRef(false);
   const personalInfoFetchedRef = useRef(false);
 
-  useEffect(() => {
-    userInfoFetchedRef.current = false;
-    personalInfoFetchedRef.current = false;
-  }, [personId]);
-
-  const cacheUserInfo = (data) => {
+  const cacheUserInfo = useCallback((data) => {
     const encryptedData = encryptData(JSON.stringify(data));
     localStorage.setItem("user_info", encryptedData);
-  };
+  }, []);
 
   const isValidJSON = (str) => {
     try {
@@ -34,7 +29,7 @@ const useUserInfo = (personId = null) => {
     }
   };
 
-  const getCachedUserInfo = () => {
+  const getCachedUserInfo = useCallback(() => {
     const cachedData = localStorage.getItem("user_info");
     if (cachedData) {
       try {
@@ -53,7 +48,8 @@ const useUserInfo = (personId = null) => {
       }
     }
     return null;
-  };
+  }, []);
+
   const fetchUserInfo = useCallback(async () => {
     if (userInfoFetchedRef.current) return;
 
@@ -63,8 +59,8 @@ const useUserInfo = (personId = null) => {
     if (cachedData) {
       setUserInfo(cachedData);
       setUserRoles(cachedData.groups.map((group) => group.name));
-      setLoading(false);
       userInfoFetchedRef.current = true;
+      setLoading(false);
       return;
     }
 
@@ -81,19 +77,16 @@ const useUserInfo = (personId = null) => {
       const response = await authApi(token).get(endpoints.currentUser);
       const userData = response.data;
 
-      setUserInfo(userData);
       cacheUserInfo(userData);
-
-      const roles = userData.groups.map((group) => group.name);
-      setUserRoles(roles);
-
+      setUserInfo(userData);
+      setUserRoles(userData.groups.map((group) => group.name));
       userInfoFetchedRef.current = true;
     } catch (err) {
       setError(err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
-  }, [getToken]);
+  }, [getToken, getCachedUserInfo, cacheUserInfo]);
 
   const fetchPersonalInfo = useCallback(async () => {
     if (personalInfoFetchedRef.current || !personId) return;
@@ -116,6 +109,7 @@ const useUserInfo = (personId = null) => {
         await fetchUserInfo();
         userInfoFetchedRef.current = true;
       }
+
       if (personId && !personalInfoFetchedRef.current) {
         await fetchPersonalInfo();
         personalInfoFetchedRef.current = true;
@@ -141,7 +135,7 @@ const useUserInfo = (personId = null) => {
           }
         );
         setUserInfo(response.data);
-        cacheUserInfo(response.data); // Cache updated info
+        cacheUserInfo(response.data);
       } catch (err) {
         console.error(
           "Error updating user info:",

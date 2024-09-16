@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
 import Logo from "../../assets/img/Logo.svg";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaCheck, FaEye, FaEyeSlash, FaTimes } from "react-icons/fa";
 import Stepper from "../../components/step/Stepper";
 import { useRegister } from "../../hooks/Auth/useRegister";
 import LocationSelector from "../../components/Location/LocationSelector";
@@ -17,14 +16,12 @@ const passwordRgx = /^(?=.*[A-Z])(?=.*[@!#%])[A-Za-z\d@!#%]{8,24}$/;
 const Register = () => {
   const { theme } = useTheme();
   const userRef = useRef();
-  const errRef = useRef();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
   const [validName, setValidName] = useState(false);
-  const [nameFocus, setNameFocus] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
-  const [passFocus, setPassFocus] = useState(false);
+  const [setPassFocus] = useState(false);
   const { mutate: register, isLoading } = useRegister();
   const [formData, setFormData] = useState({
     username: "",
@@ -211,8 +208,14 @@ const Register = () => {
               {step === 1 && (
                 <>
                   <div className="relative">
-                    <label htmlFor="first_name" className="block mb-1">
+                    <label
+                      htmlFor="first_name"
+                      className=" mb-1 flex items-center"
+                    >
                       First Name:
+                      <span className="text-red-500 text-14 ml-1">
+                        *Bắt buộc
+                      </span>
                     </label>
                     <input
                       type="text"
@@ -230,6 +233,9 @@ const Register = () => {
                   <div className="relative">
                     <label htmlFor="last_name" className="block mb-1">
                       Last Name:
+                      <span className="text-red-500 text-14 ml-1">
+                        *Bắt buộc
+                      </span>
                     </label>
                     <input
                       type="text"
@@ -247,6 +253,9 @@ const Register = () => {
                   <div className="relative">
                     <label htmlFor="email" className="block mb-1">
                       Email:
+                      <span className="text-red-500 text-14 ml-1">
+                        *Bắt buộc
+                      </span>
                     </label>
                     <input
                       type="email"
@@ -264,6 +273,9 @@ const Register = () => {
                   <div className="relative">
                     <label htmlFor="phone_number" className="block mb-1">
                       Phone Number:
+                      <span className="text-red-500 text-14 ml-1">
+                        *Bắt buộc
+                      </span>
                     </label>
                     <input
                       type="text"
@@ -289,6 +301,9 @@ const Register = () => {
                   <div className="relative">
                     <label htmlFor="username" className="block mb-1">
                       Username:
+                      <span className="text-red-500 text-14 ml-1">
+                        *Bắt buộc
+                      </span>
                     </label>
                     <div className="relative">
                       <input
@@ -304,33 +319,40 @@ const Register = () => {
                         required
                         placeholder="username"
                       />
-                      <FontAwesomeIcon
-                        icon={faCheck}
-                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
-                          validName ? "text-green-500" : "hidden"
-                        }`}
-                      />
-                      <FontAwesomeIcon
-                        icon={faTimes}
-                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
-                          !validName && formData.username
-                            ? "text-red-500"
-                            : "hidden"
-                        }`}
-                      />
+                      <span
+                        className={
+                          validName
+                            ? "valid absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
+                            : "hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
+                        }
+                      >
+                        <FaCheck />
+                      </span>
+                      <span
+                        className={
+                          validName || !formData.username
+                            ? "hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
+                            : "invalid absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
+                        }
+                      >
+                        <FaTimes />
+                      </span>
                     </div>
                     <p
                       className={`text-sm ${
                         validName ? "hidden" : "text-red-500"
                       }`}
                     >
-                      Username must be 5-24 characters long and contain only
-                      letters, numbers, hyphens, or underscores.
+                      Tên người dùng phải dài từ 5-24 ký tự và chỉ chứa chữ cái,
+                      số, dấu gạch ngang hoặc dấu gạch dưới.
                     </p>
                   </div>
                   <div className="relative">
                     <label htmlFor="password" className="block mb-1">
                       Password:
+                      <span className="text-red-500 text-14 ml-1">
+                        *Bắt buộc
+                      </span>
                     </label>
                     <div className="relative">
                       <input
@@ -344,13 +366,19 @@ const Register = () => {
                         required
                         placeholder="Password"
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                      >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </button>
+                      <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                        {showPassword ? (
+                          <FaEyeSlash
+                            onClick={() => setShowPassword(false)}
+                            className="cursor-pointer"
+                          />
+                        ) : (
+                          <FaEye
+                            onClick={() => setShowPassword(true)}
+                            className="cursor-pointer"
+                          />
+                        )}
+                      </span>
                       <FontAwesomeIcon
                         icon={faCheck}
                         className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
@@ -371,8 +399,8 @@ const Register = () => {
                         validPassword ? "hidden" : "text-red-500"
                       }`}
                     >
-                      Password must be 8-24 characters long and include at least
-                      one uppercase letter and one special character.
+                      Mật khẩu phải dài từ 8-24 ký tự và bao gồm ít nhất một chữ
+                      cái viết hoa và một ký tự đặc biệt.
                     </p>
                   </div>
                 </>
@@ -380,7 +408,9 @@ const Register = () => {
 
               {step === 3 && (
                 <>
+                  <br />
                   <LocationSelector onLocationChange={handleLocationChange} />
+                  <br />
                   <div className="relative">
                     <label htmlFor="about" className="block mb-1">
                       About:

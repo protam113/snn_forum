@@ -9,11 +9,11 @@ import {
 } from "react-icons/fa";
 import Loading from "../../error/load";
 import { HiMiniUserGroup } from "react-icons/hi2";
-import useUserInfo from "../../../hooks/useUserInfo";
 import { useTheme } from "../../../context/themeContext";
 import { BsClock } from "react-icons/bs";
 import { MdOutlineWork } from "react-icons/md";
 import { useRecruitmentDetail } from "../../../hooks/Recruitment/useRecruitment";
+import { useUser } from "../../../context/UserProvider";
 
 const RecruitmentDetail = () => {
   const { theme } = useTheme();
@@ -24,7 +24,7 @@ const RecruitmentDetail = () => {
     isError,
     error,
   } = useRecruitmentDetail(postId);
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
 
   if (isLoading) {
     return (

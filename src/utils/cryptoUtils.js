@@ -10,7 +10,7 @@ if (!secretKey) {
 // Encrypt data function
 export const encryptData = (data) => {
   if (typeof data !== "string") {
-    data = JSON.stringify(data); // Convert object to string if needed
+    data = JSON.stringify(data);
   }
 
   try {
@@ -36,17 +36,15 @@ export const decryptData = (ciphertext) => {
       );
     }
 
-    // Attempt to parse the decrypted data as JSON if possible
     try {
       return JSON.parse(decryptedData);
     } catch (e) {
-      return decryptedData; // Return as a string if JSON parsing fails
+      return decryptedData;
     }
   } catch (error) {
     throw new Error("Lỗi khi giải mã: " + error.message);
   }
 };
-// Hàm thiết lập dữ liệu đã mã hóa trong localStorage
 export const setEncryptedLocalStorage = (key, value) => {
   try {
     const encryptedValue = encryptData(value);

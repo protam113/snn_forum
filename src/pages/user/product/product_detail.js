@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTheme } from "../../../context/themeContext";
 import Loading from "../../error/load";
-import useUserInfo from "../../../hooks/useUserInfo";
 import { useProductDetail } from "../../../hooks/Product/useProduct";
+import { useUser } from "../../../context/UserProvider";
 
 const ProductDetail = () => {
   const { theme } = useTheme();
@@ -18,7 +18,7 @@ const ProductDetail = () => {
     error,
   } = useProductDetail(productId);
 
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
 
   if (isLoading)
     return (

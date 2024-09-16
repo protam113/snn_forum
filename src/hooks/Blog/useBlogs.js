@@ -6,7 +6,6 @@ import {
 import { useState, useEffect } from "react";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { toast } from "react-toastify";
 import { useToastDesign } from "../../context/ToastService";
 
 const FetchBlogList = async ({ pageParam = 1, token }) => {
@@ -87,6 +86,48 @@ const useAddBlog = () => {
     },
   });
 };
+const useLikeBlog = () => {
+  const queryClient = useQueryClient();
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({ blogId, isLiked }) => {
+      const token = await getToken();
+      if (!token) throw new Error("No token available");
+
+      const newLikedStatus = !isLiked;
+      const url = endpoints.LikeBlog.replace(":id", blogId);
+
+      try {
+        let response;
+
+        if (newLikedStatus) {
+          response = await authApi(token).post(url);
+        } else {
+          response = await authApi(token).delete(url);
+        }
+
+        if (response.status >= 200 && response.status < 300) {
+          return newLikedStatus;
+        } else {
+          throw new Error(`Unexpected response status: ${response.status}`);
+        }
+      } catch (error) {
+        console.error(
+          "Error handling like/unlike:",
+          error.response?.data || error.message
+        );
+        throw new Error("Error handling like/unlike");
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogs"]);
+    },
+    onError: (error) => {
+      console.error(error.message || "Lỗi khi xử lý like/unlike!");
+    },
+  });
+};
 
 const deleteBlog = async ({ blogId, token }) => {
   if (!token) throw new Error("No token available");
@@ -120,4 +161,4 @@ const useDeleteBlog = () => {
   });
 };
 
-export { useBlogList, useAddBlog, useDeleteBlog };
+export { useBlogList, useAddBlog, useDeleteBlog, useLikeBlog };

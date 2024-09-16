@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useUserInfo from "../../../../hooks/useUserInfo";
+import { useUser } from "../../../../context/UserProvider";
 
 const PopupCreate = () => {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
   const navigate = useNavigate();
 
   const handleClick = () => {

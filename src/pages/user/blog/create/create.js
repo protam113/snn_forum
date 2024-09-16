@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useReducer } from "react";
 import {
   FaTrashAlt,
   FaArrowLeft,
@@ -15,40 +15,72 @@ import ReactMarkdown from "react-markdown";
 import { useAddBlog } from "../../../../hooks/Blog/useBlogs";
 import { AiOutlineWarning } from "react-icons/ai";
 
+const SET_CONTENT = "SET_CONTENT";
+const SET_DESCRIPTION = "SET_DESCRIPTION";
+const SET_VISIBILITY = "SET_VISIBILITY";
+const SET_FILE_TYPE = "SET_FILE_TYPE";
+const SET_SELECTED_FILES = "SET_SELECTED_FILES";
+const SET_LOADING = "SET_LOADING";
+
+// Reducer function
+const reducer = (state, action) => {
+  switch (action.type) {
+    case SET_CONTENT:
+      return { ...state, content: action.payload };
+    case SET_DESCRIPTION:
+      return { ...state, description: action.payload };
+    case SET_VISIBILITY:
+      return { ...state, visibility: action.payload };
+    case SET_FILE_TYPE:
+      return { ...state, fileType: action.payload };
+    case SET_SELECTED_FILES:
+      return { ...state, selectedFiles: action.payload };
+    case SET_LOADING:
+      return { ...state, loading: action.payload };
+    default:
+      return state;
+  }
+};
+
+// Initial state
+const initialState = {
+  content: "",
+  description: "",
+  visibility: "public",
+  fileType: "image",
+  selectedFiles: [],
+  loading: false,
+};
+
 const Create = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const { userInfo } = useUserInfo();
-
-  const [content, setContent] = useState("");
-  const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = useState("public");
-  const [fileType, setFileType] = useState("image");
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
+
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const { mutate: addBlogMutation } = useAddBlog();
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     let newFiles = [];
-    let totalImages = selectedFiles.filter((file) =>
+    let totalImages = state.selectedFiles.filter((file) =>
       file.type.startsWith("image/")
     ).length;
-    let totalPdfs = selectedFiles.filter(
+    let totalPdfs = state.selectedFiles.filter(
       (file) => file.type === "application/pdf"
     ).length;
 
     files.forEach((file) => {
-      if (fileType === "image" && file.type.startsWith("image/")) {
+      if (state.fileType === "image" && file.type.startsWith("image/")) {
         if (totalImages < 4) {
           newFiles.push(file);
           totalImages++;
         } else {
           alert("You can only upload up to 4 images.");
         }
-      } else if (fileType === "pdf" && file.type === "application/pdf") {
+      } else if (state.fileType === "pdf" && file.type === "application/pdf") {
         if (totalPdfs < 1) {
           newFiles.push(file);
           totalPdfs++;
@@ -61,7 +93,10 @@ const Create = () => {
     });
 
     if (newFiles.length > 0) {
-      setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+      dispatch({
+        type: SET_SELECTED_FILES,
+        payload: [...state.selectedFiles, ...newFiles],
+      });
     }
   };
 
@@ -72,30 +107,33 @@ const Create = () => {
   };
 
   const handleRemoveFile = (index) => {
-    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    dispatch({
+      type: SET_SELECTED_FILES,
+      payload: state.selectedFiles.filter((_, i) => i !== index),
+    });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!content.trim()) {
+    if (!state.content.trim()) {
       alert("Vui lòng nhập tiêu đề.");
       return;
     }
 
     const formData = new FormData();
-    formData.append("content", content);
-    formData.append("visibility", visibility);
-    formData.append("description", marked(description));
-    formData.append("fileType", fileType);
+    formData.append("content", state.content);
+    formData.append("visibility", state.visibility);
+    formData.append("description", marked(state.description));
+    formData.append("fileType", state.fileType);
 
-    selectedFiles.forEach((file) => {
-      formData.append("media", file); // Sử dụng 'media' thay vì 'files'
+    state.selectedFiles.forEach((file) => {
+      formData.append("media", file);
     });
 
-    console.log("FormData:", [...formData.entries()]); // Debugging line
+    console.log("FormData:", [...formData.entries()]);
 
-    setLoading(true);
+    dispatch({ type: SET_LOADING, payload: true });
     try {
       await addBlogMutation(formData, {
         onSuccess: () => {
@@ -108,12 +146,12 @@ const Create = () => {
     } catch (error) {
       console.error("Unexpected error:", error);
     } finally {
-      setLoading(false);
+      dispatch({ type: SET_LOADING, payload: false });
     }
   };
 
   const handleInsert = (text) => {
-    setDescription((prev) => prev + text);
+    dispatch({ type: SET_DESCRIPTION, payload: state.description + text });
   };
 
   return (
@@ -145,13 +183,13 @@ const Create = () => {
             <img
               src={userInfo.profile_image}
               alt="avatar"
-              className={`size-12 rounded-full ${
+              className={`w-12 h-12 rounded-full ${
                 theme === "dark" ? "border-white" : "border-black"
               }`}
             />
           ) : (
             <MdPerson
-              className={`size-12 rounded-full ${
+              className={`w-12 h-12 rounded-full ${
                 theme === "dark" ? "text-white" : "text-gray-500"
               }`}
             />
@@ -185,8 +223,10 @@ const Create = () => {
             Trạng Thái:
           </label>
           <select
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
+            value={state.visibility}
+            onChange={(e) =>
+              dispatch({ type: SET_VISIBILITY, payload: e.target.value })
+            }
             className={`w-full p-2 border rounded-md ${
               theme === "dark"
                 ? "bg-zinc-700 text-white border-zinc-600"
@@ -197,7 +237,10 @@ const Create = () => {
             <option value="private">Private</option>
           </select>
         </div>
-
+        <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
+          <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+          <span>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</span>
+        </div>
         <div className="flex flex-col lg:flex-row mt-8">
           {/* Left Column - File Upload Section */}
           <div className="w-full lg:w-1/3 pr-0 lg:pr-4 mb-8 lg:mb-0">
@@ -211,8 +254,10 @@ const Create = () => {
                 File Type:
               </label>
               <select
-                value={fileType}
-                onChange={(e) => setFileType(e.target.value)}
+                value={state.fileType}
+                onChange={(e) =>
+                  dispatch({ type: SET_FILE_TYPE, payload: e.target.value })
+                }
                 className={`w-full p-2 border rounded-md ${
                   theme === "dark"
                     ? "bg-zinc-700 text-white border-zinc-600"
@@ -223,130 +268,140 @@ const Create = () => {
                 <option value="pdf">PDF</option>
               </select>
             </div>
-            <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
-              <AiOutlineWarning size={24} className="mr-2 text-red-600" />
-              <span>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</span>
-            </div>
+
             {/* File Upload Section */}
             <div className="grid grid-cols-1 gap-4 mb-4">
-              {selectedFiles.map((file, index) => (
+              {state.selectedFiles.map((file, index) => (
                 <div
                   key={index}
                   className="relative overflow-hidden"
                   style={{ width: "100%", height: "100px" }}
                 >
-                  {file.type.startsWith("image/") ? (
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Selected ${index}`}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : file.type === "application/pdf" ? (
-                    <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
-                      <FaFilePdf size={40} />
-                      <p className="text-xs">PDF</p>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-full bg-gray-200 text-gray-600">
-                      <p className="text-xs">Unsupported File</p>
-                    </div>
-                  )}
-                  <button
-                    type="button"
+                  <div
+                    className={`absolute top-0 right-0 p-2 cursor-pointer ${
+                      theme === "dark"
+                        ? "text-red-500 hover:text-red-300"
+                        : "text-red-700 hover:text-red-500"
+                    }`}
                     onClick={() => handleRemoveFile(index)}
-                    className="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-1"
                   >
                     <FaTrashAlt />
-                  </button>
+                  </div>
+                  <div
+                    className="flex items-center justify-center bg-gray-200 border border-gray-300 rounded-md"
+                    style={{ height: "100%", overflow: "hidden" }}
+                  >
+                    {file.type.startsWith("image/") ? (
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt="preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <FaFilePdf size={48} className="text-red-600" />
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-            <div
-              onClick={handleFileClick}
-              className="mt-1 flex justify-center items-center cursor-pointer rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6"
-            >
-              <div className="space-y-1 text-center">
-                <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="text-sm text-gray-600">Nhấp để thêm tệp!</p>
-              </div>
-            </div>
             <input
-              type="file"
               ref={fileInputRef}
+              type="file"
+              multiple
               onChange={handleImageChange}
               className="hidden"
-              multiple
-              accept=".jpg, .jpeg, .png, .pdf"
             />
+            <button
+              type="button"
+              onClick={handleFileClick}
+              className="w-full py-2 bg-blue-500 text-white rounded-md flex items-center justify-center"
+            >
+              <FaFileUpload className="mr-2" />
+              <span>Upload Files</span>
+            </button>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label
-                className={`block mb-2 ${
-                  theme === "dark" ? "text-white" : "text-black"
-                }`}
-                htmlFor="title"
-              >
-                Tiêu Đề:
-              </label>
-              <input
-                id="title"
-                type="text"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Title*"
-                className={`w-full p-2 border rounded-md ${
-                  theme === "dark"
-                    ? "bg-zinc-700 text-white border-zinc-600"
-                    : "bg-white text-black border-zinc-800"
-                }`}
-                required
-              />
-            </div>
-            <Toolbar onInsert={handleInsert} />
-
-            <div className="mb-4">
-              <label
-                className={`block mb-2 ${
-                  theme === "dark" ? "text-white" : "text-black"
-                }`}
-                htmlFor="content"
-              >
-                Nội Dung:
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-                rows={5}
-                className={`w-full p-2 border rounded-md ${
-                  theme === "dark"
-                    ? "bg-zinc-700 text-white border-zinc-600"
-                    : "bg-white text-black border-zinc-800"
-                }`}
-              />
-
-              <div className="mt-4 white-space-pre">
-                <ReactMarkdown>{description}</ReactMarkdown>
+          {/* Right Column - Content Section */}
+          <div className="w-full lg:w-2/3 pl-0 lg:pl-4">
+            <form onSubmit={handleSubmit}>
+              {/* Title */}
+              <div className="mb-4">
+                <label
+                  className={`block mb-2 ${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  Tiêu Đề:
+                </label>
+                <input
+                  type="text"
+                  value={state.content}
+                  onChange={(e) =>
+                    dispatch({ type: SET_CONTENT, payload: e.target.value })
+                  }
+                  className={`w-full p-2 border rounded-md ${
+                    theme === "dark"
+                      ? "bg-zinc-700 text-white border-zinc-600"
+                      : "bg-white text-black border-zinc-800"
+                  }`}
+                />
               </div>
-            </div>
-
-            <div className="text-center">
-              <button
-                type="submit"
-                className={`mt-4 px-6 py-2 font-semibold text-lg rounded-md ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 text-white"
+              <div
+                className={`relative max-w-6xl w-full p-6 border rounded-md shadow-lg ${
+                  theme === "dark"
+                    ? "border-zinc-800 text-white"
+                    : "border-white text-black"
                 }`}
-                disabled={loading}
               >
-                {loading ? "Submitting..." : "Submit"}
-              </button>
-            </div>
-          </form>
+                {/* Toolbar */}
+                <Toolbar onInsert={handleInsert} />
+
+                {/* Description */}
+                <div className="mb-4">
+                  <label
+                    className={`block mb-2 ${
+                      theme === "dark" ? "text-white" : "text-black"
+                    }`}
+                    htmlFor="description"
+                  >
+                    Nội Dung:
+                  </label>
+                  <textarea
+                    value={state.description}
+                    // onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) =>
+                      dispatch({
+                        type: SET_DESCRIPTION,
+                        payload: e.target.value,
+                      })
+                    }
+                    rows={5}
+                    className={`w-full p-2 border rounded-md ${
+                      theme === "dark"
+                        ? "bg-zinc-700 text-white border-zinc-600"
+                        : "bg-white text-black border-zinc-800"
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end mt-6">
+                <button
+                  type="submit"
+                  className={`py-2 px-4 rounded-md ${
+                    state.loading
+                      ? "bg-gray-400 text-gray-200"
+                      : theme === "dark"
+                      ? "bg-blue-500 text-white hover:bg-blue-400"
+                      : "bg-blue-600 text-white hover:bg-blue-500"
+                  }`}
+                  disabled={state.loading}
+                >
+                  {state.loading ? "Đang gửi..." : "Gửi"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

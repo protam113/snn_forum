@@ -12,11 +12,13 @@ import LoginBtn from "../../../buttons/loginBtn";
 import { useWeb } from "../../../../hooks/useWeb";
 import Loading from "../../../../pages/error/load";
 import { Error404 } from "../../../../pages/error/error";
+import { useUser } from "../../../../context/UserProvider";
 
 const Navbar = () => {
   const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
   const { theme } = useTheme();
-  const { userInfo, userRoles } = useUserInfo();
+  const { userRoles, userInfo } = useUser();
+
   const { data: web, error, isLoading } = useWeb();
 
   const toggleNavbar = () => {

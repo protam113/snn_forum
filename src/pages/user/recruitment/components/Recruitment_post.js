@@ -4,7 +4,6 @@ import Block from "../../../../components/design/Block";
 import { FaEdit, FaTrashAlt, FaLink } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../../context/themeContext";
-import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 import formatDate from "../../../../utils/formatDate";
 import {
@@ -13,12 +12,13 @@ import {
 } from "../../../../hooks/Recruitment/useRecruitment";
 import SkeletonBlog from "../../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
+import { useUser } from "../../../../context/UserProvider";
 
 const RecruitmentPost = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useRecruitmentList();

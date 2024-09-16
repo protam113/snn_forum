@@ -7,13 +7,13 @@ import { useTheme } from "../../../context/themeContext";
 import formatDate from "../../../utils/formatDate";
 import Loading from "../../error/load";
 import Likeblog from "../../../components/buttons/likeBlog";
-import useUserInfo from "../../../hooks/useUserInfo";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdPerson } from "react-icons/md";
 import SkeletonBlog from "../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
 import { useBlogList, useDeleteBlog } from "../../../hooks/Blog/useBlogs";
 import { useToastDesign } from "../../../context/ToastService";
+import { useUser } from "../../../context/UserProvider";
 
 const Blog = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -21,7 +21,8 @@ const Blog = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { addNotification } = useToastDesign();
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
+
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useBlogList();
   const { mutate: deleteBlogMutation } = useDeleteBlog();

@@ -1,15 +1,15 @@
 import React from "react";
 
-import { FaHome, FaUser, FaBuilding } from "react-icons/fa";
+import { FaHome, FaUser } from "react-icons/fa";
 import { FaCog } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
-import useUserInfo from "../../../../hooks/useUserInfo";
 import { FaBasketShopping } from "react-icons/fa6";
+import { useUser } from "../../../../context/UserProvider";
 
 const Sidebar = () => {
   const { theme } = useTheme();
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
 
   const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded hover:bg-gray-400 ${
     theme === "dark"
