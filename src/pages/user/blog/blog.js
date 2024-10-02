@@ -315,7 +315,7 @@ const Blog = () => {
                   </div>
                 </div>
               </div>
-              {isFetchingNextPage && <Loading />}
+              {isFetchingNextPage && <SkeletonBlog />}
             </div>
           );
         })}

@@ -69,7 +69,7 @@ const Nav = () => {
   return (
     <div
       className={`w-full min-h-14 sticky top-0 z-50 ${
-        theme === "light" ? "bg-white" : "bg-zinc-900"
+        theme === "light" ? "bg-white-blue1" : "bg-zinc-900"
       }`}
     >
       <TopHeader />
@@ -224,6 +224,7 @@ const Nav = () => {
           </MenuItems>
         </Menu>
       </div>
+      <hr />
     </div>
   );
 };

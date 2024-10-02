@@ -12,13 +12,13 @@ const AdHome = () => {
         theme === "dark" ? "  text-white" : "  text-black"
       }`}
     >
-      <header className="bg-custom-red text-white p-2">
+      <header className="bg-main-blue2 text-white p-2">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
       </header>
       <div>
         <RevealBento />
       </div>
-      <div className="bg-custom-red text-white p-2">
+      <div className="bg-main-blue2 text-white p-2">
         <h1 className="text-2xl font-semibold">Thống kê người dùng</h1>
       </div>
       <div className="shadow-md rounded-lg p-4 bg-white">

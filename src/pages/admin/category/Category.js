@@ -63,7 +63,7 @@ const AdCategory = () => {
   }
 
   // Safely access Categories and handle pagination
-  const categories = data?.Categories || [];
+  const categories = data?.categories || [];
 
   return (
     <div className="banner p-4 rounded-lg shadow-md">

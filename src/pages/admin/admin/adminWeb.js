@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import useAdmin from "../../../hooks/useAdmin";
+import Loading from "../../error/load";
 
 const AdminWeb = () => {
   const { UpdateWeb } = useAdmin();
@@ -66,115 +67,129 @@ const AdminWeb = () => {
     });
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading)
+    return (
+      <p>
+        <Loading />
+      </p>
+    );
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto bg-white shadow-lg rounded-lg">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
+    <div className="max-w-7xl mx-auto p-8 bg-gray-50 shadow-xl rounded-xl">
+      <h1 className="text-5xl font-extrabold text-center mb-10 text-gray-900">
         Admin Web
       </h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="flex items-center space-x-3">
-          <FaImage className="text-blue-500 text-xl" />
-          <label className="flex flex-col w-full">
-            <span className="text-lg font-semibold text-gray-700">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Hình ảnh */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="flex items-center space-x-3">
+            <FaImage className="text-blue-600 text-2xl" />
+            <span className="text-18 font-semibold text-gray-700">
               Hình ảnh:
             </span>
-            <input
-              type="file"
-              name="img"
-              onChange={handleChange}
-              className="mt-2 border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </label>
+          </div>
+          <input
+            type="file"
+            name="img"
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-600 focus:border-blue-600"
+          />
         </div>
 
-        <div className="flex items-center space-x-3">
-          <AiOutlineInfoCircle className="text-blue-500 text-xl" />
-          <label className="flex flex-col w-full">
-            <span className="text-lg font-semibold text-gray-700">About:</span>
-            <textarea
-              name="about"
-              value={formData.about}
-              onChange={handleChange}
-              className="mt-2 border border-gray-300 rounded-md p-3 focus:ring-blue-500 focus:border-blue-500"
-              rows="4"
-              placeholder="Write about the company..."
-            />
-          </label>
+        {/* About */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="flex items-center space-x-3">
+            <AiOutlineInfoCircle className="text-blue-600 text-2xl" />
+            <span className="text-18 font-semibold text-gray-700">About:</span>
+          </div>
+          <textarea
+            name="about"
+            value={formData.about}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-4 focus:ring-blue-600 focus:border-blue-600"
+            rows="4"
+            placeholder="Viết vài điều về công ty..."
+          />
         </div>
 
-        <div className="flex items-center space-x-3">
-          <FaPhone className="text-blue-500 text-xl" />
-          <label className="flex flex-col w-full">
-            <span className="text-lg font-semibold text-gray-700">
+        {/* Số điện thoại */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="flex items-center space-x-3">
+            <FaPhone className="text-blue-600 text-2xl" />
+            <span className="text-18 font-semibold text-gray-700">
               Số điện thoại:
             </span>
-            <input
-              type="text"
-              name="phone_number"
-              value={formData.phone_number}
-              onChange={handleChange}
-              className="mt-2 border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter phone number..."
-            />
-          </label>
+          </div>
+          <input
+            type="text"
+            name="phone_number"
+            value={formData.phone_number}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-600 focus:border-blue-600"
+            placeholder="Nhập số điện thoại..."
+          />
         </div>
 
-        <div className="flex items-center space-x-3">
-          <FaEnvelope className="text-blue-500 text-xl" />
-          <label className="flex flex-col w-full">
-            <span className="text-lg font-semibold text-gray-700">Email:</span>
-            <input
-              type="email"
-              name="mail"
-              value={formData.mail}
-              onChange={handleChange}
-              className="mt-2 border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter email address..."
-            />
-          </label>
+        {/* Email */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="flex items-center space-x-3">
+            <FaEnvelope className="text-blue-600 text-2xl" />
+            <span className="text-18 font-semibold text-gray-700">Email:</span>
+          </div>
+          <input
+            type="email"
+            name="mail"
+            value={formData.mail}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-600 focus:border-blue-600"
+            placeholder="Nhập địa chỉ email..."
+          />
         </div>
 
-        <div className="flex items-center space-x-3">
-          <FaMapMarkerAlt className="text-blue-500 text-xl" />
-          <label className="flex flex-col w-full">
-            <span className="text-lg font-semibold text-gray-700">Vị trí:</span>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="mt-2 border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter location..."
-            />
-          </label>
+        {/* Vị trí */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="flex items-center space-x-3">
+            <FaMapMarkerAlt className="text-blue-600 text-2xl" />
+            <span className="text-18 font-semibold text-gray-700">Vị trí:</span>
+          </div>
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-600 focus:border-blue-600"
+            placeholder="Nhập vị trí..."
+          />
         </div>
 
-        <div className="flex items-center space-x-3">
-          <FaLink className="text-blue-500 text-xl" />
-          <label className="flex flex-col w-full">
-            <span className="text-lg font-semibold text-gray-700">
+        {/* Liên kết */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="flex items-center space-x-3">
+            <FaLink className="text-blue-600 text-2xl" />
+            <span className="text-18 font-semibold text-gray-700">
               Liên kết:
             </span>
-            <input
-              type="url"
-              name="link"
-              value={formData.link}
-              onChange={handleChange}
-              className="mt-2 border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter link..."
-            />
-          </label>
+          </div>
+          <input
+            type="url"
+            name="link"
+            value={formData.link}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-600 focus:border-blue-600"
+            placeholder="Nhập liên kết..."
+          />
         </div>
 
-        <button
-          type="submit"
-          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
-        >
-          Cập nhật
-        </button>
+        {/* Nút cập nhật */}
+        <div className="text-center">
+          <button
+            type="submit"
+            className="w-full md:w-auto px-10 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+          >
+            Cập nhật
+          </button>
+        </div>
       </form>
     </div>
   );

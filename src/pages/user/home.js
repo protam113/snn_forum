@@ -21,7 +21,7 @@ const Home = () => {
           theme === "dark" ? " text-white" : " text-black"
         }`}
       >
-        <div className="flex-1 overflow-y-auto p-2">
+        <div className="flex-1 overflow-y-auto p-2 ">
           <Newfeed />
         </div>
         <RightSidebar />
