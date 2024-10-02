@@ -60,7 +60,7 @@ const ProductSidebar = ({ onFilterChange }) => {
       {/* Filter Button */}
       <button
         onClick={handleFilterClick}
-        className="bg-custom-red text-white px-4 py-2 rounded-md font-semibold hover:bg-red-500 transition-colors"
+        className="bg-main-blue2 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-500 transition-colors"
       >
         Lọc
       </button>

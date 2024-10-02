@@ -120,7 +120,7 @@ const AdCategory = () => {
           ) : (
             <tr>
               <td colSpan="5" className="text-center p-4">
-                No Categories Found!
+                Không có thể loaị nào được tìm thấy!
               </td>
             </tr>
           )}

@@ -10,15 +10,16 @@ const ConfirmPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 ">
+    <div className="flex justify-center items-center p-6">
       <div className="text-center  shadow-lg rounded-lg p-6 max-w-md w-full">
         <FaCheckCircle className="text-green-600 text-6xl mb-4 mx-auto" />
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           Chúc mừng bạn đã đăng ký thành công!
         </h1>
         <p className="text-gray-700 mb-6">
-          Chúng tôi đã gửi một email xác thực đến địa chỉ của bạn. Vui lòng kiểm
-          tra email của bạn để xác nhận tài khoản.
+          Bạn đã xác thực tài khoản thành công! Bây giờ, bạn có thể truy cập vào
+          hệ thống. Nhấn nút dưới đây để quay về trang đăng nhập và bắt đầu sử
+          dụng dịch vụ.
         </p>
         <button
           onClick={handleGoToLogin}

@@ -76,8 +76,8 @@ const AdminWeb = () => {
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
-    <div className="max-w-7xl mx-auto p-8 bg-gray-50 shadow-xl rounded-xl">
-      <h1 className="text-5xl font-extrabold text-center mb-10 text-gray-900">
+    <div className="max-w-7xl mx-auto p-8">
+      <h1 className="text-4xl font-extrabold text-center mb-10 text-gray-900">
         Admin Web
       </h1>
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -101,7 +101,9 @@ const AdminWeb = () => {
         <div className="grid grid-cols-1 gap-6">
           <div className="flex items-center space-x-3">
             <AiOutlineInfoCircle className="text-blue-600 text-2xl" />
-            <span className="text-18 font-semibold text-gray-700">About:</span>
+            <span className="text-18 font-semibold text-gray-700">
+              Thong tin về web :
+            </span>
           </div>
           <textarea
             name="about"
@@ -151,7 +153,9 @@ const AdminWeb = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <div className="flex items-center space-x-3">
             <FaMapMarkerAlt className="text-blue-600 text-2xl" />
-            <span className="text-18 font-semibold text-gray-700">Vị trí:</span>
+            <span className="text-18 font-semibold text-gray-700">
+              Khu vực (Địa chỉ):
+            </span>
           </div>
           <input
             type="text"

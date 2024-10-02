@@ -72,15 +72,19 @@ const Banner = () => {
             <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
               <thead className="bg-gray-100">
                 <tr className="border-b">
-                  <th className="py-3 px-4 text-left text-gray-600">ID</th>
-                  <th className="py-3 px-4 text-left text-gray-600">Title</th>
+                  <th className="py-3 px-4 text-left text-gray-600">STT</th>
+                  <th className="py-3 px-4 text-left text-gray-600">Tiêu đề</th>
                   <th className="py-3 px-4 text-left text-gray-600">
-                    Description
+                    Nội dung
                   </th>
-                  <th className="py-3 px-4 text-left text-gray-600">Image</th>
-                  <th className="py-3 px-4 text-left text-gray-600">Status</th>
+                  <th className="py-3 px-4 text-left text-gray-600">
+                    Hình ảnh banner
+                  </th>
+                  <th className="py-3 px-4 text-left text-gray-600">
+                    Trạng thái
+                  </th>
                   <th className="py-3 px-4 text-center text-gray-600">
-                    Actions
+                    Hoạt động
                   </th>
                 </tr>
               </thead>

@@ -45,17 +45,21 @@ const NavLinkMobile = ({ to, children, theme }) => {
 const TopHeader = () => {
   const { data: web, error, isLoading } = useWeb();
 
-  if (isLoading) return <div>Loading</div>;
-
-  if (error) return <div>Error: {error.message}</div>;
-
   return (
-    <section className="py-2 bg-main-blue1 text-white text-right px-9 ">
-      <p class="text-12">
-        <strong className="mx-3 ">Dịa chỉ:</strong> {web.location || null}
-        <strong className="mx-3">Số điện thoại:</strong>
-        {web.phone_number}
-      </p>
+    <section
+      className={`py-2 bg-main-blue1 text-white text-right px-9 ${
+        isLoading || error ? "visibility-hidden" : ""
+      }`}
+      style={{ minHeight: "40px" }}
+    >
+      {isLoading && <div className="text-main-blue1">Loading...</div>}
+      {error && <div>Error: {error.message}</div>}
+      {!isLoading && !error && (
+        <p className="text-12">
+          <strong className="mx-3">Địa chỉ:</strong> {web?.location || null}
+          <strong className="mx-3">Số điện thoại:</strong> {web?.phone_number}
+        </p>
+      )}
     </section>
   );
 };

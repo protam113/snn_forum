@@ -16,6 +16,7 @@ import StaticalProduct from "../pages/admin/statisticalMail.js/StaticalProductGe
 import StatisticalJobApplicationGeneral from "../pages/admin/statisticalMail.js/StatisticalJobApplicationGeneral";
 import StatisticalBlogs from "../pages/admin/statisticalMail.js/StatisticsBlog";
 import ManageTag from "../pages/admin/tag/ManageTag";
+import PageNotfound_404 from "../pages/auth/404PageNotfound";
 import ResetPassword from "../pages/auth/authResetPass";
 import ConfirmPage from "../pages/auth/confirmPage";
 import Login from "../pages/auth/login";
@@ -56,6 +57,10 @@ const publicRoutes = [
     path: "/xac_thuc_thanh_cong",
     component: ConfirmPage,
     layout: DefaultLayout,
+  },
+  {
+    path: "*",
+    component: PageNotfound_404,
   },
   {
     path: "/xac_thuc_khong_thanh_cong",
@@ -230,4 +235,4 @@ const privateRoutes = [
   },
 ];
 
-export { publicRoutes, privateRoutes };
+export { publicRoutes, privateRoutes, DefaultLayout, AdminLayout };

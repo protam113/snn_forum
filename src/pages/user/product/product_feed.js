@@ -19,7 +19,7 @@ const Product_feed = () => {
       <main className="flex-1">
         <Banner />
         <section className="py-12 md:py-16 lg:py-20">
-          <NavProduct />
+          {/* <NavProduct /> */}
           <hr className="my-4 border-zinc-900" />
 
           <div className="container">
