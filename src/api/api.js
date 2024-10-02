@@ -2,12 +2,9 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-let authApiCallCount = 0; // Biến đếm số lần authApi được gọi
+let apiCallCount = 0;
 
 const authApi = (token = null) => {
-  authApiCallCount++; // Tăng biến đếm mỗi lần authApi được gọi
-  console.log(`authApi has been called ${authApiCallCount} times`);
-
   const config = {
     baseURL,
     headers: {
@@ -16,7 +13,31 @@ const authApi = (token = null) => {
     },
   };
 
-  return axios.create(config);
+  const instance = axios.create(config);
+
+  instance.interceptors.request.use(
+    (request) => {
+      apiCallCount += 1;
+
+      const apiName = endpoints
+        ? Object.keys(endpoints).find((key) => request.url === endpoints[key])
+        : null;
+
+      console.log(
+        `API Call #${apiCallCount}: ${apiName || "Unknown API"} - ${
+          request.url
+        }`
+      );
+
+      return request;
+    },
+    (error) => {
+      // Xử lý lỗi request
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
 
 // Các endpoint API
@@ -49,16 +70,18 @@ const endpoints = {
   Categories: process.env.REACT_APP_Categories_ENDPOINT,
   Category: process.env.REACT_APP_Category_ENDPOINT,
   CategoryProduct: process.env.REACT_APP_CategoryProduct_ENDPOINT,
-  Banner: process.env.REACT_APP_BannerId_ENDPOINT,
   UserBanner: process.env.REACT_APP_UserBanner_ENDPOINT,
-  AdminBanner: process.env.REACT_APP_AdminBanner_ENDPOINT,
   Products: process.env.REACT_APP_Products_ENDPOINT,
   ProductDetail: process.env.REACT_APP_Product_ENDPOINT,
+  // Admin_role
+  AdminBanner: process.env.REACT_APP_AdminBanner_ENDPOINT,
+  Banner: process.env.REACT_APP_BannerId_ENDPOINT,
   GroupList: process.env.REACT_APP_GroupList_ENDPOINT,
   GroupAllUser: process.env.REACT_APP_GroupAllUser_ENDPOINT,
   GroupUser: process.env.REACT_APP_GroupUser_ENDPOINT,
   AddUser: process.env.REACT_APP_AddUser_ENDPOINT,
   RemoveUser: process.env.REACT_APP_RemoveUser_ENDPOINT,
+  //  Statical
   StaticalUser: process.env.REACT_APP_StaticalUser_ENDPOINT,
   StaticalProductCategoryGeneral:
     process.env.REACT_APP_StaticalProductCategoryGeneral_ENDPOINT,
