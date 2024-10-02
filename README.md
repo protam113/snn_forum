@@ -1,4 +1,6 @@
 # H2h Tech Energy Forum
+![Hình ảnh diễn đàn](src/assets/img/Logo.svg)
+
 
 Chào mừng bạn đến với H2h Tech Energy Forum, một diễn đàn trực tuyến dành cho những người đam mê công nghệ và năng lượng tái tạo. Chúng tôi xây dựng một không gian mở, nơi mọi người có thể chia sẻ ý tưởng, kiến thức và giải pháp liên quan đến công nghệ và năng lượng.
 
