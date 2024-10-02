@@ -64,7 +64,7 @@ const Setting = () => {
         transition={{
           staggerChildren: 0.05,
         }}
-        className="mx-auto grid max-w-4xl grid-flow-dense grid-cols-12 gap-4"
+        className="mx-auto grid max-w-7xl grid-flow-dense grid-cols-12 gap-4"
       >
         <AboutBlock web={web} theme={theme} />
         <LocationBlock web={web} theme={theme} />
@@ -156,8 +156,12 @@ const Setting = () => {
 };
 
 const AboutBlock = ({ web, theme }) => (
-  <Block className="col-span-12 text-3xl leading-snug">
-    <p className={`${theme === "dark" ? "text-gray-300" : "text-black"}`}>
+  <Block className="col-span-12  leading-snug">
+    <p
+      className={` text-18 ${
+        theme === "dark" ? "text-gray-300" : "text-black"
+      }`}
+    >
       Thông tin về chúng tôi !
       <br />
       <span
@@ -193,8 +197,8 @@ const EmailListBlock = ({ web, theme }) => (
           theme === "dark" ? "text-zinc-200" : "text-zinc-800"
         } shadow-md`}
       >
-        <h3 className="text-24 font-semibold mb-2">Thông tin bổ sung</h3>
-        <p>
+        <h3 className="text-18 font-semibold mb-2">Thông tin bổ sung</h3>
+        <p className="text-18">
           Nếu bạn cần thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng liên
           hệ với chúng tôi qua email hoặc điện thoại. Chúng tôi luôn sẵn sàng hỗ
           trợ bạn!

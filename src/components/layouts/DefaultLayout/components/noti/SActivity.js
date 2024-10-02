@@ -48,7 +48,7 @@ const SActivity = () => {
             theme === "dark" ? "text-white" : "text-zinc-800"
           }`}
         >
-          <span>New</span>
+          <span>Bài viết mới</span>
           <FaHotjar className="text-red-500" />
         </h2>
       </div>

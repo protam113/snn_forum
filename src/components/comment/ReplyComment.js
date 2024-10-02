@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPaperPlane, FaUpload } from "react-icons/fa";
+import { FaPaperPlane } from "react-icons/fa";
 import { useTheme } from "../../context/themeContext";
 import { useAddComment } from "../../hooks/Blog/useComment";
 import { AiOutlineWarning } from "react-icons/ai";
@@ -10,10 +10,6 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
   const [replyText, setReplyText] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState(null);
-
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
 
   const handleRemoveImage = () => {
     setSelectedFile(null);
@@ -52,8 +48,8 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
   return (
     <div className="flex flex-col p-4 rounded-lg space-y-4">
       {error && (
-        <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
-          <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+        <div className="mb-4 p-4 text-14 bg-red-100 text-main-blue2 border border-red-300 rounded-lg flex items-center">
+          <AiOutlineWarning size={24} className="mr-2 text-main-blue2" />
           <span> {error}</span>
         </div>
       )}
@@ -71,7 +67,7 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
             />
             <button
               onClick={handleRemoveImage}
-              className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center"
+              className="absolute top-0 right-0 bg-main-blue2 text-white rounded-full w-4 h-4 flex items-center justify-center"
             >
               x
             </button>
@@ -79,10 +75,6 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
         </div>
       )}
       <div className="flex items-center space-x-4">
-        {/* <label className="flex items-center space-x-2 cursor-pointer">
-          <FaUpload className="text-custom-red" />
-          <input type="file" onChange={handleFileChange} className="hidden" />
-        </label> */}
         <textarea
           value={replyText}
           rows={2}
@@ -96,7 +88,7 @@ const ReplyComment = ({ blogId, parentId, onReplyAdded }) => {
         />
         <button
           onClick={handleSubmit}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-custom-red hover:bg-gray-600 text-white"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-main-blue2 hover:bg-gray-600 text-white"
         >
           <FaPaperPlane />
         </button>

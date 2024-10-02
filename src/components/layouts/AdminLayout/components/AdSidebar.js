@@ -16,7 +16,7 @@ import useUserInfo from "../../../../hooks/useUserInfo";
 
 const SidebarContainer = styled.div`
   width: ${({ isOpen }) => (isOpen ? "250px" : "60px")};
-  background: #bf2734;
+  background: #1876d0;
   color: ${({ theme }) => theme.text};
   position: sticky;
   top: 0;

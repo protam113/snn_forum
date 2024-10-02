@@ -7,7 +7,7 @@ const LogoutButton = () => {
 
   return (
     <div
-      className="flex items-center py-2 px-6 text-neutral-200 hover:text-black cursor-pointer"
+      className="flex items-center py-2 px-6 text-dark-blue2 hover:bg-main-blue1 border border-transparent hover:border-white hover:rounded-lg cursor-pointer transition-all duration-300 ease-in-out"
       onClick={logout}
     >
       <BiLogOut className="text-xl" />

@@ -181,7 +181,7 @@ const Register = () => {
           <div className="flex items-center justify-center mb-6">
             <img src={Logo} alt="Logo" className="w-16 h-auto mr-4" />
             <div className="text-lg">
-              <span className="text-custom-red font-bold">H2H Tech</span>{" "}
+              <span className="text-main-blue1 font-bold">H2H Tech</span>{" "}
               <span
                 className={`font-semibold ${
                   theme === "light" ? "text-zinc-900" : "text-white"

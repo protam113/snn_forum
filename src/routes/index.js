@@ -78,7 +78,7 @@ const publicRoutes = [
   { path: "/blog/edit/:id", component: EdtBlog, layout: DefaultLayout },
   { path: "/profile/:id", component: ProfileMain, layout: DefaultLayout },
   {
-    path: "/profile/:username/edit",
+    path: "/profile/:id/edit",
     component: EditProfile,
     layout: DefaultLayout,
   },

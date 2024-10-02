@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/themeContext";
-import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthContext from "../../context/AuthContext";
 import Logo from "../../assets/img/Logo.svg";
 // import Logo_google from "../../assets/img/logo_google.svg";
@@ -11,7 +10,6 @@ const Login = () => {
   const { theme } = useTheme();
   const { handleLogin, errMsg } = React.useContext(AuthContext);
   const userRef = useRef(null);
-  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,18 +31,6 @@ const Login = () => {
   return (
     <>
       <div className="flex justify-center items-center p-8">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className={`absolute top-4 left-4 flex items-center ${
-            theme === "dark"
-              ? "text-blue-400 hover:text-blue-300"
-              : "text-blue-500 hover:text-blue-700"
-          }`}
-        >
-          <FaArrowLeft size={24} />
-          <span className="ml-2">Back</span>
-        </button>
         <div
           className={`border p-6 rounded-lg shadow-md max-w-sm w-full ${
             theme === "dark"
@@ -55,7 +41,7 @@ const Login = () => {
           <div className="flex items-center justify-center mb-6">
             <img src={Logo} alt="Logo" className="w-16 h-auto mr-4" />
             <div className="text-lg">
-              <span className="text-custom-red font-bold">H2H Tech</span>{" "}
+              <span className="text-main-blue1 font-bold">H2H Tech</span>{" "}
               <span
                 className={`font-semibold ${
                   theme === "light" ? "text-zinc-900" : "text-white"
@@ -71,7 +57,7 @@ const Login = () => {
             </div>
           )}
           <form className="flex flex-col space-y-4" onSubmit={onSubmit}>
-            {/* <div
+            {/* <div 
               type="button"
               className={`flex items-center justify-center px-4 py-2 rounded-lg border ${
                 theme === "dark"
@@ -138,7 +124,7 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-custom-red text-white rounded-lg hover:bg-red-600 transition-colors"
+              className="px-4 py-2 font-bold text-24 bg-main-blue1 text-white rounded-lg hover:bg-hover-blue1 transition-colors"
             >
               Log In
             </button>

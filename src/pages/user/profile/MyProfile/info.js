@@ -58,7 +58,7 @@ const Info = () => {
 
         <div className="mt-8 grid grid-cols-2 gap-4">
           <Link
-            to={`/profile/${userInfo.username}/edit`}
+            to={`/profile/${userInfo.id}/edit`}
             className="flex items-center justify-center text-sm py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors"
           >
             Edit Profile

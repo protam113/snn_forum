@@ -139,26 +139,48 @@ const ManageTag = () => {
       </div>
 
       <div className="flex justify-center mt-6">
-        <button
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-          disabled={page === 1}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center mr-2"
-        >
-          <FaArrowLeft className="mr-2" />
-          Previous
-        </button>
-        <button
-          onClick={() =>
-            setPage((prev) =>
-              data?.totalPages && prev < data.totalPages ? prev + 1 : prev
-            )
-          }
-          disabled={!data?.totalPages || page === data.totalPages}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center"
-        >
-          Next
-          <FaArrowRight className="ml-2" />
-        </button>
+        <ul className="flex space-x-4 justify-center">
+          <li
+            className={`flex items-center justify-center shrink-0 bg-gray-300 w-10 h-10 rounded-lg ${
+              page === 1 ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
+            <FaArrowLeft className="mr-2" />
+          </li>
+
+          {/* Render danh sách các trang */}
+          {[...Array(data?.totalPages || 1)].map((_, index) => (
+            <li
+              key={index + 1}
+              className={`flex items-center justify-center shrink-0 w-10 h-10 rounded-lg border-2 cursor-pointer text-base font-bold ${
+                page === index + 1
+                  ? "bg-blue-500 text-white border-blue-500"
+                  : "text-[#333] hover:bg-gray-50"
+              }`}
+              onClick={() => setPage(index + 1)}
+            >
+              {index + 1}
+            </li>
+          ))}
+
+          <li
+            className={`flex items-center justify-center shrink-0 bg-gray-300 w-10 h-10 rounded-lg ${
+              page === data?.totalPages
+                ? "cursor-not-allowed"
+                : "cursor-pointer"
+            }`}
+            onClick={() =>
+              setPage((prev) =>
+                data?.totalPages && prev < data.totalPages ? prev + 1 : prev
+              )
+            }
+            disabled={!data?.totalPages || page === data.totalPages}
+          >
+            <FaArrowRight className="ml-2" />
+          </li>
+        </ul>
       </div>
 
       {editingTag && (

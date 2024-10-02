@@ -81,33 +81,21 @@ const RecruitmentDetail = () => {
             }`}
           >
             <div className="flex flex-col items-center">
-              <div
-                className={`text-white p-2 rounded-full ${
-                  theme === "dark" ? "bg-custom-red" : "bg-custom-red"
-                }`}
-              >
+              <div className="text-white p-2 rounded-full bg-main-blue2">
                 <FaDollarSign className="text-3xl" />
               </div>
               <span className="mt-2 text-gray-600">Mức lương</span>
               <span className="mt-1 font-bold">{recruitment.salary} Triệu</span>
             </div>
             <div className="flex flex-col items-center">
-              <div
-                className={`text-white p-2 rounded-full ${
-                  theme === "dark" ? "bg-custom-red" : "bg-custom-red"
-                }`}
-              >
+              <div className="text-white p-2 rounded-full bg-main-blue2">
                 <FaMapMarkerAlt className="text-3xl" />
               </div>
               <span className="mt-2 text-gray-600">Địa điểm</span>
               <span className="mt-1 font-bold">{recruitment.location}</span>
             </div>
             <div className="flex flex-col items-center">
-              <div
-                className={`text-white p-2 rounded-full ${
-                  theme === "dark" ? "bg-custom-red" : "bg-custom-red"
-                }`}
-              >
+              <div className="text-white p-2 rounded-full bg-main-blue2">
                 <BsClock className="text-3xl" />
               </div>
               <span className="mt-2 text-gray-600">Kinh Nghiệm</span>
@@ -118,11 +106,10 @@ const RecruitmentDetail = () => {
           <div className="mb-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <a
               href={`/tuyen_dung/${postId}/ung_tuyen`}
-              className={`inline-block py-2 px-8 bg-custom-red text-white rounded-lg text-16 font-semibold hover:bg-red-500 transition duration-300 w-full sm:w-auto text-center ${
-                theme === "dark" ? " hover:bg-red-700" : " hover:bg-red-600"
-              }`}
+              className="inline-block py-2 px-8 bg-main-blue2 text-white rounded-lg text-16 font-semibold transition duration-300 w-full sm:w-auto text-center
+                 hover:bg-main-blue1"
             >
-              Apply Now
+              Ứng tuyển ngay
             </a>
 
             {isOwner && (
@@ -141,22 +128,17 @@ const RecruitmentDetail = () => {
 
           {/* Job Details Section */}
         </div>
-
-        <div
-          className={`w-full md:w-1/4 ${
-            theme === "dark" ? "bg-zinc-800" : "bg-gray-100"
-          } p-4 rounded-lg`}
-        >
-          <div className="flex items-center mb-4">
-            <img
-              src={recruitment.user.profile_image}
-              alt={`${recruitment.user.first_name} ${recruitment.user.last_name}`}
-              className="w-16 h-16 bg-gray-200 rounded-full"
-            />
-            <div className="ml-4">
-              <h3 className="text-16 font-bold">{`${recruitment.user.first_name} ${recruitment.user.last_name}`}</h3>
-              <span className="text-gray-600">{recruitment.user.username}</span>
-            </div>
+      </div>
+      <div className="w-full p-6 rounded-lg  transition-all duration-300 ">
+        <div className="flex items-center mb-6">
+          <img
+            src={recruitment.user.profile_image}
+            alt={`${recruitment.user.first_name} ${recruitment.user.last_name}`}
+            className="w-20 h-20 bg-gray-200 rounded-full border-2 border-white shadow-md"
+          />
+          <div className="ml-4">
+            <h3 className="text-18 font-bold text-gray-900">{`${recruitment.user.first_name} ${recruitment.user.last_name}`}</h3>
+            <span className="text-gray-700">@{recruitment.user.username}</span>
           </div>
         </div>
       </div>
@@ -175,7 +157,7 @@ const RecruitmentDetail = () => {
               }`}
             />
             <div className="flex-1">
-              <h4 className="text-16 font-medium">Location</h4>
+              <h4 className="text-16 font-medium">Khu vực</h4>
               <p>{recruitment.location}</p>
             </div>
           </div>
@@ -186,7 +168,7 @@ const RecruitmentDetail = () => {
               }`}
             />
             <div className="flex-1">
-              <h4 className="text-16 font-medium">Website</h4>
+              <h4 className="text-16 font-medium">Link</h4>
               <a
                 href={recruitment.link}
                 target="_blank"

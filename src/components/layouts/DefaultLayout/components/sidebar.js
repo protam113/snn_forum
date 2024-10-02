@@ -11,7 +11,7 @@ const Sidebar = () => {
   const { theme } = useTheme();
   const { userInfo } = useUser();
 
-  const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded hover:bg-gray-400 ${
+  const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded hover:bg-gray-200 ${
     theme === "dark"
       ? "bg-zinc-800 text-white hover:bg-zinc-700"
       : "bg-white text-black"
@@ -46,27 +46,7 @@ const Sidebar = () => {
             />
             <span className="ml-8 text-14">Người dùng</span>
           </Link>
-          {/* <Link to="/company" className={linkClasses}>
-            <FaBuilding
-              className={`absolute left-2 text-lg ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            />
-            <span className="ml-8 text-14">Company</span>
-          </Link> */}
         </div>
-        <hr className="border-zinc-900 my-4" />
-        {userInfo && (
-          <div className="relative flex flex-col space-y-4">
-            <Link
-              to="/manage"
-              className="bg-custom-red text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-600"
-            >
-              <FaCog className="text-lg ml-2" />
-              <span className="ml-4 text-14">Quản Lý</span>
-            </Link>
-          </div>
-        )}
       </div>
     </div>
   );

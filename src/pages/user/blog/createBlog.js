@@ -24,7 +24,7 @@ const CreateBlog = () => {
       ) : (
         <button
           onClick={handleClick}
-          className="bg-zinc-500 text-white px-8 py-4 rounded hover:opacity-90 transition-opacity"
+          className="bg-main-blue1 text-white px-8 py-4 rounded hover:opacity-90 transition-opacity"
         >
           <IoIosCreate className="font-bold" />
         </button>

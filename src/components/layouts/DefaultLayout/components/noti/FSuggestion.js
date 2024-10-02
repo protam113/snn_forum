@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Block from "../../../../design/Block";
-import { MdGroups2, MdPerson } from "react-icons/md";
+import { MdGroups2 } from "react-icons/md";
 import useUserSearch from "../../../../../hooks/useUserSearch";
-import useUserInfo from "../../../../../hooks/useUserInfo";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../../../context/themeContext";
 
@@ -10,7 +9,7 @@ const FSuggestion = () => {
   const { theme } = useTheme();
 
   const { results: featuredUsers, loading, error } = useUserSearch();
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUserSearch();
   const navigate = useNavigate();
 
   const handleProfileClick = (personId) => {
@@ -39,7 +38,7 @@ const FSuggestion = () => {
             theme === "dark" ? "text-white" : "text-zinc-800"
           }`}
         >
-          <span>Featured User</span>
+          <span>Nguời dùng</span>
           <MdGroups2 className="text-blue-500" />
         </h2>
         <a href="/nguoi_dung" className={theme.linkColor || "text-blue-500"}>

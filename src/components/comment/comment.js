@@ -84,7 +84,7 @@ const Comment = ({ blogId }) => {
       )}
       <div className="flex items-center space-x-4">
         <label className="flex items-center space-x-2 cursor-pointer">
-          <FaUpload className="text-custom-red" />
+          <FaUpload className="text-main-blue2" />
           <input type="file" onChange={handleFileChange} className="hidden" />
         </label>
         <textarea
@@ -92,7 +92,7 @@ const Comment = ({ blogId }) => {
           value={commentText}
           rows={2}
           onChange={handleCommentChange}
-          placeholder="Write a comment..."
+          placeholder="Viết bình luận..."
           className={`flex-grow rounded-md border-b-2 ${
             theme === "dark" ? "text-white" : "text-black"
           } ${theme === "dark" ? "border-zinc-400" : "border-zinc-500"} ${
@@ -101,7 +101,7 @@ const Comment = ({ blogId }) => {
         />
         <button
           onClick={handleSubmit}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-custom-red hover:bg-gray-600 text-white"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-main-blue2 hover:bg-main-blue1 text-white"
         >
           <FaPaperPlane />
         </button>

@@ -1,9 +1,8 @@
 import React from "react";
 import RecruitmentSidebar from "./components/RecruitmentSidebar";
-import Recruitment_feed from "./components/Recruitment_feed";
 import { useTheme } from "../../../context/themeContext";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
-import JobSearchForm from "./components/searchRec";
+import RecruitmentPost from "./components/Recruitment_post";
 
 const Recruitment = () => {
   const { theme } = useTheme();
@@ -21,33 +20,22 @@ const Recruitment = () => {
           <hr
             className={`my-4 border-${theme === "dark" ? "gray-700" : "white"}`}
           />
-          <h1 className="font-bold text-24">
-            <span
-              className={`${
-                theme === "dark" ? "text-red-400" : "text-custom-red"
-              }`}
-            >
-              Tuyển
-            </span>{" "}
-            <span
-              className={`${theme === "dark" ? "text-white" : "text-black"}`}
-            >
-              Dụng
-            </span>
+          <h1
+            className={`font-bold text-24 ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
+            Tuyển Dụng
           </h1>
           <hr
             className={`my-4 border-${theme === "dark" ? "gray-700" : "white"}`}
           />
-          {/* <JobSearchForm /> */}
-          <h1
-            className={`text-20 font-bold ${
-              theme === "dark" ? "text-white" : "text-black"
-            } `}
-          >
-            Đề Xuất
-          </h1>
           {/* <hr className={`my-2 border-${theme === "dark" ? "gray-700" : "white"}`} /> */}
-          <Recruitment_feed />
+          <div className="flex-1 p-4">
+            <div className="mx-auto max-w-4xl py-5">
+              <RecruitmentPost />
+            </div>
+          </div>
         </div>
         <RecruitmentSidebar />
       </div>

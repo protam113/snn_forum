@@ -10,7 +10,7 @@ const RecruitmentSidebar = () => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { data: recruitments = [], error, isLoading } = useRecruitmentList(); // Default to empty array
+  const { data: recruitments = [], error, isLoading } = useRecruitmentList();
 
   const handlePostClick = (postId) => {
     navigate(`/tuyen_dung/${postId}`);
@@ -41,8 +41,8 @@ const RecruitmentSidebar = () => {
         <button
           className={`w-full py-3 mb-6 rounded-lg text-white ${
             theme === "dark"
-              ? "bg-custom-red hover:bg-red-700"
-              : "bg-custom-red hover:bg-red-600"
+              ? "bg-main-blue1 hover:bg-blue-700"
+              : "bg-main-blue1 hover:bg-blue-600"
           } transition-colors duration-200`}
           onClick={handleCreatePostClick}
         >
@@ -60,9 +60,7 @@ const RecruitmentSidebar = () => {
 
       <div
         className={`p-4 rounded-lg mb-6 ${
-          theme === "dark"
-            ? "border-zinc-700 bg-zinc-900"
-            : "border-zinc-300 bg-white"
+          theme === "dark" ? "border-zinc-700 " : "border-zinc-300 "
         }`}
       >
         <div className="flex justify-between mb-4">
@@ -74,9 +72,6 @@ const RecruitmentSidebar = () => {
             </span>
             <FaHotjar className="text-red-500" />
           </h2>
-          <a href="/" className="text-blue-500">
-            See all
-          </a>
         </div>
 
         <div className="grid gap-4">
@@ -85,8 +80,8 @@ const RecruitmentSidebar = () => {
               key={activity.id}
               className={`grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-lg p-3 transition-colors ${
                 theme === "dark"
-                  ? "bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"
-                  : "bg-gray-100 hover:bg-gray-200 border border-gray-200"
+                  ? " hover:bg-zinc-700 border border-zinc-700"
+                  : " hover:bg-gray-100 border border-gray-200"
               }`}
               onClick={() => handlePostClick(activity.id)}
             >
@@ -95,7 +90,11 @@ const RecruitmentSidebar = () => {
                 alt="avatar"
                 className="w-12 h-12 rounded-full"
               />
-              <div className="grid gap-1">
+              <div
+                className={`grid gap-1 ${
+                  theme === "dark" ? "text-white" : "text-black"
+                } `}
+              >
                 <div className="font-medium text-14">
                   {activity.user.first_name || "Unknown"}{" "}
                   {activity.user.last_name || "User"}
@@ -108,7 +107,11 @@ const RecruitmentSidebar = () => {
                   {activity.location || "Unknown location"}
                 </div>
               </div>
-              <div className="grid gap-1 text-right">
+              <div
+                className={`grid gap-1 text-right ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+              >
                 <div className="font-medium text-14">
                   {activity.salary || "N/A"}
                 </div>

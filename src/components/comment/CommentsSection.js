@@ -14,6 +14,8 @@ import {
 } from "../../hooks/Blog/useComment";
 import EditCommentPopup from "./components/EditCommentPopup";
 import { useUser } from "../../context/UserProvider";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { MdDelete } from "react-icons/md";
 
 const CommentsSection = ({ blogId }) => {
   const { theme } = useTheme();
@@ -129,32 +131,35 @@ const CommentsSection = ({ blogId }) => {
                   </p>
                 </div>
                 {userInfo && userInfo.id === comment.user.id && (
-                  <div className="ml-auto relative">
-                    <BsThreeDots
-                      className="text-gray-500 text-xl cursor-pointer hover:text-gray-700"
-                      onClick={() => handleCommentMenuClick(comment.id)}
-                    />
-                    {activeCommentMenu === comment.id && (
-                      <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-gray-300 shadow-lg rounded-lg z-10">
-                        <ul className="text-gray-300">
-                          <li
-                            className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                            onClick={() => handleDeleteComment(comment.id)}
-                          >
-                            <FaTrashAlt className="mr-2 text-gray-400" />
-                            Xóa
-                          </li>
-                          <li
-                            className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                            onClick={() => setEditingComment(comment)}
-                          >
-                            <FaEdit className="mr-2 text-gray-400" />
-                            Chỉnh Sửa
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </div>
+                  <Menu as="div" className="ml-auto relative">
+                    <MenuButton>
+                      <BsThreeDots className="text-gray-500 text-xl cursor-pointer hover:text-gray-700" />
+                    </MenuButton>
+
+                    <MenuItems
+                      as="div"
+                      className="absolute right-0 mt-2 w-48 bg-white-blue1 border border-gray-300 shadow-lg rounded-lg z-10"
+                    >
+                      <MenuItem as="div">
+                        <div
+                          className="px-4 py-2 hover:bg-milk-blue1 hover:text-black cursor-pointer flex items-center"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          <FaTrashAlt className="mr-2 text-gray-400" />
+                          Xóa
+                        </div>
+                      </MenuItem>
+                      <MenuItem as="div">
+                        <div
+                          className="px-4 py-2 hover:bg-milk-blue1 hover:text-black cursor-pointer flex items-center"
+                          onClick={() => setEditingComment(comment)}
+                        >
+                          <FaEdit className="mr-2 text-gray-400" />
+                          Chỉnh Sửa
+                        </div>
+                      </MenuItem>
+                    </MenuItems>
+                  </Menu>
                 )}
               </div>
 
@@ -214,36 +219,36 @@ const CommentsSection = ({ blogId }) => {
                           </div>
                           <div className="ml-auto">
                             {userInfo.id === child.user.id && (
-                              <div className="ml-auto relative">
-                                <BsThreeDots
-                                  className="text-gray-500 text-xl cursor-pointer"
-                                  onClick={() =>
-                                    handleCommentChildMenuClick(child.id)
-                                  }
-                                />
-                                {activeCommentChildMenu === child.id && (
-                                  <div className="absolute right-0 mt-2 w-48 bg-zinc-800 border border-gray-300 shadow-lg rounded-lg z-10">
-                                    <ul className="text-gray-300">
-                                      <li
-                                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                                        onClick={() =>
-                                          handleDeleteComment(child.id)
-                                        }
-                                      >
-                                        <FaTrashAlt className="mr-2 text-gray-400" />
-                                        Xóa
-                                      </li>
-                                      <li
-                                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                                        onClick={() => setEditingComment(child)}
-                                      >
-                                        <FaEdit className="mr-2 text-gray-400" />
-                                        Chỉnh Sửa
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
+                              <Menu as="div" className="ml-auto relative">
+                                <MenuButton>
+                                  <BsThreeDots className="text-gray-500 text-xl cursor-pointer" />
+                                </MenuButton>
+                                <MenuItems
+                                  as="div"
+                                  className="absolute right-0 mt-2 w-48 bg-white-blue1 border border-gray-300 shadow-lg rounded-lg z-10"
+                                >
+                                  <MenuItem as="div">
+                                    <div
+                                      className="px-4 py-2 hover:bg-milk-blue1  cursor-pointer flex items-center"
+                                      onClick={() =>
+                                        handleDeleteComment(child.id)
+                                      }
+                                    >
+                                      <FaTrashAlt className="mr-2 text-gray-400" />
+                                      Xóa
+                                    </div>
+                                  </MenuItem>
+                                  <MenuItem as="div">
+                                    <div
+                                      className="px-4 py-2 hover:bg-milk-blue1  cursor-pointer flex items-center"
+                                      onClick={() => setEditingComment(child)}
+                                    >
+                                      <FaEdit className="mr-2 text-gray-400" />
+                                      Chỉnh Sửa
+                                    </div>
+                                  </MenuItem>
+                                </MenuItems>
+                              </Menu>
                             )}
                           </div>
                         </div>
@@ -288,24 +293,42 @@ const CommentsSection = ({ blogId }) => {
         </button>
       )}
       {showConfirmDelete && (
-        <div className="fixed inset-0 flex items-center justify-center z-20 bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl mb-4">
-              Bạn có chắc chắn muốn xóa comment này không?
-            </h2>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={cancelDelete}
-                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+        <div class="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]">
+          <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 relative">
+            <div class="my-4 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-14 fill-red-500 inline"
+                viewBox="0 0 24 24"
               >
-                Hủy
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              >
-                Xóa
-              </button>
+                <path
+                  d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                  data-original="#000000"
+                />
+                <path
+                  d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                  data-original="#000000"
+                />
+              </svg>
+              <h4 class="text-gray-800 text-base font-semibold mt-4">
+                {" "}
+                Bạn có chắc chắn muốn xóa comment này không?
+              </h4>
+
+              <div class="text-center space-x-4 mt-8">
+                <button
+                  onClick={cancelDelete}
+                  className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  Xóa
+                </button>
+              </div>
             </div>
           </div>
         </div>

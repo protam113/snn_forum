@@ -1,0 +1,259 @@
+  {/* <div className="flex justify-center items-center p-8">
+            <div className=" text-center space-y-4">
+              {errMsg && (
+                <div className="flex items-center justify-center border-red-500 bg-red-100 text-red-600 mb-4">
+                  <span>{errMsg}</span>
+                </div>
+              )}
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Đặt lại mật khẩu của bạn{" "}
+              </h2>
+              <p className="text-muted-foreground">
+                Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn mã để đặt
+                lại mật khẩu.
+              </p>
+              <div className="flex gap-2 w-full">
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="p-3 border rounded-lg border-gray-300 w-full"
+                  placeholder="Enter your email"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="px-2 py text-white font-semibold rounded-lg bg-blue-600"
+                >
+                  Yêu cầu mã xác minh{" "}
+                </button>
+              </div>
+            </div>
+          </div> */}
+
+
+
+          import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { IoIosArrowDown, IoMdSettings } from "react-icons/io";
+import Logo from "../../../../assets/img/logoH2H.svg";
+import { useTheme } from "../../../../context/themeContext";
+import useClickOutside from "../../../../hooks/useClickOutside";
+import LogoutButton from "../../../../pages/auth/logout";
+import { BiMenuAltRight } from "react-icons/bi";
+import { MdSupportAgent } from "react-icons/md";
+import LoginBtn from "../../../buttons/loginBtn";
+import { useUser } from "../../../../context/UserProvider";
+import { FaCog } from "react-icons/fa";
+
+const NavLinkItem = ({ to, children, theme }) => {
+  return (
+    <Link
+      to={to}
+      className={`relative group px-8 py-2 transition-all  ${
+        theme === "light"
+          ? "text-black hover:text-dark-blue2"
+          : "text-white hover:text-gray-300"
+      } flex items-center`}
+    >
+      <span className="text-16 font-bold">{children}</span>
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
+    </Link>
+  );
+};
+
+const NavLinkMobile = ({ to, children, theme }) => {
+  return (
+    <Link
+      to={to}
+      className={`relative group px-4 py-2 transition-all md:hidden ${
+        theme === "light"
+          ? "text-black hover:text-gray-400"
+          : "text-black hover:text-gray-400"
+      }`}
+    >
+      <span className="text-14">{children}</span>
+    </Link>
+  );
+};
+
+const Navbar = () => {
+  const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
+  const { theme } = useTheme();
+  const { userRoles, userInfo } = useUser();
+
+  const toggleNavbar = () => {
+    setIsMobileNavVisible(!isMobileNavVisible);
+  };
+
+  const closeNavbar = () => {
+    setIsMobileNavVisible(false);
+  };
+
+  const ref = useClickOutside(() => {
+    closeNavbar();
+  });
+
+  const isAdmin = userRoles.includes("admin") || userRoles.includes("manager");
+
+  return (
+    <div
+      className={`w-full min-h-14 sticky top-0 z-50 ${
+        theme === "light" ? "bg-white" : "bg-zinc-900"
+      }`}
+    >
+      <div className="mx-auto flex w-full max-w-7xl justify-between px-8 py-2 text-16">
+        {/* Logo section */}
+        <section className="flex items-center">
+          <Link to="/" className="flex items-center">
+            <img src={Logo} alt="Logo" id="logo" className="mr-2" />
+            <div className="text-lg">
+              <span
+                className={`${
+                  theme === "light" ? "text-dark-blue2 " : "text-milk-blue1"
+                } font-bold`}
+              >
+                H2H Tech
+              </span>{" "}
+              <span
+                className={`font-semibold  ${
+                  theme === "light" ? "text-black" : "text-white"
+                }
+                `}
+              >
+                Energy
+              </span>
+            </div>
+          </Link>
+        </section>
+
+        {/* Navigation links for desktop */}
+        <section className="flex-1 hidden md:flex justify-center items-center space-x-8">
+          <NavLinkItem to="/" theme={theme}>
+            Blog
+          </NavLinkItem>
+          <NavLinkItem to="/san_pham" theme={theme}>
+            Sản Phẩm
+          </NavLinkItem>
+          <NavLinkItem to="/tuyen_dung" theme={theme}>
+            Tuyển dụng
+          </NavLinkItem>
+          {isAdmin && (
+            <NavLinkItem to="/admin" theme={theme}>
+              Admin
+            </NavLinkItem>
+          )}
+        </section>
+
+        {/* User info and menu */}
+        <section className="flex items-center space-x-4">
+          {/* <Notifications /> */}
+          <div className="relative group inline-block">
+            <button
+              className="flex cursor-pointer items-center px-4 py-2 transition-all text-back"
+              onClick={toggleNavbar}
+            >
+              {!userInfo ? (
+                <BiMenuAltRight
+                  className={`font-semibold text-2xl ${
+                    theme === "light" ? "text-zinc-900" : "text-white"
+                  }`}
+                />
+              ) : (
+                <div className="flex items-center">
+                  <img
+                    src={userInfo.profile_image}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full cursor-pointer"
+                  />
+                </div>
+              )}
+              <IoIosArrowDown
+                className={`ml-2 transition-transform ${
+                  isMobileNavVisible ? "rotate-180" : "rotate-0"
+                } ${theme === "light" ? "text-zinc-900" : "text-white"}`}
+              />
+            </button>
+
+            <div
+              ref={ref}
+              className={`absolute right-0 top-12 flex flex-col gap-3 rounded-lg bg-white py-6 px-6 shadow-md transition-all ${
+                isMobileNavVisible ? "flex" : "hidden"
+              }`}
+              style={{ minWidth: "200px" }}
+              onClick={() => {
+                if (isMobileNavVisible) closeNavbar();
+              }}
+            >
+              {userInfo ? (
+                <Link
+                  to={`/profile/${userInfo.id}`}
+                  className="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white-blue2 rounded-md"
+                >
+                  <img
+                    src={userInfo.profile_image}
+                    alt="Profile"
+                    className="w-8 h-8  rounded-full cursor-pointer"
+                  />
+
+                  <span className="text-black">Profile</span>
+                </Link>
+              ) : null}
+              {userInfo ? (
+                <div className="relative flex flex-col space-y-4">
+                  <Link
+                    to="/manage"
+                    className="bg-main-blue2 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-600"
+                  >
+                    <FaCog className="text-lg ml-2" />
+                    <span className="ml-4 text-14">Quản Lý</span>
+                  </Link>
+                </div>
+              ) : null}
+
+              <>
+                <NavLinkMobile to="/" theme={theme}>
+                  Blog
+                </NavLinkMobile>
+                <NavLinkMobile to="/san_pham" theme={theme}>
+                  Sản Phẩm
+                </NavLinkMobile>
+                <NavLinkMobile to="/tuyen_dung" theme={theme}>
+                  Tuyển dụng
+                </NavLinkMobile>
+                {isAdmin && (
+                  <NavLinkMobile to="/admin" theme={theme}>
+                    s Admin
+                  </NavLinkMobile>
+                )}
+              </>
+
+              <hr className="bg-black md:hidden" />
+              <Link
+                to="/setting"
+                className="flex items-center space-x-3 px-4 py-2 text-black hover:bg-white-blue2 rounded-md"
+              >
+                <IoMdSettings className="text-14" />
+                <span>Settings</span>
+              </Link>
+              <Link
+                to="/support"
+                className="flex items-center space-x-3 px-4 py-2 text-black hover:bg-white-blue2 rounded-md"
+              >
+                <MdSupportAgent className="text-14" />
+                <span>Đóng góp</span>
+              </Link>
+              <hr className="bg-black" />
+              {userInfo ? <LogoutButton /> : <LoginBtn />}
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;

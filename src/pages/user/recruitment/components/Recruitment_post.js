@@ -13,6 +13,7 @@ import {
 import SkeletonBlog from "../../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
 import { useUser } from "../../../../context/UserProvider";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const RecruitmentPost = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -110,13 +111,11 @@ const RecruitmentPost = () => {
             <Block
               key={recruitment.id}
               className={`col-span-12 row-span-4 md:col-span-6 mb-4 p-4 ${
-                theme === "dark"
-                  ? "bg-zinc-800 text-white"
-                  : "bg-white text-black"
+                theme === "dark" ? " text-white" : " text-black"
               } border-2 ${
                 theme === "dark"
                   ? "border-transparent hover:border-zinc-700 hover:bg-zinc-700"
-                  : "border-transparent hover:border-zinc-300 hover:bg-zinc-300"
+                  : "border-transparent hover:border-zinc-300 hover:bg-zinc-100"
               } transition-colors duration-200`}
             >
               <div className="flex items-center mb-4">
@@ -142,54 +141,57 @@ const RecruitmentPost = () => {
                     {formatDate(recruitment.created_date)}
                   </p>
                 </div>
-                <div className="relative ml-auto">
-                  <BsThreeDots
-                    className={`text-2xl cursor-pointer ${
-                      theme === "dark"
-                        ? "text-gray-300 hover:text-gray-200"
-                        : "text-black hover:text-gray-700"
-                    }`}
-                    onClick={() => handleMenuClick(recruitment.id)}
-                  />
-                  {activeMenu === recruitment.id && (
-                    <div
-                      className={`absolute right-0 mt-2 w-48 ${
+                <Menu as="div" className="relative ml-auto">
+                  <MenuButton>
+                    <BsThreeDots
+                      className={`text-2xl cursor-pointer ${
                         theme === "dark"
-                          ? "bg-zinc-800 border-gray-700"
-                          : "bg-white border-gray-300"
-                      } shadow-lg rounded-lg z-10`}
-                    >
-                      <ul className="text-gray-700">
-                        {isOwner && (
-                          <>
-                            <li
-                              className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                              onClick={() => handleEditClick(recruitment.id)}
-                            >
-                              <FaEdit className="mr-2 text-gray-400" />
-                              Chỉnh sửa
-                            </li>
-                            <li
-                              className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                              onClick={() => handleDeleteClick(recruitment.id)}
-                            >
-                              <FaTrashAlt className="mr-2 text-gray-400" />
-                              Xóa
-                            </li>
-                          </>
-                        )}
-
-                        <li
-                          className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
-                          onClick={() => handleCopyUrl(recruitment.id)}
-                        >
-                          <FaLink className="mr-2 text-gray-400" />
-                          Sao chép URL
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                          ? "text-gray-300 hover:text-gray-200"
+                          : "text-black hover:text-gray-700"
+                      }`}
+                    />
+                  </MenuButton>
+                  <MenuItems
+                    as="div"
+                    className={`absolute right-0 mt-2 w-48 ${
+                      theme === "dark"
+                        ? "bg-zinc-800 border-gray-700"
+                        : "bg-white border-gray-300"
+                    } shadow-lg rounded-lg z-10`}
+                  >
+                    {isOwner && (
+                      <>
+                        <MenuItem as="div">
+                          <div
+                            className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                            onClick={() => handleEditClick(recruitment.id)}
+                          >
+                            <FaEdit className="mr-2 text-gray-400" />
+                            Chỉnh sửa
+                          </div>
+                        </MenuItem>
+                        <MenuItem as="div">
+                          <div
+                            className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                            onClick={() => handleDeleteClick(recruitment.id)}
+                          >
+                            <FaTrashAlt className="mr-2 text-gray-400" />
+                            Xóa
+                          </div>
+                        </MenuItem>
+                      </>
+                    )}
+                    <MenuItem as="div">
+                      <div
+                        className="px-4 py-2 hover:bg-gray-200 hover:text-black cursor-pointer flex items-center"
+                        onClick={() => handleCopyUrl(recruitment.id)}
+                      >
+                        <FaLink className="mr-2 text-gray-400" />
+                        Sao chép URL
+                      </div>
+                    </MenuItem>
+                  </MenuItems>
+                </Menu>
               </div>
               <div onClick={() => handlePostClick(recruitment.id)}>
                 <p
@@ -224,9 +226,7 @@ const RecruitmentPost = () => {
                     Số Lượng: {recruitment.quantity}
                   </p>
                   <button
-                    className={`bg-custom-red text-white text-14 px-4 py-2 rounded ${
-                      theme === "dark" ? "hover:bg-red-600" : "hover:bg-red-700"
-                    }`}
+                    className="bg-main-blue1 text-white text-14 px-4 py-2 rounded hover:bg-main-blue2"
                     onClick={() => handlePostClick(recruitment.id)}
                   >
                     Ứng tuyển ngay

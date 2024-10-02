@@ -1,22 +1,20 @@
 import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Block from "../../../components/design/Block";
 import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../context/themeContext";
 import formatDate from "../../../utils/formatDate";
 import Loading from "../../error/load";
-import Likeblog from "../../../components/buttons/likeBlog";
 import { IoShareSocialOutline } from "react-icons/io5";
-import { MdPerson } from "react-icons/md";
 import SkeletonBlog from "../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
 import { useBlogList, useDeleteBlog } from "../../../hooks/Blog/useBlogs";
 import { useToastDesign } from "../../../context/ToastService";
 import { useUser } from "../../../context/UserProvider";
+import LikePost from "../../../components/buttons/likeBlog";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const Blog = () => {
-  const [activeMenu, setActiveMenu] = useState(null);
   const [expandedBlogId, setExpandedBlogId] = useState(null);
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -65,10 +63,6 @@ const Blog = () => {
 
   const handleEditClick = (blogId) => {
     navigate(`/blog/edit/${blogId}`);
-  };
-
-  const handleMenuClick = (blogId) => {
-    setActiveMenu((prev) => (prev === blogId ? null : blogId));
   };
 
   const handleDeleteClick = async (blogId) => {
@@ -145,31 +139,18 @@ const Blog = () => {
 
           return (
             <div key={blog.id}>
-              <Block
+              <div
                 className={`p-4 rounded-lg border mt-4 ${
-                  theme === "dark"
-                    ? "border-custom-zinc bg-zinc-800"
-                    : "border-gray-300 bg-white"
+                  theme === "dark" ? "border-zinc-400 " : "border-zinc-200 "
                 } shadow-sm`}
               >
                 <div className="flex items-center mb-4">
-                  {blog.user.profile_image ? (
-                    <img
-                      src={blog.user.profile_image}
-                      alt="avatar"
-                      className={`size-12 rounded-full ${
-                        theme === "dark" ? "border-white" : "border-black"
-                      }`}
-                      onClick={() => handleProfileClick(blog.user.id)}
-                    />
-                  ) : (
-                    <MdPerson
-                      className={`size-12 rounded-full ${
-                        theme === "dark" ? "text-white" : "text-gray-500"
-                      }`}
-                      onClick={() => handleProfileClick(blog.user.id)}
-                    />
-                  )}
+                  <img
+                    src={blog.user.profile_image}
+                    alt="avatar"
+                    className="size-12 rounded-full"
+                    onClick={() => handleProfileClick(blog.user.id)}
+                  />
                   <div className="ml-2">
                     <h1
                       className={`text-base font-bold leading-tight ${
@@ -187,44 +168,50 @@ const Blog = () => {
                       {formatDate(blog.created_date)}
                     </p>
                   </div>
-                  <div className="ml-auto relative">
-                    <BsThreeDots
-                      className={`text-2xl cursor-pointer ${
-                        theme === "dark"
-                          ? "text-gray-300 hover:text-gray-200"
-                          : "text-black hover:text-gray-700"
-                      }`}
-                      onClick={() => handleMenuClick(blog.id)}
-                    />
-                    {activeMenu === blog.id && (
-                      <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-gray-300 shadow-lg rounded-lg z-10">
-                        <ul className="text-gray-300">
-                          {isOwner && (
-                            <>
-                              <li
-                                className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
-                                onClick={() => handleEditClick(blog.id)}
-                              >
-                                <FaEdit className="mr-2 text-gray-400" />
-                                Chỉnh sửa
-                              </li>
-                              <li
-                                className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
-                                onClick={() => handleDeleteClick(blog.id)}
-                              >
-                                <FaTrashAlt className="mr-2 text-gray-400" />
-                                Xóa
-                              </li>
-                            </>
-                          )}
-                          <li className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center">
-                            <FaFlag className="mr-2 text-gray-400" />
-                            Báo cáo
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </div>
+                  <Menu as="div" className="ml-auto relative">
+                    <MenuButton>
+                      <BsThreeDots
+                        className={`text-2xl cursor-pointer ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:text-gray-200"
+                            : "text-black hover:text-gray-700"
+                        }`}
+                      />
+                    </MenuButton>
+                    <MenuItems
+                      as="div"
+                      className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-gray-300 shadow-lg rounded-lg z-10"
+                    >
+                      {isOwner && (
+                        <>
+                          <MenuItem as="div">
+                            <div
+                              className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
+                              onClick={() => handleEditClick(blog.id)}
+                            >
+                              <FaEdit className="mr-2 text-gray-400" />
+                              Chỉnh sửa
+                            </div>
+                          </MenuItem>
+                          <MenuItem as="div">
+                            <div
+                              className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
+                              onClick={() => handleDeleteClick(blog.id)}
+                            >
+                              <FaTrashAlt className="mr-2 text-gray-400" />
+                              Xóa
+                            </div>
+                          </MenuItem>
+                        </>
+                      )}
+                      <MenuItem as="div">
+                        <div className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center">
+                          <FaFlag className="mr-2 text-gray-400" />
+                          Báo cáo
+                        </div>
+                      </MenuItem>
+                    </MenuItems>
+                  </Menu>
                 </div>
                 <div onClick={() => handleBlogClick(blog.id)}>
                   <h2
@@ -312,7 +299,7 @@ const Blog = () => {
                 />
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-4">
-                    <Likeblog blogId={blog.id} liked={blog.liked} />
+                    <LikePost blogId={blog.id} liked={blog.liked} />
                     <FaRegCommentAlt
                       className={`text-2xl cursor-pointer ${
                         theme === "dark" ? "text-gray-300" : "text-gray-500"
@@ -327,7 +314,7 @@ const Blog = () => {
                     />
                   </div>
                 </div>
-              </Block>
+              </div>
               {isFetchingNextPage && <Loading />}
             </div>
           );

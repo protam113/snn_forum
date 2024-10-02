@@ -57,7 +57,7 @@ const Product = () => {
                 <span className="text-14 font-semibold">
                   {formatPrice(product.price)}
                 </span>
-                <button className="bg-custom-red text-white px-2 py-1 rounded-md font-semibold hover:bg-red-700 transition-colors text-14">
+                <button className="bg-main-blue2 text-white px-2 py-1 rounded-md font-semibold hover:bg-red-700 transition-colors text-14">
                   Xem chi tiết
                 </button>
               </div>

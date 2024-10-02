@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlinePlus,
+  AiOutlineWarning,
+} from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useEditProduct,
@@ -118,6 +122,10 @@ const EdtProduct = () => {
           <label htmlFor="file" className="block text-sm font-medium mb-1">
             Upload Images (max 4)
           </label>
+          <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
+            <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+            <span>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</span>
+          </div>
           <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
             <input
               id="media"

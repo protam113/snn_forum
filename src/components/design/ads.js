@@ -29,7 +29,7 @@ const Card = () => {
           scale: 1.05,
         },
       }}
-      className="relative h-96 w-80 shrink-0 overflow-hidden rounded-xl bg-custom-red p-8"
+      className="relative h-96 w-80 shrink-0 overflow-hidden rounded-xl bg-main-blue2 p-8"
     >
       <div className="relative z-10 text-white">
         <span className="mb-3 block w-fit rounded-full bg-white/30 px-3 py-0.5 text-sm font-light text-white">
@@ -55,7 +55,7 @@ const Card = () => {
       </div>
       <Link
         to="/register"
-        className="absolute bottom-4 left-4 right-4 z-20 rounded border-2 border-white bg-white py-2 text-center font-mono font-black uppercase text-neutral-800 backdrop-blur transition-colors hover:bg-white/30 hover:text-white"
+        className="absolute bottom-4 left-4 right-4 z-20 rounded border-2 border-white-blue1 bg-main-blue1 py-2 text-center font-mono font-black uppercase text-white backdrop-blur transition-colors hover:bg-white/30 hover:text-white"
       >
         Đăng Ký{" "}
       </Link>
@@ -98,7 +98,7 @@ const Background = () => {
         cx="160.5"
         cy="114.5"
         r="101.5"
-        fill="#262626"
+        fill="#0b2346"
       />
       <motion.ellipse
         variants={{
@@ -116,7 +116,7 @@ const Background = () => {
         cy="265.5"
         rx="101.5"
         ry="43.5"
-        fill="#262626"
+        fill="#0b2346"
       />
     </motion.svg>
   );

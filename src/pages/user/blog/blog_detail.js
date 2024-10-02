@@ -10,7 +10,6 @@ import {
 import { BsThreeDots } from "react-icons/bs";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Loading from "../../error/load";
-import Likeblog from "../../../components/buttons/likeBlog";
 import formatDate from "../../../utils/formatDate";
 import Comment from "../../../components/comment/comment";
 import { useTheme } from "../../../context/themeContext";
@@ -23,6 +22,8 @@ import CommentsSection from "../../../components/comment/CommentsSection";
 import { useDeleteBlog } from "../../../hooks/Blog/useBlogs";
 import { useToastDesign } from "../../../context/ToastService";
 import { useUser } from "../../../context/UserProvider";
+import LikePost from "../../../components/buttons/likeBlog";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const Blog_detail = () => {
   const { theme } = useTheme();
@@ -31,11 +32,7 @@ const Blog_detail = () => {
   const navigate = useNavigate();
   const { data: blog, isLoading, isError } = useBlogDetail(blogId);
   const { mutate: deleteBlogMutation } = useDeleteBlog();
-  const [activeMenu, setActiveMenu] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const handleMenuClick = (id) => {
-    setActiveMenu((prev) => (prev === id ? null : id));
-  };
   const { addNotification } = useToastDesign();
 
   const handleProfileClick = (personId) => {
@@ -153,7 +150,7 @@ const Blog_detail = () => {
         name="XLR Team"
         type="article"
       />
-      <article className="w-full max-w-2xl mx-auto py-8 px-4 md:px-6">
+      <article className="w-full max-w-4xl mx-auto py-8 px-4 md:px-6">
         <div className="max-w-6xl w-full">
           {/* Post Information and 3-dots menu */}
           <div className="flex items-center mb-4">
@@ -187,41 +184,52 @@ const Blog_detail = () => {
                 {formatDate(blog.created_date)}
               </p>
             </div>
-            <div className="ml-auto relative">
-              <BsThreeDots
-                className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
-                onClick={() => handleMenuClick(blog.id)}
-              />
-              {activeMenu === blog.id && (
-                <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-zinc-400 shadow-lg rounded-lg z-10">
-                  <ul>
-                    {userInfo.id === blog.user.id && (
-                      <>
-                        <li
-                          className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
-                          onClick={() => handleEditClick(blog.id)}
-                        >
-                          <FaEdit className="mr-2 text-gray-400" />
-                          Chỉnh sửa
-                        </li>
-                        <li
-                          className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center"
-                          onClick={() => handleDeleteClick(blog.id, userInfo)}
-                        >
-                          <FaTrashAlt className="mr-2 text-gray-400" />
-                          Xóa
-                        </li>
-                      </>
-                    )}
+            <Menu as="div" className="ml-auto relative">
+              <MenuButton>
+                <BsThreeDots className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700" />
+              </MenuButton>
+              <MenuItems
+                as="div"
+                className="absolute right-0 mt-2 w-48 bg-white border border-zinc-400 shadow-lg rounded-lg z-10"
+              >
+                <MenuItem as="div">
+                  {userInfo && (
+                    <div
+                      to={`/profile/${userInfo.id}`}
+                      className="flex items-center space-x-6 px-6 py-1 text-black hover:bg-white-blue2"
+                      onClick={() => handleEditClick(blog.id)}
+                    >
+                      <FaEdit className="mr-2 text-gray-400" />
 
-                    <li className="px-4 py-2 text-14 hover:bg-zinc-200 hover:text-black cursor-pointer flex items-center">
-                      <FaFlag className="mr-2 text-gray-400" />
-                      Báo Cáo
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+                      <span>Chỉnh sửa</span>
+                    </div>
+                  )}
+                </MenuItem>
+                <MenuItem as="div">
+                  {userInfo && (
+                    <div
+                      to={`/profile/${userInfo.id}`}
+                      className="flex items-center space-x-6 px-6 py-1 text-black hover:bg-white-blue2"
+                      onClick={() => handleDeleteClick(blog.id)}
+                    >
+                      <FaTrashAlt className="mr-2 text-gray-400" />
+
+                      <span>Xóa</span>
+                    </div>
+                  )}
+                </MenuItem>
+                <MenuItem as="div">
+                  <div
+                    className="flex items-center space-x-6 px-6 py-1 text-black hover:bg-white-blue2"
+                    onClick={() => handleEditClick(blog.id)}
+                  >
+                    <FaFlag className="mr-2 text-gray-400" />
+
+                    <span> Báo Cáo</span>
+                  </div>
+                </MenuItem>
+              </MenuItems>
+            </Menu>
           </div>
           {/* Content */}
           <div>
@@ -272,7 +280,7 @@ const Blog_detail = () => {
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <Likeblog blogId={blog.id} liked={blog.liked} />
+                <LikePost blogId={blog.id} liked={blog.liked} />
                 <IoShareSocialOutline
                   className={`text-2xl cursor-pointer ${
                     theme === "dark" ? "text-gray-300" : "text-gray-500"
@@ -280,13 +288,7 @@ const Blog_detail = () => {
                   onClick={() => handleCopyLink(blog.id)}
                 />
               </div>
-              <div className="flex items-center gap-4">
-                {/* <BsBookmark
-                className={`text-2xl cursor-pointer ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-500"
-                }`}
-              /> */}
-              </div>
+              <div className="flex items-center gap-4"></div>
             </div>
           </div>
           <hr className="my-2 border-zinc-900" />
@@ -294,7 +296,13 @@ const Blog_detail = () => {
           <Comment blogId={blogId} />
         </div>
         <hr className="my-4 border-zinc-900" />
-        <h1 className="font-bold text-custom-red text-20">Recent Feed</h1>
+        <h1
+          className={`font-bold ${
+            theme === "dark" ? "text-white" : "text-black"
+          }  text-20`}
+        >
+          Bài viết mới
+        </h1>
         <RecentFeed />{" "}
       </article>
     </>

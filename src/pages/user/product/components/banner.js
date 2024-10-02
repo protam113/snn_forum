@@ -41,47 +41,45 @@ const Banner = () => {
     >
       <div className="container mx-auto px-4 md:px-6">
         <Slide>
-          {bannersToShow.length > 0 ? (
-            bannersToShow.map((slide, index) => (
-              <div
-                key={index}
-                className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-8 items-center"
-              >
-                <div className="space-y-6">
-                  <h1 className="md:text-18 lg:text-24 font-bold mb-4">
-                    {slide.title || "Default Title"}
-                  </h1>
-                  <p className="md:text-16 mb-6">
-                    {slide.description || "Description not available"}
-                  </p>
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <Link
-                      to="/san_pham/tat_ca_san_pham"
-                      className="inline-flex items-center justify-center text-white rounded-md bg-custom-red px-6 py-3 text-14 font-medium transition-colors hover:bg-red-600"
-                    >
-                      Khám phá sản phẩm
-                    </Link>
-                    <Link
-                      to="/san_pham/tat_ca_san_pham"
-                      className="inline-flex items-center justify-center rounded-md border border-custom-red px-6 py-3 text-14 font-medium transition-colors hover:bg-primary-foreground hover:bg-red-200"
-                    >
-                      Sản phẩm theo thể loại
-                    </Link>
+          {bannersToShow.length > 0
+            ? bannersToShow.map((slide, index) => (
+                <div
+                  key={index}
+                  className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-8 items-center"
+                >
+                  <div className="space-y-6">
+                    <h1 className="md:text-18 lg:text-24 font-bold mb-4">
+                      {slide.title || "Default Title"}
+                    </h1>
+                    <p className="md:text-16 mb-6">
+                      {slide.description || "Description not available"}
+                    </p>
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <Link
+                        to="/san_pham/tat_ca_san_pham"
+                        className="inline-flex items-center justify-center text-white rounded-md bg-main-blue2 px-6 py-3 text-14 font-medium transition-colors hover:bg-red-600"
+                      >
+                        Khám phá sản phẩm
+                      </Link>
+                      <Link
+                        to="/san_pham/tat_ca_san_pham"
+                        className="inline-flex items-center justify-center rounded-md border border-main-blue2 px-6 py-3 text-14 font-medium transition-colors hover:bg-primary-foreground hover:bg-red-200"
+                      >
+                        Sản phẩm theo thể loại
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="hidden md:block">
+                    <img
+                      src={slide.image}
+                      alt="Product display"
+                      className="rounded-lg shadow-lg w-[400px]"
+                      style={{ aspectRatio: "300/300", objectFit: "cover" }}
+                    />
                   </div>
                 </div>
-                <div className="hidden md:block">
-                  <img
-                    src={slide.image}
-                    alt="Product display"
-                    className="rounded-lg shadow-lg w-[400px]"
-                    style={{ aspectRatio: "300/300", objectFit: "cover" }}
-                  />
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500">No Banners Available</p>
-          )}
+              ))
+            : null}
         </Slide>
       </div>
     </section>

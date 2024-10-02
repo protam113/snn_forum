@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import useUserInfo from "../../hooks/useUserInfo";
 import { useToastDesign } from "../../context/ToastService";
+import { useTheme } from "../../context/themeContext";
 
 const ResetPassword = () => {
+  const { theme } = useTheme();
   const { resetPassword, requestVerificationCode } = useUserInfo();
   const [formData, setFormData] = useState({
     email: "",
@@ -66,44 +68,67 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+    <div className="p-6">
       {!codeRequested ? (
         <form
           onSubmit={handleRequestCode}
-          className="text-foreground py-12 md:py-16 lg:py-20"
+          className="flex justify-center items-center p-8"
         >
-          <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            <div className="max-w-xl mx-auto text-center space-y-4">
+          <div className="space-y-6">
+            {" "}
+            {/* Thêm khoảng cách giữa các phần */}
+            <div
+              className={`border p-6 rounded-lg shadow-md max-w-sm w-full ${
+                theme === "dark"
+                  ? "border-zinc-600 bg-zinc-700"
+                  : "border-zinc-300 bg-white"
+              }`}
+            >
+              <div className="flex items-center justify-center mb-6">
+                <div className="text-lg">
+                  <span className="text-main-blue1 font-bold">H2H Tech</span>{" "}
+                  <span
+                    className={`font-semibold ${
+                      theme === "light" ? "text-zinc-900" : "text-white"
+                    }`}
+                  >
+                    Energy
+                  </span>
+                </div>
+              </div>
+              <h2 className="text-24 md:text-18 font-bold mb-4">
+                Đặt lại mật khẩu của bạn
+              </h2>
+              <p className="text-muted-foreground text-16 mb-4">
+                {" "}
+                Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn mã để đặt
+                lại mật khẩu.
+              </p>
               {errMsg && (
-                <div className="flex items-center justify-center px-4 py-2 rounded-lg border border-red-500 bg-red-100 text-red-600 mb-4">
+                <div className="flex items-center justify-center border-red-500 bg-red-100 text-red-600 mb-4">
                   <span>{errMsg}</span>
                 </div>
               )}
-              <h2 className="text-3xl md:text-4xl font-bold">
-                Reset Your Password
-              </h2>
-              <p className="text-muted-foreground">
-                Enter your email address and we'll send you a code to reset your
-                password.
-              </p>
-              <div className="flex gap-2 w-full">
-                <input
-                  type="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="p-3 border rounded-lg border-gray-300 w-full"
-                  placeholder="Enter your email"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-white font-semibold rounded-lg bg-blue-600"
-                >
-                  Request Verification Code
-                </button>
+              <div className="flex flex-col space-y-4">
+                <div className="flex gap-2 w-full">
+                  <input
+                    type="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="p-2 border rounded-lg border-gray-300 w-full"
+                    placeholder="Enter your email"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="px-3 py text-white font-semibold rounded-lg bg-blue-600"
+                  >
+                    Yêu cầu mã xác minh
+                  </button>
+                </div>
               </div>
             </div>
           </div>
