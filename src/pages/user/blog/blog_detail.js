@@ -16,7 +16,6 @@ import { useTheme } from "../../../context/themeContext";
 import { Error404 } from "../../error/error";
 import RecentFeed from "./feed/RecenFeed";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
-import { MdPerson } from "react-icons/md";
 import { useBlogDetail } from "../../../hooks/Blog/useBlog";
 import CommentsSection from "../../../components/comment/CommentsSection";
 import { useDeleteBlog } from "../../../hooks/Blog/useBlogs";
@@ -154,23 +153,15 @@ const Blog_detail = () => {
         <div className="max-w-6xl w-full">
           {/* Post Information and 3-dots menu */}
           <div className="flex items-center mb-4">
-            {blog.user.profile_image ? (
-              <img
-                src={blog.user.profile_image}
-                alt="avatar"
-                className={`size-12 rounded-full ${
-                  theme === "dark" ? "border-white" : "border-black"
-                }`}
-                onClick={() => handleProfileClick(blog.user.id)}
-              />
-            ) : (
-              <MdPerson
-                className={`size-12 rounded-full ${
-                  theme === "dark" ? "text-white" : "text-gray-500"
-                }`}
-                onClick={() => handleProfileClick(blog.user.id)}
-              />
-            )}
+            <img
+              src={blog.user.profile_image}
+              alt="avatar"
+              className={`size-12 rounded-full ${
+                theme === "dark" ? "border-white" : "border-black"
+              }`}
+              onClick={() => handleProfileClick(blog.user.id)}
+            />
+
             <div>
               <h1
                 className={`font-bold text-base ${
@@ -292,8 +283,12 @@ const Blog_detail = () => {
             </div>
           </div>
           <hr className="my-2 border-zinc-900" />
-          <CommentsSection blogId={blogId} />
-          <Comment blogId={blogId} />
+          <div className="comments-container flex flex-col">
+            <div className="comments-section overflow-y-auto max-h-[300px] mb-4">
+              <CommentsSection blogId={blogId} />
+            </div>
+            <Comment blogId={blogId} />
+          </div>
         </div>
         <hr className="my-4 border-zinc-900" />
         <h1

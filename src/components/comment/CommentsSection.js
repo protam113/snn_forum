@@ -15,7 +15,6 @@ import {
 import EditCommentPopup from "./components/EditCommentPopup";
 import { useUser } from "../../context/UserProvider";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { MdDelete } from "react-icons/md";
 
 const CommentsSection = ({ blogId }) => {
   const { theme } = useTheme();
@@ -34,7 +33,6 @@ const CommentsSection = ({ blogId }) => {
   } = useComments(blogId);
 
   const [activeCommentMenu, setActiveCommentMenu] = useState(null);
-  const [activeCommentChildMenu, setActiveCommentChildMenu] = useState(null);
   const [activeReply, setActiveReply] = useState(null);
   const [replyLimit, setReplyLimit] = useState(5);
 
@@ -76,16 +74,6 @@ const CommentsSection = ({ blogId }) => {
     setActiveCommentMenu(null);
   };
 
-  const handleCommentChildMenuClick = (commentId) => {
-    setActiveCommentChildMenu((prev) =>
-      prev === commentId ? null : commentId
-    );
-  };
-
-  const handleCommentMenuClick = (commentId) => {
-    setActiveCommentMenu((prev) => (prev === commentId ? null : commentId));
-  };
-
   const handleReplyClick = (commentId) => {
     setActiveReply((prev) => (prev === commentId ? null : commentId));
     if (activeReply !== commentId) {
@@ -111,23 +99,30 @@ const CommentsSection = ({ blogId }) => {
           comment && comment.user ? (
             <div key={comment.id} className="mb-4">
               <div className="flex items-start mb-2">
-                <img
-                  src={comment.user.profile_image}
-                  alt="profile"
-                  className="w-8 h-8 rounded-full mr-2 cursor-pointer"
+                <div
+                  className="flex items-center"
                   onClick={() => handleProfileClick(comment.user.id)}
-                />
-                <div>
+                >
                   <p
-                    className={`font-semibold text-sm ${
-                      theme === "dark" ? "text-white" : "text-black"
-                    }`}
-                    onClick={() => handleProfileClick(comment.user.id)}
+                    className={`inline-flex items-center mr-3 text-sm  font-semibold
+                  ${theme === "dark" ? "text-white" : "text-black"}`}
                   >
+                    <img
+                      className="mr-2 w-6 h-6 rounded-full"
+                      src={comment.user.profile_image}
+                      alt="Michael Gough"
+                    />{" "}
                     {comment.user.first_name} {comment.user.last_name}
                   </p>
-                  <p className="text-gray-500 text-xs">
-                    {formatDate(comment.created_date)}
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <time
+                      pubdate
+                      datetime="2022-02-08"
+                      title="February 8th, 2022"
+                    >
+                      {" "}
+                      {formatDate(comment.created_date)}
+                    </time>
                   </p>
                 </div>
                 {userInfo && userInfo.id === comment.user.id && (

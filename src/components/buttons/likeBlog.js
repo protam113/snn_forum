@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaHeart } from "react-icons/fa";
+import { FaFireAlt } from "react-icons/fa";
 import { useLikeBlog } from "../../hooks/Blog/useBlogs";
 import Loading from "../../pages/error/load";
 
@@ -35,7 +35,7 @@ const LikePost = ({ blogId, liked }) => {
       ) : localError ? (
         <div className="text-red-500 text-2xl">{localError}</div>
       ) : (
-        <FaHeart
+        <FaFireAlt
           className={`text-2xl ${
             localLiked ? "text-red-500" : "text-gray-500"
           }`}

@@ -180,13 +180,13 @@ const Blog = () => {
                     </MenuButton>
                     <MenuItems
                       as="div"
-                      className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-gray-300 shadow-lg rounded-lg z-10"
+                      className="absolute right-0 mt-2 w-48 text-black bg-white-blue1 border border-gray-300 shadow-lg rounded-lg z-10"
                     >
                       {isOwner && (
                         <>
                           <MenuItem as="div">
                             <div
-                              className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
+                              className="px-4 py-2 hover:bg-milk-blue1  cursor-pointer flex items-center"
                               onClick={() => handleEditClick(blog.id)}
                             >
                               <FaEdit className="mr-2 text-gray-400" />
@@ -195,7 +195,7 @@ const Blog = () => {
                           </MenuItem>
                           <MenuItem as="div">
                             <div
-                              className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
+                              className="px-4 py-2 hover:bg-milk-blue1 cursor-pointer flex items-center"
                               onClick={() => handleDeleteClick(blog.id)}
                             >
                               <FaTrashAlt className="mr-2 text-gray-400" />
@@ -205,7 +205,7 @@ const Blog = () => {
                         </>
                       )}
                       <MenuItem as="div">
-                        <div className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center">
+                        <div className="px-4 py-2 hover:bg-milk-blue1 cursor-pointer flex items-center">
                           <FaFlag className="mr-2 text-gray-400" />
                           Báo cáo
                         </div>
