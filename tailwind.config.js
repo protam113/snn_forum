@@ -15,6 +15,7 @@ module.exports = {
         "border-blue1": "#07304A",
         "dark-blue2": "#0b2346",
         "nav-blue1": "#0CA9EB",
+        "primary-border-50": "#a1a1aa",
       },
       screens: {
         sm: "640px", // Small devices (phones)

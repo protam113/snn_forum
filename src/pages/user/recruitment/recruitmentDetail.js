@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   FaEnvelope,
   FaPhone,
@@ -16,6 +16,7 @@ import { useRecruitmentDetail } from "../../../hooks/Recruitment/useRecruitment"
 import { useUser } from "../../../context/UserProvider";
 
 const RecruitmentDetail = () => {
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const { id: postId } = useParams();
   const {
@@ -25,6 +26,14 @@ const RecruitmentDetail = () => {
     error,
   } = useRecruitmentDetail(postId);
   const { userInfo } = useUser();
+
+  const handleProfileClick = (personId) => {
+    if (userInfo && userInfo.id.toString() === personId) {
+      navigate(`/profile/${userInfo.id}`);
+    } else {
+      navigate(`/profile/${personId}`);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -129,7 +138,10 @@ const RecruitmentDetail = () => {
           {/* Job Details Section */}
         </div>
       </div>
-      <div className="w-full p-6 rounded-lg  transition-all duration-300 ">
+      <div
+        className="w-full p-6 rounded-lg  transition-all duration-300 "
+        onClick={() => handleProfileClick(recruitment.user.id)}
+      >
         <div className="flex items-center mb-6">
           <img
             src={recruitment.user.profile_image}

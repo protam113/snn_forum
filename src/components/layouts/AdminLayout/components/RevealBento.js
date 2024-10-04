@@ -2,13 +2,24 @@ import React from "react";
 import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { FiMail, FiMapPin } from "react-icons/fi";
-import { SiTiktok, SiTwitter } from "react-icons/si";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import BannerChart from "./chart/bannerChart";
 import CategoryChart from "./chart/categoryChart";
+import TagChart from "./chart/TagChart";
+import { useWeb } from "../../../../hooks/useWeb";
+import Loading from "../../../../pages/error/load";
 
 export const RevealBento = () => {
   const { userInfo } = useUserInfo();
+  const { data: web, error, isLoading } = useWeb();
+  // Loading và Error handling
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="min-h-screen px-4 py-4 text-black">
@@ -22,7 +33,7 @@ export const RevealBento = () => {
       >
         {/* Truyền userInfo vào HeaderBlock */}
         <HeaderBlock userInfo={userInfo} />
-        <SocialsBlock />
+        <SocialsBlock data={web} />
         <LocationBlock userInfo={userInfo} />
         <EmailListBlock userInfo={userInfo} />
       </motion.div>
@@ -76,56 +87,59 @@ const HeaderBlock = ({ userInfo }) => (
   </Block>
 );
 
-const SocialsBlock = () => (
-  <>
-    <Block
-      whileHover={{
-        rotate: "2.5deg",
-        scale: 1.1,
-      }}
-      className="col-span-6 bg-red-500 md:col-span-3"
-    >
-      <BannerChart />
-    </Block>
-    <Block
-      whileHover={{
-        rotate: "-2.5deg",
-        scale: 1.1,
-      }}
-      className="col-span-6 bg-green-600 md:col-span-3"
-    >
-      <CategoryChart />
-    </Block>
-    <Block
-      whileHover={{
-        rotate: "-2.5deg",
-        scale: 1.1,
-      }}
-      className="col-span-6 bg-zinc-50 md:col-span-3"
-    >
-      <a
-        href="/"
-        className="grid h-full place-content-center text-3xl text-black"
+const SocialsBlock = ({ data }) => {
+  return (
+    <>
+      <Block
+        whileHover={{
+          rotate: "2.5deg",
+          scale: 1.1,
+        }}
+        className="col-span-6 bg-red-500 md:col-span-3"
       >
-        <SiTiktok />
-      </a>
-    </Block>
-    <Block
-      whileHover={{
-        rotate: "2.5deg",
-        scale: 1.1,
-      }}
-      className="col-span-6 bg-blue-500 md:col-span-3"
-    >
-      <a
-        href="/"
-        className="grid h-full place-content-center text-3xl text-white"
+        <BannerChart />
+      </Block>
+      <Block
+        whileHover={{
+          rotate: "-2.5deg",
+          scale: 1.1,
+        }}
+        className="col-span-6 bg-green-600 md:col-span-3"
       >
-        <SiTwitter />
-      </a>
-    </Block>
-  </>
-);
+        <CategoryChart />
+      </Block>
+      <Block
+        whileHover={{
+          rotate: "-2.5deg",
+          scale: 1.1,
+        }}
+        className="col-span-6 bg-milk-blue1 md:col-span-3"
+      >
+        <a
+          href="/"
+          className="grid h-full place-content-center text-3xl text-black"
+        >
+          <TagChart />
+        </a>
+      </Block>
+      <Block
+        whileHover={{
+          rotate: "2.5deg",
+          scale: 1.1,
+        }}
+        className="col-span-6 bg-zinc-50 md:col-span-3"
+      >
+        <div className="grid h-full place-content-center text-3xl text-white">
+          {data?.img ? (
+            <img src={data.img} alt="logo" />
+          ) : (
+            <span>Logo not available</span>
+          )}
+        </div>
+      </Block>
+    </>
+  );
+};
 
 const LocationBlock = ({ userInfo }) => (
   <Block className="col-span-12 flex flex-col items-center gap-4 md:col-span-3">

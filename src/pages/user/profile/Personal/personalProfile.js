@@ -1,14 +1,24 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import Block from "../../../../components/design/Block";
 import Loading from "../../../error/load";
 import { useTheme } from "../../../../context/themeContext";
-import { MdPerson } from "react-icons/md";
 import useUserInfo from "../../../../hooks/useUserInfo";
+
+const style = {
+  wrapper: "mt-14 flex flex-col select-none",
+  bannerImage: "h-52 relative",
+  bannerContentWrapper: "mx-auto max-w-5xl px-6 py-2",
+  profileInfoWrapper: "flex items-start space-x-4 pb-5",
+  profilePicWrapper: `-mt-6 h-20 w-20 relative`,
+  profilePic:
+    "h-full w-full rounded-full border-2 border-white bg-white bg-cover object-contain",
+  titleWrapper: "mt-1",
+  title: "text-2xl font-bold text-black",
+  tag: "pt-1 text-sm text-gray-400",
+};
 
 const PersonalProfile = () => {
   const { id: personId } = useParams();
-  const { theme } = useTheme();
   const { personalInfo, loading, error } = useUserInfo(personId);
 
   if (loading) {
@@ -26,68 +36,37 @@ const PersonalProfile = () => {
   // Check if the current user is the same as the personalInfo user
 
   return (
-    <>
-      <hr
-        className={`my-4 ${
-          theme === "dark" ? "border-gray-600" : "border-white"
-        }`}
-      />
-      <Block className="col-span-8 row-span-2 md:col-span-6 relative">
-        <div
-          className="h-48 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${
-              personalInfo?.profile_bg || "default-bg.jpg"
-            })`,
-          }}
-        ></div>
+    <div className={style.wrapper}>
+      <div className={style.bannerImage}>
+        <img
+          src={personalInfo?.profile_bg}
+          className="object-cover w-full h-full"
+          alt=""
+        />
+      </div>
 
-        <div className="absolute top-52 flex items-center">
-          <div className="flex-shrink-0">
-            {personalInfo?.profile_image ? (
+      <div>
+        <div className={style.bannerContentWrapper}>
+          <div className={style.profileInfoWrapper}>
+            <div className={style.profilePicWrapper}>
               <img
-                src={personalInfo.profile_image}
+                src={personalInfo?.profile_image}
                 alt="avatar"
-                className="w-24 h-24 rounded-2xl border-2 border-gray-800"
+                className={style.profilePic}
               />
-            ) : (
-              <MdPerson
-                className={`w-24 h-24 text-gray-400 ${
-                  theme === "dark" ? "bg-gray-800" : "bg-gray-200"
-                } rounded-full p-4 border-2 border-gray-800`}
-              />
-            )}
-          </div>
-          <div className="ml-4">
-            <h1
-              className={`text-20 ${
-                theme === "dark" ? "text-white" : "text-black"
-              } font-medium leading-tight`}
-            >
-              {personalInfo?.first_name} {personalInfo?.last_name}
-              <br />
-              <span className="text-zinc-400 text-16">
-                @{personalInfo?.username}
-              </span>
-            </h1>
+            </div>
+
+            <div className={style.titleWrapper}>
+              <h1 className={style.title}>
+                {" "}
+                {personalInfo?.first_name} {personalInfo?.last_name}
+              </h1>
+              <h2 className={style.tag}> @{personalInfo?.username}</h2>
+            </div>
           </div>
         </div>
-      </Block>
-      <div className="mt-32 grid grid-cols-2 gap-4"></div>
-      <Block className="col-span-12 text-xl leading-snug">
-        <p>
-          <span className="text-20 font-bold text-custom-red">Về tôi: </span>
-          <br />
-          <span
-            className={`${
-              theme === "dark" ? "text-zinc-400" : "text-zinc-800"
-            } text-16`}
-          >
-            {personalInfo?.about || "Không có thông tin về tôi"}
-          </span>
-        </p>
-      </Block>
-    </>
+      </div>
+    </div>
   );
 };
 

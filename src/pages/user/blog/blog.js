@@ -4,7 +4,6 @@ import { FaRegCommentAlt, FaEdit, FaTrashAlt, FaFlag } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../context/themeContext";
 import formatDate from "../../../utils/formatDate";
-import Loading from "../../error/load";
 import { IoShareSocialOutline } from "react-icons/io5";
 import SkeletonBlog from "../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
@@ -93,12 +92,13 @@ const Blog = () => {
 
   const renderMedia = (media) => {
     const extension = media.file.split(".").pop().toLowerCase();
+    const optimizedImageUrl = `${media.file}?resize=720`; // Resize to 720p for faster loading
 
     if (["jpg", "jpeg", "png", "gif"].includes(extension)) {
       return (
         <img
           key={media.file}
-          src={media.file}
+          src={optimizedImageUrl}
           alt="blog-media"
           className={`object-cover w-full sm:h-64 md:h-80 lg:h-96 xl:h-auto cursor-pointer ${
             theme === "dark" ? "border-gray-800" : "border-white"
@@ -107,7 +107,7 @@ const Blog = () => {
       );
     } else if (["pdf"].includes(extension)) {
       return (
-        <div key={media.file} className="w-full">
+        <div key={media.file} className="w-full items-center justify-center">
           <iframe
             src={media.file}
             style={{ width: "100%", height: "500px" }}
@@ -128,7 +128,6 @@ const Blog = () => {
         ))}
       </div>
     );
-
   return (
     <div className="post-list">
       {data?.pages
@@ -138,184 +137,188 @@ const Blog = () => {
           const isExpanded = expandedBlogId === blog.id;
 
           return (
-            <div key={blog.id}>
-              <div
-                className={`p-4 rounded-lg border mt-4 ${
-                  theme === "dark" ? "border-zinc-400 " : "border-zinc-200 "
-                } shadow-sm`}
-              >
-                <div className="flex items-center mb-4">
-                  <img
-                    src={blog.user.profile_image}
-                    alt="avatar"
-                    className="size-12 rounded-full"
-                    onClick={() => handleProfileClick(blog.user.id)}
-                  />
-                  <div className="ml-2">
-                    <h1
-                      className={`text-base font-bold leading-tight ${
-                        theme === "dark" ? "text-white" : "text-black"
-                      }`}
+            <div
+              key={blog.id}
+              className={`rounded-lg border   p-4 mt-4 ${
+                theme === "dark"
+                  ? "border-gray-700"
+                  : "border-primary-border-50"
+              }`}
+            >
+              <div className="flex">
+                {/* Phần vote giống Reddit */}
+                <div className="flex flex-col items-center justify-start space-y-2 pr-4 border-r dark:border-gray-700">
+                  <button className="text-gray-400 hover:text-red-500">
+                    <LikePost blogId={blog.id} liked={blog.liked} />{" "}
+                  </button>
+                  <span className="font-bold text-gray-600 dark:text-gray-300">
+                    {blog.likes_count}
+                  </span>
+                  {/* <button className="text-gray-400 hover:text-blue-500">
+                <FaArrowDown />
+              </button> */}
+                </div>
+
+                {/* Nội dung bài viết */}
+                <div className="p-3 pb-1 flex-1">
+                  <div className="flex items-center mb-4">
+                    <img
+                      src={blog.user.profile_image}
+                      alt="avatar"
+                      className="w-10 h-10 rounded-full cursor-pointer"
                       onClick={() => handleProfileClick(blog.user.id)}
-                    >
-                      {blog.user.first_name} {blog.user.last_name}
-                    </h1>
+                    />
+                    <div className="ml-2">
+                      <h1
+                        className={`text-base font-bold leading-tight ${
+                          theme === "dark" ? "text-white" : "text-black"
+                        }`}
+                        onClick={() => handleProfileClick(blog.user.id)}
+                      >
+                        {blog.user.first_name} {blog.user.last_name}
+                      </h1>
+                      <p
+                        className={`text-sm ${
+                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {formatDate(blog.created_date)}
+                      </p>
+                    </div>
+                    <Menu as="div" className="ml-auto relative">
+                      <MenuButton>
+                        <BsThreeDots
+                          className={`text-2xl cursor-pointer ${
+                            theme === "dark"
+                              ? "text-gray-300 hover:text-gray-200"
+                              : "text-black hover:text-gray-700"
+                          }`}
+                        />
+                      </MenuButton>
+                      <MenuItems
+                        as="div"
+                        className="absolute right-0 mt-2 w-48 bg-white  border border-gray-300 shadow-lg rounded-lg z-10"
+                      >
+                        {isOwner && (
+                          <>
+                            <MenuItem>
+                              <div
+                                className="px-4 py-2 hover:bg-gray-100  cursor-pointer flex items-center"
+                                onClick={() => handleEditClick(blog.id)}
+                              >
+                                <FaEdit className="mr-2 text-gray-400" />
+                                Chỉnh sửa
+                              </div>
+                            </MenuItem>
+                            <MenuItem>
+                              <div
+                                className="px-4 py-2 hover:bg-gray-100  cursor-pointer flex items-center"
+                                onClick={() => handleDeleteClick(blog.id)}
+                              >
+                                <FaTrashAlt className="mr-2 text-gray-400" />
+                                Xóa
+                              </div>
+                            </MenuItem>
+                          </>
+                        )}
+                        <MenuItem>
+                          <div className="px-4 py-2 hover:bg-gray-100 0 cursor-pointer flex items-center">
+                            <FaFlag className="mr-2 text-gray-400" />
+                            Báo cáo
+                          </div>
+                        </MenuItem>
+                      </MenuItems>
+                    </Menu>
+                  </div>
+                  <div onClick={() => handleBlogClick(blog.id)}>
+                    {/* Tiêu đề và nội dung */}
+                    <h2 className="text-lg font-semibold mb-2 dark:text-gray-300">
+                      {blog.title}
+                    </h2>
                     <p
-                      className={`text-gray-500 text-14 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      className={`mb-8 text-sm cursor-pointer font-semibold ${
+                        theme === "dark" ? "text-gray-300" : "text-black"
                       }`}
                     >
-                      {formatDate(blog.created_date)}
+                      {blog.content}
                     </p>
+                    <div
+                      className={`mb-8 text-sm ${
+                        theme === "dark" ? "text-gray-300" : "text-black"
+                      } ${isExpanded ? "" : "line-clamp-3"}`}
+                      dangerouslySetInnerHTML={{
+                        __html: isExpanded
+                          ? blog.description
+                          : `${blog.description.slice(0, 300)}${
+                              blog.description.length > 300 ? "..." : ""
+                            }`,
+                      }}
+                    />
                   </div>
-                  <Menu as="div" className="ml-auto relative">
-                    <MenuButton>
-                      <BsThreeDots
-                        className={`text-2xl cursor-pointer ${
-                          theme === "dark"
-                            ? "text-gray-300 hover:text-gray-200"
-                            : "text-black hover:text-gray-700"
-                        }`}
-                      />
-                    </MenuButton>
-                    <MenuItems
-                      as="div"
-                      className="absolute right-0 mt-2 w-48 text-black bg-white-blue1 border border-gray-300 shadow-lg rounded-lg z-10"
-                    >
-                      {isOwner && (
-                        <>
-                          <MenuItem as="div">
-                            <div
-                              className="px-4 py-2 hover:bg-milk-blue1  cursor-pointer flex items-center"
-                              onClick={() => handleEditClick(blog.id)}
-                            >
-                              <FaEdit className="mr-2 text-gray-400" />
-                              Chỉnh sửa
-                            </div>
-                          </MenuItem>
-                          <MenuItem as="div">
-                            <div
-                              className="px-4 py-2 hover:bg-milk-blue1 cursor-pointer flex items-center"
-                              onClick={() => handleDeleteClick(blog.id)}
-                            >
-                              <FaTrashAlt className="mr-2 text-gray-400" />
-                              Xóa
-                            </div>
-                          </MenuItem>
-                        </>
-                      )}
-                      <MenuItem as="div">
-                        <div className="px-4 py-2 hover:bg-milk-blue1 cursor-pointer flex items-center">
-                          <FaFlag className="mr-2 text-gray-400" />
-                          Báo cáo
-                        </div>
-                      </MenuItem>
-                    </MenuItems>
-                  </Menu>
-                </div>
-                <div onClick={() => handleBlogClick(blog.id)}>
-                  <h2
-                    className={`mb-8 text-xl font-semibold ${
-                      theme === "dark" ? "text-gray-300" : "text-black"
-                    }`}
-                  >
-                    {blog.title}
-                  </h2>
-                  <p
-                    className={`mb-8 text-15 cursor-pointer font-semibold ${
-                      theme === "dark" ? "text-gray-300" : "text-black"
-                    }`}
-                  >
-                    {blog.content}
-                  </p>
-                  <div
-                    className={`mb-8 text-14 ${
-                      theme === "dark" ? "text-gray-300" : "text-black"
-                    } ${isExpanded ? "" : "line-clamp-3"}`}
-                    dangerouslySetInnerHTML={{
-                      __html: isExpanded
-                        ? blog.description
-                        : `${blog.description.slice(0, 300)}${
-                            blog.description.length > 300 ? "..." : ""
-                          }`,
-                    }}
-                  />
-                </div>
-                {!isExpanded &&
-                  blog.description &&
-                  blog.description.length > 300 && (
+
+                  {!isExpanded &&
+                    blog.description &&
+                    blog.description.length > 300 && (
+                      <p
+                        className="text-blue-500 cursor-pointer"
+                        onClick={() => handleToggleExpand(blog.id)}
+                      >
+                        Xem thêm
+                      </p>
+                    )}
+                  {isExpanded && blog.description && (
                     <p
-                      className="text-red-500 cursor-pointer"
+                      className="text-blue-500 cursor-pointer"
                       onClick={() => handleToggleExpand(blog.id)}
                     >
-                      Thêm
+                      Ẩn bớt
                     </p>
                   )}
-                {isExpanded && blog.description && (
-                  <p
-                    className="text-red-500 cursor-pointer"
-                    onClick={() => handleToggleExpand(blog.id)}
-                  >
-                    Ẩn Bớt
-                  </p>
-                )}
-
-                <div className="flex flex-col items-center p-4">
+                  {/* Media */}
+                  {/* <div className="flex flex-col items-center p-4">
+                    {blog.media && blog.media.length > 0 && (
+                      <div
+                        className={`grid gap-4 ${
+                          blog.media.length === 1
+                            ? "grid-cols-1"
+                            : blog.media.length === 2
+                            ? "grid-cols-2"
+                            : blog.media.length === 3
+                            ? "grid-cols-3"
+                            : "grid-cols-2"
+                        }`}
+                      >
+                        {blog.media.map((media) => renderMedia(media, theme))}
+                      </div>
+                    )}
+                  </div> */}
                   {blog.media && blog.media.length > 0 && (
-                    <div
-                      className={`grid gap-4 ${
-                        blog.media.length === 1
-                          ? "grid-cols-1"
-                          : blog.media.length === 2
-                          ? "grid-cols-2"
-                          : blog.media.length === 3
-                          ? "grid-cols-3"
-                          : "grid-cols-2"
-                      }`}
-                    >
+                    <div className="grid grid-cols-2 gap-2 mb-4">
                       {blog.media.map((media) => renderMedia(media, theme))}
                     </div>
                   )}
-                </div>
-                <hr
-                  className={`my-4 ${
-                    theme === "dark" ? "border-gray-600" : "border-gray-300"
-                  }`}
-                />
-                <div className="relative">
-                  <p
-                    className={`text-gray-500 text-sm cursor-pointer ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
-                    {blog.likes_count} lượt thích • {blog.comment_count} bình
-                    luận
-                  </p>
-                </div>
-                <hr
-                  className={`my-2 ${
-                    theme === "dark" ? "border-gray-600" : "border-zinc-900"
-                  }`}
-                />
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <LikePost blogId={blog.id} liked={blog.liked} />
-                    <FaRegCommentAlt
-                      className={`text-2xl cursor-pointer ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-500"
-                      }`}
-                      onClick={() => handleBlogClick(blog.id)}
-                    />
-                    <IoShareSocialOutline
-                      className={`text-2xl cursor-pointer ${
-                        theme === "dark" ? "text-gray-300" : "text-gray-500"
-                      }`}
-                      onClick={() => handleCopyLink(blog.id)}
-                    />
+
+                  {/* Các nút tương tác */}
+                  <div className="flex justify-between items-center text-sm text-gray-500">
+                    <div className="flex space-x-4">
+                      <div
+                        className="flex items-center space-x-1 cursor-pointer"
+                        onClick={() => handleBlogClick(blog.id)}
+                      >
+                        <FaRegCommentAlt />
+                        <span>{blog.comment_count} bình luận</span>
+                      </div>
+                      <div
+                        className="flex items-center space-x-1 cursor-pointer"
+                        onClick={() => handleCopyLink(blog.id)}
+                      >
+                        <IoShareSocialOutline />
+                        <span>Chia sẻ</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              {isFetchingNextPage && <SkeletonBlog />}
             </div>
           );
         })}

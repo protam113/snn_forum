@@ -59,12 +59,12 @@ const CreateBanner = () => {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
-      <h1 className="text-2xl font-bold mb-4">Create New Banner</h1>
+      <h1 className="text-2xl font-bold mb-4">Tạo Banner Mới</h1>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="mb-4">
           <label htmlFor="title" className="block text-sm font-medium mb-2">
-            Title
+            Tiêu đề
           </label>
           <input
             type="text"
@@ -78,7 +78,7 @@ const CreateBanner = () => {
 
         <div className="flex-1 relative mb-4">
           <label htmlFor="image" className="block text-sm font-medium mb-2">
-            Image
+            Ảnh
           </label>
           <div className="relative flex items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
             <input
@@ -107,7 +107,7 @@ const CreateBanner = () => {
             ) : (
               <div className="flex flex-col items-center justify-center text-gray-500">
                 <AiOutlinePlus size={24} />
-                <span>Choose an image</span>
+                <span>Chọn hình ảnh</span>
               </div>
             )}
           </div>
@@ -115,7 +115,7 @@ const CreateBanner = () => {
 
         <div className="mb-4">
           <label htmlFor="status" className="block text-sm font-medium mb-2">
-            Status
+            Trạng thái
           </label>
           <select
             id="status"
@@ -124,8 +124,8 @@ const CreateBanner = () => {
             className="w-full p-2 border border-gray-300 rounded"
             required
           >
-            <option value="show">Show</option>
-            <option value="hide">Hide</option>
+            <option value="show">Hiện</option>
+            <option value="hide">Ẩn</option>
           </select>
         </div>
 
@@ -134,7 +134,7 @@ const CreateBanner = () => {
             htmlFor="description"
             className="block text-sm font-medium mb-2"
           >
-            Description
+            Nội dung
           </label>
           <textarea
             id="description"
@@ -147,8 +147,8 @@ const CreateBanner = () => {
 
         <button
           type="submit"
-          className={`inline-flex items-center justify-center text-white rounded-md bg-custom-red px-6 py-3 text-14 font-medium transition-colors ${
-            loading ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"
+          className={`inline-flex items-center justify-center text-white rounded-md bg-main-blue2 px-6 py-3 text-14 font-medium transition-colors ${
+            loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-800"
           }`}
           disabled={loading}
         >

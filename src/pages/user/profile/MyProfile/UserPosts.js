@@ -12,10 +12,10 @@ import { useUserBlog } from "../../../../hooks/User/useUserBlog";
 import SkeletonBlog from "../../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
 import { useToastDesign } from "../../../../context/ToastService";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const PersonalBlog = () => {
   const { id: personId } = useParams();
-  const [activeMenu, setActiveMenu] = useState(null);
   const { mutate: deleteBlogMutation } = useDeleteBlog();
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useUserBlog(personId);
@@ -59,10 +59,6 @@ const PersonalBlog = () => {
       [blogId]: !prev[blogId],
     }));
   };
-  const handleMenuClick = (blogId) => {
-    setActiveMenu((prev) => (prev === blogId ? null : blogId));
-  };
-
   const handleEditClick = (blogId) => {
     navigate(`/blog/edit/${blogId}`);
   };
@@ -166,38 +162,42 @@ const PersonalBlog = () => {
                   {formatDate(blog.created_date)}
                 </p>
               </div>
-              <div className="ml-auto relative">
-                <BsThreeDots
-                  className={`text-2xl cursor-pointer ${
-                    theme === "dark"
-                      ? "text-gray-300 hover:text-gray-200"
-                      : "text-black hover:text-gray-700"
-                  }`}
-                  onClick={() => handleMenuClick(blog.id)}
-                />
-                {activeMenu === blog.id && (
-                  <div className="absolute right-0 mt-2 w-48 bg-zinc-300 border border-gray-300 shadow-lg rounded-lg z-10">
-                    <ul className="text-gray-300">
-                      <>
-                        <li
-                          className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
-                          onClick={() => handleEditClick(blog.id)}
-                        >
-                          <FaEdit className="mr-2 text-gray-400" />
-                          Chỉnh sửa
-                        </li>
-                        <li
-                          className="px-4 py-2 hover:bg-gray-200 hover:text-gray-500 text-black cursor-pointer flex items-center"
-                          onClick={() => handleDeleteClick(blog.id)}
-                        >
-                          <FaTrashAlt className="mr-2 text-gray-400" />
-                          Xóa
-                        </li>
-                      </>
-                    </ul>
-                  </div>
-                )}
-              </div>
+              <Menu as="div" className="ml-auto relative">
+                <MenuButton>
+                  <BsThreeDots
+                    className={`text-2xl cursor-pointer ${
+                      theme === "dark"
+                        ? "text-gray-300 hover:text-gray-200"
+                        : "text-black hover:text-gray-700"
+                    }`}
+                  />
+                </MenuButton>
+                <MenuItems
+                  as="div"
+                  className="absolute right-0 mt-2 w-48 bg-white  border border-gray-300 shadow-lg rounded-lg z-10"
+                >
+                  <>
+                    <MenuItem>
+                      <div
+                        className="px-4 py-2 hover:bg-gray-100  cursor-pointer flex items-center"
+                        onClick={() => handleEditClick(blog.id)}
+                      >
+                        <FaEdit className="mr-2 text-gray-400" />
+                        Chỉnh sửa
+                      </div>
+                    </MenuItem>
+                    <MenuItem>
+                      <div
+                        className="px-4 py-2 hover:bg-gray-100  cursor-pointer flex items-center"
+                        onClick={() => handleDeleteClick(blog.id)}
+                      >
+                        <FaTrashAlt className="mr-2 text-gray-400" />
+                        Xóa
+                      </div>
+                    </MenuItem>
+                  </>
+                </MenuItems>
+              </Menu>
             </div>
             <p
               onClick={() => handleBlogClick(blog.id)}
@@ -276,7 +276,7 @@ const PersonalBlog = () => {
             />
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
-                <LikePost blogId={blog.id} liked={blog.liked} />
+                <LikePost blogId={blog.id} liked={blog?.liked} />
                 <FaRegCommentAlt
                   className={`text-2xl cursor-pointer ${
                     theme === "dark" ? "text-gray-300" : "text-gray-500"

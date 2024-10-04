@@ -63,7 +63,7 @@ const Comment = ({ blogId }) => {
   }
 
   return (
-    <div className="flex flex-col p-4 rounded-lg space-y-4">
+    <div className="flex flex-col p-3 bg-white-blue1 rounded-lg space-y-4">
       {error && <p className="text-red-500">{error}</p>}
       {selectedFile && (
         <div className="flex space-x-4 items-center">

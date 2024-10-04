@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Block from "../../../../components/design/Block";
 import { FaEdit, FaTrashAlt, FaLink } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useTheme } from "../../../../context/themeContext";
-import Loading from "../../../error/load";
 import formatDate from "../../../../utils/formatDate";
 import {
   useDeleteRecruitment,
@@ -16,7 +15,6 @@ import { useUser } from "../../../../context/UserProvider";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const RecruitmentPost = () => {
-  const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { userInfo } = useUser();
@@ -64,10 +62,6 @@ const RecruitmentPost = () => {
 
   const handleEditClick = (postId) => {
     navigate(`/tuyen_dung/chinh_sua/${postId}/`);
-  };
-
-  const handleMenuClick = (postId) => {
-    setActiveMenu((prev) => (prev === postId ? null : postId));
   };
 
   const handleDeleteClick = async (postId) => {

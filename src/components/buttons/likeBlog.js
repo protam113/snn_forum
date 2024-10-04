@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { FaFireAlt } from "react-icons/fa";
 import { useLikeBlog } from "../../hooks/Blog/useBlogs";
 import Loading from "../../pages/error/load";
+import { IoArrowUpCircle } from "react-icons/io5";
 
 const LikePost = ({ blogId, liked }) => {
   const { mutate: addLikeBlogMutation } = useLikeBlog(); // Ensure you call the hook correctly
@@ -35,7 +35,7 @@ const LikePost = ({ blogId, liked }) => {
       ) : localError ? (
         <div className="text-red-500 text-2xl">{localError}</div>
       ) : (
-        <FaFireAlt
+        <IoArrowUpCircle
           className={`text-2xl ${
             localLiked ? "text-red-500" : "text-gray-500"
           }`}

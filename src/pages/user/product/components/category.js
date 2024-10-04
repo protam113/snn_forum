@@ -5,14 +5,13 @@ import "react-slideshow-image/dist/styles.css";
 import Loading from "../../../error/load";
 import { useUserCategoryList } from "../../../../hooks/Product/useUserCategory";
 
-const slidesToShow = 4;
+const slidesToShow = 6; // 6 items to show
 
-const createSlides = (categories, slidesToShow) => {
+// Create slides based on categories
+const createSlides = (categories = [], slidesToShow) => {
   const slides = [];
-  if (categories && categories.length > 0) {
-    for (let i = 0; i < categories.length; i += slidesToShow) {
-      slides.push(categories.slice(i, i + slidesToShow));
-    }
+  for (let i = 0; i < categories.length; i += slidesToShow) {
+    slides.push(categories.slice(i, i + slidesToShow));
   }
   return slides;
 };
@@ -29,17 +28,13 @@ const Category = () => {
   }
 
   if (isError) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500">Failed to load categories</p>
-      </div>
-    );
+    return console.error(isError);
   }
 
   const slides = createSlides(categories, slidesToShow);
 
   return (
-    <div className="py-6">
+    <div className="py-8">
       <div className="container mx-auto px-4">
         {slides.length > 0 ? (
           <Slide
@@ -48,22 +43,25 @@ const Category = () => {
             infinite={false}
             indicators={true}
             arrows={false}
+            className="w-full"
           >
             {slides.map((slide, index) => (
-              <div key={index} className="flex space-x-4 overflow-x-auto">
+              <div
+                key={index}
+                className="flex flex-wrap justify-center gap-4 overflow-x-auto"
+              >
                 {slide.map((category) => (
                   <div
                     key={category?.id}
-                    className="flex-shrink-0 w-full sm:w-1/4 lg:w-1/5 p-2"
-                    style={{ flexBasis: `calc(100% / ${slidesToShow})` }}
+                    className="flex-shrink-0 w-full md:w-1/3 lg:w-1/3 p-2"
                   >
                     <Link
                       to={`/san_pham/${category?.id}/san_pham_theo_the_loai`}
-                      className="block bg-white rounded-lg shadow-md overflow-hidden h-full"
+                      className="block bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden h-full"
                     >
                       <div className="p-4 text-center">
                         <h3
-                          className="text-14 md:text-16 lg:text-18 text-black font-semibold"
+                          className="text-sm md:text-base lg:text-lg text-gray-900 font-semibold"
                           style={{
                             whiteSpace: "nowrap",
                             overflow: "hidden",
@@ -80,7 +78,7 @@ const Category = () => {
             ))}
           </Slide>
         ) : (
-          <p className="text-center text-gray-500">No Categories Found</p>
+          <p className="text-center text-gray-500">Không tìm thấy danh mục</p>
         )}
       </div>
     </div>

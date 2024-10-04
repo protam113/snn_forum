@@ -130,14 +130,14 @@ const Login = () => {
             </button>
           </form>
           <div className="text-center mt-4 text-black">
-            Don't have an account?{" "}
+            Bạn chưa có tài khoản?{" "}
             <a href="/register" className="text-blue-500">
               Sign up
             </a>
           </div>
 
           <div className="text-center mt-2 text-black">
-            Forgot your password?{" "}
+            Quên mật khẩu?{" "}
             <a href="/password/reset/" className="text-blue-500">
               Reset it
             </a>

@@ -21,7 +21,9 @@ const NavLinkItem = ({ to, children, theme }) => {
           : "text-white hover:text-gray-300"
       } flex items-center`}
     >
-      <span className="text-16 font-bold">{children}</span>
+      <span className="font-bold md:text-12 lg:text-16 xl:text-16">
+        {children}
+      </span>
       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
     </Link>
   );

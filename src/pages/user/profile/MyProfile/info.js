@@ -1,13 +1,26 @@
 import React from "react";
-import Block from "../../../../components/design/Block";
 import { Link } from "react-router-dom";
 import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
-import { useTheme } from "../../../../context/themeContext";
+
+const style = {
+  wrapper: "mt-14 flex flex-col select-none",
+  bannerImage: "h-52 relative",
+  bannerContentWrapper: "mx-auto max-w-5xl px-6 py-2",
+  profileInfoWrapper: "flex items-start space-x-4 pb-5",
+  profilePicWrapper: `-mt-6 h-20 w-20 relative`,
+  profilePic:
+    "h-full w-full rounded-full border-2 border-white bg-white bg-cover object-contain",
+  titleWrapper: "mt-1",
+  title: "text-2xl font-bold text-black",
+  tag: "pt-1 text-sm text-gray-400",
+  joinButtonContainer: "mt-1 flex items-center",
+  joinedButton:
+    "cursor-pointer rounded-full border border-gray-300 px-[1.6rem] py-1 text-center text-sm font-semibold hover:bg-main-blue1 hover:text-white",
+};
 
 const Info = () => {
   const { userInfo, loading, error } = useUserInfo();
-  const { theme } = useTheme();
 
   if (loading) {
     return (
@@ -23,72 +36,46 @@ const Info = () => {
 
   return (
     <>
-      <Block className="relative col-span-12 row-span-2 md:col-span-6">
-        <div
-          className="h-72 bg-cover bg-center rounded-t-xl"
-          style={{
-            backgroundImage: `url(${userInfo?.profile_bg || "default-bg.jpg"})`,
-          }}
-        ></div>
+      <div className={style.wrapper}>
+        <div className={style.bannerImage}>
+          <img
+            src={userInfo.profile_bg}
+            className="object-cover w-full h-full"
+            alt=""
+          />
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-          {/* Profile Section */}
-          <div className="flex items-center p-2  rounded-lg">
-            <img
-              src={userInfo.profile_image}
-              alt="avatar"
-              className="w-24 h-24 rounded-full border-4 border-gray-800"
-            />
+        <div>
+          <div className={style.bannerContentWrapper}>
+            <div className={style.profileInfoWrapper}>
+              <div className={style.profilePicWrapper}>
+                <img
+                  src={userInfo.profile_image}
+                  alt="avatar"
+                  className={style.profilePic}
+                />
+              </div>
 
-            <div className="ml-4">
-              <h1
-                className={`text-2xl font-semibold ${
-                  theme === "dark" ? "text-white" : "text-black"
-                }`}
-              >
-                {userInfo?.first_name} {userInfo?.last_name}
-                <br />
-                <span className="text-gray-500 text-lg">
-                  @{userInfo?.username}
-                </span>
-              </h1>
+              <div className={style.titleWrapper}>
+                <h1 className={style.title}>
+                  {" "}
+                  {userInfo?.first_name} {userInfo?.last_name}
+                </h1>
+                <h2 className={style.tag}> @{userInfo?.username}</h2>
+              </div>
+
+              <div className={style.joinButtonContainer}>
+                <Link
+                  className={style.joinedButton}
+                  to={`/profile/${userInfo.id}/edit`}
+                >
+                  Edit Profile
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-
-        <div className="mt-8 grid grid-cols-2 gap-4">
-          <Link
-            to={`/profile/${userInfo.id}/edit`}
-            className="flex items-center justify-center text-sm py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors"
-          >
-            Edit Profile
-          </Link>
-          {/* <a
-            href="/"
-            className="flex items-center justify-center text-sm py-2 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Archive
-          </a> */}
-        </div>
-      </Block>
-      <hr
-        className={`mt-4 ${
-          theme === "dark" ? "border-zinc-800" : "border-white"
-        }`}
-      />
-      <Block className="p-4">
-        <p>
-          <span className="text-custom-red text-lg font-bold">Bio: </span>
-          <br />
-          <span
-            className={`text-lg font-medium ${
-              theme === "dark" ? "text-white" : "text-black"
-            }`}
-          >
-            {userInfo?.about || "No bio available"}
-          </span>
-        </p>
-      </Block>
+      </div>
     </>
   );
 };
