@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
-import { MdPerson } from "react-icons/md";
 import useAdmin from "../../../hooks/useAdmin";
 import useUserSearch from "../../../hooks/useUserSearch";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +8,6 @@ import { useGroups } from "../../../hooks/Admin/useGroups";
 const AddUser = () => {
   const { error, setSelectedGroup, addUserToGroup } = useAdmin();
   const { data: groups } = useGroups();
-
   const { results: featuredUsers, loading, fetchUsers } = useUserSearch();
   const [selectedGroup, setSelectedGroupState] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState(new Set());
@@ -62,7 +60,7 @@ const AddUser = () => {
   const managerGroups = groups.filter((group) => group.name === "manager");
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 min-h-screen">
       <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
         <FaUserPlus className="text-blue-500" /> Thêm người dùng vào nhóm
       </h1>
@@ -102,20 +100,14 @@ const AddUser = () => {
                   onChange={() => handleUserChange(user.id)}
                   className="mb-2"
                 />
-                {user.profile_image ? (
-                  <img
-                    src={user.profile_image}
-                    alt={user.username}
-                    className="w-24 h-24 object-cover rounded-full mb-4"
-                  />
-                ) : (
-                  <MdPerson
-                    className="w-24 h-24 text-gray-500 mb-4"
-                    aria-label="Default user icon"
-                  />
-                )}
+                <img
+                  src={user.profile_image}
+                  alt={user.username}
+                  className="w-24 h-24 object-cover rounded-full mb-4"
+                />
+
                 <p className="text-lg font-semibold">{user.username}</p>
-                <p className="py-1 px-2 rounded-lg bg-gray-200 text-gray-800">
+                <p className="py-1 px-2 rounded-lg  text-gray-800">
                   {getUserGroups(user)}
                 </p>
               </div>
