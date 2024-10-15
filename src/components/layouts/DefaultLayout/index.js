@@ -4,15 +4,13 @@ import Sidebar from "./components/sidebar";
 
 const DefaultLayout = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col">
       <Nav />
-      <div className="flex flex-1">
-        {/* <div className="hidden lg:block lg:w-60 lg:bg-white-900 lg:text-black lg:p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto"> */}
-        <div className="h-screen flex flex-col">
+      <div className="flex">
+        <div className="lg:w-60 lg:p-4">
           <Sidebar />
         </div>
-        {/* </div> */}
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1">{children}</div>
       </div>
     </div>
   );

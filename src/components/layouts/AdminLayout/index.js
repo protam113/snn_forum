@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import Navbar from "../DefaultLayout/components/nav";
 import styled from "styled-components";
 import Sidebar from "./components/AdSidebar";
+import { AdNav } from "./components/nav";
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <div>
-      <Navbar />
+      <AdNav />
       <Container className={sidebarOpen ? "sidebarState active" : ""}>
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         {children}

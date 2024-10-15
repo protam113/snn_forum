@@ -8,12 +8,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
 import useUserInfo from "../../../../hooks/useUserInfo";
-import { MdPerson } from "react-icons/md";
 import Toolbar from "../../../../components/design/Toolbar";
 import { marked } from "marked";
 import ReactMarkdown from "react-markdown";
 import { useAddBlog } from "../../../../hooks/Blog/useBlogs";
 import { AiOutlineWarning } from "react-icons/ai";
+import MarkdownInput from "../components/MarkdownInput";
 
 const SET_CONTENT = "SET_CONTENT";
 const SET_DESCRIPTION = "SET_DESCRIPTION";
@@ -131,7 +131,7 @@ const Create = () => {
       formData.append("media", file);
     });
 
-    console.log("FormData:", [...formData.entries()]);
+    // console.log("FormData:", [...formData.entries()]);
 
     dispatch({ type: SET_LOADING, payload: true });
     try {
@@ -157,7 +157,7 @@ const Create = () => {
   return (
     <div className="flex items-center justify-center px-4 py-2">
       <div
-        className={`relative max-w-6xl w-full p-6 border rounded-md shadow-lg ${
+        className={`relative max-w-6xl w-full p-6 g ${
           theme === "dark"
             ? "border-zinc-800 text-white"
             : "border-white text-black"
@@ -177,40 +177,6 @@ const Create = () => {
           <span className="ml-2">Back</span>
         </button>
 
-        {/* User Profile Section */}
-        <div className="relative flex items-center mt-16">
-          {userInfo?.profile_image ? (
-            <img
-              src={userInfo.profile_image}
-              alt="avatar"
-              className={`w-12 h-12 rounded-full ${
-                theme === "dark" ? "border-white" : "border-black"
-              }`}
-            />
-          ) : (
-            <MdPerson
-              className={`w-12 h-12 rounded-full ${
-                theme === "dark" ? "text-white" : "text-gray-500"
-              }`}
-            />
-          )}
-          <div className="ml-4">
-            <h1
-              className={`text-lg font-semibold ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-            >
-              {userInfo?.first_name || "Your"} {userInfo?.last_name || "Name"}
-            </h1>
-            <span
-              className={`text-sm ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              @{userInfo?.username || "your_username"}
-            </span>
-          </div>
-        </div>
         <hr className="mt-4" />
 
         {/* Visibility Selector */}
@@ -366,6 +332,23 @@ const Create = () => {
                   >
                     Nội Dung:
                   </label>
+                  <h1 className="text-14">AI tạo bài viết</h1>
+                  <MarkdownInput
+                    value={state.description}
+                    // onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) =>
+                      dispatch({
+                        type: SET_DESCRIPTION,
+                        payload: e.target.value,
+                      })
+                    }
+                    rows={5}
+                    className={`w-full p-2 border rounded-md ${
+                      theme === "dark"
+                        ? "bg-zinc-700 text-white border-zinc-600"
+                        : "bg-white text-black border-zinc-800"
+                    }`}
+                  />
                   <textarea
                     value={state.description}
                     // onChange={(e) => setDescription(e.target.value)}

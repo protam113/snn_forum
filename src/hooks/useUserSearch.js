@@ -9,57 +9,42 @@ const useUserSearch = (searchTerm, searchField = "username", delay = 500) => {
 
   const debouncedSearchTerm = useDebounce(searchTerm, delay);
 
-  const buildSearchUrl = (baseURL, searchTerm, searchField) => {
+  const buildSearchUrl = useCallback((baseURL, term, field) => {
     const params = new URLSearchParams();
-
-    if (searchTerm) {
-      params.append(searchField, searchTerm);
-    }
-
+    if (term) params.append(field, term);
     return `${baseURL}?${params.toString()}`;
-  };
+  }, []);
 
-  const fetchUsers = useCallback(async () => {
+  const fetchData = useCallback(async (url) => {
     setLoading(true);
     setError(null);
     try {
-      const url = endpoints.createUser;
       const response = await authApi().get(url);
       setResults(response.data.results);
     } catch (err) {
-      console.error("Error fetching users:", err);
-      setError(err);
+      console.error("Error fetching data:", err.response?.data || err.message);
+      setError(err.response?.data || { message: "Unknown error occurred" });
     } finally {
       setLoading(false);
     }
   }, []);
 
+  const fetchUsers = useCallback(() => {
+    fetchData(endpoints.createUser);
+  }, [fetchData]);
+
   useEffect(() => {
     if (debouncedSearchTerm) {
-      const searchUsers = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const url = buildSearchUrl(
-            endpoints.createUser,
-            debouncedSearchTerm,
-            searchField
-          );
-          const response = await authApi().get(url);
-          setResults(response.data.results);
-        } catch (err) {
-          console.error("Error searching users:", err);
-          setError(err);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      searchUsers();
+      const url = buildSearchUrl(
+        endpoints.createUser,
+        debouncedSearchTerm,
+        searchField
+      );
+      fetchData(url);
     } else {
       fetchUsers();
     }
-  }, [debouncedSearchTerm, searchField, fetchUsers]);
+  }, [debouncedSearchTerm, searchField, fetchUsers, buildSearchUrl, fetchData]);
 
   return { results, loading, error, fetchUsers };
 };

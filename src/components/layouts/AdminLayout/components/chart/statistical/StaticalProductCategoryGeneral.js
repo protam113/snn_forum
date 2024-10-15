@@ -114,15 +114,13 @@ export default function StaticalProductCategoryGeneral() {
   };
 
   useEffect(() => {
-    if (!isLoading && !error && staticalProductCategory) {
-      // Tạo dữ liệu cho biểu đồ tròn
+    if (!isLoading && staticalProductCategory?.categories) {
       const pieChartData = staticalProductCategory.categories.map(
         (category) => ({
           name: category.name,
-          value: category.total_products, // hoặc category.total_price, tùy vào yêu cầu
+          value: category.total_products, // or category.total_price
         })
       );
-
       setPieChartData(pieChartData);
       setTotalProducts(pieChartData.reduce((acc, item) => acc + item.value, 0));
       setTotalPrice(
@@ -131,7 +129,6 @@ export default function StaticalProductCategoryGeneral() {
           0
         )
       );
-    } else if (error) {
     }
   }, [staticalProductCategory, isLoading, error]);
 

@@ -21,8 +21,7 @@ const FSuggestion = () => {
   };
 
   if (loading) return <p className="text-center py-4">Loading...</p>;
-  if (error)
-    return <p className="text-center py-4 text-red-500">Error: {error}</p>;
+  if (error) return console.error(error);
 
   const top5Users = featuredUsers.slice(0, 5);
 

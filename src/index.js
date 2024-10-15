@@ -33,5 +33,4 @@ root.render(
   </React.StrictMode>
 );
 
-// Gọi reportWebVitals với hàm logPerformance
 reportWebVitals(logPerformance);

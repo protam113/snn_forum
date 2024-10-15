@@ -91,15 +91,18 @@ const useUserInfo = (personId = null) => {
   const fetchPersonalInfo = useCallback(async () => {
     if (personalInfoFetchedRef.current || !personId) return;
 
+    setLoading(true); // Start loading
+
     try {
       const userInfoUrl = endpoints.UserInfo.replace(":id", personId);
       const response = await authApi().get(userInfoUrl);
       setPersonalInfo(response.data);
       personalInfoFetchedRef.current = true;
     } catch (err) {
+      console.error("Error fetching personal info:", err);
       setError(err.response?.data || err.message);
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
   }, [personId]);
 

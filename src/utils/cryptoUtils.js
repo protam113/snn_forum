@@ -7,6 +7,36 @@ if (!secretKey) {
   throw new Error("REACT_APP_SECRET_KEY chưa được định nghĩa");
 }
 
+export const ReduxEncryptData = (data) => {
+  if (typeof data !== "string") {
+    data = JSON.stringify(data); // Đảm bảo dữ liệu là chuỗi trước khi mã hóa
+  }
+  try {
+    return CryptoJS.AES.encrypt(data, secretKey).toString();
+  } catch (error) {
+    throw new Error("Lỗi khi mã hóa: " + error.message);
+  }
+};
+
+// Giải mã dữ liệu
+export const ReduxDecryptData = (ciphertext) => {
+  if (typeof ciphertext !== "string") {
+    throw new Error("Ciphertext phải là một chuỗi");
+  }
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+    const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+    if (!decryptedData) {
+      throw new Error(
+        "Không thể giải mã dữ liệu. Có thể khóa bí mật không đúng."
+      );
+    }
+    return decryptedData;
+  } catch (error) {
+    throw new Error("Lỗi khi giải mã: " + error.message);
+  }
+};
+
 // Encrypt data function
 export const encryptData = (data) => {
   if (typeof data !== "string") {
@@ -45,6 +75,7 @@ export const decryptData = (ciphertext) => {
     throw new Error("Lỗi khi giải mã: " + error.message);
   }
 };
+
 export const setEncryptedLocalStorage = (key, value) => {
   try {
     const encryptedValue = encryptData(value);

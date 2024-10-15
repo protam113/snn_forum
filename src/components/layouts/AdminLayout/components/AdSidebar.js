@@ -108,18 +108,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           {sidebarOpen && <span>Tag</span>}
         </Link>
       </LinkContainer>
-      <LinkContainer>
-        <Link to="/admin/quan_ly_nguoi_dung" className="Links">
-          <FaUsers className="Linkicon" />
-          {sidebarOpen && <span>Users</span>}
-        </Link>
-      </LinkContainer>
-      <LinkContainer>
+      {userRoles.includes("admin") && (
+        <LinkContainer>
+          <Link to="/admin/quan_ly_nguoi_dung" className="Links">
+            <FaUsers className="Linkicon" />
+            {sidebarOpen && <span>Users</span>}
+          </Link>
+        </LinkContainer>
+      )}
+      {/* <LinkContainer>
         <Link to="/admin/banners" className="Links">
           <FaFlag className="Linkicon" />
           {sidebarOpen && <span>Banners</span>}
         </Link>
-      </LinkContainer>
+      </LinkContainer> */}
       <LinkContainer>
         <div
           className="Links flex items-center justify-between"
@@ -149,7 +151,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <span>Thống kê sản phẩm theo danh mục</span>
             </Link>
-            <Link
+            {/* <Link
               to="/admin/thong_ke/don_ung_tuyen"
               className="Links block mt-2"
             >
@@ -160,7 +162,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             </Link>
             <Link to="/admin/thong_ke/tuyen_dung" className="Links block mt-2">
               <span>Thống kê tuyển dụng</span>
-            </Link>
+            </Link> */}
           </SubmenuContainer>
         )}
       </LinkContainer>

@@ -3,7 +3,6 @@ import Product from "./components/product";
 import { Link } from "react-router-dom";
 import Banner from "./components/banner";
 import Category from "./components/category";
-import NavProduct from "./components/navProduct";
 import PopupCreate from "./components/PopupCreat";
 import SEO from "../../../components/layouts/DefaultLayout/components/SEO";
 
@@ -19,7 +18,6 @@ const Product_feed = () => {
       <main className="flex-1">
         <Banner />
         <section className="py-12 md:py-16 lg:py-20">
-          {/* <NavProduct /> */}
           <hr className="my-4 border-zinc-900" />
 
           <div className="container">

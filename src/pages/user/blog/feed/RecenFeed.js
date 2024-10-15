@@ -4,6 +4,10 @@ import Loading from "../../../error/load";
 import formatDate from "../../../../utils/formatDate";
 import { useBlogs } from "../../../../hooks/useFetchList";
 
+const style = () => ({
+  container: ` sm:px-6 px-4 py-2`,
+});
+
 const RecentFeed = () => {
   const { data: blogs = [], loading, error } = useBlogs();
   const navigate = useNavigate();
@@ -21,9 +25,9 @@ const RecentFeed = () => {
   if (error)
     return <p className="text-center text-red-500">Error loading activities</p>;
 
-  const recentActivities = blogs.slice(0, 5);
+  const recentActivities = blogs.slice(0, 6);
   return (
-    <div className=" sm:px-6 px-4 py-2">
+    <div className={style.container}>
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mt-16 max-md:max-w-lg mx-auto">
         {recentActivities.map((activity) => (
           <div

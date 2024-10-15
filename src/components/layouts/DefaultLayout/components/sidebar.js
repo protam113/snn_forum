@@ -1,17 +1,14 @@
 import React from "react";
 
 import { FaHome, FaUser } from "react-icons/fa";
-import { FaCog } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
 import { FaBasketShopping } from "react-icons/fa6";
-import { useUser } from "../../../../context/UserProvider";
 
 const Sidebar = () => {
   const { theme } = useTheme();
-  const { userInfo } = useUser();
 
-  const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded hover:bg-gray-200 ${
+  const linkClasses = `relative flex items-center justify-center w-[190px] h-[40px] rounded hover:bg-milk-blue1 ${
     theme === "dark"
       ? "bg-zinc-800 text-white hover:bg-zinc-700"
       : "bg-white text-black"
@@ -20,7 +17,7 @@ const Sidebar = () => {
   return (
     <div>
       {/* Sidebar for desktop (lg) */}
-      <div className="hidden lg:block lg:w-60 lg:bg-white-900 lg:text-black lg:p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+      <div className="hidden lg:block lg:w-60 lg:bg-white-900 lg:text-black lg:p-4 lg:sticky lg:h-screen ">
         <div className="relative flex flex-col space-y-4">
           <Link to="/" className={linkClasses}>
             <FaHome

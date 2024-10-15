@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { FaRegBell } from "react-icons/fa";
 import useClickOutside from "../../hooks/useClickOutside";
-import { useTheme } from "../../context/themeContext";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const Notifications = () => {
-  const { theme } = useTheme();
-
   const [isOpen, setIsOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5);
 
@@ -58,63 +56,42 @@ const Notifications = () => {
   const ref = useClickOutside(handleClose);
 
   return (
-    <div className="relative" ref={ref}>
-      <button onClick={handleClick} className="relative">
-        <FaRegBell
-          size={24}
-          className={theme === "dark" ? "text-white" : "text-black"}
-        />
-        {notifications.length > 0 && (
-          <span
-            className={`absolute top-0 right-0 w-2.5 h-2.5 rounded-full ${
-              theme === "dark" ? "bg-red-400" : "bg-red-500"
-            }`}
-          />
-        )}
-      </button>
+    <Menu as="div" className="relative" ref={ref}>
+      <MenuButton as="div" onClick={handleClick} className="relative">
+        <FaRegBell size={20} className="text-black" />
+      </MenuButton>
       {isOpen && (
-        <div
-          className={`absolute right-0 mt-2 w-[350px] h-[550px] border border-gray-300 shadow-lg rounded-md flex flex-col ${
-            theme === "dark"
-              ? "bg-gray-800 text-white border-gray-600"
-              : "bg-white text-black"
-          }`}
+        <MenuItems
+          as="div"
+          className="absolute right-0 mt-2 w-[350px] h-[450px] border border-gray-300 shadow-lg rounded-md flex flex-col bg-white text-black
+          "
         >
-          <ul className="flex-1 overflow-y-auto p-2">
-            {notifications.slice(0, visibleCount).map((notification, index) => (
-              <li
-                key={index}
-                className={`p-2 border-b ${
-                  theme === "dark" ? "border-gray-700" : "border-gray-200"
-                }`}
+          {notifications.slice(0, visibleCount).map((notification, index) => (
+            <MenuItem as="div">
+              {" "}
+              <a
+                href={notification.link}
+                className="text-blue-500 hover:underline"
               >
-                <a
-                  href={notification.link}
-                  className="text-blue-500 hover:underline"
-                >
-                  {notification.content}
-                </a>
-                <p className="text-sm">
-                  {new Date(notification.timestamp.$date).toLocaleString()}
-                </p>
-              </li>
-            ))}
-          </ul>
+                {notification.content}
+              </a>
+              <p className="text-sm">
+                {new Date(notification.timestamp.$date).toLocaleString()}
+              </p>
+            </MenuItem>
+          ))}
           {visibleCount < notifications.length && (
             <button
               onClick={handleLoadMore}
-              className={`w-full py-2 rounded-b-md ${
-                theme === "dark"
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
+              className="w-full py-2 rounded-b-md  bg-blue-500 text-white hover:bg-blue-600
+              "
             >
               Tải thêm
             </button>
           )}
-        </div>
+        </MenuItems>
       )}
-    </div>
+    </Menu>
   );
 };
 

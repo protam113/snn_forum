@@ -1,11 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import {
-  publicRoutes,
-  privateRoutes,
-  DefaultLayout,
-  AdminLayout,
-} from "./routes/index";
+import { publicRoutes, privateRoutes, AdminLayout } from "./routes/index";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,7 +16,7 @@ import { ErrorProvider, useError } from "./context/ErrorProvider.js";
 import { Error404, Error500, WebMaintenance } from "./pages/error/error.js";
 import { ToastDesignProvider } from "./context/ToastService.js";
 import { UserProvider } from "./context/UserProvider.js";
-import PageNotfound_404 from "./pages/auth/404PageNotfound.js";
+import { PersonProvider } from "./context/PersonContext.js";
 
 function AppContent() {
   const { theme } = useTheme();
@@ -43,11 +38,7 @@ function AppContent() {
   }
 
   return (
-    <div
-      className={`app min-h-screen ${
-        theme === "light" ? "bg-white" : "bg-zinc-800"
-      }`}
-    >
+    <div className={`app  ${theme === "light" ? "bg-white" : "bg-zinc-800"}`}>
       <Routes>
         {publicRoutes.map((route, id) => {
           const Page = route.component;
@@ -119,10 +110,12 @@ function App() {
                 <ThemeProvider>
                   <BlogProvider>
                     <ScrollToTop />
-                    <HelmetProvider>
-                      <AppContent />
-                      <ToastContainer position="top-center" />
-                    </HelmetProvider>
+                    <PersonProvider>
+                      <HelmetProvider>
+                        <AppContent />
+                        <ToastContainer position="top-center" />
+                      </HelmetProvider>
+                    </PersonProvider>
                   </BlogProvider>
                 </ThemeProvider>
               </UserProvider>

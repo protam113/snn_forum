@@ -67,3 +67,90 @@ select option[value="hide"] {
   background-color: #f8d7da; /* Màu nền đỏ nhạt */
   color: #721c24; /* Màu chữ đỏ */
 }
+
+
+.group:hover .group-hover\:block {
+  display: block;
+}
+.hover\:w-64:hover {
+  width: 45%;
+  }
+
+
+/* NO NEED THIS CSS - just for custom scrollbar which can also be configured in tailwind.config.js*/
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2b6cb0;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+::-webkit-scrollbar-track {
+  background: #1a202c;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+::-webkit-scrollbar-track:active {
+  background: #333333;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+
+.chat-layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px; /* Chiều rộng của sidebar */
+  padding: 10px;
+  border-right: 1px solid #ccc; /* Đường viền giữa sidebar và nội dung nhắn tin */
+}
+
+.messaging-area {
+  flex-grow: 1; /* Phần còn lại của màn hình sẽ thuộc về khu vực nhắn tin */
+  padding: 20px;
+}
+
+
+.icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease-in-out; /* Thay đổi kích thước */
+}
+
+.icon-container.followed {
+  transform: scale(1.2); /* Phóng to khi đã follow */
+}
+
+.icon-container.not-followed {
+  transform: scale(1); /* Kích thước bình thường */
+}
+
+/* Tùy chọn thêm hiệu ứng mờ dần */
+.icon-container.followed,
+.icon-container.not-followed {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.icon-container:hover {
+  opacity: 0.8; /* Giảm độ mờ khi hover */
+}

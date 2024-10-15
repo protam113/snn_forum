@@ -10,11 +10,13 @@ const style = {
     "flex flex-col space-y-4 divide-y divide-[#343536] rounded border p-4 text-black select-none",
   profileInfoContainer: "flex items-center space-x-4",
   profilePicContainer: "relative h-16 w-16",
-  profilePic: "object-cover rounded-full border-2 border-gray-300 shadow-lg",
+  profilePic:
+    "object-cover rounded-full bg-white border-2 border-gray-300 shadow-lg",
   aboutContent: "py-2 text-sm text-gray-700",
-  statsWrapper: "flex items-center space-x-4 text-gray-600",
-  stat: "flex flex-col",
-  statTitle: "text-xs font-semibold",
+  statsWrapper: "flex justify-around items-center p-4 rounded-lg shadow",
+  stat: "flex flex-col items-center text-center",
+  statValue: "text-lg font-bold text-gray-800",
+  statTitle: "text-xs font-medium text-gray-500 mt-1",
   footer: "flex items-center space-x-2 pt-2 text-sm text-gray-600",
   joinedButton:
     "cursor-pointer rounded-full border border-gray-300 py-1 text-center text-sm font-semibold",
@@ -33,7 +35,7 @@ const PersonalIf = () => {
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return console.error(error);
   }
 
   return (
@@ -51,6 +53,20 @@ const PersonalIf = () => {
           <p className={style.aboutContent}>
             {personalInfo?.about || "No information available"}
           </p>
+        </div>
+      </div>
+      <div className={style.statsWrapper}>
+        <div className={style.stat}>
+          <span className={style.statValue}>
+            {personalInfo?.follower_count}
+          </span>
+          <span className={style.statTitle}>Followers</span>
+        </div>
+        <div className={style.stat}>
+          <span className={style.statValue}>
+            {personalInfo?.following_count}
+          </span>
+          <span className={style.statTitle}>Following</span>
         </div>
       </div>
 

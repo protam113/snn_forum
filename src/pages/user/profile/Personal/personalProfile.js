@@ -1,8 +1,10 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../../error/load";
-import { useTheme } from "../../../../context/themeContext";
 import useUserInfo from "../../../../hooks/useUserInfo";
+import { usePersonContext } from "../../../../context/PersonContext";
+import { useUser } from "../../../../context/UserProvider";
+import Follow from "../../../../components/buttons/Follow";
 
 const style = {
   wrapper: "mt-14 flex flex-col select-none",
@@ -12,14 +14,28 @@ const style = {
   profilePicWrapper: `-mt-6 h-20 w-20 relative`,
   profilePic:
     "h-full w-full rounded-full border-2 border-white bg-white bg-cover object-contain",
-  titleWrapper: "mt-1",
+  titleWrapper: "mt-1 flex items-center space-x-4",
   title: "text-2xl font-bold text-black",
   tag: "pt-1 text-sm text-gray-400",
+  followButton:
+    "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-all",
+  followButtonFollowing: "bg-gray-400 hover:bg-gray-600",
+  followButtonFollow: "bg-blue-500 hover:bg-blue-700",
 };
 
 const PersonalProfile = () => {
   const { id: personId } = useParams();
   const { personalInfo, loading, error } = useUserInfo(personId);
+  const navigate = useNavigate();
+  const { setSelectedUser } = usePersonContext();
+  const { userInfo } = useUser();
+
+  // Check if the user is already following
+
+  const handleUserClick = () => {
+    setSelectedUser(personalInfo);
+    navigate(`/chat/${personalInfo?.id}`);
+  };
 
   if (loading) {
     return (
@@ -30,10 +46,9 @@ const PersonalProfile = () => {
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    console.error(error);
+    return null; // Consider displaying an error message
   }
-
-  // Check if the current user is the same as the personalInfo user
 
   return (
     <div className={style.wrapper}>
@@ -41,7 +56,7 @@ const PersonalProfile = () => {
         <img
           src={personalInfo?.profile_bg}
           className="object-cover w-full h-full"
-          alt=""
+          alt="Banner background"
         />
       </div>
 
@@ -51,17 +66,34 @@ const PersonalProfile = () => {
             <div className={style.profilePicWrapper}>
               <img
                 src={personalInfo?.profile_image}
-                alt="avatar"
+                alt="Avatar"
                 className={style.profilePic}
               />
             </div>
 
             <div className={style.titleWrapper}>
-              <h1 className={style.title}>
-                {" "}
-                {personalInfo?.first_name} {personalInfo?.last_name}
-              </h1>
-              <h2 className={style.tag}> @{personalInfo?.username}</h2>
+              <div>
+                <h1 className={style.title}>
+                  {personalInfo?.first_name} {personalInfo?.last_name}
+                </h1>
+                <h2 className={style.tag}> @{personalInfo?.username}</h2>
+              </div>
+
+              {userInfo && (
+                <>
+                  <Follow
+                    personId={personalInfo?.id}
+                    is_followed={personalInfo?.is_followed}
+                  />
+
+                  <button
+                    className={style.followButton}
+                    onClick={handleUserClick}
+                  >
+                    Nhắn tin
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
