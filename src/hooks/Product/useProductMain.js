@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import { toast } from "react-toastify";
-import useAuth from "../useAuth";
 
 // Fetch product list
 const fetchProductList = async () => {

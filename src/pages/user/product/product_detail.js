@@ -4,6 +4,8 @@ import { useTheme } from "../../../context/themeContext";
 import Loading from "../../error/load";
 import { useProductDetail } from "../../../hooks/Product/useProduct";
 import { useUser } from "../../../context/UserProvider";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const DetailItem = ({ label, value, status }) => {
   return (
@@ -132,12 +134,9 @@ const ProductDetail = () => {
               <h3 className="text-xl font-semibold text-black">
                 Chi tiết sản phẩm
               </h3>
-              <div
-                className={`mb-4 text-sm ${
-                  theme === "dark" ? "text-black" : "text-black"
-                }`}
-                dangerouslySetInnerHTML={{ __html: product.description || "" }}
-              />
+              <Markdown remarkPlugins={[remarkGfm]}>
+                {product.description}
+              </Markdown>
             </div>
             <div className="space-y-4">
               <h2 className="text-lg font-bold">Thông tin người bán</h2>

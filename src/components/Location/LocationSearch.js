@@ -12,7 +12,7 @@ const LocationSearch = ({ location, onLocationChange }) => {
     setSelectedProvince(province);
     setSelectedDistrict(""); // Reset district when province changes
     if (onLocationChange && typeof onLocationChange === "function") {
-      onLocationChange(`${province}`); // Set province and reset district
+      onLocationChange(`${province}`);
     }
   };
 

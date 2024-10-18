@@ -5,13 +5,8 @@ import { FaCheck, FaEye, FaEyeSlash, FaTimes } from "react-icons/fa";
 import Stepper from "../../components/step/Stepper";
 import { useRegister } from "../../hooks/Auth/useRegister";
 import LocationSelector from "../../components/Location/LocationSelector";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "../../context/themeContext";
 import { useToastDesign } from "../../context/ToastService";
-
-const usernameRgx = /^[a-zA-Z][a-zA-Z0-9-_]{4,24}$/;
-const passwordRgx = /^(?=.*[A-Z])(?=.*[@!#%])[A-Za-z\d@!#%]{8,24}$/;
 
 const Register = () => {
   const { theme } = useTheme();
@@ -21,7 +16,6 @@ const Register = () => {
   const [step, setStep] = useState(1);
   const [validName, setValidName] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
-  const [setPassFocus] = useState(false);
   const { mutate: register, isLoading } = useRegister();
   const [formData, setFormData] = useState({
     username: "",
@@ -47,28 +41,6 @@ const Register = () => {
       userRef.current.focus();
     }
   }, [step]);
-
-  useEffect(() => {
-    const result = usernameRgx.test(formData.username);
-    setValidName(result);
-  }, [formData.username]);
-
-  useEffect(() => {
-    const result = passwordRgx.test(formData.password);
-    setValidPassword(result);
-  }, [formData.password]);
-
-  const handlePasswordChange = (e) => {
-    setFormData({ ...formData, password: e.target.value });
-  };
-
-  const handlePasswordFocus = () => {
-    setPassFocus(true);
-  };
-
-  const handlePasswordBlur = () => {
-    setPassFocus(false);
-  };
 
   useEffect(() => {
     if (formData.profile_image) {
@@ -312,61 +284,76 @@ const Register = () => {
                         ref={userRef}
                         value={formData.username}
                         autoComplete="off"
-                        onChange={(e) =>
-                          setFormData({ ...formData, username: e.target.value })
-                        }
+                        onChange={(e) => {
+                          const usernameValue = e.target.value;
+                          setFormData({ ...formData, username: usernameValue });
+
+                          // Kiểm tra điều kiện hợp lệ cho tên người dùng
+                          const isValid = /^[A-Za-z0-9-_]{5,24}$/.test(
+                            usernameValue
+                          );
+                          setValidName(isValid);
+                        }}
                         className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
                         required
-                        placeholder="username"
+                        placeholder="Username"
                       />
                       <span
-                        className={
-                          validName
-                            ? "valid absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-                            : "hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-sm"
-                        }
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-sm ${
+                          validName ? "text-green-500" : "hidden"
+                        }`}
                       >
                         <FaCheck />
                       </span>
                       <span
-                        className={
-                          validName || !formData.username
-                            ? "hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
-                            : "invalid absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm"
-                        }
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-sm ${
+                          !validName && formData.username
+                            ? "text-red-500"
+                            : "hidden"
+                        }`}
                       >
                         <FaTimes />
                       </span>
                     </div>
                     <p
                       className={`text-sm ${
-                        validName ? "hidden" : "text-red-500"
+                        validName || !formData.username
+                          ? "hidden"
+                          : "text-red-500"
                       }`}
                     >
                       Tên người dùng phải dài từ 5-24 ký tự và chỉ chứa chữ cái,
                       số, dấu gạch ngang hoặc dấu gạch dưới.
                     </p>
                   </div>
-                  <div className="relative">
+
+                  <div className="relative mt-4">
                     <label htmlFor="password" className="block mb-1">
                       Password:
                       <span className="text-red-500 text-14 ml-1">
                         *Bắt buộc
                       </span>
                     </label>
-                    <div className="relative">
+                    <div className="relative flex items-center">
                       <input
                         type={showPassword ? "text" : "password"}
                         id="password"
                         value={formData.password}
-                        onChange={handlePasswordChange}
-                        onFocus={handlePasswordFocus}
-                        onBlur={handlePasswordBlur}
+                        onChange={(e) => {
+                          const passwordValue = e.target.value;
+                          setFormData({ ...formData, password: passwordValue });
+
+                          const isValidPassword =
+                            /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,24}$/.test(
+                              passwordValue
+                            );
+                          setValidPassword(isValidPassword);
+                        }}
                         className="px-4 py-2 border rounded-lg w-full bg-gray-50 border-zinc-900"
                         required
                         placeholder="Password"
                       />
-                      <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                      <span className="absolute right-10 flex items-center">
                         {showPassword ? (
                           <FaEyeSlash
                             onClick={() => setShowPassword(false)}
@@ -379,24 +366,29 @@ const Register = () => {
                           />
                         )}
                       </span>
-                      <FontAwesomeIcon
-                        icon={faCheck}
-                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                      <span
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-sm ${
                           validPassword ? "text-green-500" : "hidden"
                         }`}
-                      />
-                      <FontAwesomeIcon
-                        icon={faTimes}
-                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+                      >
+                        <FaCheck />
+                      </span>
+                      <span
+                        className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-sm ${
                           !validPassword && formData.password
                             ? "text-red-500"
                             : "hidden"
                         }`}
-                      />
+                      >
+                        <FaTimes />
+                      </span>
                     </div>
+
                     <p
                       className={`text-sm ${
-                        validPassword ? "hidden" : "text-red-500"
+                        validPassword || !formData.password
+                          ? "hidden"
+                          : "text-red-500"
                       }`}
                     >
                       Mật khẩu phải dài từ 8-24 ký tự và bao gồm ít nhất một chữ

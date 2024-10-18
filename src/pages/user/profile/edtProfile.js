@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import useUserInfo from "../../../hooks/useUserInfo";
 import LocationSelector from "../../../components/Location/LocationSelector";
 import Loading from "../../error/load";
 import { useToastDesign } from "../../../context/ToastService";
+import { useUser } from "../../../context/UserProvider";
 
 const EditProfile = () => {
   const { addNotification } = useToastDesign();
-  const { userInfo, loading, error, updateUserInfo } = useUserInfo();
+  const { userInfo, loading, error, updateUserInfo } = useUser();
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",

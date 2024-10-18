@@ -1,6 +1,8 @@
 import React from "react";
 import { useFollowerList } from "../../../../hooks/Follow/useFollow";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const FollowerPopup = ({ onClose }) => {
   const { data, fetchNextPage, hasNextPage, isLoading, isError } =
@@ -20,7 +22,7 @@ const FollowerPopup = ({ onClose }) => {
       <div className="bg-white rounded-lg p-4 w-full max-w-md mx-4">
         <h2 className="text-lg font-semibold mb-2">Danh sách người theo dõi</h2>
 
-        {isLoading && <p>Đang tải...</p>}
+        {isLoading && <Skeleton count={5} height={30} />}
         {isError && <p>Lỗi khi tải danh sách người theo dõi.</p>}
 
         <div className="h-64 overflow-y-auto">

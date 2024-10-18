@@ -21,22 +21,8 @@ const style = {
   joinedButton:
     "cursor-pointer rounded-full border border-gray-300 py-1 text-center text-sm font-semibold",
 };
-const PersonalIf = () => {
-  const { id: personId } = useParams();
+const PersonalIf = ({ personalInfo }) => {
   const { theme } = useTheme();
-  const { personalInfo, loading, error } = useUserInfo(personId);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    return console.error(error);
-  }
 
   return (
     <div className={style.wrapper}>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
+import { useUser } from "../../../../context/UserProvider";
 
 const style = {
   wrapper: "mt-14 flex flex-col select-none",
@@ -20,7 +20,7 @@ const style = {
 };
 
 const Info = () => {
-  const { userInfo, loading, error } = useUserInfo();
+  const { userInfo, loading, error } = useUser();
 
   if (loading) {
     return (

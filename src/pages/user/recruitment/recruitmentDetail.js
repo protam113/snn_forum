@@ -14,6 +14,8 @@ import { BsClock } from "react-icons/bs";
 import { MdOutlineWork } from "react-icons/md";
 import { useRecruitmentDetail } from "../../../hooks/Recruitment/useRecruitment";
 import { useUser } from "../../../context/UserProvider";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const RecruitmentDetail = () => {
   const navigate = useNavigate();
@@ -256,12 +258,9 @@ const RecruitmentDetail = () => {
         </div>
         <div className="prose mb-4">
           <h4 className="text-18 font-semibold">Chi tiết công việc</h4>
-          <p
-            className={`mb-4 text-14 ${
-              theme === "dark" ? "text-white" : "text-black"
-            }`}
-            dangerouslySetInnerHTML={{ __html: recruitment.job_detail || "" }}
-          />
+          <Markdown remarkPlugins={[remarkGfm]}>
+            {recruitment.job_detail || ""}
+          </Markdown>
         </div>
       </div>
     </div>

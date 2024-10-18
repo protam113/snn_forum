@@ -12,6 +12,8 @@ import { useToastDesign } from "../../../context/ToastService";
 import { useUser } from "../../../context/UserProvider";
 import LikePost from "../../../components/buttons/likeBlog";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const Blog = () => {
   const [expandedBlogId, setExpandedBlogId] = useState(null);
@@ -232,9 +234,7 @@ const Blog = () => {
                   </div>
                   <div onClick={() => handleBlogClick(blog.id)}>
                     {/* Tiêu đề và nội dung */}
-                    <h2 className="text-lg font-semibold mb-2 dark:text-gray-300">
-                      {blog.title}
-                    </h2>
+
                     <p
                       className={`mb-8 text-sm cursor-pointer font-semibold ${
                         theme === "dark" ? "text-gray-300" : "text-black"
@@ -242,18 +242,20 @@ const Blog = () => {
                     >
                       {blog.content}
                     </p>
-                    <div
+                    <Markdown
+                      remarkPlugins={[remarkGfm]}
                       className={`mb-8 text-sm ${
                         theme === "dark" ? "text-gray-300" : "text-black"
-                      } ${isExpanded ? "" : "line-clamp-3"}`}
-                      dangerouslySetInnerHTML={{
-                        __html: isExpanded
-                          ? blog.description
-                          : `${blog.description.slice(0, 300)}${
-                              blog.description.length > 300 ? "..." : ""
-                            }`,
-                      }}
-                    />
+                      } ${isExpanded ? "" : "line-clamp-3"} border-collapse `}
+                    >
+                      {isExpanded
+                        ? blog.description.replace(/\\r\\n/g, "\n")
+                        : `${blog.description
+                            .slice(0, 300)
+                            .replace(/\\r\\n/g, "\n")}${
+                            blog.description.length > 300 ? "..." : ""
+                          }`}
+                    </Markdown>
                   </div>
 
                   {!isExpanded &&
@@ -274,24 +276,6 @@ const Blog = () => {
                       Ẩn bớt
                     </p>
                   )}
-                  {/* Media */}
-                  {/* <div className="flex flex-col items-center p-4">
-                    {blog.media && blog.media.length > 0 && (
-                      <div
-                        className={`grid gap-4 ${
-                          blog.media.length === 1
-                            ? "grid-cols-1"
-                            : blog.media.length === 2
-                            ? "grid-cols-2"
-                            : blog.media.length === 3
-                            ? "grid-cols-3"
-                            : "grid-cols-2"
-                        }`}
-                      >
-                        {blog.media.map((media) => renderMedia(media, theme))}
-                      </div>
-                    )}
-                  </div> */}
                   {blog.media && blog.media.length > 0 && (
                     <div className="grid grid-cols-2 gap-2 mb-4">
                       {blog.media.map((media) => renderMedia(media, theme))}

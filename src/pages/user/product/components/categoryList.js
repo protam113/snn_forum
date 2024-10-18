@@ -3,7 +3,7 @@ import { useUserCategoryList } from "../../../../hooks/Product/useUserCategory";
 
 const CategoryList = ({ selectedCategories, onCategoryChange }) => {
   const { data: categories, isLoading, isError } = useUserCategoryList();
-
+  console.log(categories);
   const handleCheckboxChange = (id) => {
     const newSelectedCategories = selectedCategories.includes(id)
       ? selectedCategories.filter((categoryId) => categoryId !== id)

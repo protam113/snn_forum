@@ -3,12 +3,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import Loading from "../../error/load";
 import { FaFilePdf, FaTrashAlt } from "react-icons/fa";
 import { useTheme } from "../../../context/themeContext";
-import { marked } from "marked";
-import ReactMarkdown from "react-markdown";
-import TurndownService from "turndown";
-import Toolbar from "../../../components/design/Toolbar";
 import { useBlogDetail, useEditBlog } from "../../../hooks/Blog/useBlog";
 import { useToastDesign } from "../../../context/ToastService";
+import "@mdxeditor/editor/style.css";
+import {
+  MDXEditor,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  toolbarPlugin,
+  tablePlugin,
+  InsertTable,
+} from "@mdxeditor/editor";
 
 const EdtBlog = () => {
   const { id: blogId } = useParams();
@@ -29,24 +34,24 @@ const EdtBlog = () => {
     id_media_remove: [],
   });
 
+  const [markdown, setMarkdown] = useState(formData.description);
+
   useEffect(() => {
     if (blog) {
-      const turndownService = new TurndownService();
-      const descriptionMarkdown = turndownService.turndown(
-        blog.description || ""
-      );
-
       setFormData({
         content: blog.content || "",
-        description: descriptionMarkdown,
+        description: blog.description || "",
         visibility: blog.visibility || "public",
         file_type: blog.file_type || "image",
         media: blog.media || [],
         id_media_remove: [],
       });
       setSelectedFiles(blog.media || []);
+      setMarkdown(blog.description || ""); // Update markdown from blog description
     }
   }, [blog]);
+
+  useEffect(() => {}, [markdown]);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -71,13 +76,6 @@ const EdtBlog = () => {
     }
   };
 
-  const handleInsert = (text) => {
-    setFormData((prev) => ({
-      ...prev,
-      description: prev.description + text,
-    }));
-  };
-
   const handleFileClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -95,7 +93,6 @@ const EdtBlog = () => {
     try {
       const formDataToSend = {
         ...formData,
-        description: marked(formData.description),
         media: selectedFiles,
       };
       await editBlog({
@@ -109,6 +106,11 @@ const EdtBlog = () => {
         error.response?.data || error.message
       );
     }
+  };
+
+  const handleDescriptionChange = (newMarkdown) => {
+    setMarkdown(newMarkdown);
+    setFormData((prev) => ({ ...prev, description: newMarkdown }));
   };
 
   if (isLoading)
@@ -148,7 +150,6 @@ const EdtBlog = () => {
             rows="2"
           />
         </div>
-        <Toolbar onInsert={handleInsert} />
 
         <div className="mb-4">
           <label
@@ -159,23 +160,25 @@ const EdtBlog = () => {
           >
             Description
           </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, description: e.target.value }))
-            }
-            className={`mb-6 ${
-              theme === "dark"
-                ? "text-white bg-gray-800"
-                : "text-black bg-white"
-            }`}
-            placeholder="What's on your mind?"
-            rows={4}
-            style={{ width: "100%" }}
+
+          <MDXEditor
+            key={markdown}
+            markdown={markdown} // Use value from markdown state
+            plugins={[
+              toolbarPlugin({
+                toolbarContents: () => (
+                  <>
+                    <UndoRedo />
+                    <BoldItalicUnderlineToggles />
+                    <InsertTable />
+                  </>
+                ),
+              }),
+              tablePlugin(),
+            ]}
+            onChange={handleDescriptionChange} // Update on change
+            style={{ width: "100%", height: "500px" }}
           />
-          <div className="mt-4">
-            <ReactMarkdown>{formData.description}</ReactMarkdown>
-          </div>
         </div>
         <hr className="my-6" />
         <div className="mb-4">

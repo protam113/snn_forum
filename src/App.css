@@ -154,3 +154,14 @@ select option[value="hide"] {
 .icon-container:hover {
   opacity: 0.8; /* Giảm độ mờ khi hover */
 }
+
+/* markdown */
+/* Thêm vào file CSS của bạn hoặc áp dụng trong Tailwind */
+.markdown table {
+  @apply table-auto border-collapse border border-gray-400;
+}
+
+.markdown th,
+.markdown td {
+  @apply border border-gray-400 px-4 py-2;
+}

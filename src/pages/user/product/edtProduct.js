@@ -11,6 +11,15 @@ import {
 } from "../../../hooks/Product/useProduct";
 import CategoryList from "./components/categoryList";
 import { useToastDesign } from "../../../context/ToastService";
+import "@mdxeditor/editor/style.css";
+import {
+  MDXEditor,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  toolbarPlugin,
+  tablePlugin,
+  InsertTable,
+} from "@mdxeditor/editor";
 
 const EdtProduct = () => {
   const { id: productId } = useParams();
@@ -37,6 +46,7 @@ const EdtProduct = () => {
     price: "",
     phone_number: "",
   });
+  const [markdown, setMarkdown] = useState(formData.description);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -54,6 +64,7 @@ const EdtProduct = () => {
         price: product.price || "",
         phone_number: product.phone_number || "",
       });
+      setMarkdown(product.description || "");
       setSelectedFiles(Array.isArray(product.media) ? product.media : []);
     }
   }, [product]);
@@ -108,6 +119,11 @@ const EdtProduct = () => {
         error.response?.data || error.message
       );
     }
+  };
+
+  const handleDescriptionChange = (newMarkdown) => {
+    setMarkdown(newMarkdown);
+    setFormData((prev) => ({ ...prev, description: newMarkdown }));
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -203,15 +219,24 @@ const EdtProduct = () => {
           >
             Chi Tiết Sản Phẩm
           </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, description: e.target.value }))
-            }
-            className="mb-6 w-full p-2 border border-gray-300 rounded"
-            placeholder="What's on your mind?"
-            rows={4}
-            style={{ resize: "vertical" }} // Cho phép người dùng thay đổi kích thước theo chiều dọc
+
+          <MDXEditor
+            key={markdown}
+            markdown={markdown} // Use value from markdown state
+            plugins={[
+              toolbarPlugin({
+                toolbarContents: () => (
+                  <>
+                    <UndoRedo />
+                    <BoldItalicUnderlineToggles />
+                    <InsertTable />
+                  </>
+                ),
+              }),
+              tablePlugin(),
+            ]}
+            onChange={handleDescriptionChange} // Update on change
+            style={{ width: "100%", height: "500px" }}
           />
         </div>
         <hr className="mt-4" />

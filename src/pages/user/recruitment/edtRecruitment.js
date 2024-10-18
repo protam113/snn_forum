@@ -10,16 +10,22 @@ import {
 import { salary } from "../../../data/SalaryRange";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate, useParams } from "react-router-dom";
-import Toolbar from "../../../components/design/Toolbar";
-import ReactMarkdown from "react-markdown";
 import { useTheme } from "../../../context/themeContext";
 import TurndownService from "turndown";
-import { marked } from "marked";
 import {
   useRecruitmentDetail,
   useEditRecruitment,
 } from "../../../hooks/Recruitment/useRecruitment";
 import TagsList from "./components/TagList";
+import "@mdxeditor/editor/style.css";
+import {
+  MDXEditor,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  toolbarPlugin,
+  tablePlugin,
+  InsertTable,
+} from "@mdxeditor/editor";
 
 const EdtRecruitment = () => {
   const { theme } = useTheme();
@@ -44,6 +50,7 @@ const EdtRecruitment = () => {
   });
 
   const [location, setLocation] = useState("");
+  const [markdown, setMarkdown] = useState(formData.job_detail);
 
   useEffect(() => {
     if (recruitment) {
@@ -69,6 +76,8 @@ const EdtRecruitment = () => {
         location: recruitment.location || "",
         tag_id: recruitment.tags.map((tag) => tag.tag.id) || [], // Update to match tag format
       });
+      setMarkdown(recruitment.job_detail || "");
+
       setLocation(recruitment.location || "");
     }
   }, [recruitment]);
@@ -92,13 +101,6 @@ const EdtRecruitment = () => {
     }));
   };
 
-  const handleInsert = (text) => {
-    setFormData((prev) => ({
-      ...prev,
-      job_detail: prev.job_detail + text,
-    }));
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -110,11 +112,8 @@ const EdtRecruitment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const htmlJobDetail = marked(formData.job_detail);
-
     const updatedFormData = {
       ...formData,
-      job_detail: htmlJobDetail,
     };
 
     try {
@@ -129,6 +128,11 @@ const EdtRecruitment = () => {
         error.response?.data || error.message
       );
     }
+  };
+
+  const handleDescriptionChange = (newMarkdown) => {
+    setMarkdown(newMarkdown);
+    setFormData((prev) => ({ ...prev, description: newMarkdown }));
   };
 
   return (
@@ -280,23 +284,25 @@ const EdtRecruitment = () => {
               >
                 Chi Tiết Công Việc
               </label>
-              <Toolbar onInsert={handleInsert} />
-              <textarea
-                id="job_detail"
-                name="job_detail"
-                value={formData.job_detail}
-                onChange={handleChange}
-                rows={5}
-                className={`w-full p-2 border rounded-md ${
-                  theme === "dark"
-                    ? "bg-zinc-700 text-white border-zinc-600"
-                    : "bg-white text-black border-zinc-800"
-                }`}
-              />
 
-              <div className="mt-4 white-space-pre">
-                <ReactMarkdown>{formData.job_detail}</ReactMarkdown>
-              </div>
+              <MDXEditor
+                key={markdown}
+                markdown={markdown} // Use value from markdown state
+                plugins={[
+                  toolbarPlugin({
+                    toolbarContents: () => (
+                      <>
+                        <UndoRedo />
+                        <BoldItalicUnderlineToggles />
+                        <InsertTable />
+                      </>
+                    ),
+                  }),
+                  tablePlugin(),
+                ]}
+                onChange={handleDescriptionChange} // Update on change
+                style={{ width: "100%", height: "500px" }}
+              />
             </div>
           </div>
 

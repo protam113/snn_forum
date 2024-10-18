@@ -13,6 +13,9 @@ import SkeletonBlog from "../../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
 import { useToastDesign } from "../../../../context/ToastService";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import NoPosts from "../../../../components/design/NoPosts";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const PersonalBlog = () => {
   const { id: personId } = useParams();
@@ -127,7 +130,7 @@ const PersonalBlog = () => {
   return (
     <>
       {posts.length === 0 ? (
-        <p>Không có bài viết nào để hiển thị.</p>
+        <NoPosts />
       ) : (
         posts.map((blog) => (
           <Block
@@ -207,19 +210,18 @@ const PersonalBlog = () => {
             >
               {blog.content}
             </p>
-            <p
-              onClick={() => handleBlogClick(blog.id)}
-              className={`mb-8 text-14 ${
+            <Markdown
+              remarkPlugins={[remarkGfm]}
+              className={`mb-8 text-sm ${
                 theme === "dark" ? "text-gray-300" : "text-black"
-              } ${expandedBlogs[blog.id] ? "" : "line-clamp-3"}`}
-              dangerouslySetInnerHTML={{
-                __html: expandedBlogs[blog.id]
-                  ? blog.description
-                  : `${blog.description.slice(0, 300)}${
-                      blog.description.length > 300 ? "..." : ""
-                    }`,
-              }}
-            />
+              } ${expandedBlogs ? "" : "line-clamp-3"} border-collapse `}
+            >
+              {expandedBlogs
+                ? blog.description.replace(/\\r\\n/g, "\n")
+                : `${blog.description.slice(0, 300).replace(/\\r\\n/g, "\n")}${
+                    blog.description.length > 300 ? "..." : ""
+                  }`}
+            </Markdown>
             {!expandedBlogs[blog.id] && blog.description.length > 300 && (
               <p
                 className="text-red-500 cursor-pointer"

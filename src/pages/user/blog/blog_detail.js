@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   FaTrashAlt,
   FaEdit,
-  FaFlag,
   FaChevronLeft,
   FaChevronRight,
   FaRegCommentAlt,
@@ -24,6 +23,8 @@ import { useToastDesign } from "../../../context/ToastService";
 import { useUser } from "../../../context/UserProvider";
 import LikePost from "../../../components/buttons/likeBlog";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const ArticleDesign = ({ children }) => {
   return (
@@ -241,12 +242,7 @@ const Blog_detail = () => {
               {blog.content}
             </p>
             <hr className="my-2 border-zinc-300" />
-            <p
-              className={`mb-4 text-14 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-              dangerouslySetInnerHTML={{ __html: blog.description || "" }}
-            />
+            <Markdown remarkPlugins={[remarkGfm]}>{blog.description}</Markdown>
           </div>
           <hr className="mt-2 border-gray-300" />
           {/* Media */}

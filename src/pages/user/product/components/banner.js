@@ -18,7 +18,7 @@ const defaultBanners = [
 
 const Banner = () => {
   const { data: userBanner = [], isLoading, isError } = useUserBanner();
-
+  console.log(userBanner);
   if (isLoading)
     return (
       <div className="flex items-center justify-center min-h-screen">

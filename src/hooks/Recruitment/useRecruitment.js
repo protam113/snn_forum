@@ -38,7 +38,6 @@ const useRecruitmentList = () => {
     cacheTime: 30 * 60 * 1000, // 30 minutes
   });
 };
-
 // Fetch Recruitment detail
 const fetchRecruitmentDetail = async (postId) => {
   if (!postId) return null;

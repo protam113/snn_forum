@@ -10,12 +10,17 @@ import {
 import { salary } from "../../../data/SalaryRange";
 import LocationSelectorp from "../../../components/Location/LocationP";
 import { useNavigate } from "react-router-dom";
-import { marked } from "marked";
-import ReactMarkdown from "react-markdown";
-import Toolbar from "../../../components/design/Toolbar";
 import { useAddRecruitment } from "../../../hooks/Recruitment/useRecruitment";
 import TagsList from "./components/TagList";
 import { useToastDesign } from "../../../context/ToastService";
+import {
+  MDXEditor,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  toolbarPlugin,
+  tablePlugin,
+  InsertTable,
+} from "@mdxeditor/editor";
 
 const CreateRecruitment = () => {
   const { mutate: addRecruitmentMutation } = useAddRecruitment();
@@ -45,8 +50,13 @@ const CreateRecruitment = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name) {
+    // Kiểm tra nếu sự kiện đến từ MDXEditor (chứa markdown)
+    if (e.markdown !== undefined) {
+      setFormData((prev) => ({ ...prev, job_detail: e.markdown }));
+    }
+    // Xử lý cho các input khác
+    else if (e.target) {
+      const { name, value } = e.target;
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -58,14 +68,16 @@ const CreateRecruitment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate all required fields
+    console.log(formData);
+
+    // Kiểm tra tất cả các trường bắt buộc
     if (
       !formData.content ||
       !formData.link ||
       !formData.date ||
       !formData.experience ||
       !formData.quantity ||
-      !formData.job_detail ||
+      !formData.job_detail.trim() ||
       !formData.mail ||
       !formData.phone_number ||
       !formData.salary ||
@@ -76,12 +88,7 @@ const CreateRecruitment = () => {
       return;
     }
 
-    const htmlContent = marked(formData.job_detail);
-
-    const newRecruitment = {
-      ...formData,
-      job_detail: htmlContent,
-    };
+    const newRecruitment = { ...formData };
 
     setLoading(true);
     try {
@@ -99,13 +106,6 @@ const CreateRecruitment = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleInsert = (text) => {
-    setFormData((prev) => ({
-      ...prev,
-      job_detail: prev.job_detail + text,
-    }));
   };
 
   return (
@@ -291,50 +291,54 @@ const CreateRecruitment = () => {
                 <option value="" disabled>
                   Chọn mức lương
                 </option>
-                {salary.map((range) => (
-                  <option key={range.id} value={range.value}>
-                    {range.label}
+                {salary.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
                   </option>
                 ))}
               </select>
             </div>
+          </div>
 
-            {/* Checkbox tags */}
+          {/* Cột 3 */}
+          <div className="grid gap-6">
             <div>
-              <label className="text-sm font-medium flex items-center gap-2 mb-1">
-                Các Tags
+              <label
+                htmlFor="job_detail"
+                className="text-sm font-medium mb-1 block"
+              >
+                Mô Tả Công Việc
               </label>
+              <MDXEditor
+                markdown={formData.job_detail}
+                onChange={(markdown) => handleChange({ markdown })} // Chuyển đúng định dạng cho handleChange
+                plugins={[
+                  toolbarPlugin({
+                    toolbarContents: () => (
+                      <>
+                        <UndoRedo />
+                        <BoldItalicUnderlineToggles />
+                        <InsertTable />
+                      </>
+                    ),
+                  }),
+                  tablePlugin(),
+                ]}
+              />
+            </div>
+
+            <div>
               <TagsList
                 selectedTags={formData.tag_id}
                 onTagChange={handleTagChange}
               />
             </div>
-          </div>
 
-          {/* Cột 3 */}
-          <div className="grid gap-6 md:col-span-2 lg:col-span-1">
-            <div>
-              <Toolbar onInsert={handleInsert} />
-              <textarea
-                id="job_detail"
-                name="job_detail"
-                rows={6}
-                value={formData.job_detail}
-                onChange={handleChange}
-                placeholder="Nhập chi tiết công việc..."
-                className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 w-full"
-              ></textarea>
-              <ReactMarkdown className="prose" children={formData.job_detail} />
-            </div>
-          </div>
-
-          {/* Nút Gửi */}
-          <div className="col-span-1 sm:col-span-1 md:col-span-3 text-center mt-6">
             <button
               type="submit"
-              className="bg-blue-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600"
+              className="mt-4 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-300"
             >
-              Đăng Tin Tuyển Dụng
+              Tạo Bài Đăng Tuyển Dụng
             </button>
           </div>
         </form>

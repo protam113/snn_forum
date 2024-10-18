@@ -51,33 +51,40 @@ const useProductDetail = (productId) => {
   });
 };
 
-// Hàm thêm sản phẩm
 const AddProduct = async (newProduct, token) => {
   const formData = new FormData();
 
+  // Loop over product fields and append to FormData
   for (const key in newProduct) {
-    if (Array.isArray(newProduct[key])) {
-      newProduct[key].forEach((value) => formData.append(key, value));
-    } else {
-      formData.append(key, newProduct[key]);
+    if (newProduct[key] !== undefined) {
+      // Ensure you're not appending undefined fields
+      if (Array.isArray(newProduct[key])) {
+        newProduct[key].forEach((value) => formData.append(key, value));
+      } else {
+        formData.append(key, newProduct[key]);
+      }
     }
   }
 
+  // Handle image files specifically
   if (newProduct.images) {
     newProduct.images.forEach((file) => {
-      formData.append("media", file);
+      formData.append("media", file); // Ensure this matches your backend API key
     });
   }
 
+  // Check if token is available
   if (!token) throw new Error("No token available");
 
   try {
+    // Send formData to API
     const response = await authApi(token).post(endpoints.Products, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
     return response.data;
   } catch (error) {
+    // Log error message from response
     console.error(
       "Error adding product:",
       error.response?.data || error.message

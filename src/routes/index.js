@@ -29,10 +29,6 @@ import EdtBlog from "../pages/user/blog/edtBlog";
 import ContributeIdeas from "../pages/user/contributeIdeas";
 
 import Home from "../pages/user/home";
-import ChatD from "../pages/user/Message/Chat/Chat";
-import Messaging from "../pages/user/Message/Chat/Messaging";
-import GroupChat from "../pages/user/Message/Group/Chat";
-import GroupChats from "../pages/user/Message/Group/GroupChats";
 import AllProduct from "../pages/user/product/allProduct";
 import CategoryProduct from "../pages/user/product/components/CategoryProduct";
 import CreateProduct from "../pages/user/product/CreateProduct";
@@ -98,7 +94,6 @@ const publicRoutes = [
     component: CreateRecruitment,
     layout: DefaultLayout,
   },
-
   {
     path: "/tuyen_dung/:id",
     component: RecruitmentDetail,
@@ -152,12 +147,6 @@ const publicRoutes = [
 
   { path: "/setting", component: setting, layout: DefaultLayout },
   { path: "/support", component: ContributeIdeas, layout: DefaultLayout },
-
-  { path: "/chat", component: ChatD, layout: DefaultLayout },
-  { path: "/chat/:id", component: Messaging, layout: DefaultLayout },
-
-  { path: "/group_chat", component: GroupChat, layout: DefaultLayout },
-  { path: "/group_chat/:id", component: GroupChats, layout: DefaultLayout },
 ];
 
 const privateRoutes = [

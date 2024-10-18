@@ -26,8 +26,7 @@ const RecruitmentSidebar = () => {
         <Loading />
       </div>
     );
-  if (error)
-    return <p className="text-red-500">Đã xảy ra lỗi khi lấy tin tuyển dụng</p>;
+  if (error) return console.error(error);
 
   // Ensure recruitments is an array
   const recentActivities = Array.isArray(recruitments)

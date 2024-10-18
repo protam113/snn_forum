@@ -9,52 +9,92 @@ import useAuth from "../useAuth";
 import { useToastDesign } from "../../context/ToastService";
 import { useEffect, useState } from "react";
 
-const toggleFollowUser = async (personId, token, isFollowing) => {
-  if (!token) throw new Error("No token available");
+// const toggleFollowUser = async (personId, token, isFollowing) => {
+//   if (!token) throw new Error("No token available");
 
-  try {
-    const endpoint = endpoints.FollowUser.replace(":id", personId);
-    const method = isFollowing ? "post" : "post";
-    const response = await authApi(token)[method](endpoint);
+//   try {
+//     const endpoint = endpoints.FollowUser.replace(":id", personId);
+//     const method = isFollowing ? "delete" : "post";
+//     const response = await authApi(token)[method](endpoint);
 
-    if (!response.data) {
-      throw new Error("No data received from server");
-    }
+//     if (!response.data) {
+//       throw new Error("No data received from server");
+//     }
 
-    return response.data;
-  } catch (err) {
-    console.error("Error when toggling follow:", err);
-    throw err;
-  }
-};
+//     return response.data;
+//   } catch (err) {
+//     console.error("Error when toggling follow:", err);
+//     throw err;
+//   }
+// };
+
+// const useFollowUser = () => {
+//   const { getToken } = useAuth();
+//   const { addNotification } = useToastDesign();
+//   const queryClient = useQueryClient();
+
+//   const mutation = useMutation({
+//     mutationFn: async ({ personId, isFollowing }) => {
+//       const token = await getToken();
+//       if (!token) {
+//         throw new Error("Unable to retrieve token");
+//       }
+//       return toggleFollowUser(personId, token, isFollowing);
+//     },
+//     onSuccess: (data, variables) => {
+//       const message = variables.isFollowing
+//         ? "Unfollow thành công!"
+//         : "Follow thành công!";
+//       addNotification(message, "success");
+//       queryClient.invalidateQueries(["followers"]);
+//     },
+//     onError: (error) => {
+//       addNotification(error.message || "Lỗi khi thao tác!", "error");
+//       console.error(error.message || "Lỗi khi thao tác!");
+//     },
+//   });
+
+//   return mutation;
+// };
 
 const useFollowUser = () => {
-  const { getToken } = useAuth();
-  const { addNotification } = useToastDesign();
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
-  const mutation = useMutation({
+  return useMutation({
     mutationFn: async ({ personId, isFollowing }) => {
       const token = await getToken();
-      if (!token) {
-        throw new Error("Unable to retrieve token");
+      if (!token) throw new Error("No token available");
+
+      const url = endpoints.FollowUser.replace(":id", personId);
+      try {
+        let response;
+
+        // Nếu đang theo dõi thì gọi API xóa (unfollow), ngược lại là thêm (follow)
+        if (isFollowing) {
+          response = await authApi(token).delete(url); // Unfollow
+        } else {
+          response = await authApi(token).post(url); // Follow
+        }
+
+        // Kiểm tra phản hồi từ API
+        if (response.status >= 200 && response.status < 300) {
+          return !isFollowing; // Trả về trạng thái mới
+        } else {
+          throw new Error(`Unexpected response status: ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Error handling follow/unfollowed:", error);
+        throw error; // Để xử lý lỗi bên ngoài
       }
-      return toggleFollowUser(personId, token, isFollowing);
     },
-    onSuccess: (data, variables) => {
-      const message = variables.isFollowing
-        ? "Unfollow thành công!"
-        : "Follow thành công!";
-      addNotification(message, "success");
-      queryClient.invalidateQueries(["followers"]);
+    onSuccess: () => {
+      queryClient.invalidateQueries(["followers"]); // Làm mới danh sách followers
     },
     onError: (error) => {
-      addNotification(error.message || "Lỗi khi thao tác!", "error");
-      console.error(error.message || "Lỗi khi thao tác!");
+      console.error(error.message || "Lỗi khi xử lý follow/unfollowed!");
     },
   });
-
-  return mutation;
 };
 
 const fetchFollower = async ({ pageParam = 1, token }) => {

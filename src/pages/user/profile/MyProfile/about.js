@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaLink } from "react-icons/fa";
-import useUserInfo from "../../../../hooks/useUserInfo";
 import Loading from "../../../error/load";
 import { useTheme } from "../../../../context/themeContext";
 import FollowerPopup from "../Components/FollowerPopup";
 import FollowingPopup from "../Components/FollowingPopup";
+import { useUser } from "../../../../context/UserProvider";
 
 const style = {
   wrapper:
@@ -24,7 +24,7 @@ const style = {
 };
 
 const About = () => {
-  const { userInfo, loading, error } = useUserInfo();
+  const { userInfo, loading, error } = useUser();
   const { theme } = useTheme();
   const [showFollowerPopup, setShowFollowerPopup] = useState(false);
   const [showFollowingPopup, setShowFollowingPopup] = useState(false);

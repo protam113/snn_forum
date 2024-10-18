@@ -1,5 +1,4 @@
 import axios from "axios";
-// import useWebSocket from "react-use-websocket";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -99,11 +98,6 @@ const endpoints = {
   FollowUser: process.env.REACT_APP_FollowUser_ENDPOINT,
   Following: process.env.REACT_APP_Following_ENDPOINT,
   Follower: process.env.REACT_APP_Follower_ENDPOINT,
-  Stranger: process.env.REACT_APP_Stranger_ENDPOINT,
-  GroupChat: process.env.REACT_APP_GroupChat_ENDPOINT,
-  GroupChatDetail: process.env.REACT_APP_GroupChatDetail_ENDPOINT,
-  GroupChatMember: process.env.REACT_APP_GroupChatMember_ENDPOINT,
-  Chatting: process.env.REACT_APP_Chatting_ENDPOINT,
 };
 
 const authApiPrivate = authApi();

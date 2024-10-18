@@ -2,15 +2,15 @@ import React from "react";
 import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { FiMail, FiMapPin } from "react-icons/fi";
-import useUserInfo from "../../../../hooks/useUserInfo";
 import BannerChart from "./chart/bannerChart";
 import CategoryChart from "./chart/categoryChart";
 import TagChart from "./chart/TagChart";
 import { useWeb } from "../../../../hooks/useWeb";
 import Loading from "../../../../pages/error/load";
+import { useUser } from "../../../../context/UserProvider";
 
 export const RevealBento = () => {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
   const { data: web, error, isLoading } = useWeb();
   // Loading và Error handling
   if (isLoading)

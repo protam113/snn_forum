@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { MdSearch, MdClear } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import useUserSearch from "../../../hooks/useUserSearch";
-import useUserInfo from "../../../hooks/useUserInfo";
+import { useUser } from "../../../context/UserProvider";
 
 const User = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchField, setSearchField] = useState("username");
   const { results, loading, error } = useUserSearch(searchTerm, searchField);
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUser();
   const navigate = useNavigate();
 
   const handleChange = (e) => {

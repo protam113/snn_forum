@@ -7,13 +7,19 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../../context/themeContext";
-import useUserInfo from "../../../../hooks/useUserInfo";
-import Toolbar from "../../../../components/design/Toolbar";
-import { marked } from "marked";
-import ReactMarkdown from "react-markdown";
 import { useAddBlog } from "../../../../hooks/Blog/useBlogs";
 import { AiOutlineWarning } from "react-icons/ai";
-import MarkdownInput from "../components/MarkdownInput";
+import "@mdxeditor/editor/style.css";
+import {
+  MDXEditor,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  toolbarPlugin,
+  tablePlugin,
+  InsertTable,
+  // InsertCodeBlock,
+} from "@mdxeditor/editor";
+import { Col, Row } from "antd";
 
 const SET_CONTENT = "SET_CONTENT";
 const SET_DESCRIPTION = "SET_DESCRIPTION";
@@ -55,7 +61,6 @@ const initialState = {
 const Create = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const { userInfo } = useUserInfo();
   const fileInputRef = useRef(null);
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -124,14 +129,12 @@ const Create = () => {
     const formData = new FormData();
     formData.append("content", state.content);
     formData.append("visibility", state.visibility);
-    formData.append("description", marked(state.description));
+    formData.append("description", state.description);
     formData.append("fileType", state.fileType);
 
     state.selectedFiles.forEach((file) => {
       formData.append("media", file);
     });
-
-    // console.log("FormData:", [...formData.entries()]);
 
     dispatch({ type: SET_LOADING, payload: true });
     try {
@@ -148,10 +151,6 @@ const Create = () => {
     } finally {
       dispatch({ type: SET_LOADING, payload: false });
     }
-  };
-
-  const handleInsert = (text) => {
-    dispatch({ type: SET_DESCRIPTION, payload: state.description + text });
   };
 
   return (
@@ -178,8 +177,6 @@ const Create = () => {
         </button>
 
         <hr className="mt-4" />
-
-        {/* Visibility Selector */}
         <div className="mb-4">
           <label
             className={`block mb-2 ${
@@ -207,9 +204,9 @@ const Create = () => {
           <AiOutlineWarning size={24} className="mr-2 text-red-600" />
           <span>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</span>
         </div>
-        <div className="flex flex-col lg:flex-row mt-8">
+        <Row>
           {/* Left Column - File Upload Section */}
-          <div className="w-full lg:w-1/3 pr-0 lg:pr-4 mb-8 lg:mb-0">
+          <Col xs={24} md={12}>
             {/* File Type Selector */}
             <div className="mb-4">
               <label
@@ -236,40 +233,39 @@ const Create = () => {
             </div>
 
             {/* File Upload Section */}
-            <div className="grid grid-cols-1 gap-4 mb-4">
-              {state.selectedFiles.map((file, index) => (
+
+            {state.selectedFiles.map((file, index) => (
+              <div
+                key={index}
+                className="relative overflow-hidden"
+                style={{ width: "100%", height: "100px" }}
+              >
                 <div
-                  key={index}
-                  className="relative overflow-hidden"
-                  style={{ width: "100%", height: "100px" }}
+                  className={`absolute top-0 right-0 p-2 cursor-pointer ${
+                    theme === "dark"
+                      ? "text-red-500 hover:text-red-300"
+                      : "text-red-700 hover:text-red-500"
+                  }`}
+                  onClick={() => handleRemoveFile(index)}
                 >
-                  <div
-                    className={`absolute top-0 right-0 p-2 cursor-pointer ${
-                      theme === "dark"
-                        ? "text-red-500 hover:text-red-300"
-                        : "text-red-700 hover:text-red-500"
-                    }`}
-                    onClick={() => handleRemoveFile(index)}
-                  >
-                    <FaTrashAlt />
-                  </div>
-                  <div
-                    className="flex items-center justify-center bg-gray-200 border border-gray-300 rounded-md"
-                    style={{ height: "100%", overflow: "hidden" }}
-                  >
-                    {file.type.startsWith("image/") ? (
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt="preview"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <FaFilePdf size={48} className="text-red-600" />
-                    )}
-                  </div>
+                  <FaTrashAlt />
                 </div>
-              ))}
-            </div>
+                <div
+                  className="flex items-center justify-center bg-gray-200 border border-gray-300 rounded-md"
+                  style={{ height: "100%", overflow: "hidden" }}
+                >
+                  {file.type.startsWith("image/") ? (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FaFilePdf size={48} className="text-red-600" />
+                  )}
+                </div>
+              </div>
+            ))}
             <input
               ref={fileInputRef}
               type="file"
@@ -285,10 +281,10 @@ const Create = () => {
               <FaFileUpload className="mr-2" />
               <span>Upload Files</span>
             </button>
-          </div>
+          </Col>
 
           {/* Right Column - Content Section */}
-          <div className="w-full lg:w-2/3 pl-0 lg:pl-4">
+          <Col xs={24} md={12}>
             <form onSubmit={handleSubmit}>
               {/* Title */}
               <div className="mb-4">
@@ -319,10 +315,6 @@ const Create = () => {
                     : "border-white text-black"
                 }`}
               >
-                {/* Toolbar */}
-                <Toolbar onInsert={handleInsert} />
-
-                {/* Description */}
                 <div className="mb-4">
                   <label
                     className={`block mb-2 ${
@@ -332,38 +324,27 @@ const Create = () => {
                   >
                     Nội Dung:
                   </label>
-                  <h1 className="text-14">AI tạo bài viết</h1>
-                  <MarkdownInput
-                    value={state.description}
-                    // onChange={(e) => setDescription(e.target.value)}
-                    onChange={(e) =>
+                  <MDXEditor
+                    markdown={state.description}
+                    plugins={[
+                      toolbarPlugin({
+                        toolbarContents: () => (
+                          <>
+                            <UndoRedo />
+                            <BoldItalicUnderlineToggles />
+                            <InsertTable />
+                          </>
+                        ),
+                      }),
+                      tablePlugin(),
+                    ]}
+                    onChange={(newMarkdown) =>
                       dispatch({
                         type: SET_DESCRIPTION,
-                        payload: e.target.value,
+                        payload: newMarkdown,
                       })
                     }
-                    rows={5}
-                    className={`w-full p-2 border rounded-md ${
-                      theme === "dark"
-                        ? "bg-zinc-700 text-white border-zinc-600"
-                        : "bg-white text-black border-zinc-800"
-                    }`}
-                  />
-                  <textarea
-                    value={state.description}
-                    // onChange={(e) => setDescription(e.target.value)}
-                    onChange={(e) =>
-                      dispatch({
-                        type: SET_DESCRIPTION,
-                        payload: e.target.value,
-                      })
-                    }
-                    rows={5}
-                    className={`w-full p-2 border rounded-md ${
-                      theme === "dark"
-                        ? "bg-zinc-700 text-white border-zinc-600"
-                        : "bg-white text-black border-zinc-800"
-                    }`}
+                    style={{ width: "100%", height: "500px" }} // Điều chỉnh chiều rộng và chiều cao
                   />
                 </div>
               </div>
@@ -384,8 +365,8 @@ const Create = () => {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
     </div>
   );

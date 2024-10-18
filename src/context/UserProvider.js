@@ -83,12 +83,39 @@ export const UserProvider = ({ children }) => {
     fetchUserInfo();
   }, [fetchUserInfo]);
 
+  const updateUserInfo = useCallback(
+    async (updatedInfo) => {
+      const token = await getToken();
+      if (!token) return;
+
+      try {
+        const response = await authApi(token).patch(
+          endpoints.UpdateProfile,
+          updatedInfo,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        setUserInfo(response.data);
+        cacheUserInfo(response.data);
+      } catch (err) {
+        console.error(
+          "Error updating user info:",
+          err.response?.data || err.message
+        );
+        setError(err.response?.data || err.message);
+      }
+    },
+    [getToken]
+  );
+
   const value = {
     userInfo,
     userRoles,
     loading,
     error,
-    refreshUserInfo: fetchUserInfo, // Allows components to trigger a refresh
+    refreshUserInfo: fetchUserInfo,
+    updateUserInfo,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

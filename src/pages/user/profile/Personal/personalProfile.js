@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Loading from "../../../error/load";
 import useUserInfo from "../../../../hooks/useUserInfo";
-import { usePersonContext } from "../../../../context/PersonContext";
 import { useUser } from "../../../../context/UserProvider";
 import Follow from "../../../../components/buttons/Follow";
 
@@ -23,32 +22,8 @@ const style = {
   followButtonFollow: "bg-blue-500 hover:bg-blue-700",
 };
 
-const PersonalProfile = () => {
-  const { id: personId } = useParams();
-  const { personalInfo, loading, error } = useUserInfo(personId);
-  const navigate = useNavigate();
-  const { setSelectedUser } = usePersonContext();
+const PersonalProfile = ({ personalInfo }) => {
   const { userInfo } = useUser();
-
-  // Check if the user is already following
-
-  const handleUserClick = () => {
-    setSelectedUser(personalInfo);
-    navigate(`/chat/${personalInfo?.id}`);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    console.error(error);
-    return null; // Consider displaying an error message
-  }
 
   return (
     <div className={style.wrapper}>
@@ -80,19 +55,10 @@ const PersonalProfile = () => {
               </div>
 
               {userInfo && (
-                <>
-                  <Follow
-                    personId={personalInfo?.id}
-                    is_followed={personalInfo?.is_followed}
-                  />
-
-                  <button
-                    className={style.followButton}
-                    onClick={handleUserClick}
-                  >
-                    Nhắn tin
-                  </button>
-                </>
+                <Follow
+                  personId={personalInfo.id}
+                  is_followed={personalInfo.is_followed}
+                />
               )}
             </div>
           </div>

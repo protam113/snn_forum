@@ -10,6 +10,9 @@ import { useUserBlog } from "../../../../hooks/User/useUserBlog";
 import SkeletonBlog from "../../../../components/design/SkeletonBlog";
 import { debounce } from "lodash";
 import { useToastDesign } from "../../../../context/ToastService";
+import NoPosts from "../../../../components/design/NoPosts";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const PersonalBlog = () => {
   const { id: personId } = useParams();
@@ -110,7 +113,7 @@ const PersonalBlog = () => {
   return (
     <>
       {posts.length === 0 ? (
-        <p>Không có bài viết nào để hiển thị.</p>
+        <NoPosts />
       ) : (
         posts.map((blog) => (
           <Block
@@ -146,60 +149,62 @@ const PersonalBlog = () => {
                 </p>
               </div>
             </div>
-            <p
-              onClick={() => handleBlogClick(blog.id)}
-              className={`mb-8 text-15 cursor-pointer font-semibold ${
-                theme === "dark" ? "text-gray-300" : "text-black"
-              }`}
-            >
-              {blog.content}
-            </p>
-            <p
-              onClick={() => handleBlogClick(blog.id)}
-              className={`mb-8 text-14 ${
-                theme === "dark" ? "text-gray-300" : "text-black"
-              } ${expandedBlogs[blog.id] ? "" : "line-clamp-3"}`}
-              dangerouslySetInnerHTML={{
-                __html: expandedBlogs[blog.id]
-                  ? blog.description
-                  : `${blog.description.slice(0, 300)}${
+            <div onClick={() => handleBlogClick(blog.id)}>
+              <p
+                className={`mb-8 text-15 cursor-pointer font-semibold ${
+                  theme === "dark" ? "text-gray-300" : "text-black"
+                }`}
+              >
+                {blog.content}
+              </p>
+              <Markdown
+                remarkPlugins={[remarkGfm]}
+                className={`mb-8 text-sm ${
+                  theme === "dark" ? "text-gray-300" : "text-black"
+                } ${expandedBlogs ? "" : "line-clamp-3"} border-collapse `}
+              >
+                {expandedBlogs
+                  ? blog.description.replace(/\\r\\n/g, "\n")
+                  : `${blog.description
+                      .slice(0, 300)
+                      .replace(/\\r\\n/g, "\n")}${
                       blog.description.length > 300 ? "..." : ""
-                    }`,
-              }}
-            />
-            {!expandedBlogs[blog.id] && blog.description.length > 300 && (
-              <p
-                className="text-red-500 cursor-pointer"
-                onClick={() => handleToggleExpand(blog.id)}
-              >
-                Xem thêm
-              </p>
-            )}
-            {expandedBlogs[blog.id] && (
-              <p
-                className="text-red-500 cursor-pointer"
-                onClick={() => handleToggleExpand(blog.id)}
-              >
-                Xem ít hơn
-              </p>
-            )}
-            <div className="flex flex-col items-center p-4">
-              {/* Kiểm tra và hiển thị các phương tiện truyền thông nếu có */}
-              {blog.media.length > 0 && (
-                <div
-                  className={`grid gap-4 ${
-                    blog.media.length === 1
-                      ? "grid-cols-1"
-                      : blog.media.length === 2
-                      ? "grid-cols-2"
-                      : blog.media.length === 3
-                      ? "grid-cols-3"
-                      : "grid-cols-2"
-                  }`}
+                    }`}
+              </Markdown>
+              {!expandedBlogs[blog.id] && blog.description.length > 300 && (
+                <p
+                  className="text-red-500 cursor-pointer"
+                  onClick={() => handleToggleExpand(blog.id)}
                 >
-                  {blog.media.map((media) => renderMedia(media, theme))}
-                </div>
+                  Xem thêm
+                </p>
               )}
+              {expandedBlogs[blog.id] && (
+                <p
+                  className="text-red-500 cursor-pointer"
+                  onClick={() => handleToggleExpand(blog.id)}
+                >
+                  Xem ít hơn
+                </p>
+              )}
+              <div className="flex flex-col items-center p-4">
+                {/* Kiểm tra và hiển thị các phương tiện truyền thông nếu có */}
+                {blog.media.length > 0 && (
+                  <div
+                    className={`grid gap-4 ${
+                      blog.media.length === 1
+                        ? "grid-cols-1"
+                        : blog.media.length === 2
+                        ? "grid-cols-2"
+                        : blog.media.length === 3
+                        ? "grid-cols-3"
+                        : "grid-cols-2"
+                    }`}
+                  >
+                    {blog.media.map((media) => renderMedia(media, theme))}
+                  </div>
+                )}
+              </div>
             </div>
             <hr
               className={`my-4 ${

@@ -72,7 +72,6 @@ const RecruitmentPost = () => {
       }
     );
   };
-  
 
   const handleCopyUrl = (postId) => {
     const url = `${window.location.origin}/tuyen_dung/${postId}`;

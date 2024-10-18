@@ -4,7 +4,7 @@ import Logo from "../../../../assets/img/logoH2H.svg";
 import { useTheme } from "../../../../context/themeContext";
 import LogoutButton from "../../../../pages/auth/logout";
 import { BiMenuAltRight } from "react-icons/bi";
-import { MdSupportAgent, MdOutlineMessage } from "react-icons/md";
+import { MdSupportAgent } from "react-icons/md";
 import LoginBtn from "../../../buttons/loginBtn";
 import { useUser } from "../../../../context/UserProvider";
 import { FaCog } from "react-icons/fa";
@@ -110,9 +110,9 @@ const Nav = () => {
           <NavLinkItem to="/san_pham" theme={theme}>
             Sản Phẩm
           </NavLinkItem>
-          {/* <NavLinkItem to="/tuyen_dung" theme={theme}>
+          <NavLinkItem to="/tuyen_dung" theme={theme}>
             Tuyển dụng
-          </NavLinkItem> */}
+          </NavLinkItem>
           {isAdmin && (
             <NavLinkItem to="/admin" theme={theme}>
               Admin
@@ -120,18 +120,6 @@ const Nav = () => {
           )}
         </section>
         <div className="flex items-center space-x-4">
-          {userInfo && (
-            <Link to="/chat">
-              <MdOutlineMessage
-                className={`font-semibold text-4xl transition-transform duration-300 ease-in-out 
-      ${theme === "light" ? "text-zinc-900" : "text-white"} 
-      hover:text-main-blue2 hover:scale-110 hover:bg-opacity-20 hover:shadow-lg 
-      p-2 rounded-full`}
-              />
-            </Link>
-          )}
-          {/* {userInfo && <Notifications />} */}
-
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-gray-900 ">

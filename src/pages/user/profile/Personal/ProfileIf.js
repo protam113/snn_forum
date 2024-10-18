@@ -3,6 +3,8 @@ import PersonalProfile from "./personalProfile";
 import PersonalIf from "./PersonalIf";
 import PersonalBlog from "./personalBlog";
 import { useTheme } from "../../../../context/themeContext";
+import { useParams } from "react-router-dom";
+import usePersonInfo from "../../../../hooks/Person/usePersonInfo";
 
 const style = (theme) => ({
   wrapper: `flex min-h-screen flex-col ${
@@ -17,17 +19,30 @@ const style = (theme) => ({
 
 const ProfileIf = () => {
   const { theme } = useTheme();
+  const { id: personId } = useParams();
+  const { data: personalInfo, isLoading, error } = usePersonInfo(personId);
+
+  if (isLoading) return <div>Loading...</div>;
+
+  // Chỉ hiển thị thông tin nếu có, nếu không có, hiển thị một thông điệp khác
+  if (error) {
+    return <div>Error: {error.message || "An error occurred."}</div>;
+  }
 
   return (
     <div>
       <div className={style(theme).wrapper}>
-        <PersonalProfile />
+        <PersonalProfile personalInfo={personalInfo} />
         <main className={style(theme).main}>
           <div className={style(theme).content}>
-            <PersonalBlog />{" "}
+            <PersonalBlog />
           </div>
           <div className={style(theme).infoContainer}>
-            <PersonalIf />
+            {personalInfo ? (
+              <PersonalIf personalInfo={personalInfo} />
+            ) : (
+              <p>No personal information available.</p>
+            )}
           </div>
         </main>
       </div>
