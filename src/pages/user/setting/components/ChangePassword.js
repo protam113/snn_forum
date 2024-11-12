@@ -7,9 +7,12 @@ import useUserInfo from "../../../../hooks/useUserInfo";
 import ThemeToggle from "../../../../components/theme/ThemeToggle ";
 import { useTheme } from "../../../../context/themeContext";
 import { useToastDesign } from "../../../../context/ToastService";
+import { useUser } from "../../../../context/UserProvider";
 
 const ChangePassword = () => {
-  const { changePassword, userInfo } = useUserInfo();
+  const { changePassword } = useUserInfo();
+  const { userInfo } = useUser();
+
   const { theme } = useTheme();
 
   const [formData, setFormData] = useState({

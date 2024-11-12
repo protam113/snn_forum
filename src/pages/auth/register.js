@@ -27,11 +27,8 @@ const Register = () => {
     location: "",
     about: "",
     link: "",
-    profile_image: null,
-    profile_bg: null,
   });
-  const [profileImagePreview, setProfileImagePreview] = useState("");
-  const [profileBgPreview, setProfileBgPreview] = useState("");
+
   const [errMsg, setErrMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { addNotification } = useToastDesign();
@@ -42,24 +39,8 @@ const Register = () => {
     }
   }, [step]);
 
-  useEffect(() => {
-    if (formData.profile_image) {
-      const objectUrl = URL.createObjectURL(formData.profile_image);
-      setProfileImagePreview(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl);
-    }
-  }, [formData.profile_image]);
-
-  useEffect(() => {
-    if (formData.profile_bg) {
-      const objectUrl = URL.createObjectURL(formData.profile_bg);
-      setProfileBgPreview(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl);
-    }
-  }, [formData.profile_bg]);
-
   const handleNextStep = () => {
-    if (step < 4) {
+    if (step < 3) {
       setStep(step + 1);
     }
   };
@@ -68,14 +49,6 @@ const Register = () => {
     if (step > 1) {
       setStep(step - 1);
     }
-  };
-
-  const handleProfileImageChange = (e) => {
-    setFormData({ ...formData, profile_image: e.target.files[0] });
-  };
-
-  const handleProfileBgChange = (e) => {
-    setFormData({ ...formData, profile_bg: e.target.files[0] });
   };
 
   const handleLocationChange = (formattedLocation) => {
@@ -140,7 +113,7 @@ const Register = () => {
     }
   };
 
-  const steps = ["Step 1", "Step 2", "Step 3", "Step 4"];
+  const steps = ["Step 1", "Step 2", "Step 3"];
 
   return (
     <div
@@ -434,47 +407,6 @@ const Register = () => {
                   </div>
                 </>
               )}
-
-              {step === 4 && (
-                <>
-                  <div className="relative mb-4">
-                    <label htmlFor="profile_image" className="block mb-1">
-                      Profile Image:
-                    </label>
-                    <input
-                      type="file"
-                      id="profile_image"
-                      onChange={handleProfileImageChange}
-                      className="border rounded-lg w-full"
-                    />
-                    {profileImagePreview && (
-                      <img
-                        src={profileImagePreview}
-                        alt="Profile Preview"
-                        className="mt-4 w-24 h-24 object-cover rounded-full"
-                      />
-                    )}
-                  </div>
-                  <div className="relative mb-4">
-                    <label htmlFor="profile_bg" className="block mb-1">
-                      Profile Background Image:
-                    </label>
-                    <input
-                      type="file"
-                      id="profile_bg"
-                      onChange={handleProfileBgChange}
-                      className="border rounded-lg w-full"
-                    />
-                    {profileBgPreview && (
-                      <img
-                        src={profileBgPreview}
-                        alt="Profile Background Preview"
-                        className="mt-4 w-full h-32 object-cover rounded-lg"
-                      />
-                    )}
-                  </div>
-                </>
-              )}
             </div>
 
             <div className="flex justify-between">
@@ -487,7 +419,7 @@ const Register = () => {
                   Previous
                 </button>
               )}
-              {step < 4 && (
+              {step < 3 && (
                 <button
                   type="button"
                   onClick={handleNextStep}
@@ -496,7 +428,7 @@ const Register = () => {
                   Next
                 </button>
               )}
-              {step === 4 && (
+              {step === 3 && (
                 <button
                   type="submit"
                   disabled={isLoading}

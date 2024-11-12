@@ -13,6 +13,7 @@ import {
   ShoppingOutlined,
   FileOutlined,
 } from "@ant-design/icons";
+import { FaUser, FaUserLock } from "react-icons/fa";
 import Logo from "../../../../assets/img/Logo.svg";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../../context/UserProvider";
@@ -41,18 +42,14 @@ const Sidebar = ({ collapsed }) => {
     getItem("Banners", "4", <PictureOutlined />, "/admin/banners"),
     ...(userRoles.includes("admin")
       ? [
-          getItem(
-            "Users",
-            "5",
-            <UsergroupAddOutlined />,
-            "/admin/quan_ly_nguoi_dung"
-          ),
+          getItem("User", "5", <FaUser />, "/admin/user"),
           getItem(
             "Web Info",
             "12",
             <FileTextOutlined />,
             "/admin/thong_tin_web"
           ),
+          getItem("Role", "14", <FaUserLock />, "/admin/role"),
         ]
       : []),
     getItem("Statistics", "sub1", <BarChartOutlined />, null, [

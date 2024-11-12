@@ -98,6 +98,13 @@ const endpoints = {
   FollowUser: process.env.REACT_APP_FollowUser_ENDPOINT,
   Following: process.env.REACT_APP_Following_ENDPOINT,
   Follower: process.env.REACT_APP_Follower_ENDPOINT,
+
+  Permission: process.env.REACT_APP_Permission_ENDPOINT,
+  Roles: process.env.REACT_APP_Roles_ENDPOINT,
+  Role: process.env.REACT_APP_Role_ENDPOINT,
+  RoleDecentralize: process.env.REACT_APP_RoleDecentralize_ENDPOINT,
+  UserJopPost: process.env.REACT_APP_UserJopPost_ENDPOINT,
+  AdminUserSearch: process.env.REACT_APP_AdminUserSearch_ENDPOINT,
 };
 
 const authApiPrivate = authApi();

@@ -32,6 +32,9 @@ module.exports = {
         18: "18px",
         20: "20px",
         24: "24px",
+        26: "26px",
+        28: "28px",
+        30: "30px",
       },
       borderWidth: {
         0.5: "0.5px",

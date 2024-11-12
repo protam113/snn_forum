@@ -1,21 +1,6 @@
 // layout
 import AdHome from "../components/layouts/AdminLayout/AdHome";
 import { DefaultLayout, AdminLayout } from "../components/layouts/index";
-import AdminWeb from "../pages/admin/admin/adminWeb";
-import AddUser from "../pages/admin/adUser/addUser";
-import AdUser from "../pages/admin/adUser/adUser";
-import Banner from "../pages/admin/banner/banner";
-import CreateBanner from "../pages/admin/banner/createBanner";
-import AdCategory from "../pages/admin/category/Category";
-import CreateCategory from "../pages/admin/category/createCategory";
-import EdtCategory from "../pages/admin/category/edtCategory";
-import StaticalJobPostGeneral from "../pages/admin/statisticalMail.js/StaticalJobPostGeneral";
-import StaticalJobPostSpecific from "../pages/admin/statisticalMail.js/StaticalJobPostSpecific";
-import StaticalProductCategory from "../pages/admin/statisticalMail.js/StaticalProductCategoryGeneral";
-import StaticalProduct from "../pages/admin/statisticalMail.js/StaticalProductGeneral";
-import StatisticalJobApplicationGeneral from "../pages/admin/statisticalMail.js/StatisticalJobApplicationGeneral";
-import StatisticalBlogs from "../pages/admin/statisticalMail.js/StatisticsBlog";
-import ManageTag from "../pages/admin/tag/ManageTag";
 import PageNotfound_404 from "../pages/auth/404PageNotfound";
 import ResetPassword from "../pages/auth/authResetPass";
 import ConfirmPage from "../pages/auth/confirmPage";
@@ -25,7 +10,7 @@ import Register from "../pages/auth/register";
 import RejectPage from "../pages/auth/rejectpage";
 import Blog_detail from "../pages/user/blog/blog_detail";
 import Create from "../pages/user/blog/create/create";
-import EdtBlog from "../pages/user/blog/edtBlog";
+import EdtBlog from "../pages/user/blog/EdtBlog/edtBlog";
 import ContributeIdeas from "../pages/user/contributeIdeas";
 
 import Home from "../pages/user/home";
@@ -153,83 +138,6 @@ const privateRoutes = [
   {
     path: "/admin",
     component: AdHome,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/thong_tin_web",
-    component: AdminWeb,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/thong_ke/blog",
-    component: StatisticalBlogs,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/thong_ke/san_pham",
-    component: StaticalProduct,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/thong_ke/the_loai",
-    component: StaticalProductCategory,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/thong_ke/don_ung_tuyen",
-    component: StatisticalJobApplicationGeneral,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/thong_ke/ung_tuyen",
-    component: StaticalJobPostGeneral,
-    layout: AdminLayout,
-  },
-
-  {
-    path: "/admin/thong_ke/tuyen_dung",
-    component: StaticalJobPostSpecific,
-    layout: AdminLayout,
-  },
-
-  {
-    path: "/admin/tag",
-    component: ManageTag,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/the_loai",
-    component: AdCategory,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/the_loai/tao_the_loai",
-    component: CreateCategory,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/the_loai/sua_the_loai/:id",
-    component: EdtCategory,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/quan_ly_nguoi_dung",
-    component: AdUser,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/quan_ly_nguoi_dung/them_nguoi_dung",
-    component: AddUser,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/banners",
-    component: Banner,
-    layout: AdminLayout,
-  },
-  {
-    path: "/admin/banners/tao_banner",
-    component: CreateBanner,
     layout: AdminLayout,
   },
 ];

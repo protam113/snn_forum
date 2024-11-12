@@ -264,7 +264,7 @@ const Blog_detail = () => {
           </div>
 
           {/* Like, Comment, Repost Buttons */}
-          <div className="flex justify-between items-center text-sm text-gray-500">
+          <div className="flex justify-between mt-2 items-center text-sm text-gray-500">
             <div className="flex space-x-4">
               <div className="flex items-center space-x-1 cursor-pointer">
                 <FaRegCommentAlt />
@@ -279,15 +279,14 @@ const Blog_detail = () => {
               </div>
             </div>
           </div>
+          <div className="comments-container flex flex-col">
+            <div className="comments-section overflow-y-auto max-h-[300px] mb-4">
+              <CommentsSection blogId={blogId} />
+            </div>
+            <Comment blogId={blogId} />
+          </div>
         </div>
       </ArticleDesign>
-      <hr className="my-2 border-zinc-900" />
-      <div className="comments-container flex flex-col">
-        <div className="comments-section overflow-y-auto max-h-[300px] mb-4">
-          <CommentsSection blogId={blogId} />
-        </div>
-        <Comment blogId={blogId} />
-      </div>
       <hr className="my-4 border-zinc-900" />
       <h1
         className={`font-bold ${

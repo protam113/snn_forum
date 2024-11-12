@@ -20,6 +20,20 @@ import {
   tablePlugin,
   InsertTable,
 } from "@mdxeditor/editor";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  Upload,
+  Select,
+  message,
+  Row,
+  Col,
+  Typography,
+} from "antd";
+const { Text } = Typography;
+const { Option } = Select;
 
 const EdtProduct = () => {
   const { id: productId } = useParams();
@@ -99,9 +113,8 @@ const EdtProduct = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values) => {
+    // values sẽ chứa tất cả các trường từ form
     if (!productId) {
       addNotification("ID sản phẩm không hợp lệ.", "warning");
       return;
@@ -110,7 +123,7 @@ const EdtProduct = () => {
     try {
       await editProductMutation({
         productId,
-        edtProduct: { ...formData, media: selectedFiles },
+        edtProduct: { ...values, media: selectedFiles },
       });
       navigate(-1);
     } catch (error) {
@@ -130,237 +143,179 @@ const EdtProduct = () => {
   if (isError) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-6">Chỉnh Sửa Sản Phẩm</h1>
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Image Upload Section */}
-        <div className="flex flex-col gap-4">
-          <label htmlFor="file" className="block text-sm font-medium mb-1">
-            Upload Images (max 4)
-          </label>
-          <div className="mb-4 p-4 text-14 bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
-            <AiOutlineWarning size={24} className="mr-2 text-red-600" />
-            <span>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</span>
-          </div>
-          <div className="relative flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
-            <input
-              id="media"
-              name="media"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageChange}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              ref={fileInputRef}
-            />
-            <AiOutlinePlus className="text-gray-500" size={24} />
-            <span className="text-gray-500">Chọn hình ảnh</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {selectedFiles.map((file, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={`Preview ${index}`}
-                  className="w-full h-32 object-cover rounded-md"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(index)}
-                  className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
-                >
-                  <AiOutlineDelete className="text-red-500" size={20} />
-                </button>
+    <div className="p-6 bg-white rounded-lg shadow-lg">
+      <h1 className="text-3xl font-bold mb-4">Chỉnh Sửa Sản Phẩm</h1>
+
+      <div className="mb-4 p-4 text-sm bg-red-100 text-red-700 border border-red-300 rounded-lg flex items-center">
+        <AiOutlineWarning size={24} className="mr-2 text-red-600" />
+        <Text>Hãy chắc chắn rằng mỗi hình ảnh không vượt quá 5MB.</Text>
+      </div>
+
+      <Form layout="vertical" onFinish={handleSubmit}>
+        <Row gutter={16}>
+          {/* Image Upload Section */}
+          <Col xs={24} sm={12} md={8}>
+            <Form.Item label="Upload Images (max 4)">
+              <Upload
+                onChange={handleImageChange}
+                fileList={selectedFiles}
+                accept="image/*"
+                multiple
+                showUploadList={false} // Tắt hiển thị danh sách hình ảnh tải lên
+              >
+                <div className="flex items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+                  <AiOutlinePlus className="text-gray-500" size={24} />
+                  <span className="text-gray-500">Chọn hình ảnh</span>
+                </div>
+              </Upload>
+
+              {/* Hiển thị hình ảnh đã tải lên */}
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                {product.medias && product.medias.length > 0 ? (
+                  product.medias.map((media, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={media.media} // Sử dụng URL từ `medias`
+                        alt={`Media ${index + 1}`}
+                        className="w-full h-32 object-cover rounded"
+                      />
+                      <AiOutlineDelete
+                        className="absolute top-1 right-1 text-red-500 cursor-pointer"
+                        onClick={() => handleRemoveImage(index)} // Cần điều chỉnh nếu bạn có chức năng xóa
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <Text>Không có hình ảnh nào được tải lên.</Text>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
+            </Form.Item>
+          </Col>
 
-        {/* Product Information Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium mb-1">
-              Tên Sản Phẩm
-            </label>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="quantity"
-              className="block text-sm font-medium mb-1"
-            >
-              Số Lượng
-            </label>
-            <input
-              id="quantity"
-              name="quantity"
-              type="number"
-              value={formData.quantity}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-        </div>
+          {/* Product Information Section */}
+          <Col xs={24} sm={12} md={8}>
+            <Form.Item label="Tên sản phẩm">
+              <Input
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="Nhập tên sản phẩm"
+              />
+            </Form.Item>
+            <Form.Item label="Số lượng">
+              <InputNumber
+                min={1}
+                name="quantity"
+                value={formData.quantity}
+                onChange={(value) =>
+                  setFormData({ ...formData, quantity: value })
+                }
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+            <Form.Item label="Chi Tiết Sản Phẩm">
+              <MDXEditor
+                key={markdown}
+                markdown={markdown} // Sử dụng giá trị từ state markdown
+                plugins={[
+                  toolbarPlugin({
+                    toolbarContents: () => (
+                      <>
+                        <UndoRedo />
+                        <BoldItalicUnderlineToggles />
+                        <InsertTable />
+                      </>
+                    ),
+                  }),
+                  tablePlugin(),
+                ]}
+                onChange={handleDescriptionChange} // Cập nhật khi thay đổi
+                style={{ width: "100%", height: "500px" }}
+              />
+            </Form.Item>
+          </Col>
 
-        {/* Product Details Section */}
-        <div className="mb-6">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium mb-1"
-          >
-            Chi Tiết Sản Phẩm
-          </label>
-
-          <MDXEditor
-            key={markdown}
-            markdown={markdown} // Use value from markdown state
-            plugins={[
-              toolbarPlugin({
-                toolbarContents: () => (
-                  <>
-                    <UndoRedo />
-                    <BoldItalicUnderlineToggles />
-                    <InsertTable />
-                  </>
-                ),
-              }),
-              tablePlugin(),
-            ]}
-            onChange={handleDescriptionChange} // Update on change
-            style={{ width: "100%", height: "500px" }}
-          />
-        </div>
-        <hr className="mt-4" />
-        {/* Additional Information Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label
-              htmlFor="condition"
-              className="block text-sm font-medium mb-1"
-            >
-              Tình Trạng
-            </label>
-            <select
-              id="condition"
-              name="condition"
-              value={formData.condition}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            >
-              <option value="">Chọn tình trạng</option>
-              <option value="new">Mới</option>
-              <option value="used">Đã Sử Dụng</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="fettle" className="block text-sm font-medium mb-1">
-              Trạng Thái
-            </label>
-            <select
-              id="fettle"
-              name="fettle"
-              value={formData.fettle}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            >
-              <option value="">Chọn Chất Lượng</option>
-              <option value="in_stock">Còn hàng</option>
-              <option value="out_of_stock">Hết hàng</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label
-              htmlFor="location"
-              className="block text-sm font-medium mb-1"
-            >
-              Vị Trí
-            </label>
-            <input
-              id="location"
-              name="location"
-              type="text"
-              value={formData.location}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label
-              htmlFor="category"
-              className="block text-sm font-medium mb-1"
-            >
-              Danh Mục
-            </label>
-            <CategoryList
-              selectedCategories={formData.category}
-              onCategoryChange={handleCategoryChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="price" className="block text-sm font-medium mb-1">
-              Giá
-            </label>
-            <input
-              id="price"
-              name="price"
-              type="number"
-              value={formData.price}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="phone_number"
-              className="block text-sm font-medium mb-1"
-            >
-              Số Điện Thoại
-            </label>
-            <input
-              id="phone_number"
-              name="phone_number"
-              type="text"
-              value={formData.phone_number}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-        </div>
+          {/* Product Details Section */}
+          <Col xs={24} sm={12} md={8}>
+            <Form.Item label="Tình Trạng">
+              <Select
+                name="condition"
+                value={formData.condition}
+                onChange={(value) =>
+                  setFormData({ ...formData, condition: value })
+                }
+                placeholder="Chọn tình trạng"
+              >
+                <Option value="new">Mới</Option>
+                <Option value="used">Đã Sử Dụng</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="Trạng Thái">
+              <Select
+                name="fettle"
+                value={formData.fettle}
+                onChange={(value) =>
+                  setFormData({ ...formData, fettle: value })
+                }
+                placeholder="Chọn Chất Lượng"
+              >
+                <Option value="in_stock">Còn hàng</Option>
+                <Option value="out_of_stock">Hết hàng</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="Vị Trí">
+              <Input
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Nhập vị trí"
+              />
+            </Form.Item>
+            <Form.Item label="Giá">
+              <InputNumber
+                name="price"
+                value={formData.price}
+                onChange={(value) => setFormData({ ...formData, price: value })}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+            <Form.Item label="Số Điện Thoại">
+              <Input
+                name="phone_number"
+                value={formData.phone_number}
+                onChange={handleChange}
+                placeholder="Nhập số điện thoại"
+              />
+            </Form.Item>
+            <Form.Item label="Danh Mục">
+              <Select
+                mode="multiple"
+                name="category"
+                value={formData.category}
+                onChange={handleCategoryChange}
+                placeholder="Chọn danh mục"
+              >
+                {/* Replace with your category options */}
+                <Option value="category1">Danh Mục 1</Option>
+                <Option value="category2">Danh Mục 2</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
 
         {/* Submit Button */}
-        <div className="flex justify-end gap-4">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          >
-            Cập Nhật
-          </button>
-          <button
-            type="button"
+        <div className="flex justify-end mt-4">
+          <Button type="primary" htmlType="submit" className="mr-2">
+            Cập Nhật Sản Phẩm
+          </Button>
+          <Button
             onClick={() => navigate(-1)}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+            className="bg-gray-300 text-gray-700"
           >
             Hủy
-          </button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 };

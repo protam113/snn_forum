@@ -39,7 +39,7 @@ const ProfileIf = () => {
           </div>
           <div className={style(theme).infoContainer}>
             {personalInfo ? (
-              <PersonalIf personalInfo={personalInfo} />
+              <PersonalIf personalInfo={personalInfo} personalId={personId} />
             ) : (
               <p>No personal information available.</p>
             )}

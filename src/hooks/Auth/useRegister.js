@@ -34,10 +34,7 @@ const Register = async ({
   location,
   about,
   link,
-  profile_image,
-  profile_bg,
 }) => {
-  // Kiểm tra tính hợp lệ trước khi tiếp tục
   const errorMessage = validateInputs({
     username,
     password,
@@ -63,13 +60,6 @@ const Register = async ({
   formData.append("location", location);
   formData.append("about", about);
   formData.append("link", link);
-
-  if (profile_image) {
-    formData.append("profile_image", profile_image);
-  }
-  if (profile_bg) {
-    formData.append("profile_bg", profile_bg);
-  }
 
   try {
     const response = await authApi().post(endpoints.RegisterUser, formData, {

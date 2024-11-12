@@ -40,7 +40,6 @@ const About = () => {
   if (error) {
     return <span>Error: {error}</span>;
   }
-
   return (
     <>
       <div className={style.wrapper}>
@@ -116,11 +115,17 @@ const About = () => {
         </div>
       </div>
       {showFollowerPopup && (
-        <FollowerPopup onClose={() => setShowFollowerPopup(false)} />
+        <FollowerPopup
+          onClose={() => setShowFollowerPopup(false)}
+          personId={userInfo.id}
+        />
       )}
 
       {showFollowingPopup && (
-        <FollowingPopup onClose={() => setShowFollowingPopup(false)} />
+        <FollowingPopup
+          onClose={() => setShowFollowingPopup(false)}
+          personId={userInfo.id}
+        />
       )}
     </>
   );

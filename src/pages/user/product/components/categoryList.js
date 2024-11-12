@@ -1,43 +1,39 @@
 import React from "react";
 import { useUserCategoryList } from "../../../../hooks/Product/useUserCategory";
+import { Checkbox, Row, Col, Spin, Alert } from "antd";
 
-const CategoryList = ({ selectedCategories, onCategoryChange }) => {
-  const { data: categories, isLoading, isError } = useUserCategoryList();
-  console.log(categories);
+const CategoryList = ({ selectedCategories = [], onCategoryChange }) => {
+  const { data: categories = {}, isLoading, isError } = useUserCategoryList();
+
+  // Đảm bảo selectedCategories là một mảng
+  const selectedCategoriesArray = Array.isArray(selectedCategories)
+    ? selectedCategories
+    : [];
+
   const handleCheckboxChange = (id) => {
-    const newSelectedCategories = selectedCategories.includes(id)
-      ? selectedCategories.filter((categoryId) => categoryId !== id)
-      : [...selectedCategories, id];
+    const newSelectedCategories = selectedCategoriesArray.includes(id)
+      ? selectedCategoriesArray.filter((categoryId) => categoryId !== id)
+      : [...selectedCategoriesArray, id];
 
     onCategoryChange(newSelectedCategories);
   };
 
-  if (isLoading) return <p className="text-gray-500">Loading categories...</p>;
-  if (isError) return <p className="text-red-500">Error loading categories</p>;
+  if (isLoading) return <Spin tip="Loading categories..." />;
+  if (isError) return <Alert message="Error loading categories" type="error" />;
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <Row gutter={[16, 16]}>
       {categories?.map((category) => (
-        <div
-          key={category.id}
-          className="flex items-center space-x-2 p-2 border rounded-md bg-white shadow-sm hover:bg-gray-100"
-        >
-          <input
-            type="checkbox"
-            id={`category-${category.id}`}
-            checked={selectedCategories.includes(category.id)}
+        <Col span={12} key={category.id}>
+          <Checkbox
+            checked={selectedCategoriesArray.includes(category.id)}
             onChange={() => handleCheckboxChange(category.id)}
-            className="form-checkbox text-blue-500 rounded"
-          />
-          <label
-            htmlFor={`category-${category.id}`}
-            className="text-sm text-gray-700"
           >
             {category.name}
-          </label>
-        </div>
+          </Checkbox>
+        </Col>
       ))}
-    </div>
+    </Row>
   );
 };
 

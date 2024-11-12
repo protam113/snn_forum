@@ -17,7 +17,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 const RecruitmentPost = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { userInfo } = useUser();
+  const { userInfo, userRoles } = useUser();
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useRecruitmentList();
@@ -100,6 +100,8 @@ const RecruitmentPost = () => {
         .flatMap((page) => page.recruitments)
         ?.map((recruitment) => {
           const isOwner = userInfo && userInfo.id === recruitment.user.id;
+          const isAdmin = userRoles && userRoles.includes("admin");
+          const canAccess = isOwner || isAdmin;
 
           return (
             <Block
@@ -153,7 +155,7 @@ const RecruitmentPost = () => {
                         : "bg-white border-gray-300"
                     } shadow-lg rounded-lg z-10`}
                   >
-                    {isOwner && (
+                    {canAccess && (
                       <>
                         <MenuItem as="div">
                           <div

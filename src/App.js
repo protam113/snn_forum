@@ -69,22 +69,15 @@ function AppContent() {
             <Route
               key={id}
               path={route.path}
-              // element={
-              //   <ProtectedRoutes allowedRoles={["admin", "manager"]}>
-              //     <Layout>
-              //       <Page />
-              //     </Layout>
-              //   </ProtectedRoutes>
-              // }
               element={
                 Layout ? (
-                  <ProtectedRoutes allowedRoles={["admin", "manager"]}>
+                  <ProtectedRoutes>
                     <Layout>
                       <Page />
                     </Layout>
                   </ProtectedRoutes>
                 ) : (
-                  <ProtectedRoutes allowedRoles={["admin", "manager"]}>
+                  <ProtectedRoutes>
                     <Page />
                   </ProtectedRoutes>
                 )

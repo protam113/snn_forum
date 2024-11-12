@@ -14,9 +14,9 @@ import Loading from "../../error/load";
 import { useTheme } from "../../../context/themeContext";
 import { motion } from "framer-motion";
 import { FiMail, FiMapPin, FiPhoneCall } from "react-icons/fi";
-import { Block } from "../../../components/layouts/AdminLayout/components/RevealBento";
 import { IoSettingsOutline } from "react-icons/io5";
 import ChangePassword from "./components/ChangePassword";
+import { twMerge } from "tailwind-merge";
 
 const Setting = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -176,6 +176,36 @@ const AboutTeamComponent = ({ theme }) => (
     </div>
   </div>
 );
+
+export const Block = ({ className, ...rest }) => {
+  return (
+    <motion.div
+      variants={{
+        initial: {
+          scale: 0.5,
+          y: 50,
+          opacity: 0,
+        },
+        animate: {
+          scale: 1,
+          y: 0,
+          opacity: 1,
+        },
+      }}
+      transition={{
+        type: "spring",
+        mass: 3,
+        stiffness: 400,
+        damping: 50,
+      }}
+      className={twMerge(
+        "col-span-4 rounded-lg border border-zinc-700  p-6",
+        className
+      )}
+      {...rest}
+    />
+  );
+};
 
 const AboutBlock = ({ web, theme }) => (
   <Block className="col-span-12 leading-snug">

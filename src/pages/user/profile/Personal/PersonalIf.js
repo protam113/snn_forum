@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaLink } from "react-icons/fa";
-import Loading from "../../../error/load";
 import { useTheme } from "../../../../context/themeContext";
-import { useParams } from "react-router-dom";
-import useUserInfo from "../../../../hooks/useUserInfo";
+import FollowerPopup from "../Components/FollowerPopup";
+import FollowingPopup from "../Components/FollowingPopup";
 
 const style = {
   wrapper:
@@ -23,78 +22,100 @@ const style = {
 };
 const PersonalIf = ({ personalInfo }) => {
   const { theme } = useTheme();
-
+  const [showFollowerPopup, setShowFollowerPopup] = useState(false);
+  const [showFollowingPopup, setShowFollowingPopup] = useState(false);
   return (
-    <div className={style.wrapper}>
-      <div className={style.profileInfoContainer}>
-        <div className={style.profilePicContainer}>
-          <img
-            src={personalInfo?.profile_image}
-            alt="avatar"
-            className={style.profilePic}
-          />
+    <>
+      <div className={style.wrapper}>
+        <div className={style.profileInfoContainer}>
+          <div className={style.profilePicContainer}>
+            <img
+              src={personalInfo?.profile_image}
+              alt="avatar"
+              className={style.profilePic}
+            />
+          </div>
+          <div>
+            <p className="font-bold text-lg">@{personalInfo?.username}</p>
+            <p className={style.aboutContent}>
+              {personalInfo?.about || "No information available"}
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="font-bold text-lg">@{personalInfo?.username}</p>
-          <p className={style.aboutContent}>
-            {personalInfo?.about || "No information available"}
-          </p>
+        <div className={style.statsWrapper}>
+          <div
+            className={style.stat}
+            onClick={() => setShowFollowerPopup(true)}
+          >
+            <span className={style.statValue}>
+              {personalInfo?.follower_count}
+            </span>
+            <span className={style.statTitle}>Followers</span>
+          </div>
+          <div
+            className={style.stat}
+            onClick={() => setShowFollowingPopup(true)}
+          >
+            <span className={style.statValue}>
+              {personalInfo?.following_count}
+            </span>
+            <span className={style.statTitle}>Following</span>
+          </div>
         </div>
-      </div>
-      <div className={style.statsWrapper}>
-        <div className={style.stat}>
-          <span className={style.statValue}>
-            {personalInfo?.follower_count}
-          </span>
-          <span className={style.statTitle}>Followers</span>
-        </div>
-        <div className={style.stat}>
-          <span className={style.statValue}>
-            {personalInfo?.following_count}
-          </span>
-          <span className={style.statTitle}>Following</span>
-        </div>
-      </div>
 
-      <div className="py-2">
-        <h3 className="text-lg font-semibold">Contact Information</h3>
-        <div className={style.footer}>
-          <FaMapMarkerAlt />
-          <p>Location: {personalInfo?.location || "No location available"}</p>
-        </div>
-        <div className={style.footer}>
-          <FaPhoneAlt />
-          <p>Phone: {personalInfo?.phone_number || "No contact available"}</p>
-        </div>
-        <div className={style.footer}>
-          <FaEnvelope />
-          <p>Email: {personalInfo?.email || "No email available"}</p>
-        </div>
-        <div className={style.footer}>
-          <FaLink />
-          <p>
-            Link:{" "}
-            <a
-              href={
-                personalInfo?.link?.startsWith("http://") ||
-                personalInfo?.link?.startsWith("https://")
-                  ? personalInfo?.link
-                  : `https://${personalInfo?.link}`
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`ml-2 ${
-                theme === "dark"
-                  ? "text-blue-500 hover:text-blue-400"
-                  : "text-blue-600 hover:text-blue-500"
-              } transition-all duration-300`}
-            >
-              {personalInfo?.link || "No link available"}
-            </a>
-          </p>
+        <div className="py-2">
+          <h3 className="text-lg font-semibold">Contact Information</h3>
+          <div className={style.footer}>
+            <FaMapMarkerAlt />
+            <p>Location: {personalInfo?.location || "No location available"}</p>
+          </div>
+          <div className={style.footer}>
+            <FaPhoneAlt />
+            <p>Phone: {personalInfo?.phone_number || "No contact available"}</p>
+          </div>
+          <div className={style.footer}>
+            <FaEnvelope />
+            <p>Email: {personalInfo?.email || "No email available"}</p>
+          </div>
+          <div className={style.footer}>
+            <FaLink />
+            <p>
+              Link:{" "}
+              <a
+                href={
+                  personalInfo?.link?.startsWith("http://") ||
+                  personalInfo?.link?.startsWith("https://")
+                    ? personalInfo?.link
+                    : `https://${personalInfo?.link}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`ml-2 ${
+                  theme === "dark"
+                    ? "text-blue-500 hover:text-blue-400"
+                    : "text-blue-600 hover:text-blue-500"
+                } transition-all duration-300`}
+              >
+                {personalInfo?.link || "No link available"}
+              </a>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+      {showFollowerPopup && (
+        <FollowerPopup
+          onClose={() => setShowFollowerPopup(false)}
+          personId={personalInfo.id}
+        />
+      )}
+
+      {showFollowingPopup && (
+        <FollowingPopup
+          onClose={() => setShowFollowingPopup(false)}
+          personId={personalInfo.id}
+        />
+      )}
+    </>
   );
 };
 

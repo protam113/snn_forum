@@ -20,7 +20,7 @@ const Blog = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { addNotification } = useToastDesign();
-  const { userInfo } = useUser();
+  const { userInfo, userRoles } = useUser();
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useBlogList();
@@ -136,6 +136,8 @@ const Blog = () => {
         .flatMap((page) => page.blogs)
         ?.map((blog) => {
           const isOwner = userInfo && userInfo.id === blog.user.id;
+          const isAdmin = userRoles && userRoles.includes("admin");
+          const canAccess = isOwner || isAdmin;
           const isExpanded = expandedBlogId === blog.id;
 
           return (
@@ -201,7 +203,7 @@ const Blog = () => {
                         as="div"
                         className="absolute right-0 mt-2 w-48 bg-white  border border-gray-300 shadow-lg rounded-lg z-10"
                       >
-                        {isOwner && (
+                        {canAccess && (
                           <>
                             <MenuItem>
                               <div

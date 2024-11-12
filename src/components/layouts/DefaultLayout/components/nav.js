@@ -70,7 +70,7 @@ const Nav = () => {
   const { theme } = useTheme();
   const { userRoles, userInfo } = useUser();
 
-  const isAdmin = userRoles.includes("admin") || userRoles.includes("manager");
+  const isAdmin = userRoles !== null;
 
   return (
     <div
@@ -113,11 +113,6 @@ const Nav = () => {
           <NavLinkItem to="/tuyen_dung" theme={theme}>
             Tuyển dụng
           </NavLinkItem>
-          {isAdmin && (
-            <NavLinkItem to="/admin" theme={theme}>
-              Admin
-            </NavLinkItem>
-          )}
         </section>
         <div className="flex items-center space-x-4">
           <Menu as="div" className="relative inline-block text-left">
@@ -173,6 +168,17 @@ const Nav = () => {
                     >
                       <FaCog className="text-lg ml-2" />
                       <span className="ml-4 text-16">Quản Lý</span>
+                    </Link>
+                  )}
+                </MenuItem>
+                <MenuItem as="div">
+                  {isAdmin && (
+                    <Link
+                      to="http://localhost:4000/"
+                      className="bg-main-blue2 text-white px-6 py-3 rounded-lg flex items-center hover:bg-blue-600"
+                    >
+                      <FaCog className="text-lg ml-2" />
+                      <span className="ml-4 text-16">Admin</span>
                     </Link>
                   )}
                 </MenuItem>

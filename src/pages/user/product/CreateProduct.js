@@ -72,12 +72,8 @@ const CreateProduct = () => {
   };
 
   const handleCategoryChange = (newSelectedCategories) => {
-    setCategory(
-      newSelectedCategories.map((cat) => ({
-        id: cat.id,
-        name: cat.name,
-      }))
-    );
+    // Giữ selectedCategories là một mảng chứa id
+    setCategory(newSelectedCategories);
   };
 
   const handlePriceChange = (e) => {
@@ -94,8 +90,8 @@ const CreateProduct = () => {
   };
 
   const handleSubmit = async (values) => {
-    // Ensure the required fields are filled
-    if (!title || !category.length || !price) {
+    // Kiểm tra các trường bắt buộc
+    if (!title || category.length === 0 || !price) {
       addNotification("Please fill out all required fields", "error");
       return;
     }
@@ -103,7 +99,7 @@ const CreateProduct = () => {
     const numericPrice = parseFloat(price);
     const numericQuantity = parseInt(quantity);
 
-    // Check for valid price and quantity
+    // Kiểm tra giá trị giá và số lượng
     if (isNaN(numericPrice)) {
       addNotification("Price is not a valid number", "error");
       return;
@@ -114,15 +110,15 @@ const CreateProduct = () => {
       return;
     }
 
-    // Prepare new product data
+    // Chuẩn bị dữ liệu sản phẩm mới
     const newProductData = {
       title,
       quantity: numericQuantity,
-      description: description,
+      description,
       condition,
       fettle,
       location,
-      category: category.map((cat) => cat.id).filter(Boolean),
+      category, // Đây sẽ là mảng id danh mục
       price: numericPrice,
       phone_number,
       images: selectedFiles.map((file) => file.file),
@@ -130,14 +126,8 @@ const CreateProduct = () => {
 
     setLoading(true);
     try {
-      await addProductMutation(newProductData, {
-        onSuccess: () => {
-          navigate("/san_pham");
-        },
-        onError: (error) => {
-          console.error(error);
-        },
-      });
+      await addProductMutation(newProductData); // Gọi mà không cần đối số thứ hai
+      navigate("/san_pham");
     } catch (error) {
       console.error(error);
     } finally {

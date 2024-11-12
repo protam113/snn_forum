@@ -49,7 +49,7 @@ export const UserProvider = ({ children }) => {
     const cachedData = getCachedUserInfo();
     if (cachedData) {
       setUserInfo(cachedData);
-      setUserRoles(cachedData.groups.map((group) => group.name));
+      setUserRoles(cachedData.role ? cachedData.role.name : null); // Đặt thành null nếu không có vai trò
       userInfoFetchedRef.current = true;
       setLoading(false);
       return;
@@ -59,7 +59,7 @@ export const UserProvider = ({ children }) => {
 
     if (!token) {
       setUserInfo(null);
-      setUserRoles([]);
+      setUserRoles(null); // Đặt thành null nếu không có token
       setLoading(false);
       return;
     }
@@ -70,7 +70,7 @@ export const UserProvider = ({ children }) => {
 
       cacheUserInfo(userData);
       setUserInfo(userData);
-      setUserRoles(userData.groups.map((group) => group.name));
+      setUserRoles(userData.role ? userData.role.name : null); // Đặt thành null nếu không có vai trò
       userInfoFetchedRef.current = true;
     } catch (err) {
       setError(err.response?.data || err.message);

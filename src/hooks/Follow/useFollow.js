@@ -6,56 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { authApi, endpoints } from "../../api/api";
 import useAuth from "../useAuth";
-import { useToastDesign } from "../../context/ToastService";
 import { useEffect, useState } from "react";
-
-// const toggleFollowUser = async (personId, token, isFollowing) => {
-//   if (!token) throw new Error("No token available");
-
-//   try {
-//     const endpoint = endpoints.FollowUser.replace(":id", personId);
-//     const method = isFollowing ? "delete" : "post";
-//     const response = await authApi(token)[method](endpoint);
-
-//     if (!response.data) {
-//       throw new Error("No data received from server");
-//     }
-
-//     return response.data;
-//   } catch (err) {
-//     console.error("Error when toggling follow:", err);
-//     throw err;
-//   }
-// };
-
-// const useFollowUser = () => {
-//   const { getToken } = useAuth();
-//   const { addNotification } = useToastDesign();
-//   const queryClient = useQueryClient();
-
-//   const mutation = useMutation({
-//     mutationFn: async ({ personId, isFollowing }) => {
-//       const token = await getToken();
-//       if (!token) {
-//         throw new Error("Unable to retrieve token");
-//       }
-//       return toggleFollowUser(personId, token, isFollowing);
-//     },
-//     onSuccess: (data, variables) => {
-//       const message = variables.isFollowing
-//         ? "Unfollow thành công!"
-//         : "Follow thành công!";
-//       addNotification(message, "success");
-//       queryClient.invalidateQueries(["followers"]);
-//     },
-//     onError: (error) => {
-//       addNotification(error.message || "Lỗi khi thao tác!", "error");
-//       console.error(error.message || "Lỗi khi thao tác!");
-//     },
-//   });
-
-//   return mutation;
-// };
 
 const useFollowUser = () => {
   const queryClient = useQueryClient();
@@ -97,11 +48,14 @@ const useFollowUser = () => {
   });
 };
 
-const fetchFollower = async ({ pageParam = 1, token }) => {
+const fetchFollower = async ({ pageParam = 1, token, personId, sortBy }) => {
   try {
-    // Thực hiện truy vấn API
+    // Thực hiện truy vấn API với tham số sort_by
     const response = await authApi(token).get(
-      `${endpoints.Follower}?page=${pageParam}`
+      `${endpoints.Follower.replace(
+        ":id",
+        personId
+      )}?page=${pageParam}&sort_by=${sortBy}`
     );
 
     // Lấy dữ liệu từ phản hồi API
@@ -121,7 +75,8 @@ const fetchFollower = async ({ pageParam = 1, token }) => {
   }
 };
 
-const useFollowerList = () => {
+const useFollowerList = (personId, sortBy) => {
+  // Thêm sortBy vào đây
   const { getToken } = useAuth();
   const [token, setToken] = useState(null);
   const [isReady, setIsReady] = useState(false);
@@ -136,19 +91,23 @@ const useFollowerList = () => {
   }, [getToken]);
 
   return useInfiniteQuery({
-    queryKey: ["followers", token],
-    queryFn: ({ pageParam }) => fetchFollower({ pageParam, token }),
+    queryKey: ["followers", personId, token, sortBy], // Cập nhật queryKey để bao gồm sortBy
+    queryFn: ({ pageParam = 1 }) =>
+      fetchFollower({ pageParam, token, personId, sortBy }), // Truyền sortBy vào fetchFollower
     getNextPageParam: (lastPage) => lastPage.nextPage,
-    enabled: Boolean(isReady && token), // Chuyển giá trị thành boolean
+    enabled: Boolean(isReady && token && personId), // Đảm bảo rằng cả token và personId đều có giá trị
     staleTime: 60000,
   });
 };
 
-const fetchFollowing = async ({ pageParam = 1, token }) => {
+const fetchFollowing = async ({ pageParam = 1, token, personId, sortBy }) => {
   try {
     // Thực hiện truy vấn API
     const response = await authApi(token).get(
-      `${endpoints.Following}?page=${pageParam}`
+      `${endpoints.Following.replace(
+        ":id",
+        personId
+      )}?page=${pageParam}&sort_by=${sortBy}`
     );
 
     // Lấy dữ liệu từ phản hồi API
@@ -168,7 +127,8 @@ const fetchFollowing = async ({ pageParam = 1, token }) => {
   }
 };
 
-const useFollowingList = () => {
+const useFollowingList = (personId, sortBy) => {
+  // Thêm sortBy vào đây
   const { getToken } = useAuth();
   const [token, setToken] = useState(null);
   const [isReady, setIsReady] = useState(false);
@@ -183,10 +143,11 @@ const useFollowingList = () => {
   }, [getToken]);
 
   return useInfiniteQuery({
-    queryKey: ["followings", token],
-    queryFn: ({ pageParam }) => fetchFollowing({ pageParam, token }),
+    queryKey: ["followings", personId, token, sortBy], // Cập nhật queryKey
+    queryFn: ({ pageParam }) =>
+      fetchFollowing({ pageParam, token, personId, sortBy }), // Thêm sortBy vào queryFn
     getNextPageParam: (lastPage) => lastPage.nextPage,
-    enabled: Boolean(isReady && token), // Chuyển giá trị thành boolean
+    enabled: Boolean(isReady && token && personId),
     staleTime: 60000,
   });
 };
